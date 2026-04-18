@@ -12,6 +12,9 @@ from omnexa_accounting.utils.posting import assert_posting_date_open
 
 class JournalEntry(Document):
 	def validate(self):
+		if self.is_new() and self.amended_from and self.meta.has_field("workflow_state"):
+			self.workflow_state = None
+
 		if self.docstatus == 0:
 			validate_branch_company(self)
 			self._validate_accounts()

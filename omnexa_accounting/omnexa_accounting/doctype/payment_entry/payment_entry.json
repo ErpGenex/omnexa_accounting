@@ -5,20 +5,24 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
+  "header_section",
   "company",
   "branch",
-  "bank_account",
-  "mode_of_payment",
+  "column_break_header_1",
   "party_type",
   "party",
   "posting_date",
+  "column_break_header_2",
+  "bank_account",
+  "mode_of_payment",
   "paid_amount",
   "remittance_section",
   "remittance_reference",
   "remittance_date",
   "remittance_bank_reference",
   "references",
-  "amended_from"
+  "amended_from",
+  "workflow_state"
  ],
  "fields": [
   {
@@ -26,14 +30,26 @@
    "fieldtype": "Link",
    "in_list_view": 1,
    "label": "Company",
-   "options": "Company",
-   "reqd": 1
+   "options": "Company"
   },
   {
    "fieldname": "branch",
    "fieldtype": "Link",
    "label": "Branch",
    "options": "Branch"
+  },
+  {
+   "fieldname": "header_section",
+   "fieldtype": "Section Break",
+   "label": "Transaction"
+  },
+  {
+   "fieldname": "column_break_header_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_header_2",
+   "fieldtype": "Column Break"
   },
   {
    "fieldname": "bank_account",
@@ -115,13 +131,24 @@
    "print_hide": 1,
    "read_only": 1,
    "search_index": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "workflow_state",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Workflow State",
+   "no_copy": 1,
+   "options": "Workflow State",
+   "print_hide": 1,
+   "read_only": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-04-14 22:00:00",
+ "modified": "2026-04-17 21:00:00",
  "modified_by": "Administrator",
  "module": "Omnexa Accounting",
  "name": "Payment Entry",

@@ -14,6 +14,10 @@ from omnexa_accounting.utils.posting import assert_posting_date_open
 
 class PurchaseInvoice(Document):
 	def validate(self):
+		# Amend copies may carry cancelled workflow state; reset so Frappe workflow can start from draft.
+		if self.is_new() and self.amended_from and self.meta.has_field("workflow_state"):
+			self.workflow_state = None
+
 		self._apply_due_date_from_party()
 		self._validate_supplier_company()
 		validate_branch_company(self)

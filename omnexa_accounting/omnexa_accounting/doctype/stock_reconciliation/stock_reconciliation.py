@@ -9,6 +9,9 @@ from frappe.utils import add_days, add_months, flt, getdate
 
 class StockReconciliation(Document):
 	def validate(self):
+		if self.is_new() and self.amended_from and self.meta.has_field("workflow_state"):
+			self.workflow_state = None
+
 		if not self.items:
 			frappe.throw(_("Add at least one stock reconciliation item."), title=_("Stock Reconciliation"))
 		for row in self.items:

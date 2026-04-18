@@ -9,6 +9,19 @@ from frappe.utils import flt
 
 class PurchaseOrder(Document):
 	def validate(self):
+		if self.get("purchase_request"):
+			pr = frappe.db.get_value(
+				"Purchase Request",
+				self.purchase_request,
+				["company", "docstatus"],
+				as_dict=True,
+			)
+			if not pr:
+				frappe.throw(_("Invalid Purchase Request."), title=_("Purchase Request"))
+			if pr.company and self.company and pr.company != self.company:
+				frappe.throw(_("Purchase Request must belong to the same company."), title=_("Purchase Request"))
+			if pr.docstatus != 1:
+				frappe.throw(_("Purchase Request must be submitted."), title=_("Purchase Request"))
 		if not self.items:
 			frappe.throw(_("Purchase Order requires at least one item."), title=_("Items"))
 		total_qty = 0

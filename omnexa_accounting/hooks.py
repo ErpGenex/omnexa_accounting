@@ -153,6 +153,9 @@ permission_query_conditions = {
 # 	}
 # }
 doc_events = {
+	"Purchase Order": {
+		"on_submit": "omnexa_accounting.automation.sop_hooks.on_purchase_order_submit",
+	},
 	"Sales Invoice": {
 		"before_validate": "omnexa_accounting.permissions.populate_company_branch_from_user_context",
 		"validate": "omnexa_accounting.permissions.enforce_branch_access_for_doc",

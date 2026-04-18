@@ -5,11 +5,14 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
+  "header_section",
   "company",
   "branch",
+  "column_break_header_1",
   "supplier",
   "posting_date",
   "due_date",
+  "column_break_header_2",
   "po_reference",
   "goods_receipt_reference",
   "return_section",
@@ -29,7 +32,8 @@
   "base_net_total",
   "base_tax_total",
   "base_grand_total",
-  "amended_from"
+  "amended_from",
+  "workflow_state"
  ],
  "fields": [
   {
@@ -37,14 +41,26 @@
    "fieldtype": "Link",
    "in_list_view": 1,
    "label": "Company",
-   "options": "Company",
-   "reqd": 1
+   "options": "Company"
   },
   {
    "fieldname": "branch",
    "fieldtype": "Link",
    "label": "Branch",
    "options": "Branch"
+  },
+  {
+   "fieldname": "header_section",
+   "fieldtype": "Section Break",
+   "label": "Transaction"
+  },
+  {
+   "fieldname": "column_break_header_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_header_2",
+   "fieldtype": "Column Break"
   },
   {
    "fieldname": "supplier",
@@ -70,14 +86,14 @@
   {
    "fieldname": "po_reference",
    "fieldtype": "Link",
-   "label": "PO Reference"
-   ,"options": "Purchase Order"
+   "label": "PO Reference",
+   "options": "Purchase Order"
   },
   {
    "fieldname": "goods_receipt_reference",
    "fieldtype": "Link",
-   "label": "Goods Receipt Reference"
-   ,"options": "Purchase Receipt"
+   "label": "Goods Receipt Reference",
+   "options": "Purchase Receipt"
   },
   {
    "fieldname": "return_section",
@@ -194,13 +210,24 @@
    "print_hide": 1,
    "read_only": 1,
    "search_index": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "workflow_state",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Workflow State",
+   "no_copy": 1,
+   "options": "Workflow State",
+   "print_hide": 1,
+   "read_only": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-04-14 22:00:00",
+ "modified": "2026-04-17 12:00:00",
  "modified_by": "Administrator",
  "module": "Omnexa Accounting",
  "name": "Purchase Invoice",

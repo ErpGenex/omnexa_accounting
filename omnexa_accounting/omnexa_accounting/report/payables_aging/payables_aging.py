@@ -1,0 +1,59 @@
+# Copyright (c) 2026, Omnexa and contributors
+# License: MIT. See license.txt
+
+import frappe
+from frappe import _
+from frappe.utils import flt, getdate
+
+
+def execute(filters=None):
+	filters = frappe._dict(filters or {})
+	if not filters.get("company"):
+		frappe.throw(_("Company is required."), title=_("Filters"))
+	as_of = getdate(filters.get("as_of_date") or frappe.utils.today())
+
+	params = {"company": filters.company, "as_of": as_of}
+
+	data = frappe.db.sql(
+		"""
+		SELECT
+			t.supplier,
+			t.aging_bucket,
+			SUM(t.outstanding_amount) AS outstanding
+		FROM (
+			SELECT
+				pi.supplier,
+				pi.outstanding_amount,
+				CASE
+					WHEN DATEDIFF(%(as_of)s, IFNULL(pi.due_date, pi.posting_date)) <= 0 THEN 'Current'
+					WHEN DATEDIFF(%(as_of)s, IFNULL(pi.due_date, pi.posting_date)) BETWEEN 1 AND 30 THEN '1-30 days'
+					WHEN DATEDIFF(%(as_of)s, IFNULL(pi.due_date, pi.posting_date)) BETWEEN 31 AND 60 THEN '31-60 days'
+					WHEN DATEDIFF(%(as_of)s, IFNULL(pi.due_date, pi.posting_date)) BETWEEN 61 AND 90 THEN '61-90 days'
+					ELSE '90+ days'
+				END AS aging_bucket
+			FROM `tabPurchase Invoice` pi
+			WHERE pi.docstatus = 1
+			  AND pi.company = %(company)s
+			  AND IFNULL(pi.is_return, 0) = 0
+			  AND pi.posting_date <= %(as_of)s
+			  AND pi.outstanding_amount > 0.0001
+		) t
+		GROUP BY t.supplier, t.aging_bucket
+		ORDER BY t.supplier, t.aging_bucket
+		""",
+		params,
+		as_dict=True,
+	)
+
+	for row in data:
+		row["outstanding"] = flt(row.get("outstanding"), 2)
+
+	columns = [
+		{"label": _("Supplier"), "fieldname": "supplier", "fieldtype": "Link", "options": "Supplier", "width": 200},
+		{"label": _("Aging bucket"), "fieldname": "aging_bucket", "fieldtype": "Data", "width": 120},
+		{"label": _("Outstanding"), "fieldname": "outstanding", "fieldtype": "Currency", "width": 140},
+	]
+
+	message = _("Aging from due date, or posting date if due date is empty. Unpaid supplier invoices only.")
+
+	return columns, data, message, None, None, False

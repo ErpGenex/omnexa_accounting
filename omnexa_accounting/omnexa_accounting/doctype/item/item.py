@@ -9,6 +9,7 @@ from frappe.model.document import Document
 class Item(Document):
 	def validate(self):
 		self._sync_product_type_logic()
+		self._validate_inventory_control_gl()
 		existing = frappe.db.get_value(
 			"Item",
 			{"company": self.company, "item_code": self.item_code},
@@ -24,6 +25,8 @@ class Item(Document):
 			self.is_purchase_item = 0 if self.is_purchase_item is None else self.is_purchase_item
 			self.can_be_manufactured = 0
 			self.manufacturing_role = "Service"
+			self.has_batch_no = 0
+			self.inventory_control_account = None
 		elif product_type == "Raw Material":
 			self.is_stock_item = 1
 			self.is_purchase_item = 1
@@ -43,3 +46,12 @@ class Item(Document):
 		else:
 			if not self.manufacturing_role or self.manufacturing_role == "Service":
 				self.manufacturing_role = "Finished Good"
+
+	def _validate_inventory_control_gl(self):
+		if not self.inventory_control_account:
+			return
+		gl_co = frappe.db.get_value("GL Account", self.inventory_control_account, "company")
+		if self.company and gl_co and gl_co != self.company:
+			frappe.throw(_("Inventory Control GL must belong to the same company."), title=_("Item"))
+		if frappe.db.get_value("GL Account", self.inventory_control_account, "is_group"):
+			frappe.throw(_("Inventory Control GL must be a leaf account."), title=_("Item"))

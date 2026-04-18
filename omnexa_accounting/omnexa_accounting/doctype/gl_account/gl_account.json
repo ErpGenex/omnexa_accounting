@@ -12,6 +12,10 @@
   "company",
   "is_group",
   "account_type",
+  "pl_bucket",
+  "cash_flow_section",
+  "working_capital_bucket",
+  "is_stock_valuation",
   "parent_account",
   "lft",
   "rgt",
@@ -37,8 +41,7 @@
    "fieldtype": "Link",
    "in_list_view": 1,
    "label": "Company",
-   "options": "Company",
-   "reqd": 1
+   "options": "Company"
   },
   {
    "default": "0",
@@ -51,6 +54,35 @@
    "fieldtype": "Select",
    "label": "Account Type",
    "options": "\nAsset\nLiability\nEquity\nIncome\nExpense"
+  },
+  {
+   "depends_on": "eval:doc.account_type==\"Income\" || doc.account_type==\"Expense\"",
+   "description": "Used by Financial KPI Summary: Revenue vs COGS vs operating split. Empty defaults to Revenue (Income) or Operating Expense (Expense).",
+   "fieldname": "pl_bucket",
+   "fieldtype": "Select",
+   "label": "P&L Bucket",
+   "options": "\nRevenue\nOther Income\nCOGS\nOperating Expense\nOther Expense"
+  },
+  {
+   "description": "Used by Cash Flow Statement (Structured): classify Journal Entry cash movements that hit Bank GL accounts. Payment Entry flows default to Operating.",
+   "fieldname": "cash_flow_section",
+   "fieldtype": "Select",
+   "label": "Cash Flow Section",
+   "options": "\nExclude\nOperating Activities\nInvesting Activities\nFinancing Activities"
+  },
+  {
+   "description": "For Cash Flow Statement (Indirect): map balance-sheet accounts to working-capital lines (trade receivables / payables / inventory).",
+   "fieldname": "working_capital_bucket",
+   "fieldtype": "Select",
+   "label": "Working Capital Bucket",
+   "options": "\nExclude\nTrade Receivables\nTrade Payables\nInventory\nOther Working Capital"
+  },
+  {
+   "default": "0",
+   "description": "Mark leaf inventory GL used for aggregate stock valuation / allocation in Inventory Valuation (GL) report.",
+   "fieldname": "is_stock_valuation",
+   "fieldtype": "Check",
+   "label": "Stock Valuation GL"
   },
   {
    "fieldname": "parent_account",
@@ -85,7 +117,7 @@
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-04-12 23:00:00",
+ "modified": "2026-04-17 23:00:00",
  "modified_by": "Administrator",
  "module": "Omnexa Accounting",
  "name": "GL Account",

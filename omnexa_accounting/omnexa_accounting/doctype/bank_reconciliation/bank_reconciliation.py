@@ -10,10 +10,15 @@ from omnexa_accounting.utils.branch import validate_branch_company
 
 
 class BankReconciliation(Document):
+	def before_insert(self):
+		if not self.get("workflow_state"):
+			self.workflow_state = "Omnexa Bank Rec Draft"
+
 	def validate(self):
 		validate_branch_company(self)
 		self._validate_bank_account_company()
 		self._recompute_balances()
+		self._sync_workflow_to_status()
 		self._validate_status_consistency()
 
 	def _validate_bank_account_company(self):
@@ -34,15 +39,20 @@ class BankReconciliation(Document):
 		self.closing_balance_statement = statement_closing
 		self.difference_amount = flt(book_closing - statement_closing)
 
+	def _sync_workflow_to_status(self):
+		ws = (self.workflow_state or "").strip()
+		if ws == "Omnexa Bank Rec Closed":
+			if abs(flt(self.difference_amount)) > 0.0001:
+				frappe.throw(
+					_("Workflow cannot move to Closed while bank difference is not zero."),
+					title=_("Reconciliation"),
+				)
+			self.status = "Reconciled"
+
 	def _validate_status_consistency(self):
 		has_difference = abs(flt(self.difference_amount)) > 0.0001
 		if has_difference and self.status == "Reconciled":
 			frappe.throw(
 				_("Status cannot be Reconciled while difference amount is not zero."),
-				title=_("Reconciliation"),
-			)
-		if not has_difference and self.status == "Open":
-			frappe.throw(
-				_("Status cannot remain Open when difference amount is zero."),
 				title=_("Reconciliation"),
 			)

@@ -1363,8 +1363,9 @@ class TestOmnexaAccounting(FrappeTestCase):
 		frappe.db.set_value("Company", eta_company, "company_signing_profile", company_sign, update_modified=False)
 
 		branch = self._create_branch(eta_company, "ETA1", "ETA Branch")
-		branch_tax = self._create_tax_authority_profile(eta_company, "br")
-		branch_sign = self._create_signing_profile(eta_company, "br")
+		# Tax Authority Profile is one-per-company (omnexa_einvoice); branch reuses company profiles to assert branch path.
+		branch_tax = company_tax
+		branch_sign = company_sign
 		frappe.db.set_value("Branch", branch, "eta_einvoice_enabled", 1, update_modified=False)
 		frappe.db.set_value("Branch", branch, "tax_authority_profile", branch_tax, update_modified=False)
 		frappe.db.set_value("Branch", branch, "signing_profile", branch_sign, update_modified=False)

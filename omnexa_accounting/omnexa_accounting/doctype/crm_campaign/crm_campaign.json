@@ -21,19 +21,83 @@
   "notes"
  ],
  "fields": [
-  {"fieldname": "company", "fieldtype": "Link", "in_list_view": 1, "label": "Company", "options": "Company", "reqd": 1},
-  {"fieldname": "campaign_name", "fieldtype": "Data", "in_list_view": 1, "label": "Campaign Name", "reqd": 1},
-  {"fieldname": "channel", "fieldtype": "Select", "in_list_view": 1, "label": "Channel", "options": "Email\nSMS\nWhatsApp\nSocial\nAds\nReferral\nEvent\nOther"},
-  {"default": "Planned", "fieldname": "status", "fieldtype": "Select", "in_list_view": 1, "label": "Status", "options": "Planned\nActive\nPaused\nCompleted\nCancelled", "reqd": 1},
-  {"fieldname": "start_date", "fieldtype": "Date", "label": "Start Date"},
-  {"fieldname": "end_date", "fieldtype": "Date", "label": "End Date"},
-  {"default": "0", "fieldname": "budget", "fieldtype": "Currency", "label": "Budget"},
-  {"fieldname": "currency", "fieldtype": "Link", "label": "Currency", "options": "Currency"},
-  {"fieldname": "utm_source", "fieldtype": "Data", "label": "UTM Source"},
-  {"fieldname": "utm_medium", "fieldtype": "Data", "label": "UTM Medium"},
-  {"fieldname": "utm_campaign", "fieldtype": "Data", "label": "UTM Campaign"},
-  {"fieldname": "utm_content", "fieldtype": "Data", "label": "UTM Content"},
-  {"fieldname": "notes", "fieldtype": "Small Text", "label": "Notes"}
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Company",
+   "options": "Company"
+  },
+  {
+   "fieldname": "campaign_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Campaign Name",
+   "reqd": 1
+  },
+  {
+   "fieldname": "channel",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Channel",
+   "options": "Email\nSMS\nWhatsApp\nSocial\nAds\nReferral\nEvent\nOther"
+  },
+  {
+   "default": "Planned",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Status",
+   "options": "Planned\nActive\nPaused\nCompleted\nCancelled",
+   "reqd": 1
+  },
+  {
+   "fieldname": "start_date",
+   "fieldtype": "Date",
+   "label": "Start Date"
+  },
+  {
+   "fieldname": "end_date",
+   "fieldtype": "Date",
+   "label": "End Date"
+  },
+  {
+   "default": "0",
+   "fieldname": "budget",
+   "fieldtype": "Currency",
+   "label": "Budget"
+  },
+  {
+   "fieldname": "currency",
+   "fieldtype": "Link",
+   "label": "Currency",
+   "options": "Currency"
+  },
+  {
+   "fieldname": "utm_source",
+   "fieldtype": "Data",
+   "label": "UTM Source"
+  },
+  {
+   "fieldname": "utm_medium",
+   "fieldtype": "Data",
+   "label": "UTM Medium"
+  },
+  {
+   "fieldname": "utm_campaign",
+   "fieldtype": "Data",
+   "label": "UTM Campaign"
+  },
+  {
+   "fieldname": "utm_content",
+   "fieldtype": "Data",
+   "label": "UTM Content"
+  },
+  {
+   "fieldname": "notes",
+   "fieldtype": "Small Text",
+   "label": "Notes"
+  }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
@@ -46,9 +110,42 @@
  "naming_rule": "Random",
  "owner": "Administrator",
  "permissions": [
-  {"create": 1, "delete": 1, "email": 1, "export": 1, "print": 1, "read": 1, "report": 1, "role": "System Manager", "share": 1, "write": 1},
-  {"create": 1, "delete": 0, "email": 1, "export": 1, "print": 1, "read": 1, "report": 1, "role": "Accounts Manager", "share": 0, "write": 1},
-  {"create": 1, "delete": 0, "email": 0, "export": 0, "print": 1, "read": 1, "report": 1, "role": "Accounts User", "share": 0, "write": 1}
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 0,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Accounts Manager",
+   "share": 0,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 0,
+   "email": 0,
+   "export": 0,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Accounts User",
+   "share": 0,
+   "write": 1
+  }
  ],
  "row_format": "Dynamic",
  "sort_field": "modified",

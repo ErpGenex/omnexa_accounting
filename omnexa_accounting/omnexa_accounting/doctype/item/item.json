@@ -21,6 +21,8 @@
   "last_stock_reconciliation_date",
   "is_sales_item",
   "is_purchase_item",
+  "has_batch_no",
+  "inventory_control_account",
   "disabled"
  ],
  "fields": [
@@ -75,8 +77,7 @@
    "fieldtype": "Link",
    "in_list_view": 1,
    "label": "Company",
-   "options": "Company",
-   "reqd": 1
+   "options": "Company"
   },
   {
    "fieldname": "stock_uom",
@@ -119,6 +120,20 @@
    "fieldname": "is_purchase_item",
    "fieldtype": "Check",
    "label": "Is Purchase Item"
+  },
+  {
+   "default": "0",
+   "description": "When enabled, stock voucher lines should carry batch / serial identifiers (see Stock Entry, Receipt, Delivery).",
+   "fieldname": "has_batch_no",
+   "fieldtype": "Check",
+   "label": "Track Batch / Serial"
+  },
+  {
+   "description": "Optional leaf Asset GL used to allocate consolidated inventory value across items in Inventory Valuation (GL).",
+   "fieldname": "inventory_control_account",
+   "fieldtype": "Link",
+   "label": "Inventory Control GL",
+   "options": "GL Account"
   },
   {
    "default": "0",

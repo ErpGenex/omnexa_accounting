@@ -7,6 +7,8 @@
  "field_order": [
   "item_code",
   "qty",
+  "batch_no",
+  "serial_no",
   "rate",
   "amount"
  ],
@@ -24,6 +26,16 @@
    "in_list_view": 1,
    "label": "Qty",
    "reqd": 1
+  },
+  {
+   "fieldname": "batch_no",
+   "fieldtype": "Data",
+   "label": "Batch No."
+  },
+  {
+   "fieldname": "serial_no",
+   "fieldtype": "Data",
+   "label": "Serial No."
   },
   {
    "fieldname": "rate",

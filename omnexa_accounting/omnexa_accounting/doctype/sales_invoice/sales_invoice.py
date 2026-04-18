@@ -23,6 +23,11 @@ from omnexa_accounting.utils.posting import assert_posting_date_open
 
 class SalesInvoice(Document):
 	def validate(self):
+		# Amend copies may carry cancelled workflow state; reset so Frappe workflow can start from draft.
+		if self.is_new() and self.amended_from and self.meta.has_field("workflow_state"):
+			self.workflow_state = None
+
+		self._validate_sales_chain_refs()
 		self._apply_due_date_from_party()
 		self._validate_customer_company()
 		validate_branch_company(self)
@@ -35,6 +40,64 @@ class SalesInvoice(Document):
 		self._validate_tax_rules()
 		self._validate_item_cost_centers()
 		self._set_outstanding_amount()
+
+	def _validate_sales_chain_refs(self):
+		"""Optional links to quotation / order / delivery must match party and company."""
+		if self.delivery_note and not self.sales_order:
+			self.sales_order = frappe.db.get_value("Delivery Note", self.delivery_note, "sales_order")
+		if self.sales_quotation:
+			sq = frappe.db.get_value(
+				"Sales Quotation",
+				self.sales_quotation,
+				["company", "customer", "docstatus"],
+				as_dict=True,
+			)
+			if not sq:
+				frappe.throw(_("Sales Quotation does not exist."), title=_("Sales chain"))
+			if sq.company != self.company or sq.customer != self.customer:
+				frappe.throw(
+					_("Sales Quotation customer/company must match this invoice."),
+					title=_("Sales chain"),
+				)
+			if sq.docstatus != 1:
+				frappe.throw(_("Sales Quotation must be submitted."), title=_("Sales chain"))
+		if self.sales_order:
+			so = frappe.db.get_value(
+				"Sales Order",
+				self.sales_order,
+				["company", "customer", "docstatus"],
+				as_dict=True,
+			)
+			if not so:
+				frappe.throw(_("Sales Order does not exist."), title=_("Sales chain"))
+			if so.company != self.company or so.customer != self.customer:
+				frappe.throw(
+					_("Sales Order customer/company must match this invoice."),
+					title=_("Sales chain"),
+				)
+			if so.docstatus != 1:
+				frappe.throw(_("Sales Order must be submitted."), title=_("Sales chain"))
+		if self.delivery_note:
+			dn = frappe.db.get_value(
+				"Delivery Note",
+				self.delivery_note,
+				["company", "customer", "docstatus", "sales_order"],
+				as_dict=True,
+			)
+			if not dn:
+				frappe.throw(_("Delivery Note does not exist."), title=_("Sales chain"))
+			if dn.company != self.company or dn.customer != self.customer:
+				frappe.throw(
+					_("Delivery Note customer/company must match this invoice."),
+					title=_("Sales chain"),
+				)
+			if dn.docstatus != 1:
+				frappe.throw(_("Delivery Note must be submitted."), title=_("Sales chain"))
+			if self.sales_order and dn.sales_order != self.sales_order:
+				frappe.throw(
+					_("Delivery Note must belong to the same Sales Order linked on this invoice."),
+					title=_("Sales chain"),
+				)
 
 	def _apply_due_date_from_party(self):
 		if self.due_date or self.is_return or not self.customer:
