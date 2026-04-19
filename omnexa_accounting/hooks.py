@@ -156,13 +156,26 @@ doc_events = {
 	"Purchase Order": {
 		"on_submit": "omnexa_accounting.automation.sop_hooks.on_purchase_order_submit",
 	},
+	"Sales Quotation": {
+		"before_validate": "omnexa_accounting.permissions.populate_company_branch_from_user_context",
+		"validate": [
+			"omnexa_accounting.permissions.enforce_branch_access_for_doc",
+			"omnexa_accounting.utils.global_erp_strict_validations.validate_sales_quotation",
+		],
+	},
 	"Sales Invoice": {
 		"before_validate": "omnexa_accounting.permissions.populate_company_branch_from_user_context",
-		"validate": "omnexa_accounting.permissions.enforce_branch_access_for_doc",
+		"validate": [
+			"omnexa_accounting.permissions.enforce_branch_access_for_doc",
+			"omnexa_accounting.utils.global_erp_strict_validations.validate_sales_invoice",
+		],
 	},
 	"Purchase Invoice": {
 		"before_validate": "omnexa_accounting.permissions.populate_company_branch_from_user_context",
-		"validate": "omnexa_accounting.permissions.enforce_branch_access_for_doc",
+		"validate": [
+			"omnexa_accounting.permissions.enforce_branch_access_for_doc",
+			"omnexa_accounting.utils.global_erp_strict_validations.validate_purchase_invoice",
+		],
 	},
 	"Payment Entry": {
 		"before_validate": "omnexa_accounting.permissions.populate_company_branch_from_user_context",

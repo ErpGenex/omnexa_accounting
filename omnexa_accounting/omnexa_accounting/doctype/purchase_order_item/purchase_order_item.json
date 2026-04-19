@@ -5,6 +5,7 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
+  "item",
   "item_code",
   "qty",
   "rate",
@@ -12,13 +13,21 @@
  ],
  "fields": [
   {
-   "fieldname": "item_code",
-   "fieldtype": "Data",
+   "fieldname": "item",
+   "fieldtype": "Link",
    "in_list_view": 1,
-   "label": "Item Code",
-   "reqd": 1
+   "label": "Item",
+   "options": "Item"
   },
   {
+   "fieldname": "item_code",
+   "fieldtype": "Data",
+   "description": "Required if Item is not set",
+   "in_list_view": 1,
+   "label": "Item Code"
+  },
+  {
+   "default": "1",
    "fieldname": "qty",
    "fieldtype": "Float",
    "in_list_view": 1,
@@ -42,7 +51,7 @@
  ],
  "istable": 1,
  "links": [],
- "modified": "2026-04-15 12:00:00",
+ "modified": "2026-04-19 12:00:00",
  "modified_by": "Administrator",
  "module": "Omnexa Accounting",
  "name": "Purchase Order Item",
