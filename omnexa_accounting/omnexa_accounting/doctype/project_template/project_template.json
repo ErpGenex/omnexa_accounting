@@ -6,14 +6,22 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
+  "identity_section",
   "template_name",
   "company",
   "customer",
   "default_income_account",
   "default_billing_rate",
-  "tasks"
+  "tasks",
+  "control_section",
+  "owner_user"
  ],
  "fields": [
+  {
+   "fieldname": "identity_section",
+   "fieldtype": "Section Break",
+   "label": "Identity"
+  },
   {
    "fieldname": "template_name",
    "fieldtype": "Data",
@@ -52,6 +60,17 @@
    "fieldtype": "Table",
    "label": "Task Templates",
    "options": "Project Task Template"
+  },
+  {
+   "fieldname": "control_section",
+   "fieldtype": "Section Break",
+   "label": "Control"
+  },
+  {
+   "fieldname": "owner_user",
+   "fieldtype": "Link",
+   "label": "Owner",
+   "options": "User"
   }
  ],
  "grid_page_length": 50,

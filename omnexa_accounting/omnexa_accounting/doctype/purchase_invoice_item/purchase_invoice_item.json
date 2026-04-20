@@ -5,6 +5,7 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
+  "identity_section",
   "item",
   "item_code",
   "qty",
@@ -14,9 +15,16 @@
   "landed_rate",
   "tax_rule",
   "expense_account",
-  "cost_center"
+  "cost_center",
+  "control_section",
+  "external_reference"
  ],
  "fields": [
+  {
+   "fieldname": "identity_section",
+   "fieldtype": "Section Break",
+   "label": "Transaction Core"
+  },
   {
    "fieldname": "item",
    "fieldtype": "Link",
@@ -82,6 +90,16 @@
    "fieldtype": "Link",
    "label": "Cost Center",
    "options": "Cost Center"
+  },
+  {
+   "fieldname": "control_section",
+   "fieldtype": "Section Break",
+   "label": "Control"
+  },
+  {
+   "fieldname": "external_reference",
+   "fieldtype": "Data",
+   "label": "External Reference"
   }
  ],
  "istable": 1,

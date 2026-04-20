@@ -6,12 +6,20 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
+  "identity_section",
   "policy_name",
   "company",
   "annual_leave_days",
-  "is_active"
+  "is_active",
+  "control_section",
+  "policy_reference"
  ],
  "fields": [
+  {
+   "fieldname": "identity_section",
+   "fieldtype": "Section Break",
+   "label": "Governance Identity"
+  },
   {
    "fieldname": "policy_name",
    "fieldtype": "Data",
@@ -38,6 +46,16 @@
    "fieldname": "is_active",
    "fieldtype": "Check",
    "label": "Is Active"
+  },
+  {
+   "fieldname": "control_section",
+   "fieldtype": "Section Break",
+   "label": "Governance"
+  },
+  {
+   "fieldname": "policy_reference",
+   "fieldtype": "Data",
+   "label": "Policy Reference"
   }
  ],
  "grid_page_length": 50,

@@ -7,6 +7,7 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
+  "identity_section",
   "account_number",
   "account_name",
   "company",
@@ -22,9 +23,16 @@
   "parent_account",
   "lft",
   "rgt",
-  "old_parent"
+  "old_parent",
+  "control_section",
+  "external_reference"
  ],
  "fields": [
+  {
+   "fieldname": "identity_section",
+   "fieldtype": "Section Break",
+   "label": "Identity"
+  },
   {
    "fieldname": "account_number",
    "fieldtype": "Data",
@@ -130,6 +138,16 @@
    "label": "Old Parent",
    "options": "GL Account",
    "read_only": 1
+  },
+  {
+   "fieldname": "control_section",
+   "fieldtype": "Section Break",
+   "label": "Control"
+  },
+  {
+   "fieldname": "external_reference",
+   "fieldtype": "Data",
+   "label": "External Reference"
   }
  ],
  "is_tree": 1,

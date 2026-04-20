@@ -6,6 +6,7 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
+  "identity_section",
   "company",
   "opportunity_name",
   "pipeline_lead",
@@ -14,9 +15,16 @@
   "amount",
   "probability",
   "next_follow_up_date",
-  "closing_date"
+  "closing_date",
+  "control_section",
+  "owner_user"
  ],
  "fields": [
+  {
+   "fieldname": "identity_section",
+   "fieldtype": "Section Break",
+   "label": "Identity"
+  },
   {
    "fieldname": "company",
    "fieldtype": "Link",
@@ -75,6 +83,17 @@
    "fieldname": "closing_date",
    "fieldtype": "Date",
    "label": "Closing Date"
+  },
+  {
+   "fieldname": "control_section",
+   "fieldtype": "Section Break",
+   "label": "Control"
+  },
+  {
+   "fieldname": "owner_user",
+   "fieldtype": "Link",
+   "label": "Owner",
+   "options": "User"
   }
  ],
  "grid_page_length": 50,

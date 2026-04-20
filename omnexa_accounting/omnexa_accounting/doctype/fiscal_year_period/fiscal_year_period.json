@@ -5,12 +5,20 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
+  "identity_section",
   "period_name",
   "period_start_date",
   "period_end_date",
-  "frozen"
+  "frozen",
+  "control_section",
+  "policy_reference"
  ],
  "fields": [
+  {
+   "fieldname": "identity_section",
+   "fieldtype": "Section Break",
+   "label": "Governance Identity"
+  },
   {
    "fieldname": "period_name",
    "fieldtype": "Data",
@@ -38,6 +46,16 @@
    "fieldtype": "Check",
    "in_list_view": 1,
    "label": "Frozen"
+  },
+  {
+   "fieldname": "control_section",
+   "fieldtype": "Section Break",
+   "label": "Governance"
+  },
+  {
+   "fieldname": "policy_reference",
+   "fieldtype": "Data",
+   "label": "Policy Reference"
   }
  ],
  "istable": 1,

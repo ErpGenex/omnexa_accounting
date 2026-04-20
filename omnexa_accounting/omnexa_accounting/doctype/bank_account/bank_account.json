@@ -6,6 +6,7 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
+  "identity_section",
   "account_title",
   "company",
   "bank_name",
@@ -13,9 +14,16 @@
   "account_number",
   "iban",
   "gl_account",
-  "currency"
+  "currency",
+  "control_section",
+  "external_reference"
  ],
  "fields": [
+  {
+   "fieldname": "identity_section",
+   "fieldtype": "Section Break",
+   "label": "Profile Identity"
+  },
   {
    "fieldname": "account_title",
    "fieldtype": "Data",
@@ -62,6 +70,16 @@
    "fieldtype": "Link",
    "label": "Currency",
    "options": "Currency"
+  },
+  {
+   "fieldname": "control_section",
+   "fieldtype": "Section Break",
+   "label": "Compliance"
+  },
+  {
+   "fieldname": "external_reference",
+   "fieldtype": "Data",
+   "label": "External Reference"
   }
  ],
  "grid_page_length": 50,

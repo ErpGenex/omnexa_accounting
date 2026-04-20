@@ -5,11 +5,19 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
+  "identity_section",
   "task_title",
   "estimated_hours",
-  "is_billable"
+  "is_billable",
+  "control_section",
+  "owner_user"
  ],
  "fields": [
+  {
+   "fieldname": "identity_section",
+   "fieldtype": "Section Break",
+   "label": "Identity"
+  },
   {
    "fieldname": "task_title",
    "fieldtype": "Data",
@@ -30,6 +38,17 @@
    "fieldtype": "Check",
    "in_list_view": 1,
    "label": "Is Billable"
+  },
+  {
+   "fieldname": "control_section",
+   "fieldtype": "Section Break",
+   "label": "Control"
+  },
+  {
+   "fieldname": "owner_user",
+   "fieldtype": "Link",
+   "label": "Owner",
+   "options": "User"
   }
  ],
  "istable": 1,

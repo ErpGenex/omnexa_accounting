@@ -6,6 +6,7 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
+  "identity_section",
   "company",
   "branch",
   "bank_account",
@@ -18,9 +19,16 @@
   "difference_amount",
   "status",
   "workflow_state",
-  "notes"
+  "notes",
+  "control_section",
+  "external_reference"
  ],
  "fields": [
+  {
+   "fieldname": "identity_section",
+   "fieldtype": "Section Break",
+   "label": "Transaction Core"
+  },
   {
    "fieldname": "company",
    "fieldtype": "Link",
@@ -111,6 +119,16 @@
    "fieldname": "notes",
    "fieldtype": "Small Text",
    "label": "Notes"
+  },
+  {
+   "fieldname": "control_section",
+   "fieldtype": "Section Break",
+   "label": "Control"
+  },
+  {
+   "fieldname": "external_reference",
+   "fieldtype": "Data",
+   "label": "External Reference"
   }
  ],
  "grid_page_length": 50,

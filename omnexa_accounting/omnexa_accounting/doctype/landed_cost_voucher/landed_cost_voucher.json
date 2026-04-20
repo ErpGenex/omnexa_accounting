@@ -5,14 +5,22 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
+  "identity_section",
   "company",
   "purchase_invoice",
   "posting_date",
   "charges",
   "total_charges",
-  "remarks"
+  "remarks",
+  "control_section",
+  "external_reference"
  ],
  "fields": [
+  {
+   "fieldname": "identity_section",
+   "fieldtype": "Section Break",
+   "label": "Transaction Core"
+  },
   {
    "fieldname": "company",
    "fieldtype": "Link",
@@ -54,6 +62,16 @@
    "fieldname": "remarks",
    "fieldtype": "Small Text",
    "label": "Remarks"
+  },
+  {
+   "fieldname": "control_section",
+   "fieldtype": "Section Break",
+   "label": "Control"
+  },
+  {
+   "fieldname": "external_reference",
+   "fieldtype": "Data",
+   "label": "External Reference"
   }
  ],
  "grid_page_length": 50,

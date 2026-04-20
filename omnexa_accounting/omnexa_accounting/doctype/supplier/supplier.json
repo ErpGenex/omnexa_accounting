@@ -6,6 +6,7 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
+  "identity_section",
   "supplier_name",
   "company",
   "status",
@@ -15,9 +16,16 @@
   "email",
   "phone",
   "country",
-  "address_line"
+  "address_line",
+  "control_section",
+  "external_reference"
  ],
  "fields": [
+  {
+   "fieldname": "identity_section",
+   "fieldtype": "Section Break",
+   "label": "Profile Identity"
+  },
   {
    "fieldname": "supplier_name",
    "fieldtype": "Data",
@@ -44,7 +52,7 @@
    "fieldname": "payment_terms",
    "fieldtype": "Data",
    "label": "Payment Terms",
-   "description": "e.g. Net 45 — if Credit Days is 0, \"Net N\" here sets default bill due date"
+   "description": "e.g. Net 45 \u2014 if Credit Days is 0, \"Net N\" here sets default bill due date"
   },
   {
    "default": "0",
@@ -79,6 +87,16 @@
    "fieldname": "address_line",
    "fieldtype": "Small Text",
    "label": "Address"
+  },
+  {
+   "fieldname": "control_section",
+   "fieldtype": "Section Break",
+   "label": "Compliance"
+  },
+  {
+   "fieldname": "external_reference",
+   "fieldtype": "Data",
+   "label": "External Reference"
   }
  ],
  "grid_page_length": 50,

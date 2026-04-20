@@ -5,15 +5,23 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
+  "identity_section",
   "company",
   "reconciliation_date",
   "cadence",
   "next_reconciliation_date",
   "items",
   "amended_from",
-  "workflow_state"
+  "workflow_state",
+  "control_section",
+  "external_reference"
  ],
  "fields": [
+  {
+   "fieldname": "identity_section",
+   "fieldtype": "Section Break",
+   "label": "Transaction Core"
+  },
   {
    "fieldname": "company",
    "fieldtype": "Link",
@@ -72,6 +80,16 @@
    "options": "Workflow State",
    "print_hide": 1,
    "read_only": 1
+  },
+  {
+   "fieldname": "control_section",
+   "fieldtype": "Section Break",
+   "label": "Control"
+  },
+  {
+   "fieldname": "external_reference",
+   "fieldtype": "Data",
+   "label": "External Reference"
   }
  ],
  "grid_page_length": 50,

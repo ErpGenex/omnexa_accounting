@@ -5,12 +5,20 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
+  "identity_section",
   "gl_account",
   "cost_center",
   "period_month",
-  "budget_amount"
+  "budget_amount",
+  "control_section",
+  "policy_reference"
  ],
  "fields": [
+  {
+   "fieldname": "identity_section",
+   "fieldtype": "Section Break",
+   "label": "Governance Identity"
+  },
   {
    "fieldname": "gl_account",
    "fieldtype": "Link",
@@ -27,7 +35,7 @@
    "options": "Cost Center"
   },
   {
-   "description": "If set, this line budget applies only to that calendar month (posting_date) and must fall inside the Budget From–To range.",
+   "description": "If set, this line budget applies only to that calendar month (posting_date) and must fall inside the Budget From\u2013To range.",
    "fieldname": "period_month",
    "fieldtype": "Date",
    "in_list_view": 1,
@@ -39,6 +47,16 @@
    "in_list_view": 1,
    "label": "Budget Amount",
    "reqd": 1
+  },
+  {
+   "fieldname": "control_section",
+   "fieldtype": "Section Break",
+   "label": "Governance"
+  },
+  {
+   "fieldname": "policy_reference",
+   "fieldtype": "Data",
+   "label": "Policy Reference"
   }
  ],
  "istable": 1,

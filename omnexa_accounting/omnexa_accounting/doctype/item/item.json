@@ -6,6 +6,7 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
+  "identity_section",
   "item_code",
   "item_name",
   "item_grouping_break",
@@ -23,9 +24,16 @@
   "is_purchase_item",
   "has_batch_no",
   "inventory_control_account",
-  "disabled"
+  "disabled",
+  "control_section",
+  "classification_code"
  ],
  "fields": [
+  {
+   "fieldname": "identity_section",
+   "fieldtype": "Section Break",
+   "label": "Profile Identity"
+  },
   {
    "fieldname": "item_code",
    "fieldtype": "Data",
@@ -140,6 +148,16 @@
    "fieldname": "disabled",
    "fieldtype": "Check",
    "label": "Disabled"
+  },
+  {
+   "fieldname": "control_section",
+   "fieldtype": "Section Break",
+   "label": "Compliance"
+  },
+  {
+   "fieldname": "classification_code",
+   "fieldtype": "Data",
+   "label": "Classification Code"
   }
  ],
  "grid_page_length": 50,

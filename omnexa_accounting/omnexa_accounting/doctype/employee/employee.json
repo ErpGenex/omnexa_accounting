@@ -6,6 +6,7 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
+  "identity_section",
   "employee_code",
   "employee_name",
   "employee_photo",
@@ -21,9 +22,16 @@
   "date_of_joining",
   "manager",
   "leave_policy",
-  "status"
+  "status",
+  "control_section",
+  "external_reference"
  ],
  "fields": [
+  {
+   "fieldname": "identity_section",
+   "fieldtype": "Section Break",
+   "label": "Profile Identity"
+  },
   {
    "fieldname": "employee_code",
    "fieldtype": "Data",
@@ -117,6 +125,16 @@
    "fieldtype": "Select",
    "label": "Status",
    "options": "Active\nOn Leave\nResigned"
+  },
+  {
+   "fieldname": "control_section",
+   "fieldtype": "Section Break",
+   "label": "Compliance"
+  },
+  {
+   "fieldname": "external_reference",
+   "fieldtype": "Data",
+   "label": "External Reference"
   }
  ],
  "grid_page_length": 50,

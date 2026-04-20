@@ -6,14 +6,22 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
+  "identity_section",
   "warehouse_name",
   "warehouse_code",
   "company",
   "is_group",
   "parent_warehouse",
-  "disabled"
+  "disabled",
+  "control_section",
+  "external_reference"
  ],
  "fields": [
+  {
+   "fieldname": "identity_section",
+   "fieldtype": "Section Break",
+   "label": "Profile Identity"
+  },
   {
    "fieldname": "warehouse_name",
    "fieldtype": "Data",
@@ -52,6 +60,16 @@
    "fieldtype": "Check",
    "label": "Disabled",
    "default": "0"
+  },
+  {
+   "fieldname": "control_section",
+   "fieldtype": "Section Break",
+   "label": "Compliance"
+  },
+  {
+   "fieldname": "external_reference",
+   "fieldtype": "Data",
+   "label": "External Reference"
   }
  ],
  "index_web_pages_for_search": 1,

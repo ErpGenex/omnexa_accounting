@@ -5,14 +5,22 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
+  "identity_section",
   "item_code",
   "qty",
   "batch_no",
   "serial_no",
   "rate",
-  "amount"
+  "amount",
+  "control_section",
+  "external_reference"
  ],
  "fields": [
+  {
+   "fieldname": "identity_section",
+   "fieldtype": "Section Break",
+   "label": "Transaction Core"
+  },
   {
    "fieldname": "item_code",
    "fieldtype": "Data",
@@ -50,6 +58,16 @@
    "in_list_view": 1,
    "label": "Amount",
    "read_only": 1
+  },
+  {
+   "fieldname": "control_section",
+   "fieldtype": "Section Break",
+   "label": "Control"
+  },
+  {
+   "fieldname": "external_reference",
+   "fieldtype": "Data",
+   "label": "External Reference"
   }
  ],
  "istable": 1,

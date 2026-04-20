@@ -6,11 +6,19 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
+  "identity_section",
   "mode_name",
   "company",
-  "type"
+  "type",
+  "control_section",
+  "external_reference"
  ],
  "fields": [
+  {
+   "fieldname": "identity_section",
+   "fieldtype": "Section Break",
+   "label": "Transaction Core"
+  },
   {
    "fieldname": "mode_name",
    "fieldtype": "Data",
@@ -32,6 +40,16 @@
    "label": "Type",
    "options": "Cash\nBank\nCard\nWire\nCheque\nOther",
    "reqd": 1
+  },
+  {
+   "fieldname": "control_section",
+   "fieldtype": "Section Break",
+   "label": "Control"
+  },
+  {
+   "fieldname": "external_reference",
+   "fieldtype": "Data",
+   "label": "External Reference"
   }
  ],
  "grid_page_length": 50,

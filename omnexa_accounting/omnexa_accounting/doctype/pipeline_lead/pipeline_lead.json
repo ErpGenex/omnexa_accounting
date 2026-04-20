@@ -6,15 +6,23 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
+  "identity_section",
   "company",
   "lead_name",
   "contact_email",
   "source",
   "stage",
   "customer",
-  "next_follow_up_date"
+  "next_follow_up_date",
+  "control_section",
+  "owner_user"
  ],
  "fields": [
+  {
+   "fieldname": "identity_section",
+   "fieldtype": "Section Break",
+   "label": "Identity"
+  },
   {
    "fieldname": "company",
    "fieldtype": "Link",
@@ -60,6 +68,17 @@
    "fieldname": "next_follow_up_date",
    "fieldtype": "Date",
    "label": "Next Follow Up Date"
+  },
+  {
+   "fieldname": "control_section",
+   "fieldtype": "Section Break",
+   "label": "Control"
+  },
+  {
+   "fieldname": "owner_user",
+   "fieldtype": "Link",
+   "label": "Owner",
+   "options": "User"
   }
  ],
  "grid_page_length": 50,

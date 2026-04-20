@@ -5,15 +5,23 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
+  "identity_section",
   "account",
   "party_type",
   "party",
   "cost_center",
   "project",
   "debit",
-  "credit"
+  "credit",
+  "control_section",
+  "external_reference"
  ],
  "fields": [
+  {
+   "fieldname": "identity_section",
+   "fieldtype": "Section Break",
+   "label": "Transaction Core"
+  },
   {
    "fieldname": "account",
    "fieldtype": "Link",
@@ -53,6 +61,16 @@
    "fieldtype": "Currency",
    "in_list_view": 1,
    "label": "Credit"
+  },
+  {
+   "fieldname": "control_section",
+   "fieldtype": "Section Break",
+   "label": "Control"
+  },
+  {
+   "fieldname": "external_reference",
+   "fieldtype": "Data",
+   "label": "External Reference"
   }
  ],
  "istable": 1,

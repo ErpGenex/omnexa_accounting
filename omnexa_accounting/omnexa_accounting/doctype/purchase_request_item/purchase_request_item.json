@@ -5,11 +5,19 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
+  "identity_section",
   "item_code",
   "qty",
-  "purpose"
+  "purpose",
+  "control_section",
+  "classification_code"
  ],
  "fields": [
+  {
+   "fieldname": "identity_section",
+   "fieldtype": "Section Break",
+   "label": "Profile Identity"
+  },
   {
    "fieldname": "item_code",
    "fieldtype": "Data",
@@ -28,6 +36,16 @@
    "fieldname": "purpose",
    "fieldtype": "Small Text",
    "label": "Purpose / Notes"
+  },
+  {
+   "fieldname": "control_section",
+   "fieldtype": "Section Break",
+   "label": "Compliance"
+  },
+  {
+   "fieldname": "classification_code",
+   "fieldtype": "Data",
+   "label": "Classification Code"
   }
  ],
  "istable": 1,

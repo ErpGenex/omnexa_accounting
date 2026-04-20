@@ -6,15 +6,23 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
+  "identity_section",
   "rule_name",
   "company",
   "approver_role",
   "min_amount",
   "max_amount",
   "require_three_way_match",
-  "is_active"
+  "is_active",
+  "control_section",
+  "policy_reference"
  ],
  "fields": [
+  {
+   "fieldname": "identity_section",
+   "fieldtype": "Section Break",
+   "label": "Governance Identity"
+  },
   {
    "fieldname": "rule_name",
    "fieldtype": "Data",
@@ -61,6 +69,16 @@
    "fieldname": "is_active",
    "fieldtype": "Check",
    "label": "Is Active"
+  },
+  {
+   "fieldname": "control_section",
+   "fieldtype": "Section Break",
+   "label": "Governance"
+  },
+  {
+   "fieldname": "policy_reference",
+   "fieldtype": "Data",
+   "label": "Policy Reference"
   }
  ],
  "grid_page_length": 50,

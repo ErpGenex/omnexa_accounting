@@ -5,6 +5,7 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
+  "identity_section",
   "item",
   "item_code",
   "qty",
@@ -12,9 +13,16 @@
   "amount",
   "tax_rule",
   "income_account",
-  "cost_center"
+  "cost_center",
+  "control_section",
+  "classification_code"
  ],
  "fields": [
+  {
+   "fieldname": "identity_section",
+   "fieldtype": "Section Break",
+   "label": "Profile Identity"
+  },
   {
    "fieldname": "item",
    "fieldtype": "Link",
@@ -68,6 +76,16 @@
    "fieldtype": "Link",
    "label": "Cost Center",
    "options": "Cost Center"
+  },
+  {
+   "fieldname": "control_section",
+   "fieldtype": "Section Break",
+   "label": "Compliance"
+  },
+  {
+   "fieldname": "classification_code",
+   "fieldtype": "Data",
+   "label": "Classification Code"
   }
  ],
  "istable": 1,

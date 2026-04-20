@@ -5,6 +5,7 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
+  "identity_section",
   "item",
   "item_code",
   "s_warehouse",
@@ -14,19 +15,87 @@
   "serial_no",
   "uom",
   "rate",
-  "amount"
+  "amount",
+  "control_section",
+  "external_reference"
  ],
  "fields": [
-  {"fieldname": "item", "fieldtype": "Link", "label": "Item", "options": "Item", "reqd": 1},
-  {"fieldname": "item_code", "fieldtype": "Data", "label": "Item Code", "in_list_view": 1},
-  {"fieldname": "s_warehouse", "fieldtype": "Link", "label": "Source Warehouse", "options": "Warehouse"},
-  {"fieldname": "t_warehouse", "fieldtype": "Link", "label": "Target Warehouse", "options": "Warehouse"},
-  {"fieldname": "qty", "fieldtype": "Float", "label": "Qty", "reqd": 1, "in_list_view": 1},
-  {"fieldname": "batch_no", "fieldtype": "Data", "label": "Batch No.", "in_list_view": 1},
-  {"fieldname": "serial_no", "fieldtype": "Data", "label": "Serial No."},
-  {"fieldname": "uom", "fieldtype": "Link", "label": "UOM", "options": "UOM"},
-  {"fieldname": "rate", "fieldtype": "Currency", "label": "Rate"},
-  {"fieldname": "amount", "fieldtype": "Currency", "label": "Amount", "read_only": 1, "in_list_view": 1}
+  {
+   "fieldname": "identity_section",
+   "fieldtype": "Section Break",
+   "label": "Transaction Core"
+  },
+  {
+   "fieldname": "item",
+   "fieldtype": "Link",
+   "label": "Item",
+   "options": "Item",
+   "reqd": 1
+  },
+  {
+   "fieldname": "item_code",
+   "fieldtype": "Data",
+   "label": "Item Code",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "s_warehouse",
+   "fieldtype": "Link",
+   "label": "Source Warehouse",
+   "options": "Warehouse"
+  },
+  {
+   "fieldname": "t_warehouse",
+   "fieldtype": "Link",
+   "label": "Target Warehouse",
+   "options": "Warehouse"
+  },
+  {
+   "fieldname": "qty",
+   "fieldtype": "Float",
+   "label": "Qty",
+   "reqd": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "batch_no",
+   "fieldtype": "Data",
+   "label": "Batch No.",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "serial_no",
+   "fieldtype": "Data",
+   "label": "Serial No."
+  },
+  {
+   "fieldname": "uom",
+   "fieldtype": "Link",
+   "label": "UOM",
+   "options": "UOM"
+  },
+  {
+   "fieldname": "rate",
+   "fieldtype": "Currency",
+   "label": "Rate"
+  },
+  {
+   "fieldname": "amount",
+   "fieldtype": "Currency",
+   "label": "Amount",
+   "read_only": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "control_section",
+   "fieldtype": "Section Break",
+   "label": "Control"
+  },
+  {
+   "fieldname": "external_reference",
+   "fieldtype": "Data",
+   "label": "External Reference"
+  }
  ],
  "istable": 1,
  "links": [],

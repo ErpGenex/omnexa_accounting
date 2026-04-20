@@ -5,13 +5,21 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
+  "identity_section",
   "company",
   "exchange_date",
   "from_currency",
   "to_currency",
-  "exchange_rate"
+  "exchange_rate",
+  "control_section",
+  "policy_reference"
  ],
  "fields": [
+  {
+   "fieldname": "identity_section",
+   "fieldtype": "Section Break",
+   "label": "Governance Identity"
+  },
   {
    "fieldname": "company",
    "fieldtype": "Link",
@@ -49,6 +57,16 @@
    "description": "1 unit of From Currency equals this many units of To Currency",
    "precision": "9",
    "reqd": 1
+  },
+  {
+   "fieldname": "control_section",
+   "fieldtype": "Section Break",
+   "label": "Governance"
+  },
+  {
+   "fieldname": "policy_reference",
+   "fieldtype": "Data",
+   "label": "Policy Reference"
   }
  ],
  "grid_page_length": 50,

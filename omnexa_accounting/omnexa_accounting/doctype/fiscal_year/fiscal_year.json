@@ -5,13 +5,21 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
+  "identity_section",
   "title",
   "company",
   "year_start_date",
   "year_end_date",
-  "periods"
+  "periods",
+  "control_section",
+  "policy_reference"
  ],
  "fields": [
+  {
+   "fieldname": "identity_section",
+   "fieldtype": "Section Break",
+   "label": "Governance Identity"
+  },
   {
    "fieldname": "title",
    "fieldtype": "Data",
@@ -44,6 +52,16 @@
    "label": "Periods",
    "options": "Fiscal Year Period",
    "reqd": 1
+  },
+  {
+   "fieldname": "control_section",
+   "fieldtype": "Section Break",
+   "label": "Governance"
+  },
+  {
+   "fieldname": "policy_reference",
+   "fieldtype": "Data",
+   "label": "Policy Reference"
   }
  ],
  "grid_page_length": 50,
