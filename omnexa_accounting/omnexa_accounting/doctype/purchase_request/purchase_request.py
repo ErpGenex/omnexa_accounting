@@ -6,9 +6,12 @@ from frappe import _
 from frappe.model.document import Document
 from frappe.utils import flt
 
+from omnexa_accounting.utils.branch import validate_branch_company
+
 
 class PurchaseRequest(Document):
 	def validate(self):
+		validate_branch_company(self)
 		if not self.items:
 			frappe.throw(_("Add at least one line item."), title=_("Items"))
 		total = 0

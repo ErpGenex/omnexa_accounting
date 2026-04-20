@@ -7,8 +7,13 @@
  "field_order": [
   "identity_section",
   "company",
+  "branch",
+  "column_break_pr_1",
   "required_by",
   "requester",
+  "column_break_pr_2",
+  "reference",
+  "external_reference",
   "remarks",
   "items",
   "total_qty",
@@ -20,7 +25,7 @@
   {
    "fieldname": "identity_section",
    "fieldtype": "Section Break",
-   "label": "Identity"
+   "label": "Transaction Core"
   },
   {
    "fieldname": "company",
@@ -29,6 +34,31 @@
    "label": "Company",
    "options": "Company",
    "reqd": 1
+  },
+  {
+   "fieldname": "branch",
+   "fieldtype": "Link",
+   "label": "Branch",
+   "options": "Branch",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_pr_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_pr_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "reference",
+   "fieldtype": "Data",
+   "label": "Reference"
+  },
+  {
+   "fieldname": "external_reference",
+   "fieldtype": "Data",
+   "label": "External Reference"
   },
   {
    "fieldname": "required_by",
@@ -88,7 +118,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-04-18 12:00:00",
+ "modified": "2026-04-21 16:00:00",
  "modified_by": "Administrator",
  "module": "Omnexa Accounting",
  "name": "Purchase Request",
