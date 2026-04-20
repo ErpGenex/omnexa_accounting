@@ -9,14 +9,18 @@
   "company",
   "branch",
   "posting_date",
-  "is_opening",
+  "column_break_identity_1",
   "reference",
+  "external_reference",
+  "entry_type",
+  "column_break_identity_2",
   "remarks",
+  "is_opening",
+  "accounts_section",
   "accounts",
-  "amended_from",
-  "workflow_state",
   "control_section",
-  "external_reference"
+  "amended_from",
+  "workflow_state"
  ],
  "fields": [
   {
@@ -29,13 +33,8 @@
    "fieldtype": "Link",
    "in_list_view": 1,
    "label": "Company",
-   "options": "Company"
-  },
-  {
-   "fieldname": "branch",
-   "fieldtype": "Link",
-   "label": "Branch",
-   "options": "Branch"
+   "options": "Company",
+   "reqd": 1
   },
   {
    "default": "Today",
@@ -46,11 +45,13 @@
    "reqd": 1
   },
   {
-   "default": "0",
-   "description": "Cutover / opening balance entry; allowed to post when fiscal period is frozen (controlled)",
-   "fieldname": "is_opening",
-   "fieldtype": "Check",
-   "label": "Is Opening Entry"
+   "fieldname": "remarks",
+   "fieldtype": "Small Text",
+   "label": "Remarks"
+  },
+  {
+   "fieldname": "column_break_identity_1",
+   "fieldtype": "Column Break"
   },
   {
    "fieldname": "reference",
@@ -58,14 +59,45 @@
    "label": "Reference"
   },
   {
-   "fieldname": "remarks",
-   "fieldtype": "Small Text",
-   "label": "Remarks"
+   "fieldname": "column_break_identity_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "branch",
+   "fieldtype": "Link",
+   "label": "Branch",
+   "options": "Branch",
+   "reqd": 1
+  },
+  {
+   "default": "0",
+   "description": "Cutover / opening balance entry; allowed to post when fiscal period is frozen (controlled)",
+   "fieldname": "is_opening",
+   "fieldtype": "Check",
+   "label": "Is Opening Entry"
+  },
+  {
+   "fieldname": "external_reference",
+   "fieldtype": "Data",
+   "label": "External Reference"
+  },
+  {
+   "default": "Standard",
+   "fieldname": "entry_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Entry Type",
+   "options": "Standard\nAdjustment\nReversal\nOpening\nClosing\nOther"
+  },
+  {
+   "fieldname": "accounts_section",
+   "fieldtype": "Section Break",
+   "label": ""
   },
   {
    "fieldname": "accounts",
    "fieldtype": "Table",
-   "label": "Accounts",
+   "label": "Accounts Grid",
    "options": "Journal Entry Account",
    "reqd": 1
   },
@@ -94,18 +126,13 @@
    "fieldname": "control_section",
    "fieldtype": "Section Break",
    "label": "Control"
-  },
-  {
-   "fieldname": "external_reference",
-   "fieldtype": "Data",
-   "label": "External Reference"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-04-17 21:00:00",
+ "modified": "2026-04-20 12:00:00",
  "modified_by": "Administrator",
  "module": "Omnexa Accounting",
  "name": "Journal Entry",

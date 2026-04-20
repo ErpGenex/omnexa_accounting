@@ -10,6 +10,7 @@ def after_install():
 
 def after_migrate():
 	ensure_accounting_roles()
+	ensure_journal_entry_entry_type_not_duplicate_custom_field()
 	from omnexa_accounting.utils.bank_reconciliation_workflow import ensure_bank_reconciliation_workflow
 	from omnexa_accounting.utils.demo_workspace_seed import ensure_demo_workspace_seed
 	from omnexa_accounting.utils.inventory_workflow import ensure_inventory_workflows
@@ -23,6 +24,21 @@ def after_migrate():
 	ensure_inventory_workflows()
 	ensure_bank_reconciliation_workflow()
 	ensure_demo_workspace_seed()
+
+
+def ensure_journal_entry_entry_type_not_duplicate_custom_field():
+	"""`entry_type` is a core Journal Entry field; remove legacy Custom Field if present."""
+	try:
+		name = frappe.db.get_value(
+			"Custom Field", {"dt": "Journal Entry", "fieldname": "entry_type"}, "name"
+		)
+		if name:
+			frappe.delete_doc("Custom Field", name, force=True)
+			frappe.db.commit()
+	except Exception:
+		frappe.log_error(
+			frappe.get_traceback(), "Omnexa Accounting: remove duplicate Journal Entry entry_type CF"
+		)
 
 
 def ensure_accounting_roles():
