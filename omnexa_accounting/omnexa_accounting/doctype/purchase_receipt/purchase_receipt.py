@@ -6,9 +6,12 @@ from frappe import _
 from frappe.model.document import Document
 from frappe.utils import flt
 
+from omnexa_accounting.utils.branch import validate_branch_company
+
 
 class PurchaseReceipt(Document):
 	def validate(self):
+		validate_branch_company(self)
 		if not self.items:
 			frappe.throw(_("Purchase Receipt requires at least one item."), title=_("Items"))
 		total_qty = 0
@@ -20,6 +23,15 @@ class PurchaseReceipt(Document):
 				frappe.throw(_("Linked Purchase Order must be submitted."), title=_("Purchase Order"))
 			if po.company != self.company or po.supplier != self.supplier:
 				frappe.throw(_("Purchase Receipt must match Purchase Order company and supplier."), title=_("Purchase Order"))
+			if (
+				getattr(self, "branch", None)
+				and getattr(po, "branch", None)
+				and po.branch != self.branch
+			):
+				frappe.throw(
+					_("Purchase Receipt branch must match Purchase Order branch."),
+					title=_("Branch"),
+				)
 			for row in po.items:
 				order_item_map[row.item_code] = flt(row.qty)
 		for row in self.items:

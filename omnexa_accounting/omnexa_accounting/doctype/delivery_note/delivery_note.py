@@ -54,13 +54,15 @@ class DeliveryNote(Document):
 		so = frappe.db.get_value(
 			"Sales Order",
 			self.sales_order,
-			["docstatus", "customer", "company"],
+			["docstatus", "customer", "company", "branch"],
 			as_dict=True,
 		)
 		if not so or so.docstatus != 1:
 			frappe.throw(_("Sales Order must exist and be submitted."), title=_("Sales Order"))
 		if so.customer != self.customer or so.company != self.company:
 			frappe.throw(_("Customer and Company must match the Sales Order."), title=_("Sales Order"))
+		if self.branch and so.get("branch") and so.branch != self.branch:
+			frappe.throw(_("Branch must match the Sales Order."), title=_("Branch"))
 
 	def _validate_customer_company(self):
 		if not self.customer:
@@ -75,7 +77,7 @@ class DeliveryNote(Document):
 		so = frappe.db.get_value(
 			"Sales Order",
 			self.sales_order,
-			["customer", "company"],
+			["customer", "company", "branch"],
 			as_dict=True,
 		)
 		if not so:
@@ -84,6 +86,8 @@ class DeliveryNote(Document):
 			frappe.throw(_("Customer must match the Sales Order."), title=_("Customer"))
 		if so.company != self.company:
 			frappe.throw(_("Company must match the Sales Order."), title=_("Company"))
+		if self.branch and so.get("branch") and so.branch != self.branch:
+			frappe.throw(_("Branch must match the Sales Order."), title=_("Branch"))
 		if not self.warehouse:
 			frappe.throw(_("Target Warehouse is required."), title=_("Warehouse"))
 		w_company = frappe.db.get_value("Warehouse", self.warehouse, "company")
