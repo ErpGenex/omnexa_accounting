@@ -6,13 +6,15 @@
  "engine": "InnoDB",
  "field_order": [
   "identity_section",
-  "header_section",
   "company",
   "branch",
+  "posting_date",
   "column_break_header_1",
   "party_type",
   "party",
-  "posting_date",
+  "reference",
+  "external_reference",
+  "payment_purpose",
   "column_break_header_2",
   "bank_account",
   "mode_of_payment",
@@ -24,32 +26,28 @@
   "references",
   "amended_from",
   "workflow_state",
-  "control_section",
-  "external_reference"
+  "control_section"
  ],
  "fields": [
   {
    "fieldname": "identity_section",
    "fieldtype": "Section Break",
-   "label": "Identity"
+   "label": "Transaction Core"
   },
   {
    "fieldname": "company",
    "fieldtype": "Link",
    "in_list_view": 1,
    "label": "Company",
-   "options": "Company"
+   "options": "Company",
+   "reqd": 1
   },
   {
    "fieldname": "branch",
    "fieldtype": "Link",
    "label": "Branch",
-   "options": "Branch"
-  },
-  {
-   "fieldname": "header_section",
-   "fieldtype": "Section Break",
-   "label": "Transaction"
+   "options": "Branch",
+   "reqd": 1
   },
   {
    "fieldname": "column_break_header_1",
@@ -88,6 +86,23 @@
    "label": "Party",
    "options": "party_type",
    "reqd": 1
+  },
+  {
+   "fieldname": "reference",
+   "fieldtype": "Data",
+   "label": "Reference"
+  },
+  {
+   "fieldname": "external_reference",
+   "fieldtype": "Data",
+   "label": "External Reference"
+  },
+  {
+   "default": "Other",
+   "fieldname": "payment_purpose",
+   "fieldtype": "Select",
+   "label": "Payment Purpose",
+   "options": "Customer Receipt\nSupplier Payment\nInternal Transfer\nTax / Statutory\nOther"
   },
   {
    "default": "Today",
@@ -155,18 +170,13 @@
    "fieldname": "control_section",
    "fieldtype": "Section Break",
    "label": "Control"
-  },
-  {
-   "fieldname": "external_reference",
-   "fieldtype": "Data",
-   "label": "External Reference"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-04-17 21:00:00",
+ "modified": "2026-04-20 22:00:00",
  "modified_by": "Administrator",
  "module": "Omnexa Accounting",
  "name": "Payment Entry",
