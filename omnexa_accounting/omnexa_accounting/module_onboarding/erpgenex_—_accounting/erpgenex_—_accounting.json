@@ -1,0 +1,41 @@
+{
+ "allow_roles": [
+  {
+   "role": "Desk User"
+  },
+  {
+   "role": "System Manager"
+  }
+ ],
+ "creation": "2026-04-20 00:31:38.751588",
+ "docstatus": 0,
+ "doctype": "Module Onboarding",
+ "documentation_url": "https://frappe.io/framework",
+ "idx": 0,
+ "is_complete": 0,
+ "modified": "2026-04-20 02:24:42.934559",
+ "modified_by": "Administrator",
+ "module": "Omnexa Accounting",
+ "name": "ERPGENEX \u2014 Accounting",
+ "owner": "Administrator",
+ "steps": [
+  {
+   "step": "ERPGENEX-WS-accounting-01-gl_account"
+  },
+  {
+   "step": "ERPGENEX-WS-accounting-02-journal_entry"
+  },
+  {
+   "step": "ERPGENEX-WS-accounting-03-cost_center"
+  },
+  {
+   "step": "ERPGENEX-WS-accounting-04-payment_entry"
+  },
+  {
+   "step": "ERPGENEX-WS-accounting-home"
+  }
+ ],
+ "subtitle": "Guided setup for this workspace.",
+ "success_message": "You are ready to work in Accounting.",
+ "title": "ERPGENEX \u00b7 Accounting"
+}

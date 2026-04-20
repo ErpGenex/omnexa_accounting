@@ -17,6 +17,7 @@ _WC_BUCKETS = frozenset(
 
 class GLAccount(NestedSet):
 	def validate(self):
+		self._validate_branch_company_link()
 		self._validate_pl_bucket()
 		self._validate_cash_flow_section()
 		self._validate_working_capital_bucket()
@@ -30,6 +31,16 @@ class GLAccount(NestedSet):
 					self.account_number, self.company
 				),
 				title=_("Duplicate"),
+			)
+
+	def _validate_branch_company_link(self):
+		if not self.branch:
+			return
+		branch_company = frappe.db.get_value("Branch", self.branch, "company")
+		if branch_company and self.company and branch_company != self.company:
+			frappe.throw(
+				_("Branch {0} does not belong to Company {1}.").format(self.branch, self.company),
+				title=_("Branch"),
 			)
 
 	def _validate_pl_bucket(self):

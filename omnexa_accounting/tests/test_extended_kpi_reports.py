@@ -39,8 +39,8 @@ from omnexa_accounting.omnexa_accounting.report.purchase_delivery_performance.pu
 from omnexa_accounting.omnexa_accounting.report.governance_audit_trail.governance_audit_trail import (
 	execute as audit_trail_exec,
 )
-from omnexa_accounting.omnexa_accounting.report.governance_user_activity.governance_user_activity import (
-	execute as gov_activity_exec,
+from omnexa_accounting.omnexa_accounting.report.user_activity_summary.user_activity_summary import (
+	execute as user_activity_summary_exec,
 )
 from omnexa_accounting.omnexa_accounting.report.low_stock.low_stock import execute as low_stock_exec
 from omnexa_accounting.omnexa_accounting.report.purchase_cost_analysis.purchase_cost_analysis import (
@@ -197,10 +197,10 @@ class TestExtendedKpiReports(FrappeTestCase):
 		self.assertTrue(out[0])
 		self.assertIsInstance(out[1], list)
 
-	def test_governance_user_activity_runs(self):
+	def test_user_activity_summary_runs(self):
 		td = today()
 		fd = add_months(td, -1)
-		out = gov_activity_exec({"from_date": fd, "to_date": td})
+		out = user_activity_summary_exec({"from_date": fd, "to_date": td})
 		self.assertTrue(out[0])
 		self.assertIsInstance(out[1], list)
 

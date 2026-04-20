@@ -10,8 +10,11 @@
   "account_number",
   "account_name",
   "company",
+  "branch",
   "is_group",
   "account_type",
+  "main_account_type",
+  "sub_account_type",
   "pl_bucket",
   "cash_flow_section",
   "working_capital_bucket",
@@ -44,6 +47,12 @@
    "options": "Company"
   },
   {
+   "fieldname": "branch",
+   "fieldtype": "Link",
+   "label": "Branch",
+   "options": "Branch"
+  },
+  {
    "default": "0",
    "fieldname": "is_group",
    "fieldtype": "Check",
@@ -54,6 +63,16 @@
    "fieldtype": "Select",
    "label": "Account Type",
    "options": "\nAsset\nLiability\nEquity\nIncome\nExpense"
+  },
+  {
+   "fieldname": "main_account_type",
+   "fieldtype": "Data",
+   "label": "Main Account Type"
+  },
+  {
+   "fieldname": "sub_account_type",
+   "fieldtype": "Data",
+   "label": "Sub Account Type"
   },
   {
    "depends_on": "eval:doc.account_type==\"Income\" || doc.account_type==\"Expense\"",
