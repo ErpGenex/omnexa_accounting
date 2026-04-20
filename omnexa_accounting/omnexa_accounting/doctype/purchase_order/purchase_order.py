@@ -6,6 +6,8 @@ from frappe import _
 from frappe.model.document import Document
 from frappe.utils import flt
 
+from omnexa_accounting.utils.branch import validate_branch_company
+
 
 class PurchaseOrder(Document):
 	def _sync_and_validate_line_items(self):
@@ -40,6 +42,7 @@ class PurchaseOrder(Document):
 				)
 
 	def validate(self):
+		validate_branch_company(self)
 		if self.get("purchase_request"):
 			pr = frappe.db.get_value(
 				"Purchase Request",

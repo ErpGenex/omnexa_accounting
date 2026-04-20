@@ -10,16 +10,19 @@
   "company",
   "branch",
   "posting_date",
+  "column_break_se_1",
   "purpose",
   "from_warehouse",
   "to_warehouse",
+  "column_break_se_2",
+  "reference",
+  "external_reference",
   "items",
   "total_qty",
   "remarks",
   "amended_from",
   "workflow_state",
-  "control_section",
-  "external_reference"
+  "control_section"
  ],
  "fields": [
   {
@@ -32,14 +35,16 @@
    "fieldtype": "Link",
    "label": "Company",
    "options": "Company",
-   "in_list_view": 1
+   "in_list_view": 1,
+   "reqd": 1
   },
   {
    "fieldname": "branch",
    "fieldtype": "Link",
    "label": "Branch",
    "options": "Branch",
-   "in_list_view": 1
+   "in_list_view": 1,
+   "reqd": 1
   },
   {
    "fieldname": "posting_date",
@@ -47,6 +52,24 @@
    "label": "Posting Date",
    "reqd": 1,
    "in_list_view": 1
+  },
+  {
+   "fieldname": "column_break_se_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_se_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "reference",
+   "fieldtype": "Data",
+   "label": "Reference"
+  },
+  {
+   "fieldname": "external_reference",
+   "fieldtype": "Data",
+   "label": "External Reference"
   },
   {
    "fieldname": "purpose",
@@ -112,17 +135,12 @@
    "fieldname": "control_section",
    "fieldtype": "Section Break",
    "label": "Control"
-  },
-  {
-   "fieldname": "external_reference",
-   "fieldtype": "Data",
-   "label": "External Reference"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-04-17 22:00:00",
+ "modified": "2026-04-21 10:00:00",
  "modified_by": "Administrator",
  "module": "Omnexa Accounting",
  "name": "Stock Entry",
