@@ -93,8 +93,9 @@ doctype_js = {
 # Installation
 # ------------
 
-# before_install = "omnexa_accounting.install.before_install"
+before_install = "omnexa_accounting.install.enforce_supported_frappe_version"
 after_install = "omnexa_accounting.install.after_install"
+before_migrate = "omnexa_accounting.install.enforce_supported_frappe_version"
 after_migrate = "omnexa_accounting.install.after_migrate"
 
 # Uninstallation
