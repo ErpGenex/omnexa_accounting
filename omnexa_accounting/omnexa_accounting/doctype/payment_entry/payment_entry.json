@@ -1,282 +1,270 @@
 {
- "actions": [],
- "autoname": "hash",
- "creation": "2026-04-12 23:00:00",
- "doctype": "DocType",
- "engine": "InnoDB",
- "field_order": [
-  "identity_section",
-  "company",
-  "branch",
-  "posting_date",
-  "column_break_header_1",
-  "party_type",
-  "party",
-  "reference",
-  "external_reference",
-  "payment_purpose",
-  "column_break_header_2",
-  "bank_account",
-  "mode_of_payment",
-  "paid_amount",
-  "remittance_section",
-  "remittance_reference",
-  "remittance_date",
-  "remittance_bank_reference",
-  "references",
-  "amended_from",
-  "workflow_state",
-  "control_section"
- ],
- "fields": [
-  {
-   "fieldname": "identity_section",
-   "fieldtype": "Section Break",
-   "label": "Transaction Core"
-  },
-  {
-   "fieldname": "company",
-   "fieldtype": "Link",
-   "in_list_view": 1,
-   "label": "Company",
-   "options": "Company",
-   "reqd": 1
-  },
-  {
-   "fieldname": "branch",
-   "fieldtype": "Link",
-   "label": "Branch",
-   "options": "Branch",
-   "reqd": 1
-  },
-  {
-   "fieldname": "column_break_header_1",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "column_break_header_2",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "bank_account",
-   "fieldtype": "Link",
-   "label": "Bank Account",
-   "options": "Bank Account"
-  },
-  {
-   "fieldname": "mode_of_payment",
-   "fieldtype": "Link",
-   "in_list_view": 1,
-   "label": "Mode of Payment",
-   "options": "Mode of Payment"
-  },
-  {
-   "default": "Customer",
-   "fieldname": "party_type",
-   "fieldtype": "Select",
-   "in_list_view": 1,
-   "label": "Party Type",
-   "options": "Customer\nSupplier",
-   "reqd": 1
-  },
-  {
-   "fieldname": "party",
-   "fieldtype": "Dynamic Link",
-   "in_list_view": 1,
-   "label": "Party",
-   "options": "party_type",
-   "reqd": 1
-  },
-  {
-   "fieldname": "reference",
-   "fieldtype": "Data",
-   "label": "Reference"
-  },
-  {
-   "fieldname": "external_reference",
-   "fieldtype": "Data",
-   "label": "External Reference"
-  },
-  {
-   "default": "Other",
-   "fieldname": "payment_purpose",
-   "fieldtype": "Select",
-   "label": "Payment Purpose",
-   "options": "Customer Receipt\nSupplier Payment\nInternal Transfer\nTax / Statutory\nOther"
-  },
-  {
-   "default": "Today",
-   "fieldname": "posting_date",
-   "fieldtype": "Date",
-   "in_list_view": 1,
-   "label": "Posting Date",
-   "reqd": 1
-  },
-  {
-   "fieldname": "paid_amount",
-   "fieldtype": "Currency",
-   "in_list_view": 1,
-   "label": "Paid Amount",
-   "reqd": 1
-  },
-  {
-   "fieldname": "remittance_section",
-   "fieldtype": "Section Break",
-   "label": "Remittance Metadata"
-  },
-  {
-   "fieldname": "remittance_reference",
-   "fieldtype": "Data",
-   "label": "Remittance Reference"
-  },
-  {
-   "fieldname": "remittance_date",
-   "fieldtype": "Date",
-   "label": "Remittance Date"
-  },
-  {
-   "fieldname": "remittance_bank_reference",
-   "fieldtype": "Data",
-   "label": "Remittance Bank Reference"
-  },
-  {
-   "fieldname": "references",
-   "fieldtype": "Table",
-   "label": "References",
-   "options": "Payment Entry Reference"
-  },
-  {
-   "fieldname": "amended_from",
-   "fieldtype": "Link",
-   "label": "Amended From",
-   "no_copy": 1,
-   "options": "Payment Entry",
-   "print_hide": 1,
-   "read_only": 1,
-   "search_index": 1
-  },
-  {
-   "allow_on_submit": 1,
-   "fieldname": "workflow_state",
-   "fieldtype": "Link",
-   "hidden": 1,
-   "label": "Workflow State",
-   "no_copy": 1,
-   "options": "Workflow State",
-   "print_hide": 1,
-   "read_only": 1
-  },
-  {
-   "fieldname": "control_section",
-   "fieldtype": "Section Break",
-   "label": "Control"
-  }
- ],
- "grid_page_length": 50,
- "index_web_pages_for_search": 1,
- "is_submittable": 1,
- "links": [],
- "modified": "2026-04-20 22:00:00",
- "modified_by": "Administrator",
- "module": "Omnexa Accounting",
- "name": "Payment Entry",
- "naming_rule": "Random",
- "owner": "Administrator",
- "permissions": [
-  {
-   "amend": 1,
-   "cancel": 1,
-   "create": 1,
-   "delete": 1,
-   "email": 1,
-   "export": 1,
-   "print": 1,
-   "read": 1,
-   "report": 1,
-   "role": "System Manager",
-   "share": 1,
-   "submit": 1,
-   "write": 1
-  },
-  {
-   "amend": 1,
-   "cancel": 1,
-   "create": 1,
-   "delete": 0,
-   "email": 1,
-   "export": 1,
-   "print": 1,
-   "read": 1,
-   "report": 1,
-   "role": "Accounts Manager",
-   "share": 0,
-   "submit": 1,
-   "write": 1
-  },
-  {
-   "amend": 0,
-   "cancel": 0,
-   "create": 1,
-   "delete": 0,
-   "email": 0,
-   "export": 0,
-   "print": 1,
-   "read": 1,
-   "report": 1,
-   "role": "Accounts User",
-   "share": 0,
-   "submit": 1,
-   "write": 1
-  },
-  {
-   "amend": 0,
-   "cancel": 0,
-   "create": 0,
-   "delete": 0,
-   "email": 0,
-   "export": 0,
-   "print": 0,
-   "read": 1,
-   "report": 1,
-   "role": "Desk User",
-   "share": 0,
-   "submit": 0,
-   "write": 0
-  },
-  {
-   "amend": 0,
-   "cancel": 0,
-   "create": 0,
-   "delete": 0,
-   "email": 0,
-   "export": 0,
-   "print": 1,
-   "read": 1,
-   "report": 1,
-   "role": "Fleet Manager",
-   "share": 0,
-   "submit": 0,
-   "write": 0
-  },
-  {
-   "amend": 0,
-   "cancel": 0,
-   "create": 0,
-   "delete": 0,
-   "email": 0,
-   "export": 0,
-   "print": 1,
-   "read": 1,
-   "report": 1,
-   "role": "Rental Agent",
-   "share": 0,
-   "submit": 0,
-   "write": 0
-  }
- ],
- "row_format": "Dynamic",
- "sort_field": "modified",
- "sort_order": "DESC",
- "states": [],
- "track_changes": 1
+	"actions": [],
+	"autoname": "hash",
+	"creation": "2026-04-12 23:00:00",
+	"doctype": "DocType",
+	"engine": "InnoDB",
+	"field_order": [
+		"company",
+		"branch",
+		"posting_date",
+		"column_break_header_1",
+		"party_type",
+		"party",
+		"reference",
+		"external_reference",
+		"payment_purpose",
+		"column_break_header_2",
+		"bank_account",
+		"mode_of_payment",
+		"paid_amount",
+		"remittance_section",
+		"remittance_reference",
+		"remittance_date",
+		"remittance_bank_reference",
+		"references",
+		"amended_from",
+		"workflow_state"
+	],
+	"fields": [
+		{
+			"fieldname": "company",
+			"fieldtype": "Link",
+			"in_list_view": 1,
+			"label": "Company",
+			"options": "Company",
+			"reqd": 1
+		},
+		{
+			"fieldname": "branch",
+			"fieldtype": "Link",
+			"label": "Branch",
+			"options": "Branch",
+			"reqd": 1
+		},
+		{
+			"fieldname": "column_break_header_1",
+			"fieldtype": "Column Break"
+		},
+		{
+			"fieldname": "column_break_header_2",
+			"fieldtype": "Column Break"
+		},
+		{
+			"fieldname": "bank_account",
+			"fieldtype": "Link",
+			"label": "Bank Account",
+			"options": "Bank Account"
+		},
+		{
+			"fieldname": "mode_of_payment",
+			"fieldtype": "Link",
+			"in_list_view": 1,
+			"label": "Mode of Payment",
+			"options": "Mode of Payment"
+		},
+		{
+			"default": "Customer",
+			"fieldname": "party_type",
+			"fieldtype": "Select",
+			"in_list_view": 1,
+			"label": "Party Type",
+			"options": "Customer\nSupplier",
+			"reqd": 1
+		},
+		{
+			"fieldname": "party",
+			"fieldtype": "Dynamic Link",
+			"in_list_view": 1,
+			"label": "Party",
+			"options": "party_type",
+			"reqd": 1
+		},
+		{
+			"fieldname": "reference",
+			"fieldtype": "Data",
+			"label": "Reference"
+		},
+		{
+			"fieldname": "external_reference",
+			"fieldtype": "Data",
+			"label": "External Reference"
+		},
+		{
+			"default": "Other",
+			"fieldname": "payment_purpose",
+			"fieldtype": "Select",
+			"label": "Payment Purpose",
+			"options": "Customer Receipt\nSupplier Payment\nInternal Transfer\nTax / Statutory\nOther"
+		},
+		{
+			"default": "Today",
+			"fieldname": "posting_date",
+			"fieldtype": "Date",
+			"in_list_view": 1,
+			"label": "Posting Date",
+			"reqd": 1
+		},
+		{
+			"fieldname": "paid_amount",
+			"fieldtype": "Currency",
+			"in_list_view": 1,
+			"label": "Paid Amount",
+			"reqd": 1
+		},
+		{
+			"fieldname": "remittance_section",
+			"fieldtype": "Section Break",
+			"label": "Remittance Metadata"
+		},
+		{
+			"fieldname": "remittance_reference",
+			"fieldtype": "Data",
+			"label": "Remittance Reference"
+		},
+		{
+			"fieldname": "remittance_date",
+			"fieldtype": "Date",
+			"label": "Remittance Date"
+		},
+		{
+			"fieldname": "remittance_bank_reference",
+			"fieldtype": "Data",
+			"label": "Remittance Bank Reference"
+		},
+		{
+			"fieldname": "references",
+			"fieldtype": "Table",
+			"label": "References",
+			"options": "Payment Entry Reference"
+		},
+		{
+			"fieldname": "amended_from",
+			"fieldtype": "Link",
+			"label": "Amended From",
+			"no_copy": 1,
+			"options": "Payment Entry",
+			"print_hide": 1,
+			"read_only": 1,
+			"search_index": 1
+		},
+		{
+			"allow_on_submit": 1,
+			"fieldname": "workflow_state",
+			"fieldtype": "Link",
+			"hidden": 1,
+			"label": "Workflow State",
+			"no_copy": 1,
+			"options": "Workflow State",
+			"print_hide": 1,
+			"read_only": 1
+		}
+	],
+	"grid_page_length": 50,
+	"index_web_pages_for_search": 1,
+	"is_submittable": 1,
+	"links": [],
+	"modified": "2026-04-20 22:00:00",
+	"modified_by": "Administrator",
+	"module": "Omnexa Accounting",
+	"name": "Payment Entry",
+	"naming_rule": "Random",
+	"owner": "Administrator",
+	"permissions": [
+		{
+			"amend": 1,
+			"cancel": 1,
+			"create": 1,
+			"delete": 1,
+			"email": 1,
+			"export": 1,
+			"print": 1,
+			"read": 1,
+			"report": 1,
+			"role": "System Manager",
+			"share": 1,
+			"submit": 1,
+			"write": 1
+		},
+		{
+			"amend": 1,
+			"cancel": 1,
+			"create": 1,
+			"delete": 0,
+			"email": 1,
+			"export": 1,
+			"print": 1,
+			"read": 1,
+			"report": 1,
+			"role": "Accounts Manager",
+			"share": 0,
+			"submit": 1,
+			"write": 1
+		},
+		{
+			"amend": 0,
+			"cancel": 0,
+			"create": 1,
+			"delete": 0,
+			"email": 0,
+			"export": 0,
+			"print": 1,
+			"read": 1,
+			"report": 1,
+			"role": "Accounts User",
+			"share": 0,
+			"submit": 1,
+			"write": 1
+		},
+		{
+			"amend": 0,
+			"cancel": 0,
+			"create": 0,
+			"delete": 0,
+			"email": 0,
+			"export": 0,
+			"print": 0,
+			"read": 1,
+			"report": 1,
+			"role": "Desk User",
+			"share": 0,
+			"submit": 0,
+			"write": 0
+		},
+		{
+			"amend": 0,
+			"cancel": 0,
+			"create": 0,
+			"delete": 0,
+			"email": 0,
+			"export": 0,
+			"print": 1,
+			"read": 1,
+			"report": 1,
+			"role": "Fleet Manager",
+			"share": 0,
+			"submit": 0,
+			"write": 0
+		},
+		{
+			"amend": 0,
+			"cancel": 0,
+			"create": 0,
+			"delete": 0,
+			"email": 0,
+			"export": 0,
+			"print": 1,
+			"read": 1,
+			"report": 1,
+			"role": "Rental Agent",
+			"share": 0,
+			"submit": 0,
+			"write": 0
+		}
+	],
+	"row_format": "Dynamic",
+	"sort_field": "modified",
+	"sort_order": "DESC",
+	"states": [],
+	"track_changes": 1
 }

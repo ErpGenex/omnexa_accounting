@@ -1,166 +1,174 @@
 {
- "actions": [],
- "allow_rename": 1,
- "autoname": "hash",
- "creation": "2026-04-13 10:00:00",
- "doctype": "DocType",
- "engine": "InnoDB",
- "field_order": [
-  "identity_section",
-  "supplier_name",
-  "company",
-  "status",
-  "payment_terms",
-  "credit_days",
-  "tax_id",
-  "email",
-  "phone",
-  "country",
-  "address_line",
-  "control_section",
-  "external_reference"
- ],
- "fields": [
-  {
-   "fieldname": "identity_section",
-   "fieldtype": "Section Break",
-   "label": "Profile Identity"
-  },
-  {
-   "fieldname": "supplier_name",
-   "fieldtype": "Data",
-   "in_list_view": 1,
-   "label": "Supplier Name",
-   "reqd": 1
-  },
-  {
-   "fieldname": "company",
-   "fieldtype": "Link",
-   "in_list_view": 1,
-   "label": "Company",
-   "options": "Company"
-  },
-  {
-   "default": "Active",
-   "fieldname": "status",
-   "fieldtype": "Select",
-   "in_list_view": 1,
-   "label": "Status",
-   "options": "Active\nInactive"
-  },
-  {
-   "fieldname": "payment_terms",
-   "fieldtype": "Data",
-   "label": "Payment Terms",
-   "description": "e.g. Net 45 \u2014 if Credit Days is 0, \"Net N\" here sets default bill due date"
-  },
-  {
-   "default": "0",
-   "fieldname": "credit_days",
-   "fieldtype": "Int",
-   "label": "Credit Days",
-   "description": "When greater than zero, new purchase invoices default Due Date = Posting Date + this many days (overrides Net N in Payment Terms)"
-  },
-  {
-   "fieldname": "tax_id",
-   "fieldtype": "Data",
-   "label": "Tax ID"
-  },
-  {
-   "fieldname": "email",
-   "fieldtype": "Data",
-   "label": "Email",
-   "options": "Email"
-  },
-  {
-   "fieldname": "phone",
-   "fieldtype": "Data",
-   "label": "Phone"
-  },
-  {
-   "fieldname": "country",
-   "fieldtype": "Link",
-   "label": "Country",
-   "options": "Country"
-  },
-  {
-   "fieldname": "address_line",
-   "fieldtype": "Small Text",
-   "label": "Address"
-  },
-  {
-   "fieldname": "control_section",
-   "fieldtype": "Section Break",
-   "label": "Compliance"
-  },
-  {
-   "fieldname": "external_reference",
-   "fieldtype": "Data",
-   "label": "External Reference"
-  }
- ],
- "grid_page_length": 50,
- "index_web_pages_for_search": 1,
- "links": [],
- "modified": "2026-04-14 14:00:00",
- "modified_by": "Administrator",
- "module": "Omnexa Accounting",
- "name": "Supplier",
- "naming_rule": "Random",
- "owner": "Administrator",
- "permissions": [
-  {
-   "create": 1,
-   "delete": 1,
-   "email": 1,
-   "export": 1,
-   "print": 1,
-   "read": 1,
-   "report": 1,
-   "role": "System Manager",
-   "share": 1,
-   "write": 1
-  },
-  {
-   "create": 1,
-   "delete": 0,
-   "email": 1,
-   "export": 1,
-   "print": 1,
-   "read": 1,
-   "report": 1,
-   "role": "Accounts Manager",
-   "share": 0,
-   "write": 1
-  },
-  {
-   "create": 1,
-   "delete": 0,
-   "email": 0,
-   "export": 0,
-   "print": 1,
-   "read": 1,
-   "report": 1,
-   "role": "Accounts User",
-   "share": 0,
-   "write": 1
-  },
-  {
-   "create": 0,
-   "delete": 0,
-   "email": 0,
-   "export": 0,
-   "print": 0,
-   "read": 1,
-   "report": 1,
-   "role": "Desk User",
-   "share": 0,
-   "write": 0
-  }
- ],
- "row_format": "Dynamic",
- "sort_field": "modified",
- "sort_order": "DESC",
- "states": [],
- "track_changes": 1
+	"actions": [],
+	"allow_rename": 1,
+	"autoname": "hash",
+	"creation": "2026-04-13 10:00:00",
+	"doctype": "DocType",
+	"engine": "InnoDB",
+	"field_order": [
+		"supplier_code",
+		"supplier_name",
+		"company",
+		"status",
+		"column_break_omnexa_1",
+		"payment_terms",
+		"credit_days",
+		"tax_id",
+		"email",
+		"column_break_omnexa_2",
+		"phone",
+		"country",
+		"address_line",
+		"external_reference"
+	],
+	"fields": [
+		{
+			"fieldname": "supplier_code",
+			"fieldtype": "Data",
+			"in_list_view": 1,
+			"label": "Supplier Code"
+		},
+		{
+			"fieldname": "supplier_name",
+			"fieldtype": "Data",
+			"in_list_view": 1,
+			"label": "Supplier Name",
+			"reqd": 1
+		},
+		{
+			"fieldname": "company",
+			"fieldtype": "Link",
+			"in_list_view": 1,
+			"label": "Company",
+			"options": "Company"
+		},
+		{
+			"default": "Active",
+			"fieldname": "status",
+			"fieldtype": "Select",
+			"in_list_view": 1,
+			"label": "Status",
+			"options": "Active\nInactive"
+		},
+		{
+			"fieldname": "payment_terms",
+			"fieldtype": "Data",
+			"label": "Payment Terms",
+			"description": "e.g. Net 45 — if Credit Days is 0, \"Net N\" here sets default bill due date"
+		},
+		{
+			"default": "0",
+			"fieldname": "credit_days",
+			"fieldtype": "Int",
+			"label": "Credit Days",
+			"description": "When greater than zero, new purchase invoices default Due Date = Posting Date + this many days (overrides Net N in Payment Terms)"
+		},
+		{
+			"fieldname": "tax_id",
+			"fieldtype": "Data",
+			"label": "Tax ID"
+		},
+		{
+			"fieldname": "email",
+			"fieldtype": "Data",
+			"label": "Email",
+			"options": "Email"
+		},
+		{
+			"fieldname": "phone",
+			"fieldtype": "Data",
+			"label": "Phone"
+		},
+		{
+			"fieldname": "country",
+			"fieldtype": "Link",
+			"label": "Country",
+			"options": "Country"
+		},
+		{
+			"fieldname": "address_line",
+			"fieldtype": "Small Text",
+			"label": "Address"
+		},
+		{
+			"fieldname": "external_reference",
+			"fieldtype": "Data",
+			"label": "External Reference"
+		},
+		{
+			"fieldname": "column_break_omnexa_1",
+			"fieldtype": "Column Break"
+		},
+		{
+			"fieldname": "column_break_omnexa_2",
+			"fieldtype": "Column Break"
+		}
+	],
+	"grid_page_length": 50,
+	"index_web_pages_for_search": 1,
+	"links": [],
+	"modified": "2026-04-14 14:00:00",
+	"modified_by": "Administrator",
+	"module": "Omnexa Accounting",
+	"name": "Supplier",
+	"naming_rule": "Random",
+	"owner": "Administrator",
+	"permissions": [
+		{
+			"create": 1,
+			"delete": 1,
+			"email": 1,
+			"export": 1,
+			"print": 1,
+			"read": 1,
+			"report": 1,
+			"role": "System Manager",
+			"share": 1,
+			"write": 1
+		},
+		{
+			"create": 1,
+			"delete": 0,
+			"email": 1,
+			"export": 1,
+			"print": 1,
+			"read": 1,
+			"report": 1,
+			"role": "Accounts Manager",
+			"share": 0,
+			"write": 1
+		},
+		{
+			"create": 1,
+			"delete": 0,
+			"email": 0,
+			"export": 0,
+			"print": 1,
+			"read": 1,
+			"report": 1,
+			"role": "Accounts User",
+			"share": 0,
+			"write": 1
+		},
+		{
+			"create": 0,
+			"delete": 0,
+			"email": 0,
+			"export": 0,
+			"print": 0,
+			"read": 1,
+			"report": 1,
+			"role": "Desk User",
+			"share": 0,
+			"write": 0
+		}
+	],
+	"row_format": "Dynamic",
+	"search_fields": "supplier_code,supplier_name",
+	"show_title_field_in_link": 1,
+	"sort_field": "modified",
+	"sort_order": "DESC",
+	"states": [],
+	"title_field": "supplier_name",
+	"track_changes": 1
 }

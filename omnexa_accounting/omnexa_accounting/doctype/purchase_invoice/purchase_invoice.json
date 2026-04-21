@@ -1,323 +1,402 @@
 {
- "actions": [],
- "autoname": "hash",
- "creation": "2026-04-12 23:00:00",
- "doctype": "DocType",
- "engine": "InnoDB",
- "field_order": [
-  "identity_section",
-  "company",
-  "branch",
-  "posting_date",
-  "due_date",
-  "column_break_header_1",
-  "supplier",
-  "reference",
-  "external_reference",
-  "column_break_header_2",
-  "po_reference",
-  "goods_receipt_reference",
-  "return_section",
-  "is_return",
-  "return_against",
-  "currency_section",
-  "currency",
-  "conversion_rate",
-  "default_tax_rule",
-  "payment_schedule",
-  "items",
-  "net_total",
-  "tax_total",
-  "grand_total",
-  "outstanding_amount",
-  "base_section",
-  "base_net_total",
-  "base_tax_total",
-  "base_grand_total",
-  "amended_from",
-  "workflow_state",
-  "control_section"
- ],
- "fields": [
-  {
-   "fieldname": "identity_section",
-   "fieldtype": "Section Break",
-   "label": "Transaction Core"
-  },
-  {
-   "fieldname": "company",
-   "fieldtype": "Link",
-   "in_list_view": 1,
-   "label": "Company",
-   "options": "Company",
-   "reqd": 1
-  },
-  {
-   "fieldname": "branch",
-   "fieldtype": "Link",
-   "label": "Branch",
-   "options": "Branch",
-   "reqd": 1
-  },
-  {
-   "fieldname": "column_break_header_1",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "column_break_header_2",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "supplier",
-   "fieldtype": "Link",
-   "in_list_view": 1,
-   "label": "Supplier",
-   "options": "Supplier",
-   "reqd": 1
-  },
-  {
-   "fieldname": "reference",
-   "fieldtype": "Data",
-   "label": "Reference"
-  },
-  {
-   "fieldname": "external_reference",
-   "fieldtype": "Data",
-   "label": "External Reference"
-  },
-  {
-   "default": "Today",
-   "fieldname": "posting_date",
-   "fieldtype": "Date",
-   "in_list_view": 1,
-   "label": "Posting Date",
-   "reqd": 1
-  },
-  {
-   "fieldname": "due_date",
-   "fieldtype": "Date",
-   "label": "Due Date"
-  },
-  {
-   "fieldname": "po_reference",
-   "fieldtype": "Link",
-   "label": "PO Reference",
-   "options": "Purchase Order"
-  },
-  {
-   "fieldname": "goods_receipt_reference",
-   "fieldtype": "Link",
-   "label": "Goods Receipt Reference",
-   "options": "Purchase Receipt"
-  },
-  {
-   "fieldname": "return_section",
-   "fieldtype": "Section Break",
-   "label": "Return / Debit Note"
-  },
-  {
-   "default": "0",
-   "fieldname": "is_return",
-   "fieldtype": "Check",
-   "label": "Is Return (Debit Note)"
-  },
-  {
-   "depends_on": "eval:doc.is_return",
-   "fieldname": "return_against",
-   "fieldtype": "Link",
-   "label": "Return Against",
-   "options": "Purchase Invoice"
-  },
-  {
-   "fieldname": "currency_section",
-   "fieldtype": "Section Break",
-   "label": "Currency"
-  },
-  {
-   "fieldname": "currency",
-   "fieldtype": "Link",
-   "label": "Currency",
-   "options": "Currency",
-   "reqd": 1
-  },
-  {
-   "default": "1",
-   "fieldname": "conversion_rate",
-   "fieldtype": "Float",
-   "label": "Conversion Rate",
-   "precision": "9"
-  },
-  {
-   "fieldname": "default_tax_rule",
-   "fieldtype": "Link",
-   "label": "Default Tax Rule",
-   "options": "Tax Rule"
-  },
-  {
-   "fieldname": "payment_schedule",
-   "fieldtype": "Table",
-   "label": "Payment Schedule",
-   "options": "Payment Schedule Line"
-  },
-  {
-   "fieldname": "items",
-   "fieldtype": "Table",
-   "label": "Items",
-   "options": "Purchase Invoice Item",
-   "reqd": 1
-  },
-  {
-   "fieldname": "net_total",
-   "fieldtype": "Currency",
-   "label": "Net Total",
-   "read_only": 1
-  },
-  {
-   "fieldname": "tax_total",
-   "fieldtype": "Currency",
-   "label": "Tax Total",
-   "read_only": 1
-  },
-  {
-   "fieldname": "grand_total",
-   "fieldtype": "Currency",
-   "in_list_view": 1,
-   "label": "Grand Total",
-   "read_only": 1
-  },
-  {
-   "fieldname": "outstanding_amount",
-   "fieldtype": "Currency",
-   "in_list_view": 1,
-   "label": "Outstanding Amount",
-   "read_only": 1
-  },
-  {
-   "fieldname": "base_section",
-   "fieldtype": "Section Break",
-   "label": "In company currency"
-  },
-  {
-   "fieldname": "base_net_total",
-   "fieldtype": "Currency",
-   "label": "Base Net Total",
-   "read_only": 1
-  },
-  {
-   "fieldname": "base_tax_total",
-   "fieldtype": "Currency",
-   "label": "Base Tax Total",
-   "read_only": 1
-  },
-  {
-   "fieldname": "base_grand_total",
-   "fieldtype": "Currency",
-   "in_list_view": 1,
-   "label": "Base Grand Total",
-   "read_only": 1
-  },
-  {
-   "fieldname": "amended_from",
-   "fieldtype": "Link",
-   "label": "Amended From",
-   "no_copy": 1,
-   "options": "Purchase Invoice",
-   "print_hide": 1,
-   "read_only": 1,
-   "search_index": 1
-  },
-  {
-   "allow_on_submit": 1,
-   "fieldname": "workflow_state",
-   "fieldtype": "Link",
-   "hidden": 1,
-   "label": "Workflow State",
-   "no_copy": 1,
-   "options": "Workflow State",
-   "print_hide": 1,
-   "read_only": 1
-  },
-  {
-   "fieldname": "control_section",
-   "fieldtype": "Section Break",
-   "label": "Control"
-  }
- ],
- "grid_page_length": 50,
- "index_web_pages_for_search": 1,
- "is_submittable": 1,
- "links": [],
- "modified": "2026-04-21 10:00:00",
- "modified_by": "Administrator",
- "module": "Omnexa Accounting",
- "name": "Purchase Invoice",
- "naming_rule": "Random",
- "owner": "Administrator",
- "permissions": [
-  {
-   "amend": 1,
-   "cancel": 1,
-   "create": 1,
-   "delete": 1,
-   "email": 1,
-   "export": 1,
-   "print": 1,
-   "read": 1,
-   "report": 1,
-   "role": "System Manager",
-   "share": 1,
-   "submit": 1,
-   "write": 1
-  },
-  {
-   "amend": 1,
-   "cancel": 1,
-   "create": 1,
-   "delete": 0,
-   "email": 1,
-   "export": 1,
-   "print": 1,
-   "read": 1,
-   "report": 1,
-   "role": "Accounts Manager",
-   "share": 0,
-   "submit": 1,
-   "write": 1
-  },
-  {
-   "amend": 0,
-   "cancel": 0,
-   "create": 1,
-   "delete": 0,
-   "email": 0,
-   "export": 0,
-   "print": 1,
-   "read": 1,
-   "report": 1,
-   "role": "Accounts User",
-   "share": 0,
-   "submit": 1,
-   "write": 1
-  },
-  {
-   "amend": 0,
-   "cancel": 0,
-   "create": 0,
-   "delete": 0,
-   "email": 0,
-   "export": 0,
-   "print": 0,
-   "read": 1,
-   "report": 1,
-   "role": "Desk User",
-   "share": 0,
-   "submit": 0,
-   "write": 0
-  }
- ],
- "row_format": "Dynamic",
- "sort_field": "modified",
- "sort_order": "DESC",
- "states": [],
- "track_changes": 1
+	"actions": [],
+	"autoname": "hash",
+	"creation": "2026-04-12 23:00:00",
+	"doctype": "DocType",
+	"engine": "InnoDB",
+	"field_order": [
+		"company",
+		"branch",
+		"posting_date",
+		"due_date",
+		"column_break_header_1",
+		"supplier",
+		"reference",
+		"external_reference",
+		"column_break_header_2",
+		"po_reference",
+		"goods_receipt_reference",
+		"business_context_section",
+		"service_contract",
+		"project_contract",
+		"pm_wbs_task",
+		"column_break_context_1",
+		"education_student",
+		"healthcare_patient",
+		"tourism_booking",
+		"column_break_context_2",
+		"work_order",
+		"subcontract_work_order",
+		"audit_engagement",
+		"is_return",
+		"return_against",
+		"currency",
+		"conversion_rate",
+		"default_tax_rule",
+		"payment_section",
+		"payment_schedule",
+		"items_section",
+		"items",
+		"totals_section",
+		"net_total",
+		"tax_total",
+		"grand_total",
+		"outstanding_amount",
+		"base_totals_section",
+		"base_net_total",
+		"base_tax_total",
+		"column_break_omnexa_1",
+		"base_grand_total",
+		"amended_from",
+		"workflow_state"
+	],
+	"fields": [
+		{
+			"fieldname": "company",
+			"fieldtype": "Link",
+			"in_list_view": 1,
+			"label": "Company",
+			"options": "Company",
+			"reqd": 1
+		},
+		{
+			"fieldname": "branch",
+			"fieldtype": "Link",
+			"label": "Branch",
+			"options": "Branch",
+			"reqd": 1
+		},
+		{
+			"fieldname": "column_break_header_1",
+			"fieldtype": "Column Break"
+		},
+		{
+			"fieldname": "column_break_header_2",
+			"fieldtype": "Column Break"
+		},
+		{
+			"fieldname": "supplier",
+			"fieldtype": "Link",
+			"in_list_view": 1,
+			"label": "Supplier",
+			"options": "Supplier",
+			"reqd": 1
+		},
+		{
+			"fieldname": "reference",
+			"fieldtype": "Data",
+			"label": "Reference"
+		},
+		{
+			"fieldname": "external_reference",
+			"fieldtype": "Data",
+			"label": "External Reference"
+		},
+		{
+			"default": "Today",
+			"fieldname": "posting_date",
+			"fieldtype": "Date",
+			"in_list_view": 1,
+			"label": "Posting Date",
+			"reqd": 1
+		},
+		{
+			"fieldname": "due_date",
+			"fieldtype": "Date",
+			"label": "Due Date"
+		},
+		{
+			"fieldname": "po_reference",
+			"fieldtype": "Link",
+			"label": "PO Reference",
+			"options": "Purchase Order"
+		},
+		{
+			"fieldname": "goods_receipt_reference",
+			"fieldtype": "Link",
+			"label": "Goods Receipt Reference",
+			"options": "Purchase Receipt"
+		},
+		{
+			"collapsible": 1,
+			"fieldname": "business_context_section",
+			"fieldtype": "Section Break",
+			"label": "Business Context Links"
+		},
+		{
+			"fieldname": "service_contract",
+			"fieldtype": "Link",
+			"label": "Service Contract",
+			"options": "Service Contract"
+		},
+		{
+			"fieldname": "project_contract",
+			"fieldtype": "Link",
+			"label": "Project Contract",
+			"options": "Project Contract"
+		},
+		{
+			"fieldname": "pm_wbs_task",
+			"fieldtype": "Link",
+			"label": "PM WBS Task",
+			"options": "PM WBS Task"
+		},
+		{
+			"fieldname": "column_break_context_1",
+			"fieldtype": "Column Break"
+		},
+		{
+			"fieldname": "education_student",
+			"fieldtype": "Link",
+			"label": "Education Student",
+			"options": "Education Student"
+		},
+		{
+			"fieldname": "healthcare_patient",
+			"fieldtype": "Link",
+			"label": "Healthcare Patient",
+			"options": "Healthcare Patient"
+		},
+		{
+			"fieldname": "tourism_booking",
+			"fieldtype": "Link",
+			"label": "Tourism Booking",
+			"options": "Tourism Booking"
+		},
+		{
+			"fieldname": "column_break_context_2",
+			"fieldtype": "Column Break"
+		},
+		{
+			"fieldname": "work_order",
+			"fieldtype": "Link",
+			"label": "Work Order",
+			"options": "Work Order"
+		},
+		{
+			"fieldname": "subcontract_work_order",
+			"fieldtype": "Link",
+			"label": "Subcontract Work Order",
+			"options": "Subcontract Work Order"
+		},
+		{
+			"fieldname": "audit_engagement",
+			"fieldtype": "Link",
+			"label": "Audit Engagement",
+			"options": "Audit Engagement"
+		},
+		{
+			"default": "0",
+			"fieldname": "is_return",
+			"fieldtype": "Check",
+			"label": "Is Return (Debit Note)"
+		},
+		{
+			"depends_on": "eval:doc.is_return",
+			"fieldname": "return_against",
+			"fieldtype": "Link",
+			"label": "Return Against",
+			"options": "Purchase Invoice"
+		},
+		{
+			"fieldname": "currency",
+			"fieldtype": "Link",
+			"label": "Currency",
+			"options": "Currency",
+			"reqd": 1
+		},
+		{
+			"default": "1",
+			"fieldname": "conversion_rate",
+			"fieldtype": "Float",
+			"label": "Conversion Rate",
+			"precision": "9"
+		},
+		{
+			"fieldname": "default_tax_rule",
+			"fieldtype": "Link",
+			"label": "Default Tax Rule",
+			"options": "Tax Rule"
+		},
+		{
+			"fieldname": "payment_section",
+			"fieldtype": "Section Break",
+			"label": "Payment"
+		},
+		{
+			"fieldname": "payment_schedule",
+			"fieldtype": "Table",
+			"label": "Payment Schedule",
+			"options": "Payment Schedule Line"
+		},
+		{
+			"fieldname": "items_section",
+			"fieldtype": "Section Break",
+			"label": "Products and Services"
+		},
+		{
+			"fieldname": "items",
+			"fieldtype": "Table",
+			"label": "Items",
+			"options": "Purchase Invoice Item",
+			"reqd": 1
+		},
+		{
+			"fieldname": "totals_section",
+			"fieldtype": "Section Break",
+			"label": "Totals"
+		},
+		{
+			"fieldname": "net_total",
+			"fieldtype": "Currency",
+			"label": "Net Total",
+			"read_only": 1
+		},
+		{
+			"fieldname": "tax_total",
+			"fieldtype": "Currency",
+			"label": "Tax Total",
+			"read_only": 1
+		},
+		{
+			"fieldname": "grand_total",
+			"fieldtype": "Currency",
+			"in_list_view": 1,
+			"label": "Grand Total",
+			"read_only": 1
+		},
+		{
+			"fieldname": "outstanding_amount",
+			"fieldtype": "Currency",
+			"in_list_view": 1,
+			"label": "Outstanding Amount",
+			"read_only": 1
+		},
+		{
+			"fieldname": "base_totals_section",
+			"fieldtype": "Section Break",
+			"label": "In company currency"
+		},
+		{
+			"fieldname": "base_net_total",
+			"fieldtype": "Currency",
+			"label": "Base Net Total",
+			"read_only": 1
+		},
+		{
+			"fieldname": "base_tax_total",
+			"fieldtype": "Currency",
+			"label": "Base Tax Total",
+			"read_only": 1
+		},
+		{
+			"fieldname": "base_grand_total",
+			"fieldtype": "Currency",
+			"in_list_view": 1,
+			"label": "Base Grand Total",
+			"read_only": 1
+		},
+		{
+			"fieldname": "amended_from",
+			"fieldtype": "Link",
+			"label": "Amended From",
+			"no_copy": 1,
+			"options": "Purchase Invoice",
+			"print_hide": 1,
+			"read_only": 1,
+			"search_index": 1
+		},
+		{
+			"allow_on_submit": 1,
+			"fieldname": "workflow_state",
+			"fieldtype": "Link",
+			"hidden": 1,
+			"label": "Workflow State",
+			"no_copy": 1,
+			"options": "Workflow State",
+			"print_hide": 1,
+			"read_only": 1
+		},
+		{
+			"fieldname": "column_break_omnexa_1",
+			"fieldtype": "Column Break"
+		}
+	],
+	"grid_page_length": 50,
+	"index_web_pages_for_search": 1,
+	"is_submittable": 1,
+	"links": [],
+	"modified": "2026-04-21 10:00:00",
+	"modified_by": "Administrator",
+	"module": "Omnexa Accounting",
+	"name": "Purchase Invoice",
+	"naming_rule": "Random",
+	"owner": "Administrator",
+	"permissions": [
+		{
+			"amend": 1,
+			"cancel": 1,
+			"create": 1,
+			"delete": 1,
+			"email": 1,
+			"export": 1,
+			"print": 1,
+			"read": 1,
+			"report": 1,
+			"role": "System Manager",
+			"share": 1,
+			"submit": 1,
+			"write": 1
+		},
+		{
+			"amend": 1,
+			"cancel": 1,
+			"create": 1,
+			"delete": 0,
+			"email": 1,
+			"export": 1,
+			"print": 1,
+			"read": 1,
+			"report": 1,
+			"role": "Accounts Manager",
+			"share": 0,
+			"submit": 1,
+			"write": 1
+		},
+		{
+			"amend": 0,
+			"cancel": 0,
+			"create": 1,
+			"delete": 0,
+			"email": 0,
+			"export": 0,
+			"print": 1,
+			"read": 1,
+			"report": 1,
+			"role": "Accounts User",
+			"share": 0,
+			"submit": 1,
+			"write": 1
+		},
+		{
+			"amend": 0,
+			"cancel": 0,
+			"create": 0,
+			"delete": 0,
+			"email": 0,
+			"export": 0,
+			"print": 0,
+			"read": 1,
+			"report": 1,
+			"role": "Desk User",
+			"share": 0,
+			"submit": 0,
+			"write": 0
+		}
+	],
+	"row_format": "Dynamic",
+	"sort_field": "modified",
+	"sort_order": "DESC",
+	"states": [],
+	"track_changes": 1
 }

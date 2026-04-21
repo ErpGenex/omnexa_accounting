@@ -11,6 +11,7 @@ def after_install():
 def after_migrate():
 	ensure_accounting_roles()
 	ensure_journal_entry_entry_type_not_duplicate_custom_field()
+	ensure_sales_order_delivery_terms_not_duplicate_custom_field()
 	from omnexa_accounting.utils.bank_reconciliation_workflow import ensure_bank_reconciliation_workflow
 	from omnexa_accounting.utils.demo_workspace_seed import ensure_demo_workspace_seed
 	from omnexa_accounting.utils.inventory_workflow import ensure_inventory_workflows
@@ -50,3 +51,19 @@ def ensure_accounting_roles():
 		doc.desk_access = 1
 		doc.is_custom = 1
 		doc.insert(ignore_permissions=True)
+
+
+def ensure_sales_order_delivery_terms_not_duplicate_custom_field():
+	"""Remove legacy Custom Field that shadows Sales Order.delivery_terms as Data."""
+	try:
+		name = frappe.db.get_value("Custom Field", {"dt": "Sales Order", "fieldname": "delivery_terms"}, "name")
+		if not name:
+			return
+		fieldtype = frappe.db.get_value("Custom Field", name, "fieldtype")
+		if fieldtype == "Data":
+			frappe.delete_doc("Custom Field", name, force=True)
+			frappe.db.commit()
+	except Exception:
+		frappe.log_error(
+			frappe.get_traceback(), "Omnexa Accounting: remove duplicate Sales Order delivery_terms CF"
+		)

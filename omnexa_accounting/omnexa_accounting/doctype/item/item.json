@@ -1,227 +1,218 @@
 {
- "actions": [],
- "allow_rename": 1,
- "autoname": "hash",
- "creation": "2026-04-14 10:00:00",
- "doctype": "DocType",
- "engine": "InnoDB",
- "field_order": [
-  "identity_section",
-  "item_code",
-  "item_name",
-  "item_grouping_break",
-  "product_type",
-  "manufacturing_role",
-  "can_be_manufactured",
-  "requires_dynamic_composition",
-  "company",
-  "stock_uom",
-  "column_flags",
-  "is_stock_item",
-  "current_stock_qty",
-  "last_stock_reconciliation_date",
-  "is_sales_item",
-  "is_purchase_item",
-  "has_batch_no",
-  "inventory_control_account",
-  "disabled",
-  "control_section",
-  "classification_code"
- ],
- "fields": [
-  {
-   "fieldname": "identity_section",
-   "fieldtype": "Section Break",
-   "label": "Profile Identity"
-  },
-  {
-   "fieldname": "item_code",
-   "fieldtype": "Data",
-   "in_list_view": 1,
-   "label": "Item Code",
-   "reqd": 1
-  },
-  {
-   "fieldname": "item_name",
-   "fieldtype": "Data",
-   "in_list_view": 1,
-   "label": "Item Name",
-   "reqd": 1
-  },
-  {
-   "fieldname": "item_grouping_break",
-   "fieldtype": "Column Break"
-  },
-  {
-   "default": "Traditional Product",
-   "fieldname": "product_type",
-   "fieldtype": "Select",
-   "in_list_view": 1,
-   "label": "Product Type",
-   "options": "Traditional Product\nService\nRaw Material\nConsumable\nKit",
-   "reqd": 1
-  },
-  {
-   "default": "Finished Good",
-   "fieldname": "manufacturing_role",
-   "fieldtype": "Select",
-   "label": "Manufacturing Role",
-   "options": "Finished Good\nRaw Material\nConsumable\nSub Assembly\nService"
-  },
-  {
-   "default": "0",
-   "fieldname": "can_be_manufactured",
-   "fieldtype": "Check",
-   "label": "Can Be Manufactured"
-  },
-  {
-   "default": "0",
-   "fieldname": "requires_dynamic_composition",
-   "fieldtype": "Check",
-   "label": "Requires Dynamic Composition"
-  },
-  {
-   "fieldname": "company",
-   "fieldtype": "Link",
-   "in_list_view": 1,
-   "label": "Company",
-   "options": "Company"
-  },
-  {
-   "fieldname": "stock_uom",
-   "fieldtype": "Link",
-   "in_list_view": 1,
-   "label": "Stock UOM",
-   "options": "UOM",
-   "reqd": 1
-  },
-  {
-   "fieldname": "column_flags",
-   "fieldtype": "Column Break"
-  },
-  {
-   "default": "1",
-   "fieldname": "is_stock_item",
-   "fieldtype": "Check",
-   "label": "Is Stock Item"
-  },
-  {
-   "default": "0",
-   "fieldname": "current_stock_qty",
-   "fieldtype": "Float",
-   "label": "Current Stock Qty"
-  },
-  {
-   "fieldname": "last_stock_reconciliation_date",
-   "fieldtype": "Date",
-   "label": "Last Stock Reconciliation Date",
-   "read_only": 1
-  },
-  {
-   "default": "1",
-   "fieldname": "is_sales_item",
-   "fieldtype": "Check",
-   "label": "Is Sales Item"
-  },
-  {
-   "default": "1",
-   "fieldname": "is_purchase_item",
-   "fieldtype": "Check",
-   "label": "Is Purchase Item"
-  },
-  {
-   "default": "0",
-   "description": "When enabled, stock voucher lines should carry batch / serial identifiers (see Stock Entry, Receipt, Delivery).",
-   "fieldname": "has_batch_no",
-   "fieldtype": "Check",
-   "label": "Track Batch / Serial"
-  },
-  {
-   "description": "Optional leaf Asset GL used to allocate consolidated inventory value across items in Inventory Valuation (GL).",
-   "fieldname": "inventory_control_account",
-   "fieldtype": "Link",
-   "label": "Inventory Control GL",
-   "options": "GL Account"
-  },
-  {
-   "default": "0",
-   "fieldname": "disabled",
-   "fieldtype": "Check",
-   "label": "Disabled"
-  },
-  {
-   "fieldname": "control_section",
-   "fieldtype": "Section Break",
-   "label": "Compliance"
-  },
-  {
-   "fieldname": "classification_code",
-   "fieldtype": "Data",
-   "label": "Classification Code"
-  }
- ],
- "grid_page_length": 50,
- "index_web_pages_for_search": 1,
- "links": [],
- "modified": "2026-04-14 10:00:00",
- "modified_by": "Administrator",
- "module": "Omnexa Accounting",
- "name": "Item",
- "naming_rule": "Random",
- "owner": "Administrator",
- "permissions": [
-  {
-   "create": 1,
-   "delete": 1,
-   "email": 1,
-   "export": 1,
-   "print": 1,
-   "read": 1,
-   "report": 1,
-   "role": "System Manager",
-   "share": 1,
-   "write": 1
-  },
-  {
-   "create": 1,
-   "delete": 0,
-   "email": 1,
-   "export": 1,
-   "print": 1,
-   "read": 1,
-   "report": 1,
-   "role": "Accounts Manager",
-   "share": 0,
-   "write": 1
-  },
-  {
-   "create": 1,
-   "delete": 0,
-   "email": 0,
-   "export": 0,
-   "print": 1,
-   "read": 1,
-   "report": 1,
-   "role": "Accounts User",
-   "share": 0,
-   "write": 1
-  },
-  {
-   "create": 0,
-   "delete": 0,
-   "email": 0,
-   "export": 0,
-   "print": 0,
-   "read": 1,
-   "report": 1,
-   "role": "Desk User",
-   "share": 0,
-   "write": 0
-  }
- ],
- "row_format": "Dynamic",
- "sort_field": "modified",
- "sort_order": "DESC",
- "states": [],
- "track_changes": 1
+	"actions": [],
+	"allow_rename": 1,
+	"autoname": "hash",
+	"creation": "2026-04-14 10:00:00",
+	"doctype": "DocType",
+	"engine": "InnoDB",
+	"field_order": [
+		"item_code",
+		"item_name",
+		"item_grouping_break",
+		"product_type",
+		"manufacturing_role",
+		"can_be_manufactured",
+		"requires_dynamic_composition",
+		"company",
+		"stock_uom",
+		"column_flags",
+		"is_stock_item",
+		"current_stock_qty",
+		"last_stock_reconciliation_date",
+		"is_sales_item",
+		"is_purchase_item",
+		"has_batch_no",
+		"inventory_control_account",
+		"disabled",
+		"classification_code"
+	],
+	"fields": [
+		{
+			"fieldname": "item_code",
+			"fieldtype": "Data",
+			"in_list_view": 1,
+			"label": "Item Code",
+			"reqd": 1
+		},
+		{
+			"fieldname": "item_name",
+			"fieldtype": "Data",
+			"in_list_view": 1,
+			"label": "Item Name",
+			"reqd": 1
+		},
+		{
+			"fieldname": "item_grouping_break",
+			"fieldtype": "Column Break"
+		},
+		{
+			"default": "Traditional Product",
+			"fieldname": "product_type",
+			"fieldtype": "Select",
+			"in_list_view": 1,
+			"label": "Product Type",
+			"options": "Traditional Product\nService\nRaw Material\nConsumable\nKit",
+			"reqd": 1
+		},
+		{
+			"default": "Finished Good",
+			"fieldname": "manufacturing_role",
+			"fieldtype": "Select",
+			"label": "Manufacturing Role",
+			"options": "Finished Good\nRaw Material\nConsumable\nSub Assembly\nService"
+		},
+		{
+			"default": "0",
+			"fieldname": "can_be_manufactured",
+			"fieldtype": "Check",
+			"label": "Can Be Manufactured"
+		},
+		{
+			"default": "0",
+			"fieldname": "requires_dynamic_composition",
+			"fieldtype": "Check",
+			"label": "Requires Dynamic Composition"
+		},
+		{
+			"fieldname": "company",
+			"fieldtype": "Link",
+			"in_list_view": 1,
+			"label": "Company",
+			"options": "Company"
+		},
+		{
+			"fieldname": "stock_uom",
+			"fieldtype": "Link",
+			"in_list_view": 1,
+			"label": "Stock UOM",
+			"options": "UOM",
+			"reqd": 1
+		},
+		{
+			"fieldname": "column_flags",
+			"fieldtype": "Column Break"
+		},
+		{
+			"default": "1",
+			"fieldname": "is_stock_item",
+			"fieldtype": "Check",
+			"label": "Is Stock Item"
+		},
+		{
+			"default": "0",
+			"fieldname": "current_stock_qty",
+			"fieldtype": "Float",
+			"label": "Current Stock Qty"
+		},
+		{
+			"fieldname": "last_stock_reconciliation_date",
+			"fieldtype": "Date",
+			"label": "Last Stock Reconciliation Date",
+			"read_only": 1
+		},
+		{
+			"default": "1",
+			"fieldname": "is_sales_item",
+			"fieldtype": "Check",
+			"label": "Is Sales Item"
+		},
+		{
+			"default": "1",
+			"fieldname": "is_purchase_item",
+			"fieldtype": "Check",
+			"label": "Is Purchase Item"
+		},
+		{
+			"default": "0",
+			"description": "When enabled, stock voucher lines should carry batch / serial identifiers (see Stock Entry, Receipt, Delivery).",
+			"fieldname": "has_batch_no",
+			"fieldtype": "Check",
+			"label": "Track Batch / Serial"
+		},
+		{
+			"description": "Optional leaf Asset GL used to allocate consolidated inventory value across items in Inventory Valuation (GL).",
+			"fieldname": "inventory_control_account",
+			"fieldtype": "Link",
+			"label": "Inventory Control GL",
+			"options": "GL Account"
+		},
+		{
+			"default": "0",
+			"fieldname": "disabled",
+			"fieldtype": "Check",
+			"label": "Disabled"
+		},
+		{
+			"fieldname": "classification_code",
+			"fieldtype": "Data",
+			"label": "Classification Code"
+		}
+	],
+	"grid_page_length": 50,
+	"index_web_pages_for_search": 1,
+	"links": [],
+	"modified": "2026-04-14 10:00:00",
+	"modified_by": "Administrator",
+	"module": "Omnexa Accounting",
+	"name": "Item",
+	"naming_rule": "Random",
+	"owner": "Administrator",
+	"permissions": [
+		{
+			"create": 1,
+			"delete": 1,
+			"email": 1,
+			"export": 1,
+			"print": 1,
+			"read": 1,
+			"report": 1,
+			"role": "System Manager",
+			"share": 1,
+			"write": 1
+		},
+		{
+			"create": 1,
+			"delete": 0,
+			"email": 1,
+			"export": 1,
+			"print": 1,
+			"read": 1,
+			"report": 1,
+			"role": "Accounts Manager",
+			"share": 0,
+			"write": 1
+		},
+		{
+			"create": 1,
+			"delete": 0,
+			"email": 0,
+			"export": 0,
+			"print": 1,
+			"read": 1,
+			"report": 1,
+			"role": "Accounts User",
+			"share": 0,
+			"write": 1
+		},
+		{
+			"create": 0,
+			"delete": 0,
+			"email": 0,
+			"export": 0,
+			"print": 0,
+			"read": 1,
+			"report": 1,
+			"role": "Desk User",
+			"share": 0,
+			"write": 0
+		}
+	],
+	"row_format": "Dynamic",
+	"search_fields": "item_code,item_name",
+	"show_title_field_in_link": 1,
+	"sort_field": "modified",
+	"sort_order": "DESC",
+	"states": [],
+	"title_field": "item_name",
+	"track_changes": 1
 }

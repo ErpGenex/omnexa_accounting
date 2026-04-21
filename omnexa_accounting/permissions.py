@@ -2,8 +2,11 @@
 # License: MIT. See license.txt
 
 import frappe
+from frappe import _
+from frappe.desk.search import validate_and_sanitize_search_inputs
 
 from omnexa_core.omnexa_core.branch_access import enforce_branch_access, get_allowed_branches
+from omnexa_core.omnexa_core.branch_access import get_default_branch, get_default_company
 from omnexa_core.omnexa_core.user_context import apply_company_branch_defaults
 
 
@@ -44,3 +47,39 @@ def journal_entry_query_conditions(user=None):
 
 def bank_reconciliation_query_conditions(user=None):
 	return _get_query_for_table("Bank Reconciliation", user)
+
+
+@frappe.whitelist()
+def get_logged_in_company_branch():
+	company = get_default_company()
+	branch = get_default_branch(company) if company else None
+	return {"company": company, "branch": branch}
+
+
+@frappe.whitelist()
+@validate_and_sanitize_search_inputs
+def delivery_terms_query(doctype, txt, searchfield, start, page_len, filters):
+	return frappe.db.sql(
+		"""
+		SELECT
+			name,
+			term_name,
+			description
+		FROM `tabDelivery Terms`
+		WHERE docstatus < 2
+		  AND (
+			%(txt)s = ''
+			OR name LIKE %(like_txt)s
+			OR term_name LIKE %(like_txt)s
+			OR IFNULL(description, '') LIKE %(like_txt)s
+		  )
+		ORDER BY term_name ASC
+		LIMIT %(start)s, %(page_len)s
+		""",
+		{
+			"txt": txt or "",
+			"like_txt": f"%{txt or ''}%",
+			"start": start,
+			"page_len": page_len,
+		},
+	)

@@ -1,75 +1,63 @@
 {
- "actions": [],
- "creation": "2026-04-18 12:00:00",
- "doctype": "DocType",
- "editable_grid": 1,
- "engine": "InnoDB",
- "field_order": [
-  "identity_section",
-  "gl_account",
-  "cost_center",
-  "period_month",
-  "budget_amount",
-  "control_section",
-  "policy_reference"
- ],
- "fields": [
-  {
-   "fieldname": "identity_section",
-   "fieldtype": "Section Break",
-   "label": "Governance Identity"
-  },
-  {
-   "fieldname": "gl_account",
-   "fieldtype": "Link",
-   "in_list_view": 1,
-   "label": "GL Account",
-   "options": "GL Account",
-   "reqd": 1
-  },
-  {
-   "fieldname": "cost_center",
-   "fieldtype": "Link",
-   "in_list_view": 1,
-   "label": "Cost Center",
-   "options": "Cost Center"
-  },
-  {
-   "description": "If set, this line budget applies only to that calendar month (posting_date) and must fall inside the Budget From\u2013To range.",
-   "fieldname": "period_month",
-   "fieldtype": "Date",
-   "in_list_view": 1,
-   "label": "For Month"
-  },
-  {
-   "fieldname": "budget_amount",
-   "fieldtype": "Currency",
-   "in_list_view": 1,
-   "label": "Budget Amount",
-   "reqd": 1
-  },
-  {
-   "fieldname": "control_section",
-   "fieldtype": "Section Break",
-   "label": "Governance"
-  },
-  {
-   "fieldname": "policy_reference",
-   "fieldtype": "Data",
-   "label": "Policy Reference"
-  }
- ],
- "istable": 1,
- "links": [],
- "modified": "2026-04-18 12:00:00",
- "modified_by": "Administrator",
- "module": "Omnexa Accounting",
- "name": "Budget Line",
- "owner": "Administrator",
- "permissions": [],
- "row_format": "Dynamic",
- "sort_field": "idx",
- "sort_order": "ASC",
- "states": [],
- "track_changes": 0
+	"actions": [],
+	"creation": "2026-04-18 12:00:00",
+	"doctype": "DocType",
+	"editable_grid": 1,
+	"engine": "InnoDB",
+	"field_order": [
+		"gl_account",
+		"cost_center",
+		"period_month",
+		"budget_amount",
+		"policy_reference"
+	],
+	"fields": [
+		{
+			"fieldname": "gl_account",
+			"fieldtype": "Link",
+			"in_list_view": 1,
+			"label": "GL Account",
+			"options": "GL Account",
+			"reqd": 1
+		},
+		{
+			"fieldname": "cost_center",
+			"fieldtype": "Link",
+			"in_list_view": 1,
+			"label": "Cost Center",
+			"options": "Cost Center"
+		},
+		{
+			"description": "If set, this line budget applies only to that calendar month (posting_date) and must fall inside the Budget From–To range.",
+			"fieldname": "period_month",
+			"fieldtype": "Date",
+			"in_list_view": 1,
+			"label": "For Month"
+		},
+		{
+			"fieldname": "budget_amount",
+			"fieldtype": "Currency",
+			"in_list_view": 1,
+			"label": "Budget Amount",
+			"reqd": 1
+		},
+		{
+			"fieldname": "policy_reference",
+			"fieldtype": "Data",
+			"label": "Policy Reference"
+		}
+	],
+	"istable": 1,
+	"links": [],
+	"modified": "2026-04-18 12:00:00",
+	"modified_by": "Administrator",
+	"module": "Omnexa Accounting",
+	"name": "Budget Line",
+	"owner": "Administrator",
+	"permissions": [],
+	"row_format": "Dynamic",
+	"sort_field": "idx",
+	"sort_order": "ASC",
+	"states": [],
+	"track_changes": 0
 }

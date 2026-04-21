@@ -1,64 +1,52 @@
 {
- "actions": [],
- "creation": "2026-04-18 12:00:00",
- "doctype": "DocType",
- "editable_grid": 1,
- "engine": "InnoDB",
- "field_order": [
-  "identity_section",
-  "item_code",
-  "qty",
-  "purpose",
-  "control_section",
-  "classification_code"
- ],
- "fields": [
-  {
-   "fieldname": "identity_section",
-   "fieldtype": "Section Break",
-   "label": "Profile Identity"
-  },
-  {
-   "fieldname": "item_code",
-   "fieldtype": "Data",
-   "in_list_view": 1,
-   "label": "Item Code",
-   "reqd": 1
-  },
-  {
-   "fieldname": "qty",
-   "fieldtype": "Float",
-   "in_list_view": 1,
-   "label": "Qty",
-   "reqd": 1
-  },
-  {
-   "fieldname": "purpose",
-   "fieldtype": "Small Text",
-   "label": "Purpose / Notes"
-  },
-  {
-   "fieldname": "control_section",
-   "fieldtype": "Section Break",
-   "label": "Compliance"
-  },
-  {
-   "fieldname": "classification_code",
-   "fieldtype": "Data",
-   "label": "Classification Code"
-  }
- ],
- "istable": 1,
- "links": [],
- "modified": "2026-04-18 12:00:00",
- "modified_by": "Administrator",
- "module": "Omnexa Accounting",
- "name": "Purchase Request Item",
- "owner": "Administrator",
- "permissions": [],
- "row_format": "Dynamic",
- "sort_field": "idx",
- "sort_order": "ASC",
- "states": [],
- "track_changes": 0
+	"actions": [],
+	"creation": "2026-04-18 12:00:00",
+	"doctype": "DocType",
+	"editable_grid": 1,
+	"engine": "InnoDB",
+	"field_order": [
+		"item_code",
+		"qty",
+		"purpose",
+		"classification_code"
+	],
+	"fields": [
+		{
+			"fieldname": "item_code",
+			"fieldtype": "Data",
+			"in_list_view": 1,
+			"label": "Item Code",
+			"reqd": 1
+		},
+		{
+			"fieldname": "qty",
+			"fieldtype": "Float",
+			"in_list_view": 1,
+			"label": "Qty",
+			"reqd": 1
+		},
+		{
+			"fieldname": "purpose",
+			"fieldtype": "Small Text",
+			"label": "Purpose / Notes"
+		},
+		{
+			"fieldname": "classification_code",
+			"fieldtype": "Data",
+			"label": "Classification Code"
+		}
+	],
+	"istable": 1,
+	"links": [],
+	"modified": "2026-04-18 12:00:00",
+	"modified_by": "Administrator",
+	"module": "Omnexa Accounting",
+	"name": "Purchase Request Item",
+	"owner": "Administrator",
+	"permissions": [],
+	"row_format": "Dynamic",
+	"sort_field": "idx",
+	"sort_order": "ASC",
+	"states": [],
+	"track_changes": 0
 }

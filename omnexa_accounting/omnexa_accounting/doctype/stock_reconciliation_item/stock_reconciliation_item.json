@@ -1,83 +1,76 @@
 {
- "actions": [],
- "creation": "2026-04-15 13:00:00",
- "doctype": "DocType",
- "editable_grid": 1,
- "engine": "InnoDB",
- "field_order": [
-  "identity_section",
-  "item",
-  "item_code",
-  "system_qty",
-  "counted_qty",
-  "variance_qty",
-  "control_section",
-  "external_reference"
- ],
- "fields": [
-  {
-   "fieldname": "identity_section",
-   "fieldtype": "Section Break",
-   "label": "Transaction Core"
-  },
-  {
-   "fieldname": "item",
-   "fieldtype": "Link",
-   "in_list_view": 1,
-   "label": "Item",
-   "options": "Item",
-   "reqd": 1
-  },
-  {
-   "fieldname": "item_code",
-   "fieldtype": "Data",
-   "in_list_view": 1,
-   "label": "Item Code",
-   "read_only": 1
-  },
-  {
-   "fieldname": "system_qty",
-   "fieldtype": "Float",
-   "in_list_view": 1,
-   "label": "System Qty",
-   "read_only": 1
-  },
-  {
-   "fieldname": "counted_qty",
-   "fieldtype": "Float",
-   "in_list_view": 1,
-   "label": "Counted Qty",
-   "reqd": 1
-  },
-  {
-   "fieldname": "variance_qty",
-   "fieldtype": "Float",
-   "in_list_view": 1,
-   "label": "Variance Qty",
-   "read_only": 1
-  },
-  {
-   "fieldname": "control_section",
-   "fieldtype": "Section Break",
-   "label": "Control"
-  },
-  {
-   "fieldname": "external_reference",
-   "fieldtype": "Data",
-   "label": "External Reference"
-  }
- ],
- "istable": 1,
- "links": [],
- "modified": "2026-04-15 13:00:00",
- "modified_by": "Administrator",
- "module": "Omnexa Accounting",
- "name": "Stock Reconciliation Item",
- "owner": "Administrator",
- "permissions": [],
- "row_format": "Dynamic",
- "sort_field": "name",
- "sort_order": "DESC",
- "states": [],
- "track_changes": 0
+	"actions": [],
+	"creation": "2026-04-15 13:00:00",
+	"doctype": "DocType",
+	"editable_grid": 1,
+	"engine": "InnoDB",
+	"field_order": [
+		"item",
+		"item_code",
+		"system_qty",
+		"column_break_omnexa_1",
+		"counted_qty",
+		"variance_qty",
+		"external_reference"
+	],
+	"fields": [
+		{
+			"fieldname": "item",
+			"fieldtype": "Link",
+			"in_list_view": 1,
+			"label": "Item",
+			"options": "Item",
+			"reqd": 1
+		},
+		{
+			"fieldname": "item_code",
+			"fieldtype": "Data",
+			"in_list_view": 1,
+			"label": "Item Code",
+			"read_only": 1
+		},
+		{
+			"fieldname": "system_qty",
+			"fieldtype": "Float",
+			"in_list_view": 1,
+			"label": "System Qty",
+			"read_only": 1
+		},
+		{
+			"fieldname": "counted_qty",
+			"fieldtype": "Float",
+			"in_list_view": 1,
+			"label": "Counted Qty",
+			"reqd": 1
+		},
+		{
+			"fieldname": "variance_qty",
+			"fieldtype": "Float",
+			"in_list_view": 1,
+			"label": "Variance Qty",
+			"read_only": 1
+		},
+		{
+			"fieldname": "external_reference",
+			"fieldtype": "Data",
+			"label": "External Reference"
+		},
+		{
+			"fieldname": "column_break_omnexa_1",
+			"fieldtype": "Column Break"
+		}
+	],
+	"istable": 1,
+	"links": [],
+	"modified": "2026-04-15 13:00:00",
+	"modified_by": "Administrator",
+	"module": "Omnexa Accounting",
+	"name": "Stock Reconciliation Item",
+	"owner": "Administrator",
+	"permissions": [],
+	"row_format": "Dynamic",
+	"sort_field": "name",
+	"sort_order": "DESC",
+	"states": [],
+	"track_changes": 0
 }

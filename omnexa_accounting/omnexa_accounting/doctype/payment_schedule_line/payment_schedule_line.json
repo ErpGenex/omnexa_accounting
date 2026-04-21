@@ -1,64 +1,52 @@
 {
- "actions": [],
- "creation": "2026-04-15 10:00:00",
- "doctype": "DocType",
- "editable_grid": 1,
- "engine": "InnoDB",
- "field_order": [
-  "identity_section",
-  "due_date",
-  "payment_amount",
-  "note",
-  "control_section",
-  "external_reference"
- ],
- "fields": [
-  {
-   "fieldname": "identity_section",
-   "fieldtype": "Section Break",
-   "label": "Transaction Core"
-  },
-  {
-   "fieldname": "due_date",
-   "fieldtype": "Date",
-   "in_list_view": 1,
-   "label": "Due Date",
-   "reqd": 1
-  },
-  {
-   "fieldname": "payment_amount",
-   "fieldtype": "Currency",
-   "in_list_view": 1,
-   "label": "Payment Amount",
-   "reqd": 1
-  },
-  {
-   "fieldname": "note",
-   "fieldtype": "Data",
-   "label": "Note"
-  },
-  {
-   "fieldname": "control_section",
-   "fieldtype": "Section Break",
-   "label": "Control"
-  },
-  {
-   "fieldname": "external_reference",
-   "fieldtype": "Data",
-   "label": "External Reference"
-  }
- ],
- "istable": 1,
- "links": [],
- "modified": "2026-04-15 10:00:00",
- "modified_by": "Administrator",
- "module": "Omnexa Accounting",
- "name": "Payment Schedule Line",
- "owner": "Administrator",
- "permissions": [],
- "row_format": "Dynamic",
- "sort_field": "name",
- "sort_order": "DESC",
- "states": [],
- "track_changes": 0
+	"actions": [],
+	"creation": "2026-04-15 10:00:00",
+	"doctype": "DocType",
+	"editable_grid": 1,
+	"engine": "InnoDB",
+	"field_order": [
+		"due_date",
+		"payment_amount",
+		"note",
+		"external_reference"
+	],
+	"fields": [
+		{
+			"fieldname": "due_date",
+			"fieldtype": "Date",
+			"in_list_view": 1,
+			"label": "Due Date",
+			"reqd": 1
+		},
+		{
+			"fieldname": "payment_amount",
+			"fieldtype": "Currency",
+			"in_list_view": 1,
+			"label": "Payment Amount",
+			"reqd": 1
+		},
+		{
+			"fieldname": "note",
+			"fieldtype": "Data",
+			"label": "Note"
+		},
+		{
+			"fieldname": "external_reference",
+			"fieldtype": "Data",
+			"label": "External Reference"
+		}
+	],
+	"istable": 1,
+	"links": [],
+	"modified": "2026-04-15 10:00:00",
+	"modified_by": "Administrator",
+	"module": "Omnexa Accounting",
+	"name": "Payment Schedule Line",
+	"owner": "Administrator",
+	"permissions": [],
+	"row_format": "Dynamic",
+	"sort_field": "name",
+	"sort_order": "DESC",
+	"states": [],
+	"track_changes": 0
 }

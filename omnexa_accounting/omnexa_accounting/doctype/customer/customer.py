@@ -23,3 +23,14 @@ class Customer(Document):
 				_("Customer Name must be unique per company."),
 				title=_("Duplicate"),
 			)
+		if self.customer_code:
+			existing_code = frappe.db.get_value(
+				"Customer",
+				{"company": self.company, "customer_code": self.customer_code},
+				"name",
+			)
+			if existing_code and existing_code != self.name:
+				frappe.throw(
+					_("Customer Code must be unique per company."),
+					title=_("Duplicate"),
+				)

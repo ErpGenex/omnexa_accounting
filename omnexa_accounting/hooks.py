@@ -26,7 +26,7 @@ required_apps = ["omnexa_core"]
 
 # include js, css files in header of desk.html
 # app_include_css = "/assets/omnexa_accounting/css/omnexa_accounting.css"
-# app_include_js = "/assets/omnexa_accounting/js/omnexa_accounting.js"
+app_include_js = "/assets/omnexa_accounting/js/link_formatters.js"
 
 # include js, css files in header of web template
 # web_include_css = "/assets/omnexa_accounting/css/omnexa_accounting.css"
@@ -43,7 +43,18 @@ required_apps = ["omnexa_core"]
 # page_js = {"page" : "public/js/file.js"}
 
 # include js in doctype views
-doctype_js = {"Company": "public/js/company_production_demo.js"}
+doctype_js = {
+	"Company": "public/js/company_production_demo.js",
+	"Sales Order": "public/js/sales_order.js",
+	"Sales Invoice": "public/js/sales_invoice.js",
+	"Sales Quotation": "public/js/sales_quotation.js",
+	"Purchase Order": "public/js/purchase_order.js",
+	"Purchase Invoice": "public/js/purchase_invoice.js",
+	"Purchase Receipt": "public/js/purchase_receipt.js",
+	"Delivery Note": "public/js/delivery_note.js",
+	"Payment Entry": "public/js/payment_entry.js",
+	"Stock Entry": "public/js/stock_entry.js",
+}
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
 # doctype_calendar_js = {"doctype" : "public/js/doctype_calendar.js"}
@@ -153,6 +164,10 @@ permission_query_conditions = {
 # 	}
 # }
 doc_events = {
+	"Sales Order": {
+		"before_validate": "omnexa_accounting.permissions.populate_company_branch_from_user_context",
+		"validate": "omnexa_accounting.permissions.enforce_branch_access_for_doc",
+	},
 	"Purchase Order": {
 		"on_submit": "omnexa_accounting.automation.sop_hooks.on_purchase_order_submit",
 	},
@@ -176,6 +191,14 @@ doc_events = {
 			"omnexa_accounting.permissions.enforce_branch_access_for_doc",
 			"omnexa_accounting.utils.global_erp_strict_validations.validate_purchase_invoice",
 		],
+	},
+	"Purchase Receipt": {
+		"before_validate": "omnexa_accounting.permissions.populate_company_branch_from_user_context",
+		"validate": "omnexa_accounting.permissions.enforce_branch_access_for_doc",
+	},
+	"Delivery Note": {
+		"before_validate": "omnexa_accounting.permissions.populate_company_branch_from_user_context",
+		"validate": "omnexa_accounting.permissions.enforce_branch_access_for_doc",
 	},
 	"Payment Entry": {
 		"before_validate": "omnexa_accounting.permissions.populate_company_branch_from_user_context",

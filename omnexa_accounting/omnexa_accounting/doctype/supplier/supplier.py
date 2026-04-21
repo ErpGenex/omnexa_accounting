@@ -21,3 +21,14 @@ class Supplier(Document):
 				_("Supplier Name must be unique per company."),
 				title=_("Duplicate"),
 			)
+		if self.supplier_code:
+			existing_code = frappe.db.get_value(
+				"Supplier",
+				{"company": self.company, "supplier_code": self.supplier_code},
+				"name",
+			)
+			if existing_code and existing_code != self.name:
+				frappe.throw(
+					_("Supplier Code must be unique per company."),
+					title=_("Duplicate"),
+				)
