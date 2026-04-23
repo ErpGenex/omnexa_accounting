@@ -1,8 +1,8 @@
 app_name = "omnexa_accounting"
 app_title = "ErpGenEx — Accounting"
-app_publisher = "Omnexa"
+app_publisher = "ErpGenEx"
 app_description = "Double-entry accounting for ErpGenEx (omnexa_accounting)"
-app_email = "dev@omnexa.local"
+app_email = "dev@erpgenex.com"
 app_license = "mit"
 
 # Apps
