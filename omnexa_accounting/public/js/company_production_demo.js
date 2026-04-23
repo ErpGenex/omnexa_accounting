@@ -14,6 +14,29 @@ frappe.ui.form.on("Company", {
 			filters: { company: frm.doc.name },
 		}));
 
+		const companyGlDefaultFields = [
+			"default_petty_cash_gl",
+			"default_bank_operating_gl",
+			"default_receivable_gl",
+			"default_inventory_gl",
+			"default_advance_to_supplier_gl",
+			"default_input_vat_gl",
+			"default_other_receivable_gl",
+			"default_trade_payable_gl",
+			"default_output_vat_gl",
+			"default_customer_advances_gl",
+			"default_share_capital_gl",
+			"default_retained_earnings_gl",
+			"default_sales_revenue_gl",
+			"default_service_revenue_gl",
+			"default_cogs_gl",
+			"default_opex_gl",
+			"default_finance_cost_gl",
+		];
+		companyGlDefaultFields.forEach((fieldname) => {
+			frm.set_query(fieldname, () => ({ filters: { company: frm.doc.name } }));
+		});
+
 		if (frm.__omnexa_production_demo_buttons_added) {
 			return;
 		}
@@ -62,6 +85,18 @@ frappe.ui.form.on("Company", {
 					__("Generate professional COA"),
 				),
 			group,
+		);
+
+		const ifrsGroup = __("IFRS defaults");
+		frm.add_custom_button(
+			__("Fill default GLs from CoA (by account number)"),
+			() =>
+				run(
+					"omnexa_accounting.utils.company_financial_defaults.fill_company_financial_defaults_from_coa",
+					{ company, branch: branch(), overwrite: 0 },
+					__("Fill default GLs from CoA"),
+				),
+			ifrsGroup,
 		);
 
 		frm.add_custom_button(

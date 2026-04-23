@@ -45,6 +45,7 @@ app_include_js = "/assets/omnexa_accounting/js/link_formatters.js"
 # include js in doctype views
 doctype_js = {
 	"Company": "public/js/company_production_demo.js",
+	"Branch": "public/js/branch_financial_defaults.js",
 	"Sales Order": "public/js/sales_order.js",
 	"Sales Invoice": "public/js/sales_invoice.js",
 	"Sales Quotation": "public/js/sales_quotation.js",
@@ -165,6 +166,13 @@ permission_query_conditions = {
 # 	}
 # }
 doc_events = {
+	"Company": {
+		"validate": "omnexa_accounting.utils.company_financial_defaults.run_company_financial_validations",
+		"on_update": "omnexa_accounting.utils.company_financial_defaults.on_company_update_sync_globals",
+	},
+	"Branch": {
+		"validate": "omnexa_accounting.utils.company_financial_defaults.run_branch_financial_validations",
+	},
 	"Sales Order": {
 		"before_validate": "omnexa_accounting.permissions.populate_company_branch_from_user_context",
 		"validate": "omnexa_accounting.permissions.enforce_branch_access_for_doc",

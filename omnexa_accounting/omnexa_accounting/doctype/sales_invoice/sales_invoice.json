@@ -103,21 +103,18 @@
 		},
 		{
 			"fieldname": "service_contract",
-			"fieldtype": "Link",
-			"label": "Service Contract",
-			"options": "Service Contract"
+			"fieldtype": "Data",
+			"label": "Service Contract (Optional Ref.)"
 		},
 		{
 			"fieldname": "project_contract",
-			"fieldtype": "Link",
-			"label": "Project Contract",
-			"options": "Project Contract"
+			"fieldtype": "Data",
+			"label": "Project Contract (Optional Ref.)"
 		},
 		{
 			"fieldname": "pm_wbs_task",
-			"fieldtype": "Link",
-			"label": "PM WBS Task",
-			"options": "PM WBS Task"
+			"fieldtype": "Data",
+			"label": "PM WBS Task (Optional Ref.)"
 		},
 		{
 			"fieldname": "column_break_context_1",
@@ -125,21 +122,18 @@
 		},
 		{
 			"fieldname": "education_student",
-			"fieldtype": "Link",
-			"label": "Education Student",
-			"options": "Education Student"
+			"fieldtype": "Data",
+			"label": "Education Student (Optional Ref.)"
 		},
 		{
 			"fieldname": "healthcare_patient",
-			"fieldtype": "Link",
-			"label": "Healthcare Patient",
-			"options": "Healthcare Patient"
+			"fieldtype": "Data",
+			"label": "Healthcare Patient (Optional Ref.)"
 		},
 		{
 			"fieldname": "tourism_booking",
-			"fieldtype": "Link",
-			"label": "Tourism Booking",
-			"options": "Tourism Booking"
+			"fieldtype": "Data",
+			"label": "Tourism Booking (Optional Ref.)"
 		},
 		{
 			"fieldname": "column_break_context_2",
@@ -147,21 +141,18 @@
 		},
 		{
 			"fieldname": "work_order",
-			"fieldtype": "Link",
-			"label": "Work Order",
-			"options": "Work Order"
+			"fieldtype": "Data",
+			"label": "Work Order (Optional Ref.)"
 		},
 		{
 			"fieldname": "subcontract_work_order",
-			"fieldtype": "Link",
-			"label": "Subcontract Work Order",
-			"options": "Subcontract Work Order"
+			"fieldtype": "Data",
+			"label": "Subcontract Work Order (Optional Ref.)"
 		},
 		{
 			"fieldname": "audit_engagement",
-			"fieldtype": "Link",
-			"label": "Audit Engagement",
-			"options": "Audit Engagement"
+			"fieldtype": "Data",
+			"label": "Audit Engagement (Optional Ref.)"
 		},
 		{
 			"fieldname": "customer",

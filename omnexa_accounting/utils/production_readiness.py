@@ -136,6 +136,13 @@ def _run_professional_coa_sync(company: str, branch: str | None, activity: str |
 def generate_professional_chart_of_accounts(company: str, branch: str | None = None, activity: str | None = None):
 	"""Generate professional CoA template per company/branch/activity."""
 	result = _run_professional_coa_sync(company, branch, activity)
+	try:
+		from omnexa_accounting.utils.company_financial_defaults import apply_company_default_gl_from_coa
+
+		result["company_default_gl_fill"] = apply_company_default_gl_from_coa(company, branch=branch, overwrite=0)
+	except Exception:
+		frappe.log_error(frappe.get_traceback(), "Omnexa: apply_company_default_gl_from_coa after COA")
+		result["company_default_gl_fill"] = {"ok": False}
 	log_id = _log_seed_operation(
 		"Generate COA",
 		company,
@@ -157,6 +164,13 @@ def resync_chart_of_accounts_labels(company: str, branch: str | None = None, act
 	that match seeded `account_number` values for this company/branch.
 	"""
 	result = _run_professional_coa_sync(company, branch, activity)
+	try:
+		from omnexa_accounting.utils.company_financial_defaults import apply_company_default_gl_from_coa
+
+		result["company_default_gl_fill"] = apply_company_default_gl_from_coa(company, branch=branch, overwrite=0)
+	except Exception:
+		frappe.log_error(frappe.get_traceback(), "Omnexa: apply_company_default_gl_from_coa after COA resync")
+		result["company_default_gl_fill"] = {"ok": False}
 	log_id = _log_seed_operation(
 		"Resync COA Labels",
 		company,
