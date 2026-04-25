@@ -1,0 +1,123 @@
+{
+	"actions": [],
+	"autoname": "hash",
+	"creation": "2026-04-25 17:10:00",
+	"doctype": "DocType",
+	"engine": "InnoDB",
+	"field_order": [
+		"company",
+		"branch",
+		"status",
+		"column_break_1",
+		"performed_by",
+		"performed_on",
+		"confirm_text",
+		"blocked_reason",
+		"backup_file",
+		"gl_accounts_before",
+		"gl_accounts_deleted"
+	],
+	"fields": [
+		{
+			"fieldname": "company",
+			"fieldtype": "Link",
+			"in_list_view": 1,
+			"label": "Company",
+			"options": "Company",
+			"reqd": 1
+		},
+		{
+			"fieldname": "branch",
+			"fieldtype": "Link",
+			"in_list_view": 1,
+			"label": "Branch",
+			"options": "Branch"
+		},
+		{
+			"default": "blocked",
+			"fieldname": "status",
+			"fieldtype": "Select",
+			"in_list_view": 1,
+			"label": "Status",
+			"options": "blocked\ncompleted\nfailed",
+			"reqd": 1
+		},
+		{
+			"fieldname": "performed_by",
+			"fieldtype": "Link",
+			"in_list_view": 1,
+			"label": "Performed By",
+			"options": "User",
+			"read_only": 1
+		},
+		{
+			"fieldname": "performed_on",
+			"fieldtype": "Datetime",
+			"in_list_view": 1,
+			"label": "Performed On",
+			"read_only": 1
+		},
+		{
+			"fieldname": "confirm_text",
+			"fieldtype": "Data",
+			"label": "Confirm Text"
+		},
+		{
+			"fieldname": "blocked_reason",
+			"fieldtype": "Small Text",
+			"label": "Blocked Reason"
+		},
+		{
+			"fieldname": "backup_file",
+			"fieldtype": "Link",
+			"label": "Backup File",
+			"options": "File",
+			"read_only": 1
+		},
+		{
+			"default": "0",
+			"fieldname": "gl_accounts_before",
+			"fieldtype": "Int",
+			"label": "GL Accounts Before",
+			"read_only": 1
+		},
+		{
+			"default": "0",
+			"fieldname": "gl_accounts_deleted",
+			"fieldtype": "Int",
+			"label": "GL Accounts Deleted",
+			"read_only": 1
+		},
+		{
+			"fieldname": "column_break_1",
+			"fieldtype": "Column Break"
+		}
+	],
+	"grid_page_length": 50,
+	"index_web_pages_for_search": 1,
+	"links": [],
+	"modified": "2026-04-25 17:10:00",
+	"modified_by": "Administrator",
+	"module": "Omnexa Accounting",
+	"name": "COA Reset Audit Log",
+	"naming_rule": "Random",
+	"owner": "Administrator",
+	"permissions": [
+		{
+			"create": 1,
+			"delete": 1,
+			"email": 1,
+			"export": 1,
+			"print": 1,
+			"read": 1,
+			"report": 1,
+			"role": "System Manager",
+			"share": 1,
+			"write": 1
+		}
+	],
+	"sort_field": "modified",
+	"sort_order": "DESC",
+	"track_changes": 1
+}
+

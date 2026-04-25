@@ -55,9 +55,12 @@ doctype_js = {
 	"Delivery Note": "public/js/delivery_note.js",
 	"Payment Entry": "public/js/payment_entry.js",
 	"Stock Entry": "public/js/stock_entry.js",
+	"COA Template": "public/js/coa_template.js",
 }
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
-# doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
+doctype_tree_js = {
+	"GL Account": "public/js/gl_account_tree.js",
+}
 # doctype_calendar_js = {"doctype" : "public/js/doctype_calendar.js"}
 
 # Svg Icons
@@ -200,6 +203,20 @@ doc_events = {
 			"omnexa_accounting.permissions.enforce_branch_access_for_doc",
 			"omnexa_accounting.utils.global_erp_strict_validations.validate_purchase_invoice",
 		],
+	},
+	"Item": {
+		"before_validate": "omnexa_accounting.utils.enterprise_hooks.ensure_item_code",
+	},
+	"Customer": {
+		"before_validate": "omnexa_accounting.utils.enterprise_hooks.ensure_customer_code",
+		"validate": "omnexa_accounting.utils.party_gl_accounts.ensure_customer_receivable_account",
+	},
+	"Supplier": {
+		"before_validate": "omnexa_accounting.utils.enterprise_hooks.ensure_supplier_code",
+		"validate": "omnexa_accounting.utils.party_gl_accounts.ensure_supplier_payable_account",
+	},
+	"Employee": {
+		"before_validate": "omnexa_accounting.utils.enterprise_hooks.ensure_employee_code",
 	},
 	"Purchase Receipt": {
 		"before_validate": "omnexa_accounting.permissions.populate_company_branch_from_user_context",

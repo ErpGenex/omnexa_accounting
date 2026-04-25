@@ -32,3 +32,14 @@ frappe.form.link_formatters.Supplier = function (value, doc) {
 
 	return supplierName;
 };
+
+frappe.form.link_formatters["GL Account"] = function (value, doc) {
+	const accountNumber = doc?.account_number || "";
+	const accountName = doc?.account_name || value || "";
+
+	if (accountNumber && accountName) {
+		return `${accountName} - ${accountNumber}`;
+	}
+
+	return accountNumber || accountName || value;
+};

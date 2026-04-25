@@ -9,8 +9,13 @@
 	"field_order": [
 		"account_number",
 		"account_name",
+		"account_label",
+		"tree_label",
 		"company",
 		"branch",
+		"company_code",
+		"branch_code",
+		"display_code",
 		"is_group",
 		"column_break_omnexa_1",
 		"account_type",
@@ -43,6 +48,20 @@
 			"reqd": 1
 		},
 		{
+			"fieldname": "account_label",
+			"fieldtype": "Data",
+			"in_list_view": 1,
+			"label": "Account Label",
+			"read_only": 1,
+			"search_index": 1
+		},
+		{
+			"fieldname": "tree_label",
+			"fieldtype": "Data",
+			"label": "Tree Label",
+			"read_only": 1
+		},
+		{
 			"fieldname": "company",
 			"fieldtype": "Link",
 			"in_list_view": 1,
@@ -54,6 +73,28 @@
 			"fieldtype": "Link",
 			"label": "Branch",
 			"options": "Branch"
+		},
+		{
+			"fieldname": "company_code",
+			"fieldtype": "Data",
+			"in_list_view": 1,
+			"label": "Company Code",
+			"read_only": 1
+		},
+		{
+			"fieldname": "branch_code",
+			"fieldtype": "Data",
+			"in_list_view": 1,
+			"label": "Branch Code",
+			"read_only": 1
+		},
+		{
+			"fieldname": "display_code",
+			"fieldtype": "Data",
+			"in_list_view": 1,
+			"label": "Display Code",
+			"read_only": 1,
+			"search_index": 1
 		},
 		{
 			"default": "0",
@@ -157,9 +198,9 @@
 	"module": "Omnexa Accounting",
 	"name": "GL Account",
 	"naming_rule": "Random",
-	"search_fields": "account_number,account_name,external_reference",
+	"search_fields": "account_number,account_name,account_label,display_code,external_reference",
 	"show_title_field_in_link": 1,
-	"title_field": "account_name",
+	"title_field": "tree_label",
 	"nsm_parent_field": "parent_account",
 	"owner": "Administrator",
 	"permissions": [

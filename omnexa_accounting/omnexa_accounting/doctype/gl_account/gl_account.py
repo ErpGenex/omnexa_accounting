@@ -5,6 +5,8 @@ import frappe
 from frappe import _
 from frappe.utils.nestedset import NestedSet
 
+from omnexa_core.omnexa_core.feature_flags import is_feature_enabled
+
 
 _INCOME_BUCKETS = frozenset(("", "Revenue", "Other Income"))
 _EXPENSE_BUCKETS = frozenset(("", "COGS", "Operating Expense", "Other Expense"))
@@ -17,6 +19,8 @@ _WC_BUCKETS = frozenset(
 
 class GLAccount(NestedSet):
 	def validate(self):
+		self._sync_account_label()
+		self._sync_advanced_mode_display_code()
 		self._validate_branch_company_link()
 		self._validate_pl_bucket()
 		self._validate_cash_flow_section()
@@ -32,6 +36,35 @@ class GLAccount(NestedSet):
 				),
 				title=_("Duplicate"),
 			)
+
+	def _sync_account_label(self):
+		number = (self.account_number or "").strip()
+		name = (self.account_name or "").strip()
+		self.account_label = name or self.name
+		if number and name:
+			self.tree_label = f"{name} - {number}"
+		else:
+			self.tree_label = name or number or self.name
+
+	def _sync_advanced_mode_display_code(self):
+		"""Advanced-mode display only: CMP-branch-account_number. Never used as logic source."""
+		if not is_feature_enabled("enterprise_coa_advanced_mode", default=False):
+			return
+		if not self.company or not self.account_number:
+			return
+
+		co_abbr = frappe.db.get_value("Company", self.company, "abbr") or ""
+		br_code = ""
+		if self.branch:
+			br_code = frappe.db.get_value("Branch", self.branch, "branch_code") or ""
+		self.company_code = (co_abbr or "").strip()
+		self.branch_code = (br_code or "").strip()
+		if self.company_code and self.branch_code:
+			self.display_code = f"{self.company_code}-{self.branch_code}-{self.account_number}"
+		elif self.company_code:
+			self.display_code = f"{self.company_code}-{self.account_number}"
+		else:
+			self.display_code = self.account_number
 
 	def _validate_branch_company_link(self):
 		if not self.branch:

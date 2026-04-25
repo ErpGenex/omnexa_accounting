@@ -19,9 +19,13 @@ from omnexa_accounting.utils.branch import validate_branch_company
 from omnexa_accounting.utils.currency import apply_multi_currency_to_invoice
 from omnexa_accounting.utils.party import get_effective_credit_days
 from omnexa_accounting.utils.posting import assert_posting_date_open
+from omnexa_accounting.utils.enterprise_codes import ensure_invoice_name
 
 
 class SalesInvoice(Document):
+	def autoname(self):
+		ensure_invoice_name(self, prefix="SINV-", date_field="posting_date", digits=5)
+
 	def validate(self):
 		# Amend copies may carry cancelled workflow state; reset so Frappe workflow can start from draft.
 		if self.is_new() and self.amended_from and self.meta.has_field("workflow_state"):

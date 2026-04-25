@@ -7,10 +7,14 @@ from frappe.model.document import Document
 from frappe.utils import flt
 
 from omnexa_accounting.utils.branch import validate_branch_company
+from omnexa_accounting.utils.enterprise_codes import ensure_simple_doc_name
 from omnexa_accounting.utils.posting import assert_posting_date_open
 
 
 class JournalEntry(Document):
+	def autoname(self):
+		ensure_simple_doc_name(self, prefix="JV-", digits=5, flag_name="enterprise_document_numbering")
+
 	def validate(self):
 		if self.is_new() and self.amended_from and self.meta.has_field("workflow_state"):
 			self.workflow_state = None
