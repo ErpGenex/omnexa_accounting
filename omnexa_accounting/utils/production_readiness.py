@@ -691,6 +691,56 @@ def run_reset_transactions_batched(company: str, branch: str | None = None, limi
 	return overall
 
 
+@frappe.whitelist(methods=["POST"])
+def wipe_company_all_data(company: str, branch: str | None = None, confirm_text: str | None = None):
+	"""Hard wipe for one company scope: transactions + CoA + core masters."""
+	if frappe.session.user != "Administrator":
+		frappe.throw(_("Only Administrator can run full company wipe."), frappe.PermissionError)
+	_assert_admin()
+	if (confirm_text or "").strip() != "DELETE ALL":
+		frappe.throw(_("Type DELETE ALL to confirm full wipe."), title=_("Wipe Company Data"))
+	if not company or not frappe.db.exists("Company", company):
+		frappe.throw(_("Company is required"), title=_("Wipe Company Data"))
+
+	# 1) Cancel + delete all transactions synchronously.
+	tx = run_reset_transactions_batched(
+		company=company, branch=branch, limit=0, batch_size=300, user=frappe.session.user
+	)
+
+	# 2) Reset chart of accounts (with backup + audit log).
+	from omnexa_accounting.utils.coa_reset_service import reset_coa
+
+	coa = reset_coa(company=company, branch=branch, confirm_text="RESET COA")
+
+	# 3) Delete core master data bound to this company.
+	master_doctypes = ["Customer", "Supplier", "Item", "Employee", "Warehouse", "Bank Account", "Cost Center"]
+	master_deleted = []
+	for dt in master_doctypes:
+		if not frappe.db.exists("DocType", dt):
+			continue
+		if not frappe.db.has_column(f"tab{dt}", "company"):
+			continue
+		filters = {"company": company}
+		before = frappe.db.count(dt, filters)
+		if before:
+			frappe.db.delete(dt, filters)
+			frappe.db.commit()
+		after = frappe.db.count(dt, filters)
+		master_deleted.append({"doctype": dt, "before": before, "deleted": max(before - after, 0), "after": after})
+
+	result = {
+		"ok": True,
+		"company": company,
+		"branch": branch,
+		"transactions": tx,
+		"coa_reset": coa,
+		"masters": master_deleted,
+	}
+	log_id = _log_seed_operation("Reset Transactions", company, branch, None, 0, "Success", result)
+	result["log_id"] = log_id
+	return result
+
+
 def _ensure_branch(branch: str) -> tuple[str, str]:
 	if not frappe.db.exists("Branch", branch):
 		frappe.throw(_("Branch {0} not found").format(branch))

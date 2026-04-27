@@ -6,3 +6,5 @@
 # Patches added in this section will be executed after doctypes are migrated
 omnexa_accounting.patches.v1_0.backfill_gl_account_label
 omnexa_accounting.patches.v1_0.backfill_gl_tree_label_v2
+omnexa_accounting.patches.v1_0.enhance_gl_account_ifrs_schema
+omnexa_accounting.patches.v1_0.create_default_coa_settings

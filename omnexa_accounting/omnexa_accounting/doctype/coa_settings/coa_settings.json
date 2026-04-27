@@ -1,0 +1,168 @@
+{
+	"actions": [],
+	"allow_rename": 1,
+	"creation": "2026-04-27 04:00:00",
+	"doctype": "DocType",
+	"editable_grid": 1,
+	"engine": "InnoDB",
+	"field_order": [
+		"company",
+		"enable_numbering_engine",
+		"default_consolidation_view",
+		"manual_number_override_roles",
+		"section_break_masks",
+		"asset_mask",
+		"liability_mask",
+		"equity_mask",
+		"revenue_mask",
+		"expense_mask",
+		"section_break_controls",
+		"require_group_reporting_tag_for_intercompany",
+		"enforce_account_currency_match",
+		"allow_direct_posting_default"
+	],
+	"fields": [
+		{
+			"fieldname": "company",
+			"fieldtype": "Link",
+			"in_list_view": 1,
+			"label": "Company",
+			"options": "Company",
+			"reqd": 1,
+			"unique": 1
+		},
+		{
+			"default": "1",
+			"fieldname": "enable_numbering_engine",
+			"fieldtype": "Check",
+			"label": "Enable Numbering Engine"
+		},
+		{
+			"default": "0",
+			"fieldname": "default_consolidation_view",
+			"fieldtype": "Check",
+			"label": "Default Consolidation View"
+		},
+		{
+			"default": "System Manager\nAccounts Manager",
+			"description": "One role per line allowed to use manual number override.",
+			"fieldname": "manual_number_override_roles",
+			"fieldtype": "Small Text",
+			"label": "Manual Number Override Roles"
+		},
+		{
+			"fieldname": "section_break_masks",
+			"fieldtype": "Section Break",
+			"label": "Account Number Masks"
+		},
+		{
+			"default": "1xxx",
+			"fieldname": "asset_mask",
+			"fieldtype": "Data",
+			"label": "Asset Mask",
+			"reqd": 1
+		},
+		{
+			"default": "2xxx",
+			"fieldname": "liability_mask",
+			"fieldtype": "Data",
+			"label": "Liability Mask",
+			"reqd": 1
+		},
+		{
+			"default": "3xxx",
+			"fieldname": "equity_mask",
+			"fieldtype": "Data",
+			"label": "Equity Mask",
+			"reqd": 1
+		},
+		{
+			"default": "4xxx",
+			"fieldname": "revenue_mask",
+			"fieldtype": "Data",
+			"label": "Revenue Mask",
+			"reqd": 1
+		},
+		{
+			"default": "5xxx",
+			"fieldname": "expense_mask",
+			"fieldtype": "Data",
+			"label": "Expense Mask",
+			"reqd": 1
+		},
+		{
+			"fieldname": "section_break_controls",
+			"fieldtype": "Section Break",
+			"label": "Policy Controls"
+		},
+		{
+			"default": "1",
+			"fieldname": "require_group_reporting_tag_for_intercompany",
+			"fieldtype": "Check",
+			"label": "Require Group Reporting Tag for Intercompany"
+		},
+		{
+			"default": "1",
+			"fieldname": "enforce_account_currency_match",
+			"fieldtype": "Check",
+			"label": "Enforce Account Currency Match"
+		},
+		{
+			"default": "1",
+			"fieldname": "allow_direct_posting_default",
+			"fieldtype": "Check",
+			"label": "Allow Direct Posting Default"
+		}
+	],
+	"grid_page_length": 50,
+	"index_web_pages_for_search": 1,
+	"links": [],
+	"modified": "2026-04-27 04:00:00",
+	"modified_by": "Administrator",
+	"module": "Omnexa Accounting",
+	"name": "CoA Settings",
+	"owner": "Administrator",
+	"permissions": [
+		{
+			"create": 1,
+			"delete": 1,
+			"email": 1,
+			"export": 1,
+			"print": 1,
+			"read": 1,
+			"report": 1,
+			"role": "System Manager",
+			"share": 1,
+			"write": 1
+		},
+		{
+			"create": 1,
+			"delete": 0,
+			"email": 1,
+			"export": 1,
+			"print": 1,
+			"read": 1,
+			"report": 1,
+			"role": "Accounts Manager",
+			"share": 0,
+			"write": 1
+		},
+		{
+			"create": 0,
+			"delete": 0,
+			"email": 0,
+			"export": 0,
+			"print": 1,
+			"read": 1,
+			"report": 1,
+			"role": "Accounts User",
+			"share": 0,
+			"write": 0
+		}
+	],
+	"row_format": "Dynamic",
+	"sort_field": "modified",
+	"sort_order": "DESC",
+	"states": [],
+	"track_changes": 1
+}

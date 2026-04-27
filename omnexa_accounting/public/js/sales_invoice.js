@@ -49,9 +49,68 @@ frappe.ui.form.on("Sales Invoice", {
 			};
 			frappe.set_route("query-report", "Stock Movement");
 		});
+
+		frm.add_custom_button(__("Create Shipment"), async () => {
+			const r = await frappe.call({
+				method: "omnexa_accounting.utils.shipment.create_shipment_from_invoice",
+				args: {
+					doctype: "Sales Invoice",
+					docname: frm.doc.name,
+					carrier: frm.doc.shipment_carrier || undefined,
+				},
+			});
+			const shipment = r?.message?.shipment;
+			if (!shipment) {
+				return;
+			}
+			await frm.reload_doc();
+			frappe.set_route("Form", "Shipment", shipment);
+		});
 	},
 
 	setup(frm) {
+		frm.set_query("project_reference", () => {
+			const filters = {};
+			if (frm.doc.company) filters.company = frm.doc.company;
+			return { filters };
+		});
+		frm.set_query("project_task_reference", () => {
+			const filters = {};
+			if (frm.doc.company) filters.company = frm.doc.company;
+			if (frm.doc.project_reference) filters.project = frm.doc.project_reference;
+			return { filters };
+		});
+
+		frm.set_query("default_tax_rule", () => {
+			const filters = {};
+			if (frm.doc.company) filters.company = frm.doc.company;
+			if (frm.doc.tax_category) filters.tax_category = frm.doc.tax_category;
+			return { filters };
+		});
+		frm.set_query("shipment_carrier", () => {
+			const filters = { is_active: 1 };
+			if (frm.doc.company) filters.company = ["in", ["", frm.doc.company]];
+			return { filters };
+		});
+		frm.set_query("shipment_record", () => ({
+			filters: {
+				invoice_doctype: "Sales Invoice",
+				invoice_name: frm.doc.name || "",
+			},
+		}));
+		frm.set_query("shipment_reference", () => {
+			const filters = { invoice_doctype: "Sales Invoice" };
+			if (frm.doc.name) filters.invoice_name = frm.doc.name;
+			if (frm.doc.company) filters.company = frm.doc.company;
+			return { filters };
+		});
+
+		frm.set_query("set_warehouse", () => {
+			const filters = { disabled: 0 };
+			if (frm.doc.company) filters.company = frm.doc.company;
+			return { filters };
+		});
+
 		frm.set_query("customer", () => {
 			const filters = { status: "Active" };
 			if (frm.doc.company) {
@@ -70,6 +129,21 @@ frappe.ui.form.on("Sales Invoice", {
 			}
 			return { filters };
 		});
+	},
+
+	update_stock(frm) {
+		frm.toggle_reqd("set_warehouse", !!frm.doc.update_stock);
+	},
+	payment_mode(frm) {
+		if (frm.doc.payment_mode === "Cash") {
+			frm.set_value("due_date", frm.doc.posting_date);
+			frappe.show_alert({ message: __("Cash mode: Due Date = Posting Date"), indicator: "green" });
+		} else if (frm.doc.payment_mode === "Installment") {
+			frappe.show_alert({
+				message: __("Installment mode: add at least 2 rows in Payment Schedule"),
+				indicator: "orange",
+			});
+		}
 	},
 });
 

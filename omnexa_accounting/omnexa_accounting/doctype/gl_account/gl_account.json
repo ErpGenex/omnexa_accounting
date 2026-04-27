@@ -8,6 +8,7 @@
 	"engine": "InnoDB",
 	"field_order": [
 		"account_number",
+		"manual_number_override",
 		"account_name",
 		"account_label",
 		"tree_label",
@@ -18,14 +19,29 @@
 		"display_code",
 		"is_group",
 		"column_break_omnexa_1",
+		"account_class",
 		"account_type",
+		"posting_type",
 		"main_account_type",
 		"sub_account_type",
 		"pl_bucket",
 		"cash_flow_section",
 		"working_capital_bucket",
+		"consolidation_account_code",
+		"group_reporting_tag",
+		"intercompany_account",
 		"column_break_omnexa_2",
 		"is_stock_valuation",
+		"is_reconcilable",
+		"is_bank_account",
+		"is_cash_account",
+		"is_tax_account",
+		"is_inventory_account",
+		"allow_direct_posting",
+		"requires_cost_center",
+		"requires_project",
+		"account_currency",
+		"is_frozen",
 		"parent_account",
 		"lft",
 		"rgt",
@@ -39,6 +55,13 @@
 			"in_list_view": 1,
 			"label": "Account Number",
 			"reqd": 1
+		},
+		{
+			"default": "0",
+			"description": "Allow manual account numbering override (restricted by role).",
+			"fieldname": "manual_number_override",
+			"fieldtype": "Check",
+			"label": "Manual Number Override"
 		},
 		{
 			"fieldname": "account_name",
@@ -103,10 +126,24 @@
 			"label": "Is Group"
 		},
 		{
+			"fieldname": "account_class",
+			"fieldtype": "Select",
+			"label": "Account Class",
+			"options": "\nAsset\nLiability\nEquity\nRevenue\nExpense"
+		},
+		{
 			"fieldname": "account_type",
 			"fieldtype": "Select",
 			"label": "Account Type",
-			"options": "\nAsset\nLiability\nEquity\nIncome\nExpense"
+			"options": "\nAsset\nLiability\nEquity\nRevenue\nIncome\nExpense"
+		},
+		{
+			"default": "Posting",
+			"description": "Header maps to group accounts; Posting/Control are leaf posting accounts.",
+			"fieldname": "posting_type",
+			"fieldtype": "Select",
+			"label": "Posting Type",
+			"options": "Posting\nHeader\nControl Account"
 		},
 		{
 			"fieldname": "main_account_type",
@@ -138,7 +175,23 @@
 			"fieldname": "working_capital_bucket",
 			"fieldtype": "Select",
 			"label": "Working Capital Bucket",
-			"options": "\nExclude\nTrade Receivables\nTrade Payables\nInventory\nOther Working Capital"
+			"options": "\nExclude\nReceivable\nPayable\nInventory\nOther\nTrade Receivables\nTrade Payables\nOther Working Capital"
+		},
+		{
+			"fieldname": "consolidation_account_code",
+			"fieldtype": "Data",
+			"label": "Consolidation Account Code"
+		},
+		{
+			"fieldname": "group_reporting_tag",
+			"fieldtype": "Data",
+			"label": "Group Reporting Tag"
+		},
+		{
+			"default": "0",
+			"fieldname": "intercompany_account",
+			"fieldtype": "Check",
+			"label": "Intercompany Account"
 		},
 		{
 			"default": "0",
@@ -146,6 +199,66 @@
 			"fieldname": "is_stock_valuation",
 			"fieldtype": "Check",
 			"label": "Stock Valuation GL"
+		},
+		{
+			"default": "0",
+			"fieldname": "is_reconcilable",
+			"fieldtype": "Check",
+			"label": "Is Reconcilable"
+		},
+		{
+			"default": "0",
+			"fieldname": "is_bank_account",
+			"fieldtype": "Check",
+			"label": "Is Bank Account"
+		},
+		{
+			"default": "0",
+			"fieldname": "is_cash_account",
+			"fieldtype": "Check",
+			"label": "Is Cash Account"
+		},
+		{
+			"default": "0",
+			"fieldname": "is_tax_account",
+			"fieldtype": "Check",
+			"label": "Is Tax Account"
+		},
+		{
+			"default": "0",
+			"fieldname": "is_inventory_account",
+			"fieldtype": "Check",
+			"label": "Is Inventory Account"
+		},
+		{
+			"default": "1",
+			"fieldname": "allow_direct_posting",
+			"fieldtype": "Check",
+			"label": "Allow Direct Posting"
+		},
+		{
+			"default": "0",
+			"fieldname": "requires_cost_center",
+			"fieldtype": "Check",
+			"label": "Requires Cost Center"
+		},
+		{
+			"default": "0",
+			"fieldname": "requires_project",
+			"fieldtype": "Check",
+			"label": "Requires Project"
+		},
+		{
+			"fieldname": "account_currency",
+			"fieldtype": "Link",
+			"label": "Account Currency",
+			"options": "Currency"
+		},
+		{
+			"default": "0",
+			"fieldname": "is_frozen",
+			"fieldtype": "Check",
+			"label": "Is Frozen"
 		},
 		{
 			"fieldname": "parent_account",

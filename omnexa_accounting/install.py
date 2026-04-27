@@ -31,11 +31,18 @@ def after_install():
 	enforce_supported_frappe_version()
 	ensure_accounting_roles()
 	ensure_posting_link_fields()
+	ensure_invoice_tax_shipping_stock_fields()
+	ensure_shipment_fields()
+	ensure_invoice_shipping_and_totals_layout()
+	ensure_invoice_project_link_field_types()
+	ensure_invoice_collapsible_sections()
 	ensure_gl_account_balance_field_and_list_layout()
 	ensure_inventory_accounting_fields()
 	ensure_inventory_accounting_defaults()
 	ensure_customer_balance_field_and_list_layout()
 	ensure_warehouse_stock_snapshot_fields_and_layout()
+	ensure_coa_settings_defaults()
+	ensure_pos_basics()
 	_run_post_install_auto_bootstrap()
 
 
@@ -59,11 +66,18 @@ def after_migrate():
 	ensure_demo_workspace_seed()
 	ensure_report_names_are_python_importable()
 	ensure_posting_link_fields()
+	ensure_invoice_tax_shipping_stock_fields()
+	ensure_shipment_fields()
+	ensure_invoice_shipping_and_totals_layout()
+	ensure_invoice_project_link_field_types()
+	ensure_invoice_collapsible_sections()
 	ensure_gl_account_balance_field_and_list_layout()
 	ensure_inventory_accounting_fields()
 	ensure_inventory_accounting_defaults()
 	ensure_customer_balance_field_and_list_layout()
 	ensure_warehouse_stock_snapshot_fields_and_layout()
+	ensure_coa_settings_defaults()
+	ensure_pos_basics()
 	_run_post_install_auto_bootstrap()
 
 
@@ -137,6 +151,36 @@ def ensure_report_names_are_python_importable():
 		frappe.log_error(frappe.get_traceback(), "Omnexa Accounting: ensure report names importable")
 
 
+def ensure_coa_settings_defaults():
+	"""Ensure one CoA Settings row per company (backward-safe defaults)."""
+	try:
+		companies = frappe.get_all("Company", fields=["name"], limit_page_length=100000)
+		for c in companies:
+			if frappe.db.exists("CoA Settings", {"company": c.name}):
+				continue
+			doc = frappe.get_doc(
+				{
+					"doctype": "CoA Settings",
+					"company": c.name,
+					"enable_numbering_engine": 1,
+					"default_consolidation_view": 0,
+					"manual_number_override_roles": "System Manager\nAccounts Manager",
+					"asset_mask": "1xxx",
+					"liability_mask": "2xxx",
+					"equity_mask": "3xxx",
+					"revenue_mask": "4xxx",
+					"expense_mask": "5xxx",
+					"require_group_reporting_tag_for_intercompany": 1,
+					"enforce_account_currency_match": 1,
+					"allow_direct_posting_default": 1,
+				}
+			)
+			doc.insert(ignore_permissions=True)
+		frappe.db.commit()
+	except Exception:
+		frappe.log_error(frappe.get_traceback(), "Omnexa Accounting: ensure CoA Settings defaults")
+
+
 def ensure_posting_link_fields():
 	"""Add link fields used by UI to open posting entries."""
 	try:
@@ -171,6 +215,482 @@ def ensure_posting_link_fields():
 		create_custom_fields(custom_fields, ignore_validate=True)
 	except Exception:
 		frappe.log_error(frappe.get_traceback(), "Omnexa Accounting: ensure posting link fields")
+
+
+def ensure_pos_basics():
+	"""Enable POS workflow using Sales Invoice when POS Invoice doctype is unavailable."""
+	try:
+		from frappe.custom.doctype.custom_field.custom_field import create_custom_fields
+
+		create_custom_fields(
+			{
+				"Sales Invoice": [
+					{
+						"fieldname": "pos_section",
+						"label": "Point of Sale",
+						"fieldtype": "Section Break",
+						"insert_after": "customer",
+						"collapsible": 1,
+					},
+					{
+						"fieldname": "is_pos",
+						"label": "Is POS",
+						"fieldtype": "Check",
+						"insert_after": "pos_section",
+						"default": "0",
+					},
+					{
+						"fieldname": "pos_profile",
+						"label": "POS Profile",
+						"fieldtype": "Link",
+						"options": "POS Profile",
+						"insert_after": "is_pos",
+						"depends_on": "eval:doc.is_pos==1",
+					},
+				]
+			},
+			ignore_validate=True,
+		)
+		frappe.db.commit()
+	except Exception:
+		frappe.log_error(frappe.get_traceback(), "Omnexa Accounting: ensure POS basics")
+
+
+def ensure_invoice_tax_shipping_stock_fields():
+	"""Expose tax category, shipping, and update-stock controls on invoices."""
+	try:
+		from frappe.custom.doctype.custom_field.custom_field import create_custom_fields
+
+		create_custom_fields(
+			{
+				"Sales Invoice": [
+					{
+						"fieldname": "tax_shipping_section",
+						"label": "Tax and Shipping",
+						"fieldtype": "Section Break",
+						"insert_after": "conversion_rate",
+						"collapsible": 1,
+					},
+					{
+						"fieldname": "tax_category",
+						"label": "Tax Category",
+						"fieldtype": "Link",
+						"options": "Tax Category",
+						"insert_after": "tax_shipping_section",
+					},
+					{
+						"fieldname": "tax_rate",
+						"label": "Tax Rate (%)",
+						"fieldtype": "Percent",
+						"insert_after": "tax_category",
+						"default": "0",
+					},
+					{
+						"fieldname": "tax_amount_manual",
+						"label": "Tax Amount",
+						"fieldtype": "Currency",
+						"insert_after": "tax_rate",
+						"read_only": 1,
+						"no_copy": 1,
+					},
+					{
+						"fieldname": "shipment_reference",
+						"label": "Shipment Reference",
+						"fieldtype": "Data",
+						"insert_after": "tax_amount_manual",
+					},
+					{
+						"fieldname": "project_reference",
+						"label": "Project Reference",
+						"fieldtype": "Data",
+						"insert_after": "project_contract",
+					},
+					{
+						"fieldname": "project_task_reference",
+						"label": "Project Task Reference",
+						"fieldtype": "Data",
+						"insert_after": "pm_wbs_task",
+					},
+					{
+						"fieldname": "shipping_cost",
+						"label": "Shipping Cost",
+						"fieldtype": "Currency",
+						"insert_after": "shipment_reference",
+						"default": "0",
+					},
+					{
+						"fieldname": "tax_breakdown_summary",
+						"label": "Tax Breakdown",
+						"fieldtype": "Small Text",
+						"insert_after": "tax_amount_manual",
+						"read_only": 1,
+						"no_copy": 1,
+					},
+					{
+						"fieldname": "payment_mode",
+						"label": "Payment Mode",
+						"fieldtype": "Select",
+						"options": "\nCash\nCredit\nInstallment",
+						"insert_after": "due_date",
+						"default": "Credit",
+					},
+					{
+						"fieldname": "items_subtotal",
+						"label": "Items Subtotal",
+						"fieldtype": "Currency",
+						"insert_after": "items",
+						"read_only": 1,
+						"no_copy": 1,
+					},
+					{
+						"fieldname": "total_items",
+						"label": "Total Items",
+						"fieldtype": "Int",
+						"insert_after": "items",
+						"read_only": 1,
+						"no_copy": 1,
+					},
+					{
+						"fieldname": "total_qty",
+						"label": "Total Qty",
+						"fieldtype": "Float",
+						"insert_after": "total_items",
+						"read_only": 1,
+						"no_copy": 1,
+					},
+					{
+						"fieldname": "update_stock",
+						"label": "Update Stock",
+						"fieldtype": "Check",
+						"insert_after": "items",
+						"default": "0",
+					},
+					{
+						"fieldname": "set_warehouse",
+						"label": "Set Warehouse",
+						"fieldtype": "Link",
+						"options": "Warehouse",
+						"insert_after": "update_stock",
+					},
+					{
+						"fieldname": "posting_stock_entry",
+						"label": "Posting Stock Entry",
+						"fieldtype": "Link",
+						"options": "Stock Entry",
+						"insert_after": "posting_journal_entry",
+						"read_only": 1,
+						"no_copy": 1,
+						"allow_on_submit": 1,
+					},
+				],
+				"Purchase Invoice": [
+					{
+						"fieldname": "tax_shipping_section",
+						"label": "Tax and Shipping",
+						"fieldtype": "Section Break",
+						"insert_after": "conversion_rate",
+						"collapsible": 1,
+					},
+					{
+						"fieldname": "tax_category",
+						"label": "Tax Category",
+						"fieldtype": "Link",
+						"options": "Tax Category",
+						"insert_after": "tax_shipping_section",
+					},
+					{
+						"fieldname": "tax_rate",
+						"label": "Tax Rate (%)",
+						"fieldtype": "Percent",
+						"insert_after": "tax_category",
+						"default": "0",
+					},
+					{
+						"fieldname": "tax_amount_manual",
+						"label": "Tax Amount",
+						"fieldtype": "Currency",
+						"insert_after": "tax_rate",
+						"read_only": 1,
+						"no_copy": 1,
+					},
+					{
+						"fieldname": "shipment_reference",
+						"label": "Shipment Reference",
+						"fieldtype": "Data",
+						"insert_after": "tax_amount_manual",
+					},
+					{
+						"fieldname": "project_reference",
+						"label": "Project Reference",
+						"fieldtype": "Data",
+						"insert_after": "project_contract",
+					},
+					{
+						"fieldname": "project_task_reference",
+						"label": "Project Task Reference",
+						"fieldtype": "Data",
+						"insert_after": "pm_wbs_task",
+					},
+					{
+						"fieldname": "shipping_cost",
+						"label": "Shipping Cost",
+						"fieldtype": "Currency",
+						"insert_after": "shipment_reference",
+						"default": "0",
+					},
+					{
+						"fieldname": "tax_breakdown_summary",
+						"label": "Tax Breakdown",
+						"fieldtype": "Small Text",
+						"insert_after": "tax_amount_manual",
+						"read_only": 1,
+						"no_copy": 1,
+					},
+					{
+						"fieldname": "payment_mode",
+						"label": "Payment Mode",
+						"fieldtype": "Select",
+						"options": "\nCash\nCredit\nInstallment",
+						"insert_after": "due_date",
+						"default": "Credit",
+					},
+					{
+						"fieldname": "items_subtotal",
+						"label": "Items Subtotal",
+						"fieldtype": "Currency",
+						"insert_after": "items",
+						"read_only": 1,
+						"no_copy": 1,
+					},
+					{
+						"fieldname": "total_items",
+						"label": "Total Items",
+						"fieldtype": "Int",
+						"insert_after": "items",
+						"read_only": 1,
+						"no_copy": 1,
+					},
+					{
+						"fieldname": "total_qty",
+						"label": "Total Qty",
+						"fieldtype": "Float",
+						"insert_after": "total_items",
+						"read_only": 1,
+						"no_copy": 1,
+					},
+					{
+						"fieldname": "update_stock",
+						"label": "Update Stock",
+						"fieldtype": "Check",
+						"insert_after": "items",
+						"default": "0",
+					},
+					{
+						"fieldname": "set_warehouse",
+						"label": "Set Warehouse",
+						"fieldtype": "Link",
+						"options": "Warehouse",
+						"insert_after": "update_stock",
+					},
+					{
+						"fieldname": "posting_stock_entry",
+						"label": "Posting Stock Entry",
+						"fieldtype": "Link",
+						"options": "Stock Entry",
+						"insert_after": "posting_journal_entry",
+						"read_only": 1,
+						"no_copy": 1,
+						"allow_on_submit": 1,
+					},
+				],
+			},
+			ignore_validate=True,
+		)
+	except Exception:
+		frappe.log_error(frappe.get_traceback(), "Omnexa Accounting: ensure invoice tax/shipping/stock fields")
+
+
+def ensure_shipment_fields():
+	"""Expose shipment linkage fields on sales/purchase invoices."""
+	try:
+		from frappe.custom.doctype.custom_field.custom_field import create_custom_fields
+
+		create_custom_fields(
+			{
+				"Sales Invoice": [
+					{
+						"fieldname": "shipment_carrier",
+						"label": "Shipment Carrier",
+						"fieldtype": "Link",
+						"options": "Shipment Carrier",
+						"insert_after": "shipment_reference",
+					},
+					{
+						"fieldname": "shipment_record",
+						"label": "Shipment",
+						"fieldtype": "Link",
+						"options": "Shipment",
+						"insert_after": "shipment_carrier",
+						"read_only": 1,
+						"allow_on_submit": 1,
+						"no_copy": 1,
+					},
+				],
+				"Purchase Invoice": [
+					{
+						"fieldname": "shipment_carrier",
+						"label": "Shipment Carrier",
+						"fieldtype": "Link",
+						"options": "Shipment Carrier",
+						"insert_after": "shipment_reference",
+					},
+					{
+						"fieldname": "shipment_record",
+						"label": "Shipment",
+						"fieldtype": "Link",
+						"options": "Shipment",
+						"insert_after": "shipment_carrier",
+						"read_only": 1,
+						"allow_on_submit": 1,
+						"no_copy": 1,
+					},
+				],
+			},
+			ignore_validate=True,
+		)
+	except Exception:
+		frappe.log_error(frappe.get_traceback(), "Omnexa Accounting: ensure shipment fields")
+
+
+def ensure_invoice_shipping_and_totals_layout():
+	"""Normalize shipment field type and totals block layout on invoice forms."""
+	try:
+		for dt in ("Sales Invoice", "Purchase Invoice"):
+			# Shipment Reference must be a dropdown-like Link, not free text.
+			frappe.make_property_setter(
+				{
+					"doctype": dt,
+					"doctype_or_field": "DocField",
+					"fieldname": "shipment_reference",
+					"property": "fieldtype",
+					"value": "Link",
+					"property_type": "Data",
+				},
+				ignore_validate=True,
+			)
+			frappe.make_property_setter(
+				{
+					"doctype": dt,
+					"doctype_or_field": "DocField",
+					"fieldname": "shipment_reference",
+					"property": "options",
+					"value": "Shipment",
+					"property_type": "Text",
+				},
+				ignore_validate=True,
+			)
+
+			# Force totals block order agreed with user.
+			for fieldname, insert_after in (
+				("items_subtotal", "net_total"),
+				("shipping_cost", "items_subtotal"),
+				("tax_breakdown_summary", "tax_total"),
+			):
+				frappe.make_property_setter(
+					{
+						"doctype": dt,
+						"doctype_or_field": "DocField",
+						"fieldname": fieldname,
+						"property": "insert_after",
+						"value": insert_after,
+						"property_type": "Data",
+					},
+					ignore_validate=True,
+				)
+		frappe.db.commit()
+	except Exception:
+		frappe.log_error(frappe.get_traceback(), "Omnexa Accounting: ensure invoice shipping/totals layout")
+
+
+def ensure_invoice_collapsible_sections():
+	"""Make main invoice sections collapsible for better UX."""
+	try:
+		for dt in ("Sales Invoice", "Purchase Invoice"):
+			for section in ("payment_section", "items_section", "totals_section", "base_totals_section"):
+				frappe.make_property_setter(
+					{
+						"doctype": dt,
+						"doctype_or_field": "DocField",
+						"fieldname": section,
+						"property": "collapsible",
+						"value": "1",
+						"property_type": "Check",
+					},
+					ignore_validate=True,
+				)
+		frappe.db.commit()
+	except Exception:
+		frappe.log_error(frappe.get_traceback(), "Omnexa Accounting: ensure invoice collapsible sections")
+
+
+def ensure_invoice_project_link_field_types():
+	"""Force invoice project fields to Link types when project doctypes exist."""
+	try:
+		project_dt = "Project Contract" if frappe.db.exists("DocType", "Project Contract") else None
+		task_dt = "PM WBS Task" if frappe.db.exists("DocType", "PM WBS Task") else None
+		if not (project_dt or task_dt):
+			return
+
+		for dt in ("Sales Invoice", "Purchase Invoice"):
+			if project_dt:
+				frappe.make_property_setter(
+					{
+						"doctype": dt,
+						"doctype_or_field": "DocField",
+						"fieldname": "project_reference",
+						"property": "fieldtype",
+						"value": "Link",
+						"property_type": "Data",
+					},
+					ignore_validate=True,
+				)
+				frappe.make_property_setter(
+					{
+						"doctype": dt,
+						"doctype_or_field": "DocField",
+						"fieldname": "project_reference",
+						"property": "options",
+						"value": project_dt,
+						"property_type": "Text",
+					},
+					ignore_validate=True,
+				)
+			if task_dt:
+				frappe.make_property_setter(
+					{
+						"doctype": dt,
+						"doctype_or_field": "DocField",
+						"fieldname": "project_task_reference",
+						"property": "fieldtype",
+						"value": "Link",
+						"property_type": "Data",
+					},
+					ignore_validate=True,
+				)
+				frappe.make_property_setter(
+					{
+						"doctype": dt,
+						"doctype_or_field": "DocField",
+						"fieldname": "project_task_reference",
+						"property": "options",
+						"value": task_dt,
+						"property_type": "Text",
+					},
+					ignore_validate=True,
+				)
+		frappe.db.commit()
+	except Exception:
+		frappe.log_error(frappe.get_traceback(), "Omnexa Accounting: ensure invoice project link field types")
 
 
 def ensure_gl_account_balance_field_and_list_layout():

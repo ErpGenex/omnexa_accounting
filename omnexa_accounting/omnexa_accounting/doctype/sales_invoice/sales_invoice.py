@@ -42,6 +42,7 @@ class SalesInvoice(Document):
 		apply_multi_currency_to_invoice(self)
 		self._validate_payment_schedule()
 		self._validate_tax_rules()
+		self._validate_project_links()
 		self._validate_item_cost_centers()
 		self._set_outstanding_amount()
 
@@ -181,6 +182,14 @@ class SalesInvoice(Document):
 			post_sales_invoice_gl(self)
 		except Exception:
 			frappe.log_error(frappe.get_traceback(), "Omnexa Posting: Sales Invoice auto-post")
+		try:
+			from omnexa_accounting.utils.invoice_stock_sync import post_sales_invoice_stock
+
+			stock_entry = post_sales_invoice_stock(self)
+			if stock_entry and self.meta.has_field("posting_stock_entry"):
+				self.db_set("posting_stock_entry", stock_entry, update_modified=False)
+		except Exception:
+			frappe.log_error(frappe.get_traceback(), "Omnexa Stock: Sales Invoice auto stock-update")
 		self._enqueue_eta_submission()
 
 	def on_cancel(self):
@@ -190,14 +199,25 @@ class SalesInvoice(Document):
 			cancel_invoice_posting("Sales Invoice", self.name, self.company, getattr(self, "branch", None))
 		except Exception:
 			frappe.log_error(frappe.get_traceback(), "Omnexa Posting: Sales Invoice cancel auto-post")
+		try:
+			from omnexa_accounting.utils.invoice_stock_sync import cancel_invoice_stock
+
+			cancel_invoice_stock("Sales Invoice", self.name, self.company, getattr(self, "branch", None))
+		except Exception:
+			frappe.log_error(frappe.get_traceback(), "Omnexa Stock: Sales Invoice cancel auto stock-update")
 
 	def _set_amounts(self):
 		net = 0
 		tax = 0
+		tax_breakdown = {}
+		total_items = 0
+		total_qty = 0
 		for row in self.items or []:
 			line_net = flt(row.qty) * flt(row.rate)
 			row.amount = line_net
 			net += line_net
+			total_items += 1
+			total_qty += flt(row.qty)
 			rule_name = row.tax_rule or self.default_tax_rule
 			if rule_name:
 				rule = frappe.get_doc("Tax Rule", rule_name)
@@ -209,10 +229,34 @@ class SalesInvoice(Document):
 						title=_("Tax"),
 					)
 				if rule.tax_type == "standard" and flt(rule.rate):
-					tax += line_net * flt(rule.rate) / 100.0
+					row_tax = line_net * flt(rule.rate) / 100.0
+					tax += row_tax
+					key = (row.tax_category or rule.tax_category or "Uncategorized", flt(rule.rate))
+					tax_breakdown[key] = flt(tax_breakdown.get(key, 0)) + row_tax
+		items_subtotal = net
+		if not self.default_tax_rule and flt(getattr(self, "tax_rate", 0)):
+			manual_tax = net * flt(self.tax_rate) / 100.0
+			tax += manual_tax
+			key = (self.tax_category or "Manual", flt(self.tax_rate))
+			tax_breakdown[key] = flt(tax_breakdown.get(key, 0)) + manual_tax
+		shipping_cost = flt(getattr(self, "shipping_cost", 0))
+		net += shipping_cost
 		self.net_total = net
 		self.tax_total = tax
 		self.grand_total = net + tax
+		if self.meta.has_field("items_subtotal"):
+			self.items_subtotal = items_subtotal
+		if self.meta.has_field("tax_amount_manual"):
+			self.tax_amount_manual = tax
+		if self.meta.has_field("tax_breakdown_summary"):
+			lines = []
+			for (cat, rate), amount in sorted(tax_breakdown.items(), key=lambda x: (str(x[0][0]), x[0][1])):
+				lines.append(f"{cat} ({rate:g}%): {flt(amount):.2f}")
+			self.tax_breakdown_summary = "\n".join(lines) if lines else _("No tax applied")
+		if self.meta.has_field("total_items"):
+			self.total_items = total_items
+		if self.meta.has_field("total_qty"):
+			self.total_qty = total_qty
 
 	def _set_outstanding_amount(self):
 		if not self.name:
@@ -234,6 +278,14 @@ class SalesInvoice(Document):
 		self.outstanding_amount = max(flt(self.grand_total) - allocated_amount, 0)
 
 	def _validate_payment_schedule(self):
+		payment_mode = (getattr(self, "payment_mode", "") or "Credit").strip()
+		if payment_mode == "Cash":
+			if self.payment_schedule:
+				frappe.throw(_("Cash invoice cannot contain a payment schedule."), title=_("Payment Mode"))
+			self.due_date = self.posting_date
+			return
+		if payment_mode == "Installment" and len(self.payment_schedule or []) < 2:
+			frappe.throw(_("Installment mode requires at least 2 schedule rows."), title=_("Payment Mode"))
 		if not self.payment_schedule:
 			return
 		total_schedule = 0
@@ -260,9 +312,17 @@ class SalesInvoice(Document):
 		self.due_date = max_due_date
 
 	def _validate_tax_rules(self):
+		if self.tax_category and not frappe.db.exists("Tax Category", self.tax_category):
+			frappe.throw(_("Tax Category does not exist."), title=_("Tax"))
 		if self.default_tax_rule:
 			if frappe.db.get_value("Tax Rule", self.default_tax_rule, "company") != self.company:
 				frappe.throw(_("Default Tax Rule must belong to the same company."), title=_("Tax"))
+			if self.tax_category:
+				rule_cat = frappe.db.get_value("Tax Rule", self.default_tax_rule, "tax_category")
+				if rule_cat and rule_cat != self.tax_category:
+					frappe.throw(_("Default Tax Rule Tax Category must match invoice Tax Category."), title=_("Tax"))
+		if flt(getattr(self, "tax_rate", 0)) < 0:
+			frappe.throw(_("Tax Rate cannot be negative."), title=_("Tax"))
 		for row in self.items or []:
 			if row.income_account and frappe.db.get_value("GL Account", row.income_account, "company") != self.company:
 				frappe.throw(_("Row {0}: GL Account company mismatch.").format(row.idx), title=_("GL"))
@@ -276,6 +336,27 @@ class SalesInvoice(Document):
 				frappe.throw(
 					_("Row {0}: Cost Center belongs to a different company.").format(row.idx),
 					title=_("Cost Center"),
+				)
+
+	def _validate_project_links(self):
+		if self.project_reference and frappe.db.exists("DocType", "Project Contract"):
+			row = frappe.db.get_value("Project Contract", self.project_reference, ["company"], as_dict=True)
+			if not row:
+				frappe.throw(_("Project Reference does not exist."), title=_("Project"))
+			if row.company and row.company != self.company:
+				frappe.throw(_("Project Reference belongs to a different company."), title=_("Project"))
+		if self.project_task_reference and frappe.db.exists("DocType", "PM WBS Task"):
+			row = frappe.db.get_value(
+				"PM WBS Task", self.project_task_reference, ["company", "project"], as_dict=True
+			)
+			if not row:
+				frappe.throw(_("Project Task Reference does not exist."), title=_("Project"))
+			if row.company and row.company != self.company:
+				frappe.throw(_("Project Task Reference belongs to a different company."), title=_("Project"))
+			if self.project_reference and row.project and row.project != self.project_reference:
+				frappe.throw(
+					_("Project Task Reference must belong to selected Project Reference."),
+					title=_("Project"),
 				)
 
 	def _check_credit_limit(self):

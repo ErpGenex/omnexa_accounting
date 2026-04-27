@@ -183,5 +183,38 @@ frappe.ui.form.on("Company", {
 			},
 			group,
 		);
+
+		if (frappe.session.user === "Administrator") {
+			const dangerGroup = __("Danger Zone");
+			frm.add_custom_button(
+				__("Delete ALL company data (DANGER)"),
+				async () => {
+					const values = await frappe.prompt(
+						[
+							{
+								fieldname: "confirm_text",
+								fieldtype: "Data",
+								label: __("Type DELETE ALL to confirm"),
+								reqd: 1,
+							},
+						],
+						() => {},
+						__("Full Company Wipe"),
+						__("Execute")
+					);
+					if (!values?.confirm_text) return;
+					await run(
+						"omnexa_accounting.utils.production_readiness.wipe_company_all_data",
+						{
+							company,
+							branch: branch(),
+							confirm_text: values.confirm_text,
+						},
+						__("Full company wipe"),
+					);
+				},
+				dangerGroup,
+			);
+		}
 	},
 });

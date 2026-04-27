@@ -219,6 +219,7 @@
 			"options": "Tax Rule"
 		},
 		{
+			"collapsible": 1,
 			"fieldname": "payment_section",
 			"fieldtype": "Section Break",
 			"label": "Payment"
@@ -230,6 +231,7 @@
 			"options": "Payment Schedule Line"
 		},
 		{
+			"collapsible": 1,
 			"fieldname": "items_section",
 			"fieldtype": "Section Break",
 			"label": "Products and Services"
@@ -242,6 +244,7 @@
 			"reqd": 1
 		},
 		{
+			"collapsible": 1,
 			"fieldname": "totals_section",
 			"fieldtype": "Section Break",
 			"label": "Totals"
@@ -285,6 +288,7 @@
 			"read_only": 1
 		},
 		{
+			"collapsible": 1,
 			"fieldname": "base_totals_section",
 			"fieldtype": "Section Break",
 			"label": "In company currency"

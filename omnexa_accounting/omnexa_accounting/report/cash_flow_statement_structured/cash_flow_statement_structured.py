@@ -10,6 +10,7 @@ from frappe import _
 from frappe.utils import flt
 
 from omnexa_core.omnexa_core.branch_access import get_allowed_branches
+from omnexa_accounting.utils.coa_settings import should_use_consolidation_view
 
 _SECTIONS = ("Operating Activities", "Investing Activities", "Financing Activities")
 
@@ -50,6 +51,7 @@ def execute(filters=None):
 		params["branch"] = filters.branch
 		pe_conditions.append("pe.branch = %(branch)s")
 		je_conditions.append("je.branch = %(branch)s")
+	consolidation_view = should_use_consolidation_view(filters, filters.company)
 
 	pe_where = " AND ".join(pe_conditions)
 	je_where = " AND ".join(je_conditions)
@@ -84,8 +86,18 @@ def execute(filters=None):
 			fields=["name", "cash_flow_section"],
 		)
 	}
+	intercompany_accounts = set()
+	if consolidation_view:
+		intercompany_accounts = set(
+			frappe.db.get_all(
+				"GL Account",
+				filters={"company": filters.company, "intercompany_account": 1},
+				pluck="name",
+			)
+		)
 
 	je_totals = defaultdict(float)
+	intercompany_adjustment = 0.0
 	if bank_gl:
 		je_names = frappe.db.sql(
 			f"""SELECT je.name FROM `tabJournal Entry` je WHERE {je_where}""",
@@ -110,6 +122,8 @@ def execute(filters=None):
 					bank_net += net
 				else:
 					non_bank.append((L.account, abs(net)))
+					if consolidation_view and L.account in intercompany_accounts:
+						intercompany_adjustment += net
 			if abs(bank_net) < 1e-9:
 				continue
 			section = "Operating Activities"
@@ -125,6 +139,8 @@ def execute(filters=None):
 	investing = flt(je_totals["Investing Activities"])
 	financing = flt(je_totals["Financing Activities"])
 	net_change = flt(operating_pe + operating_je + investing + financing)
+	if consolidation_view:
+		net_change -= flt(intercompany_adjustment)
 
 	columns = [
 		{"label": _("Section / Line"), "fieldname": "label", "fieldtype": "Data", "width": 360},
@@ -138,6 +154,10 @@ def execute(filters=None):
 		{"label": _("Operating — Journal Entry via bank GL (classified)"), "amount": operating_je},
 		{"label": _("Investing — Journal Entry via bank GL (classified)"), "amount": investing},
 		{"label": _("Financing — Journal Entry via bank GL (classified)"), "amount": financing},
+		{
+			"label": _("Consolidation elimination — intercompany movement"),
+			"amount": flt(intercompany_adjustment) if consolidation_view else 0,
+		},
 		{"label": _("Net change in cash (indicative)"), "amount": net_change},
 	]
 

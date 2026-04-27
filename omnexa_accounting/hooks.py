@@ -57,9 +57,11 @@ doctype_js = {
 	"Purchase Invoice": "public/js/purchase_invoice.js",
 	"Purchase Receipt": "public/js/purchase_receipt.js",
 	"Delivery Note": "public/js/delivery_note.js",
+	"Shipment": "public/js/shipment.js",
 	"Payment Entry": "public/js/payment_entry.js",
 	"Stock Entry": "public/js/stock_entry.js",
 	"COA Template": "public/js/coa_template.js",
+	"CoA Settings": "public/js/coa_settings.js",
 }
 doctype_list_js = {
 	"GL Account": "public/js/gl_account_list.js",
