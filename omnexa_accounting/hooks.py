@@ -46,6 +46,10 @@ app_include_js = "/assets/omnexa_accounting/js/link_formatters.js"
 doctype_js = {
 	"Company": "public/js/company_production_demo.js",
 	"Branch": "public/js/branch_financial_defaults.js",
+	"Customer": "public/js/customer_form.js",
+	"Warehouse": "public/js/warehouse_form.js",
+	"Item": "public/js/item_card.js",
+	"GL Account": "public/js/gl_account_form.js",
 	"Sales Order": "public/js/sales_order.js",
 	"Sales Invoice": "public/js/sales_invoice.js",
 	"Sales Quotation": "public/js/sales_quotation.js",
@@ -57,7 +61,11 @@ doctype_js = {
 	"Stock Entry": "public/js/stock_entry.js",
 	"COA Template": "public/js/coa_template.js",
 }
-# doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
+doctype_list_js = {
+	"GL Account": "public/js/gl_account_list.js",
+	"Customer": "public/js/customer_list.js",
+	"Warehouse": "public/js/warehouse_list.js",
+}
 doctype_tree_js = {
 	"GL Account": "public/js/gl_account_tree.js",
 }
@@ -196,6 +204,8 @@ doc_events = {
 			"omnexa_accounting.permissions.enforce_branch_access_for_doc",
 			"omnexa_accounting.utils.global_erp_strict_validations.validate_sales_invoice",
 		],
+		"on_submit": "omnexa_accounting.utils.customer_balances.on_sales_invoice_submit",
+		"on_cancel": "omnexa_accounting.utils.customer_balances.on_sales_invoice_cancel",
 	},
 	"Purchase Invoice": {
 		"before_validate": "omnexa_accounting.permissions.populate_company_branch_from_user_context",
@@ -229,10 +239,14 @@ doc_events = {
 	"Payment Entry": {
 		"before_validate": "omnexa_accounting.permissions.populate_company_branch_from_user_context",
 		"validate": "omnexa_accounting.permissions.enforce_branch_access_for_doc",
+		"on_submit": "omnexa_accounting.utils.customer_balances.on_payment_entry_submit",
+		"on_cancel": "omnexa_accounting.utils.customer_balances.on_payment_entry_cancel",
 	},
 	"Journal Entry": {
 		"before_validate": "omnexa_accounting.permissions.populate_company_branch_from_user_context",
 		"validate": "omnexa_accounting.permissions.enforce_branch_access_for_doc",
+		"on_submit": "omnexa_accounting.utils.gl_account_balances.on_journal_entry_submit",
+		"on_cancel": "omnexa_accounting.utils.gl_account_balances.on_journal_entry_cancel",
 	},
 	"Bank Reconciliation": {
 		"before_validate": "omnexa_accounting.permissions.populate_company_branch_from_user_context",

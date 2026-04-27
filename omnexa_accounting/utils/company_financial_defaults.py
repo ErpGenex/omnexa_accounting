@@ -143,6 +143,40 @@ BRANCH_DEFAULT_GL_FIELDS: tuple[str, ...] = (
 	"branch_default_trade_payable_gl",
 )
 
+BRANCH_TO_COMPANY_DEFAULT_MAP: dict[str, str] = {
+	"branch_default_petty_cash_gl": "default_petty_cash_gl",
+	"branch_default_bank_gl": "default_bank_operating_gl",
+	"branch_default_receivable_gl": "default_receivable_gl",
+	"branch_default_trade_payable_gl": "default_trade_payable_gl",
+}
+
+
+def apply_branch_default_gl_from_company(company: str, branch: str, overwrite: int | bool = 0) -> dict:
+	"""Copy company default GLs into branch financial defaults."""
+	if not company or not frappe.db.exists("Company", company):
+		frappe.throw(_("Company is required"))
+	if not branch or not frappe.db.exists("Branch", branch):
+		frappe.throw(_("Branch is required"))
+	if frappe.db.get_value("Branch", branch, "company") != company:
+		frappe.throw(_("Branch {0} must belong to company {1}").format(branch, company))
+
+	overwrite = int(overwrite or 0)
+	company_doc = frappe.get_doc("Company", company)
+	branch_doc = frappe.get_doc("Branch", branch)
+	updated = []
+	for branch_field, company_field in BRANCH_TO_COMPANY_DEFAULT_MAP.items():
+		if not (branch_doc.meta.has_field(branch_field) and company_doc.meta.has_field(company_field)):
+			continue
+		if branch_doc.get(branch_field) and not overwrite:
+			continue
+		source_gl = company_doc.get(company_field)
+		if source_gl:
+			branch_doc.set(branch_field, source_gl)
+			updated.append(branch_field)
+	if updated:
+		branch_doc.save(ignore_permissions=True)
+	return {"ok": True, "company": company, "branch": branch, "updated_fields": updated}
+
 
 def run_company_financial_validations(doc, method=None):
 	for fieldname in COMPANY_GL_CODE_BY_FIELD:

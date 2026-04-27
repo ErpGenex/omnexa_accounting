@@ -66,9 +66,21 @@ frappe.ui.form.on("Company", {
 					message: `${freeze_message}: ${out.log_id || __("OK")}`,
 				});
 			} catch (e) {
+				const serverMessage = (() => {
+					try {
+						const raw = e?._server_messages;
+						if (!raw) return null;
+						const arr = JSON.parse(raw);
+						if (!Array.isArray(arr) || !arr.length) return null;
+						const first = JSON.parse(arr[0] || "{}");
+						return first.message || null;
+					} catch {
+						return null;
+					}
+				})();
 				frappe.msgprint({
 					title: __("Error"),
-					message: e.message || String(e),
+					message: serverMessage || e?.message || __("Unexpected server error. Check Error Log."),
 					indicator: "red",
 				});
 			}
@@ -162,9 +174,9 @@ frappe.ui.form.on("Company", {
 					),
 					() =>
 						run(
-							"omnexa_accounting.utils.production_readiness.reset_transactions",
-							{ company, branch: branch(), dry_run: 0 },
-							__("Reset transactions (execute)"),
+							"omnexa_accounting.utils.production_readiness.enqueue_reset_transactions",
+							{ company, branch: branch(), limit: 0, batch_size: 200 },
+							__("Reset transactions queued"),
 						),
 					() => {},
 				);

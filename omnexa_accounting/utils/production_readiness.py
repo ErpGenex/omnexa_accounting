@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import frappe
 from frappe import _
-from frappe.utils import cint, today
+from frappe.utils import add_days, add_months, cint, getdate, nowdate, today
 
 from omnexa_accounting.utils.coa_seed_templates import ACTIVITY_EXTENSIONS, BASE_COA_TEMPLATE
 
@@ -52,10 +52,17 @@ def _log_seed_operation(
 	status: str,
 	summary: dict,
 ) -> str:
+	allowed_operations = {
+		"Generate COA",
+		"Resync COA Labels",
+		"Seed Demo Data",
+		"Reset Transactions",
+	}
+	operation_value = operation if operation in allowed_operations else "Seed Demo Data"
 	doc = frappe.get_doc(
 		{
 			"doctype": "Production Seed Log",
-			"operation": operation,
+			"operation": operation_value,
 			"company": company,
 			"branch": branch,
 			"activity": activity,
@@ -552,7 +559,12 @@ def _doc_filters(doctype: str, company: str, branch: str | None):
 
 
 @frappe.whitelist(methods=["POST"])
-def reset_transactions(company: str, branch: str | None = None, dry_run: int | str = 1):
+def reset_transactions(
+	company: str,
+	branch: str | None = None,
+	dry_run: int | str = 1,
+	limit: int | str = 5000,
+):
 	"""Reset accounting transactions for company/branch by System Manager only."""
 	_assert_admin()
 	if not company:
@@ -560,14 +572,16 @@ def reset_transactions(company: str, branch: str | None = None, dry_run: int | s
 	if not frappe.db.exists("Company", company):
 		frappe.throw(_("Company {0} not found").format(company))
 
-	is_dry = int(dry_run or 1) == 1
+	# IMPORTANT: do not treat 0 as "missing" (Python `0 or 1` => 1).
+	is_dry = cint(dry_run) == 1
+	limit = cint(limit or 5000)
 	report = []
 
 	for dt in _RESET_DOCTYPES:
 		filters = _doc_filters(dt, company, branch)
 		if not filters:
 			continue
-		names = frappe.get_all(dt, filters=filters, pluck="name", limit=5000)
+		names = frappe.get_all(dt, filters=filters, pluck="name", limit=limit)
 		if is_dry:
 			report.append({"doctype": dt, "matched": len(names), "cancelled": 0, "deleted": 0})
 			continue
@@ -601,4 +615,698 @@ def reset_transactions(company: str, branch: str | None = None, dry_run: int | s
 	)
 	result["log_id"] = log_id
 	return result
+
+
+@frappe.whitelist(methods=["POST"])
+def enqueue_reset_transactions(
+	company: str,
+	branch: str | None = None,
+	limit: int | str = 0,
+	batch_size: int | str = 200,
+):
+	"""Background reset with batching + commits (recommended for large datasets)."""
+	_assert_admin()
+	job = frappe.enqueue(
+		"omnexa_accounting.utils.production_readiness.run_reset_transactions_batched",
+		queue="long",
+		timeout=7200,
+		company=company,
+		branch=branch,
+		limit=cint(limit or 0),
+		batch_size=cint(batch_size or 200),
+		user=frappe.session.user,
+	)
+	return {"ok": True, "queued": True, "job_id": job.id if job else None}
+
+
+def run_reset_transactions_batched(company: str, branch: str | None = None, limit: int = 0, batch_size: int = 200, user: str | None = None):
+	"""Cancel + delete transactions in batches until empty (or until limit reached)."""
+	frappe.set_user(user or "Administrator")
+	_assert_admin()
+	overall = {"ok": True, "company": company, "branch": branch, "limit": limit, "batch_size": batch_size, "details": []}
+
+	for dt in _RESET_DOCTYPES:
+		filters = _doc_filters(dt, company, branch)
+		if not filters:
+			continue
+		deleted_total = 0
+		cancelled_total = 0
+		while True:
+			to_fetch = batch_size
+			if limit and (deleted_total + cancelled_total) >= limit:
+				break
+			if limit:
+				to_fetch = min(to_fetch, max(0, limit - (deleted_total + cancelled_total)))
+			names = frappe.get_all(dt, filters=filters, pluck="name", limit=to_fetch)
+			if not names:
+				break
+			for name in reversed(names):
+				doc = frappe.get_doc(dt, name)
+				if hasattr(doc, "docstatus") and int(doc.docstatus or 0) == 1:
+					try:
+						doc.cancel()
+						cancelled_total += 1
+					except Exception:
+						# even if cancel fails, still attempt forced delete
+						pass
+				try:
+					frappe.delete_doc(dt, name, ignore_permissions=True, force=1)
+					deleted_total += 1
+				except Exception:
+					pass
+			frappe.db.commit()
+		overall["details"].append({"doctype": dt, "cancelled": cancelled_total, "deleted": deleted_total})
+
+	log_id = _log_seed_operation(
+		"Reset Transactions",
+		company,
+		branch,
+		None,
+		0,
+		"Success",
+		overall,
+	)
+	overall["log_id"] = log_id
+	frappe.db.commit()
+	return overall
+
+
+def _ensure_branch(branch: str) -> tuple[str, str]:
+	if not frappe.db.exists("Branch", branch):
+		frappe.throw(_("Branch {0} not found").format(branch))
+	company = frappe.db.get_value("Branch", branch, "company")
+	if not company:
+		frappe.throw(_("Branch {0} has no company").format(branch))
+	return branch, company
+
+
+def _ensure_master_data(
+	company: str,
+	branch: str,
+	item_count: int,
+	customer_count: int,
+	supplier_count: int,
+	employee_count: int,
+) -> dict:
+	def _has_field(doctype: str, fieldname: str) -> bool:
+		return bool(frappe.get_meta(doctype).has_field(fieldname))
+
+	if not frappe.db.exists("UOM", "Nos"):
+		frappe.get_doc({"doctype": "UOM", "uom_name": "Nos"}).insert(ignore_permissions=True)
+
+	warehouse_filters = {"company": company}
+	if _has_field("Warehouse", "branch"):
+		warehouse_filters["branch"] = branch
+	warehouse = frappe.db.get_value("Warehouse", warehouse_filters, "name")
+	if not warehouse:
+		wh_code = ("SIM" + "".join(ch for ch in branch if ch.isalnum()).upper())[:10]
+		wh_data = {
+			"doctype": "Warehouse",
+			"warehouse_name": f"SIM-WH-{branch}",
+			"warehouse_code": wh_code,
+			"company": company,
+		}
+		if _has_field("Warehouse", "branch"):
+			wh_data["branch"] = branch
+		wh = frappe.get_doc(wh_data)
+		wh.insert(ignore_permissions=True)
+		warehouse = wh.name
+
+	items = []
+	service_items = []
+	stock_items = []
+	for idx in range(1, item_count + 1):
+		item_code = f"SIM-{branch}-ITEM-{idx:02d}"
+		existing = frappe.db.get_value("Item", {"item_code": item_code}, "name")
+		if existing:
+			items.append(existing)
+		else:
+			doc = frappe.get_doc(
+				{
+					"doctype": "Item",
+					"item_code": item_code,
+					"item_name": f"Simulation Item {idx}",
+					"company": company,
+					"stock_uom": "Nos",
+					"is_stock_item": 1 if idx <= max(2, item_count // 2) else 0,
+				}
+			)
+			doc.insert(ignore_permissions=True)
+			items.append(doc.name)
+		if cint(frappe.db.get_value("Item", items[-1], "is_stock_item")):
+			stock_items.append(items[-1])
+		else:
+			service_items.append(items[-1])
+
+	customers = []
+	for idx in range(1, customer_count + 1):
+		customer_name = f"SIM-CUST-{branch}-{idx:02d}"
+		existing = frappe.db.get_value("Customer", {"customer_name": customer_name, "company": company}, "name")
+		if existing:
+			customers.append(existing)
+			continue
+		doc = frappe.get_doc({"doctype": "Customer", "customer_name": customer_name, "company": company})
+		doc.insert(ignore_permissions=True)
+		customers.append(doc.name)
+
+	suppliers = []
+	for idx in range(1, supplier_count + 1):
+		supplier_name = f"SIM-SUPP-{branch}-{idx:02d}"
+		existing = frappe.db.get_value("Supplier", {"supplier_name": supplier_name, "company": company}, "name")
+		if existing:
+			suppliers.append(existing)
+			continue
+		doc = frappe.get_doc({"doctype": "Supplier", "supplier_name": supplier_name, "company": company})
+		doc.insert(ignore_permissions=True)
+		suppliers.append(doc.name)
+
+	employees = []
+	for idx in range(1, employee_count + 1):
+		employee_name = f"SIM-EMP-{branch}-{idx:02d}"
+		existing = frappe.db.get_value("Employee", {"employee_name": employee_name, "company": company}, "name")
+		if existing:
+			employees.append(existing)
+			continue
+		doc = frappe.get_doc(
+			{
+				"doctype": "Employee",
+				"employee_name": employee_name,
+				"employee_code": f"SIM-{idx:03d}",
+				"first_name": f"SIM{idx}",
+				"company": company,
+				"branch": branch,
+				"status": "Active",
+				"date_of_joining": nowdate(),
+			}
+		)
+		doc.insert(ignore_permissions=True)
+		employees.append(doc.name)
+
+	return {
+		"warehouse": warehouse,
+		"items": items,
+		"service_items": service_items or items,
+		"stock_items": stock_items or items,
+		"customers": customers,
+		"suppliers": suppliers,
+		"employees": employees,
+	}
+
+
+def _pick_leaf_account(company: str, branch: str | None, account_number: str) -> str | None:
+	return _leaf_gl_by_number(company, branch, account_number)
+
+
+def _submit_if_draft(doc):
+	if int(doc.docstatus or 0) == 0:
+		doc.submit()
+
+
+def _insert_sales_invoice(company: str, branch: str, posting_date: str, customer: str, item: str, rate: float) -> str:
+	item_code = frappe.db.get_value("Item", item, "item_code")
+	currency = _company_currency(company)
+	si = frappe.get_doc(
+		{
+			"doctype": "Sales Invoice",
+			"company": company,
+			"branch": branch,
+			"customer": customer,
+			"posting_date": posting_date,
+			"currency": currency,
+			"conversion_rate": 1,
+			"remarks": f"SIM-AUTO {branch} {posting_date}",
+			"items": [{"item": item, "item_code": item_code, "qty": 1, "rate": rate}],
+		}
+	)
+	si.insert(ignore_permissions=True)
+	_submit_if_draft(si)
+	return si.name
+
+
+def _insert_purchase_invoice(
+	company: str, branch: str, posting_date: str, supplier: str, item: str, rate: float
+) -> str:
+	item_code = frappe.db.get_value("Item", item, "item_code")
+	currency = _company_currency(company)
+	pi = frappe.get_doc(
+		{
+			"doctype": "Purchase Invoice",
+			"company": company,
+			"branch": branch,
+			"supplier": supplier,
+			"posting_date": posting_date,
+			"currency": currency,
+			"conversion_rate": 1,
+			"remarks": f"SIM-AUTO {branch} {posting_date}",
+			"items": [{"item": item, "item_code": item_code, "qty": 1, "rate": rate}],
+		}
+	)
+	pi.insert(ignore_permissions=True)
+	_submit_if_draft(pi)
+	return pi.name
+
+
+def _insert_stock_entries(
+	company: str, branch: str, posting_date: str, warehouse: str, item: str, receipt_qty: float, issue_qty: float
+) -> tuple[str | None, str | None]:
+	item_code = frappe.db.get_value("Item", item, "item_code")
+	receipt = frappe.get_doc(
+		{
+			"doctype": "Stock Entry",
+			"stock_entry_type": "Material Receipt",
+			"company": company,
+			"branch": branch,
+			"posting_date": posting_date,
+			"remarks": f"SIM-STOCK-RECEIPT {branch} {posting_date}",
+			"items": [{"item_code": item_code, "t_warehouse": warehouse, "qty": receipt_qty, "basic_rate": 80}],
+		}
+	)
+	receipt.insert(ignore_permissions=True)
+	_submit_if_draft(receipt)
+	issue = frappe.get_doc(
+		{
+			"doctype": "Stock Entry",
+			"stock_entry_type": "Material Issue",
+			"company": company,
+			"branch": branch,
+			"posting_date": posting_date,
+			"remarks": f"SIM-STOCK-ISSUE {branch} {posting_date}",
+			"items": [{"item_code": item_code, "s_warehouse": warehouse, "qty": issue_qty, "basic_rate": 80}],
+		}
+	)
+	issue.insert(ignore_permissions=True)
+	_submit_if_draft(issue)
+	return receipt.name, issue.name
+
+
+def _insert_journal_entry(
+	company: str, branch: str, posting_date: str, remarks: str, debit_account: str, credit_account: str, amount: float
+) -> str:
+	je = frappe.get_doc(
+		{
+			"doctype": "Journal Entry",
+			"company": company,
+			"branch": branch,
+			"posting_date": posting_date,
+			"remarks": remarks,
+			"accounts": [
+				{"account": debit_account, "debit": amount, "credit": 0},
+				{"account": credit_account, "debit": 0, "credit": amount},
+			],
+		}
+	)
+	je.insert(ignore_permissions=True)
+	_submit_if_draft(je)
+	return je.name
+
+
+@frappe.whitelist(methods=["POST"])
+def start_branch_enterprise_simulation_seed(
+	branch: str,
+	months: int | str = 6,
+	daily_purchase_invoices: int | str = 10,
+	daily_sales_invoices: int | str = 50,
+	employees: int | str = 5,
+	customers: int | str = 5,
+	suppliers: int | str = 5,
+	items: int | str = 10,
+):
+	_assert_admin()
+	branch, company = _ensure_branch(branch)
+	payload = {
+		"branch": branch,
+		"company": company,
+		"months": max(1, cint(months or 6)),
+		"daily_purchase_invoices": max(1, cint(daily_purchase_invoices or 10)),
+		"daily_sales_invoices": max(1, cint(daily_sales_invoices or 50)),
+		"employees": max(1, cint(employees or 5)),
+		"customers": max(1, cint(customers or 5)),
+		"suppliers": max(1, cint(suppliers or 5)),
+		"items": max(2, cint(items or 10)),
+		"user": frappe.session.user,
+	}
+	job = frappe.enqueue(
+		"omnexa_accounting.utils.production_readiness.run_branch_enterprise_simulation_seed",
+		queue="long",
+		timeout=7200,
+		**payload,
+	)
+	return {"ok": True, "queued": True, "job_id": job.id if job else None, "config": payload}
+
+
+def run_branch_enterprise_simulation_seed(**kwargs):
+	params = frappe._dict(kwargs or {})
+	if isinstance(params.get("kwargs"), dict):
+		# Backward compatibility for previously enqueued payload style.
+		params = frappe._dict(params.get("kwargs"))
+	branch = params.branch
+	company = params.company
+	months = cint(params.get("months") or 6)
+	daily_pi = cint(params.get("daily_purchase_invoices") or 10)
+	daily_si = cint(params.get("daily_sales_invoices") or 50)
+	employee_count = cint(params.get("employees") or 5)
+	customer_count = cint(params.get("customers") or 5)
+	supplier_count = cint(params.get("suppliers") or 5)
+	item_count = cint(params.get("items") or 10)
+
+	frappe.set_user(params.user or "Administrator")
+	try:
+		masters = _ensure_master_data(
+			company=company,
+			branch=branch,
+			item_count=item_count,
+			customer_count=customer_count,
+			supplier_count=supplier_count,
+			employee_count=employee_count,
+		)
+
+		end_date = getdate(nowdate())
+		start_date = add_days(add_months(end_date, -months), 1)
+		service_items = masters.get("service_items") or []
+		stock_items = masters.get("stock_items") or []
+		customers = masters.get("customers") or []
+		suppliers = masters.get("suppliers") or []
+		employees = masters.get("employees") or []
+		warehouse = masters.get("warehouse")
+
+		salary_expense = _pick_leaf_account(company, branch, "5101")
+		opex_gl = _pick_leaf_account(company, branch, "5102")
+		finance_cost_gl = _pick_leaf_account(company, branch, "5109")
+		bank_gl = _pick_leaf_account(company, branch, "1102")
+		equity_gl = _pick_leaf_account(company, branch, "3101")
+		payable_gl = _pick_leaf_account(company, branch, "2101")
+		receivable_gl = _pick_leaf_account(company, branch, "1103")
+
+		summary = {
+			"ok": True,
+			"company": company,
+			"branch": branch,
+			"from_date": str(start_date),
+			"to_date": str(end_date),
+			"masters": {
+				"items": len(masters.get("items") or []),
+				"customers": len(customers),
+				"suppliers": len(suppliers),
+				"employees": len(employees),
+				"warehouse": warehouse,
+			},
+			"transactions": {
+				"sales_invoice_submitted": 0,
+				"purchase_invoice_submitted": 0,
+				"stock_receipt_submitted": 0,
+				"stock_issue_submitted": 0,
+				"salary_journal_submitted": 0,
+				"opex_journal_submitted": 0,
+				"finance_cost_journal_submitted": 0,
+				"bank_deposit_journal_submitted": 0,
+				"errors": [],
+			},
+			"kpis": {
+				"simulated_sales_total": 0.0,
+				"simulated_purchase_total": 0.0,
+				"simulated_gross_profit": 0.0,
+				"simulated_customer_receivables": 0.0,
+				"simulated_supplier_payables": 0.0,
+			},
+		}
+
+		def _push_error(message: str):
+			errs = summary["transactions"]["errors"]
+			if len(errs) < 200:
+				errs.append(message)
+
+		d = start_date
+		day_counter = 0
+		while d <= end_date:
+			posting_date = str(d)
+			for i in range(daily_pi):
+				try:
+					supplier = suppliers[i % len(suppliers)]
+					item = service_items[i % len(service_items)]
+					rate = 70 + (i % 7)
+					_insert_purchase_invoice(company, branch, posting_date, supplier, item, rate=rate)
+					summary["transactions"]["purchase_invoice_submitted"] += 1
+					summary["kpis"]["simulated_purchase_total"] += float(rate)
+					summary["kpis"]["simulated_supplier_payables"] += float(rate)
+				except Exception:
+					_push_error(f"PI {posting_date}: {frappe.get_traceback()}")
+			for i in range(daily_si):
+				try:
+					customer = customers[i % len(customers)]
+					item = service_items[i % len(service_items)]
+					rate = 110 + (i % 9)
+					_insert_sales_invoice(company, branch, posting_date, customer, item, rate=rate)
+					summary["transactions"]["sales_invoice_submitted"] += 1
+					summary["kpis"]["simulated_sales_total"] += float(rate)
+					summary["kpis"]["simulated_customer_receivables"] += float(rate)
+				except Exception:
+					_push_error(f"SI {posting_date}: {frappe.get_traceback()}")
+			try:
+				item = stock_items[day_counter % len(stock_items)]
+				receipt_name, issue_name = _insert_stock_entries(
+					company=company,
+					branch=branch,
+					posting_date=posting_date,
+					warehouse=warehouse,
+					item=item,
+					receipt_qty=20,
+					issue_qty=12,
+				)
+				if receipt_name:
+					summary["transactions"]["stock_receipt_submitted"] += 1
+				if issue_name:
+					summary["transactions"]["stock_issue_submitted"] += 1
+			except Exception:
+				_push_error(f"SE {posting_date}: {frappe.get_traceback()}")
+
+			day_counter += 1
+			d = add_days(d, 1)
+			if day_counter % 5 == 0:
+				frappe.db.commit()
+
+		month_cursor = getdate(start_date.replace(day=1))
+		month_end = getdate(end_date.replace(day=1))
+		while month_cursor <= month_end:
+			posting_date = str(month_cursor)
+			for emp in employees:
+				if salary_expense and bank_gl:
+					try:
+						_insert_journal_entry(
+							company=company,
+							branch=branch,
+							posting_date=posting_date,
+							remarks=f"SIM Payroll {emp} {posting_date}",
+							debit_account=salary_expense,
+							credit_account=bank_gl if not payable_gl else payable_gl,
+							amount=2500,
+						)
+						summary["transactions"]["salary_journal_submitted"] += 1
+					except Exception:
+						_push_error(f"PAY {posting_date}: {frappe.get_traceback()}")
+					if payable_gl and bank_gl:
+						try:
+							_insert_journal_entry(
+								company=company,
+								branch=branch,
+								posting_date=posting_date,
+								remarks=f"SIM Payroll Payment {emp} {posting_date}",
+								debit_account=payable_gl,
+								credit_account=bank_gl,
+								amount=2500,
+							)
+						except Exception:
+							_push_error(f"PAYMENT {posting_date}: {frappe.get_traceback()}")
+			if bank_gl and equity_gl:
+				try:
+					deposit_amount = 250000 if month_cursor == getdate(start_date.replace(day=1)) else 50000
+					_insert_journal_entry(
+						company=company,
+						branch=branch,
+						posting_date=posting_date,
+						remarks=f"SIM Bank Deposit {posting_date}",
+						debit_account=bank_gl,
+						credit_account=equity_gl,
+						amount=deposit_amount,
+					)
+					summary["transactions"]["bank_deposit_journal_submitted"] += 1
+				except Exception:
+					_push_error(f"DEPOSIT {posting_date}: {frappe.get_traceback()}")
+			if opex_gl and bank_gl:
+				try:
+					_insert_journal_entry(
+						company=company,
+						branch=branch,
+						posting_date=posting_date,
+						remarks=f"SIM Operating Expenses {posting_date}",
+						debit_account=opex_gl,
+						credit_account=bank_gl,
+						amount=8000,
+					)
+					summary["transactions"]["opex_journal_submitted"] += 1
+				except Exception:
+					_push_error(f"OPEX {posting_date}: {frappe.get_traceback()}")
+			if finance_cost_gl and bank_gl:
+				try:
+					_insert_journal_entry(
+						company=company,
+						branch=branch,
+						posting_date=posting_date,
+						remarks=f"SIM Finance Cost {posting_date}",
+						debit_account=finance_cost_gl,
+						credit_account=bank_gl,
+						amount=1200,
+					)
+					summary["transactions"]["finance_cost_journal_submitted"] += 1
+				except Exception:
+					_push_error(f"FIN {posting_date}: {frappe.get_traceback()}")
+			month_cursor = add_months(month_cursor, 1)
+			frappe.db.commit()
+
+		summary["kpis"]["simulated_gross_profit"] = round(
+			float(summary["kpis"]["simulated_sales_total"]) - float(summary["kpis"]["simulated_purchase_total"]), 2
+		)
+		# Keep receivables/payables bounded so reports show realistic outstanding.
+		# If receivable/payable GL does not exist in a tenant, this step is skipped safely.
+		if bank_gl and receivable_gl and summary["kpis"]["simulated_customer_receivables"] > 0:
+			try:
+				collection_amount = round(summary["kpis"]["simulated_customer_receivables"] * 0.65, 2)
+				_insert_journal_entry(
+					company=company,
+					branch=branch,
+					posting_date=str(end_date),
+					remarks=f"SIM Collections Closing {end_date}",
+					debit_account=bank_gl,
+					credit_account=receivable_gl,
+					amount=collection_amount,
+				)
+				summary["kpis"]["simulated_customer_receivables"] = round(
+					summary["kpis"]["simulated_customer_receivables"] - collection_amount, 2
+				)
+			except Exception:
+				_push_error(f"AR-CLOSE {end_date}: {frappe.get_traceback()}")
+		if bank_gl and payable_gl and summary["kpis"]["simulated_supplier_payables"] > 0:
+			try:
+				payment_amount = round(summary["kpis"]["simulated_supplier_payables"] * 0.55, 2)
+				_insert_journal_entry(
+					company=company,
+					branch=branch,
+					posting_date=str(end_date),
+					remarks=f"SIM Supplier Payments Closing {end_date}",
+					debit_account=payable_gl,
+					credit_account=bank_gl,
+					amount=payment_amount,
+				)
+				summary["kpis"]["simulated_supplier_payables"] = round(
+					summary["kpis"]["simulated_supplier_payables"] - payment_amount, 2
+				)
+			except Exception:
+				_push_error(f"AP-CLOSE {end_date}: {frappe.get_traceback()}")
+
+		log_id = _log_seed_operation(
+			"Branch Enterprise Simulation Seed",
+			company,
+			branch,
+			"Enterprise",
+			0,
+			"Success",
+			summary,
+		)
+		summary["log_id"] = log_id
+		frappe.db.commit()
+		return summary
+	except Exception:
+		error_summary = {
+			"ok": False,
+			"company": company,
+			"branch": branch,
+			"error": frappe.get_traceback(),
+		}
+		_log_seed_operation(
+			"Branch Enterprise Simulation Seed",
+			company,
+			branch,
+			"Enterprise",
+			0,
+			"Failed",
+			error_summary,
+		)
+		frappe.db.commit()
+		raise
+
+
+def auto_bootstrap_defaults_after_install() -> dict:
+	"""Auto-configure company/branch defaults so fresh installs are ready to use."""
+	from omnexa_accounting.utils.company_financial_defaults import (
+		apply_branch_default_gl_from_company,
+		apply_company_default_gl_from_coa,
+	)
+
+	existing = frappe.db.get_value(
+		"Production Seed Log",
+		{"operation": "Auto Bootstrap Defaults (Install)", "status": ["in", ["Success", "Partial"]]},
+		"name",
+	)
+	if existing:
+		return {"ok": True, "skipped": True, "reason": "already_bootstrapped", "log_id": existing}
+
+	companies = frappe.get_all("Company", pluck="name")
+	summary = {
+		"ok": True,
+		"companies": len(companies),
+		"coa_bootstrapped": 0,
+		"company_gl_defaults_applied": 0,
+		"branch_gl_defaults_applied": 0,
+		"demo_masters_seeded": 0,
+		"errors": [],
+	}
+
+	for company in companies:
+		try:
+			_run_professional_coa_sync(company=company, branch=None, activity=None)
+			summary["coa_bootstrapped"] += 1
+		except Exception:
+			summary["errors"].append(f"COA {company}: {frappe.get_traceback()}")
+			continue
+
+		try:
+			apply_company_default_gl_from_coa(company=company, branch=None, overwrite=0)
+			summary["company_gl_defaults_applied"] += 1
+		except Exception:
+			summary["errors"].append(f"Company defaults {company}: {frappe.get_traceback()}")
+
+		branches = frappe.get_all("Branch", filters={"company": company}, pluck="name")
+		for branch in branches:
+			try:
+				apply_branch_default_gl_from_company(company=company, branch=branch, overwrite=0)
+				summary["branch_gl_defaults_applied"] += 1
+			except Exception:
+				summary["errors"].append(f"Branch defaults {branch}: {frappe.get_traceback()}")
+				continue
+			try:
+				# Keep fresh setup practical: seed branch masters only (no heavy transactions).
+				_ensure_master_data(
+					company=company,
+					branch=branch,
+					item_count=10,
+					customer_count=5,
+					supplier_count=5,
+					employee_count=5,
+				)
+				summary["demo_masters_seeded"] += 1
+			except Exception:
+				summary["errors"].append(f"Masters seed {branch}: {frappe.get_traceback()}")
+		frappe.db.commit()
+
+	if companies:
+		log_id = _log_seed_operation(
+			"Auto Bootstrap Defaults (Install)",
+			companies[0],
+			None,
+			"General",
+			0,
+			"Success" if not summary["errors"] else "Partial",
+			summary,
+		)
+		summary["log_id"] = log_id
+	return summary
 

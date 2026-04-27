@@ -107,6 +107,22 @@ class PurchaseInvoice(Document):
 		self._validate_approval_rule_on_submit()
 		assert_posting_date_open(self.company, self.posting_date)
 
+	def on_submit(self):
+		try:
+			from omnexa_accounting.utils.invoice_posting import post_purchase_invoice_gl
+
+			post_purchase_invoice_gl(self)
+		except Exception:
+			frappe.log_error(frappe.get_traceback(), "Omnexa Posting: Purchase Invoice auto-post")
+
+	def on_cancel(self):
+		try:
+			from omnexa_accounting.utils.invoice_posting import cancel_invoice_posting
+
+			cancel_invoice_posting("Purchase Invoice", self.name, self.company, getattr(self, "branch", None))
+		except Exception:
+			frappe.log_error(frappe.get_traceback(), "Omnexa Posting: Purchase Invoice cancel auto-post")
+
 	def _validate_accounts_and_dimensions(self):
 		if self.default_tax_rule:
 			if frappe.db.get_value("Tax Rule", self.default_tax_rule, "company") != self.company:

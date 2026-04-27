@@ -13,9 +13,9 @@
  ],
  "is_standard": "Yes",
  "module": "Omnexa Accounting",
- "name": "Cash Flow Statement (Structured)",
+ "name": "Cash Flow Statement Structured",
  "ref_doctype": "Journal Entry",
- "report_name": "Cash Flow Statement (Structured)",
+ "report_name": "Cash Flow Statement Structured",
  "report_type": "Script Report",
  "roles": [
   {"role": "System Manager"},

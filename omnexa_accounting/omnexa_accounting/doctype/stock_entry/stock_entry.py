@@ -4,6 +4,12 @@ from frappe.model.document import Document
 from frappe.utils import flt
 
 from omnexa_accounting.utils.branch import validate_branch_company
+from omnexa_accounting.utils.inventory_accounting import (
+	cancel_stock_entry_posting,
+	post_stock_entry_gl,
+	validate_stock_entry_accounting_ready,
+)
+from omnexa_accounting.utils.warehouse_stock_metrics import recompute_warehouse_snapshot_for_stock_entry
 
 
 class StockEntry(Document):
@@ -17,10 +23,15 @@ class StockEntry(Document):
 		self._set_totals()
 
 	def on_submit(self):
+		validate_stock_entry_accounting_ready(self)
 		self._apply_qty_effect(multiplier=1)
+		post_stock_entry_gl(self)
+		recompute_warehouse_snapshot_for_stock_entry(self)
 
 	def on_cancel(self):
+		cancel_stock_entry_posting(self)
 		self._apply_qty_effect(multiplier=-1)
+		recompute_warehouse_snapshot_for_stock_entry(self)
 
 	def _validate_warehouses_company(self):
 		for wh in [self.from_warehouse, self.to_warehouse]:

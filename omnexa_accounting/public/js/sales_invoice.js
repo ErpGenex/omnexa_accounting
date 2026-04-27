@@ -7,12 +7,48 @@ frappe.ui.form.on("Sales Invoice", {
 	},
 
 	async refresh(frm) {
-		if (!frm.is_new()) {
+		if (frm.is_new()) {
+			if (!frm.doc.company || !frm.doc.branch) {
+				await set_company_branch_defaults(frm);
+			}
 			return;
 		}
-		if (!frm.doc.company || !frm.doc.branch) {
-			await set_company_branch_defaults(frm);
-		}
+
+		frm.add_custom_button(__("View Posting Journal Entry"), async () => {
+			let je = frm.doc.posting_journal_entry;
+			if (!je) {
+				const r = await frappe.call({
+					method: "omnexa_accounting.utils.ledger_tools.get_invoice_posting_journal_entry",
+					args: {
+						doctype: "Sales Invoice",
+						docname: frm.doc.name,
+						company: frm.doc.company,
+						branch: frm.doc.branch,
+					},
+				});
+				je = r.message;
+			}
+			if (je) {
+				frappe.set_route("Form", "Journal Entry", je);
+				return;
+			}
+			frappe.msgprint(__("No posting Journal Entry found for this invoice."));
+		});
+
+		frm.add_custom_button(__("Item Movements"), async () => {
+			const first = (frm.doc.items || []).find((r) => r.item);
+			if (!first?.item) {
+				frappe.msgprint(__("No item rows found."));
+				return;
+			}
+			frappe.route_options = {
+				company: frm.doc.company,
+				from_date: frm.doc.posting_date,
+				to_date: frm.doc.posting_date,
+				item: first.item,
+			};
+			frappe.set_route("query-report", "Stock Movement");
+		});
 	},
 
 	setup(frm) {

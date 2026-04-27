@@ -175,7 +175,21 @@ class SalesInvoice(Document):
 	def on_submit(self):
 		assert_posting_date_open(self.company, self.posting_date)
 		self._check_credit_limit()
+		try:
+			from omnexa_accounting.utils.invoice_posting import post_sales_invoice_gl
+
+			post_sales_invoice_gl(self)
+		except Exception:
+			frappe.log_error(frappe.get_traceback(), "Omnexa Posting: Sales Invoice auto-post")
 		self._enqueue_eta_submission()
+
+	def on_cancel(self):
+		try:
+			from omnexa_accounting.utils.invoice_posting import cancel_invoice_posting
+
+			cancel_invoice_posting("Sales Invoice", self.name, self.company, getattr(self, "branch", None))
+		except Exception:
+			frappe.log_error(frappe.get_traceback(), "Omnexa Posting: Sales Invoice cancel auto-post")
 
 	def _set_amounts(self):
 		net = 0
