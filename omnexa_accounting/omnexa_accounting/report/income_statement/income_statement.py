@@ -26,7 +26,9 @@ def execute(filters=None):
 	consolidation_view = should_use_consolidation_view(filters, filters.company)
 	income_rows = _rows_for_type(filters, "Revenue", "Revenue", consolidation_view=consolidation_view)
 	expense_rows = _rows_for_type(filters, "Expense", "Expense", consolidation_view=consolidation_view)
-	net_profit = flt(sum(flt(r.amount) for r in income_rows)) - flt(sum(flt(r.amount) for r in expense_rows))
+	net_profit = flt(sum(flt((r or {}).get("amount")) for r in income_rows)) - flt(
+		sum(flt((r or {}).get("amount")) for r in expense_rows)
+	)
 
 	data = income_rows + expense_rows + [{"section": _("Net Result"), "account_name": _("Net Profit / Loss"), "amount": net_profit}]
 	return columns, data
