@@ -186,6 +186,28 @@ def run_company_financial_validations(doc, method=None):
 
 def on_company_update_sync_globals(doc, method=None):
 	sync_global_defaults_from_company(doc.name, doc.get("default_currency"))
+	_sync_navbar_logo_from_company(doc)
+
+
+def _sync_navbar_logo_from_company(doc) -> None:
+	"""Use Company.company_logo as Navbar app logo for active/default company."""
+	if not doc or not getattr(doc, "meta", None):
+		return
+	if not doc.meta.has_field("company_logo"):
+		return
+	logo = (doc.get("company_logo") or "").strip()
+	if not logo:
+		return
+	if not frappe.db.exists("DocType", "Navbar Settings"):
+		return
+	try:
+		default_company = frappe.db.get_single_value("Global Defaults", "default_company")
+	except Exception:
+		default_company = None
+	companies = frappe.get_all("Company", pluck="name")
+	if len(companies) > 1 and default_company and doc.name != default_company:
+		return
+	frappe.db.set_single_value("Navbar Settings", "app_logo", logo)
 
 
 def run_branch_financial_validations(doc, method=None):
