@@ -26,7 +26,10 @@ required_apps = ["omnexa_core"]
 
 # include js, css files in header of desk.html
 # app_include_css = "/assets/omnexa_accounting/css/omnexa_accounting.css"
-app_include_js = "/assets/omnexa_accounting/js/link_formatters.js"
+app_include_js = [
+	"/assets/omnexa_accounting/js/link_formatters.js",
+	"/assets/omnexa_accounting/js/query_report_defaults.js",
+]
 
 # include js, css files in header of web template
 # web_include_css = "/assets/omnexa_accounting/css/omnexa_accounting.css"
