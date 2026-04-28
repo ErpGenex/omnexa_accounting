@@ -79,6 +79,14 @@ def _log_seed_operation(
 
 def _ensure_account(entry: dict, company: str, branch: str | None, parent_map: dict[str, str]) -> str:
 	parent_name = parent_map.get(entry.get("parent") or "")
+	if parent_name and not frappe.db.get_value("GL Account", parent_name, "is_group"):
+		# Defensive fix for fresh installs with partial/legacy rows:
+		# parent nodes must always be headers before any child is linked.
+		parent_doc = frappe.get_doc("GL Account", parent_name)
+		parent_doc.is_group = 1
+		if parent_doc.meta.has_field("posting_type"):
+			parent_doc.posting_type = "Header"
+		parent_doc.save(ignore_permissions=True)
 	filters = {"company": company, "account_number": entry["code"]}
 	if branch:
 		filters["branch"] = branch
@@ -121,6 +129,8 @@ def _run_professional_coa_sync(company: str, branch: str | None, activity: str |
 	template = list(BASE_COA_TEMPLATE)
 	extra = ACTIVITY_EXTENSIONS.get(industry) or ACTIVITY_EXTENSIONS.get("General", [])
 	template.extend(list(extra))
+	# Keep parent rows before children even if extension order changes.
+	template.sort(key=lambda row: (len(str(row.get("code") or "")), str(row.get("code") or "")))
 
 	parent_map: dict[str, str] = {}
 	created_or_updated = []

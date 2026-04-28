@@ -8,6 +8,7 @@ import io
 
 import frappe
 from frappe import _
+from frappe.utils import cint
 
 from omnexa_accounting.utils.coa_seed_templates import ACTIVITY_EXTENSIONS, BASE_COA_TEMPLATE
 
@@ -284,19 +285,47 @@ def apply_coa_template_to_company(
 	created = 0
 	updated = 0
 
-	def find_existing_gl(code: str) -> str | None:
+	def _ensure_parent_is_group(gl_name: str | None) -> str | None:
+		if not gl_name:
+			return None
+		if cint(frappe.db.get_value("GL Account", gl_name, "is_group")):
+			return gl_name
+		# Recover from legacy/partial trees: parent must be a group/header.
+		doc = frappe.get_doc("GL Account", gl_name)
+		doc.is_group = 1
+		if doc.meta.has_field("posting_type"):
+			doc.posting_type = "Header"
+		doc.save(ignore_permissions=True)
+		return doc.name
+
+	def find_existing_gl(code: str, require_group: bool = False) -> str | None:
 		if not code:
 			return None
 		if branch:
-			match = frappe.db.get_value("GL Account", {"company": company, "branch": branch, "account_number": code}, "name")
+			filters = {"company": company, "branch": branch, "account_number": code}
+			if require_group:
+				filters["is_group"] = 1
+			match = frappe.db.get_value("GL Account", filters, "name")
 			if match:
 				return match
 		# Prefer company-wide (empty branch) first.
-		match = frappe.db.get_value("GL Account", {"company": company, "branch": ["in", ("", None)], "account_number": code}, "name")
+		filters = {"company": company, "branch": ["in", ("", None)], "account_number": code}
+		if require_group:
+			filters["is_group"] = 1
+		match = frappe.db.get_value("GL Account", filters, "name")
 		if match:
 			return match
 		# Fallback: any match in company.
-		return frappe.db.get_value("GL Account", {"company": company, "account_number": code}, "name")
+		filters = {"company": company, "account_number": code}
+		if require_group:
+			filters["is_group"] = 1
+		match = frappe.db.get_value("GL Account", filters, "name")
+		if match:
+			return match
+		if require_group:
+			# Last resort: promote any matching account to group.
+			return _ensure_parent_is_group(frappe.db.get_value("GL Account", {"company": company, "account_number": code}, "name"))
+		return frappe.db.get_value("GL Account", filters, "name")
 
 	overwrite_names = int(overwrite_names or 0)
 
@@ -308,7 +337,7 @@ def apply_coa_template_to_company(
 		parent_gl = None
 		parent_code = r.get("parent_account_number")
 		if parent_code:
-			parent_gl = mapping.get(parent_code) or find_existing_gl(parent_code)
+			parent_gl = _ensure_parent_is_group(mapping.get(parent_code)) or find_existing_gl(parent_code, require_group=True)
 
 		existing = find_existing_gl(code)
 		if existing:
