@@ -231,7 +231,8 @@ class SalesInvoice(Document):
 				if rule.tax_type == "standard" and flt(rule.rate):
 					row_tax = line_net * flt(rule.rate) / 100.0
 					tax += row_tax
-					key = (row.tax_category or rule.tax_category or "Uncategorized", flt(rule.rate))
+					row_cat = getattr(row, "tax_category", None)
+					key = (row_cat or rule.tax_category or "Uncategorized", flt(rule.rate))
 					tax_breakdown[key] = flt(tax_breakdown.get(key, 0)) + row_tax
 		items_subtotal = net
 		if not self.default_tax_rule and flt(getattr(self, "tax_rate", 0)):
