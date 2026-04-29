@@ -39,6 +39,9 @@ _RESET_DOCTYPES = [
 
 
 def _assert_admin():
+	# Allow core installers / migrations to seed CoA even before roles are fully assigned.
+	if getattr(frappe.flags, "in_install", False) or getattr(frappe.flags, "in_migrate", False):
+		return
 	if "System Manager" not in (frappe.get_roles() or []):
 		frappe.throw(_("Not permitted"), frappe.PermissionError)
 
