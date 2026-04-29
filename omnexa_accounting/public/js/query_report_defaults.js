@@ -38,10 +38,29 @@
 			}
 		};
 
+		const setDateIfFromToFilter = () => {
+			(qr.filters || []).forEach((f) => {
+				const df = f?.df || {};
+				if (df.fieldtype !== "Date") return;
+
+				const fieldname = (df.fieldname || "").toLowerCase();
+				const label = (df.label || "").toLowerCase();
+				const isFrom = fieldname.includes("from") || label.includes("from");
+				const isTo = fieldname.includes("to") || label.includes("to");
+
+				if (!isFrom && !isTo) return;
+				const current = f.get_value?.();
+				if (!current) {
+					qr.set_filter_value(df.fieldname, today);
+				}
+			});
+		};
+
 		setIfEmpty("company", company);
 		setIfEmpty("branch", branch);
 		setIfEmpty("from_date", today);
 		setIfEmpty("to_date", today);
+		setDateIfFromToFilter();
 	}
 
 	function scheduleApply(attempt = 0) {
