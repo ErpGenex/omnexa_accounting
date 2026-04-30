@@ -308,21 +308,24 @@ def _is_full_demo_present(company: str) -> bool:
 		return False
 
 
-def ensure_demo_workspace_seed() -> None:
-	"""Create a complete demo dataset (aligned months: stock, JE, and full trading per month)."""
+def ensure_demo_workspace_seed(*, company: str | None = None, branch: str | None = None, forced: bool = False) -> None:
+	"""Create a complete demo dataset (aligned months: stock, JE, and full trading per month).
+
+	By default this is guarded by the `demo_workspace_seed` feature flag. For explicit operator-triggered
+	seeding (e.g. setup wizard / demo reset), pass `forced=True` to bypass the feature flag.
+	"""
 	if frappe.flags.in_install or frappe.flags.in_uninstall:
 		return
-	if not is_feature_enabled("demo_workspace_seed"):
+	if not forced and not is_feature_enabled("demo_workspace_seed"):
 		return
-
-	company = _get_company()
+	company = (company or "").strip() or _get_company()
 	if not company:
 		return
-	branch = _get_branch(company)
+	branch = (branch or "").strip() or _get_branch(company)
 	if not branch:
 		return
-	force = is_feature_enabled("demo_workspace_seed_force")
-	if not force and frappe.db.get_default(DEFAULT_KEY_SEEDED) == "1" and _is_full_demo_present(company):
+	flag_force = is_feature_enabled("demo_workspace_seed_force")
+	if not forced and not flag_force and frappe.db.get_default(DEFAULT_KEY_SEEDED) == "1" and _is_full_demo_present(company):
 		return
 
 	currency = frappe.db.get_value("Company", company, "default_currency") or "EGP"
