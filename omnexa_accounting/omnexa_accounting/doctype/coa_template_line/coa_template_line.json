@@ -10,6 +10,8 @@
 		"account_name_en",
 		"column_break_1",
 		"account_type",
+		"main_account_type",
+		"sub_account_type",
 		"parent_account_number",
 		"is_group",
 		"industry_tag",
@@ -44,6 +46,17 @@
 			"in_list_view": 1,
 			"label": "Account Type",
 			"options": "\nAsset\nLiability\nEquity\nIncome\nExpense"
+		},
+		{
+			"fieldname": "main_account_type",
+			"fieldtype": "Data",
+			"in_list_view": 1,
+			"label": "Main Account Type"
+		},
+		{
+			"fieldname": "sub_account_type",
+			"fieldtype": "Data",
+			"label": "Sub Account Type"
 		},
 		{
 			"fieldname": "parent_account_number",

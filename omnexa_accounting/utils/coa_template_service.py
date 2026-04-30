@@ -23,6 +23,8 @@ CSV_COLUMNS = (
 	"account_name_ar",
 	"account_name_en",
 	"account_type",
+	"main_account_type",
+	"sub_account_type",
 	"parent_account",
 	"is_group",
 	"industry_tag",
@@ -60,6 +62,8 @@ def get_seed_rows(industry_tag: str = "All") -> list[dict]:
 				"account_name_ar": str(r.get("name_ar") or "").strip(),
 				"account_name_en": str(r.get("name_en") or "").strip(),
 				"account_type": str(r.get("type") or "").strip(),
+				"main_account_type": str(r.get("main") or "").strip(),
+				"sub_account_type": str(r.get("sub") or "").strip(),
 				"parent_account": str(r.get("parent") or "").strip(),
 				"is_group": 1 if int(r.get("group") or 0) else 0,
 				"industry_tag": industry_tag if industry_tag else "All",
@@ -101,6 +105,8 @@ def seed_coa_template(template_name: str, industry_tag: str = "All") -> dict:
 				"account_name_ar": r["account_name_ar"],
 				"account_name_en": r["account_name_en"],
 				"account_type": r["account_type"],
+				"main_account_type": r["main_account_type"],
+				"sub_account_type": r["sub_account_type"],
 				"parent_account_number": r["parent_account"],
 				"is_group": r["is_group"],
 				"industry_tag": r["industry_tag"],
@@ -130,6 +136,8 @@ def export_coa_template_csv(template: str) -> str:
 				"account_name_ar": (row.account_name_ar or "").strip(),
 				"account_name_en": (row.account_name_en or "").strip(),
 				"account_type": (row.account_type or "").strip(),
+				"main_account_type": (row.main_account_type or "").strip(),
+				"sub_account_type": (row.sub_account_type or "").strip(),
 				"parent_account": (row.parent_account_number or "").strip(),
 				"is_group": int(row.is_group or 0),
 				"industry_tag": (row.industry_tag or doc.industry_tag or "All").strip(),
@@ -217,6 +225,8 @@ def import_coa_template_csv(
 				"account_name_ar": r.get("account_name_ar"),
 				"account_name_en": r.get("account_name_en"),
 				"account_type": r.get("account_type"),
+				"main_account_type": r.get("main_account_type"),
+				"sub_account_type": r.get("sub_account_type"),
 				"parent_account_number": r.get("parent_account"),
 				"is_group": 1 if str(r.get("is_group") or "").strip() in {"1", "true", "yes"} else 0,
 				"industry_tag": r.get("industry_tag") or doc.industry_tag or "All",
@@ -267,6 +277,8 @@ def apply_coa_template_to_company(
 				"account_name_ar": (row.account_name_ar or "").strip(),
 				"account_name_en": (row.account_name_en or "").strip(),
 				"account_type": (row.account_type or "").strip(),
+				"main_account_type": (row.main_account_type or "").strip(),
+				"sub_account_type": (row.sub_account_type or "").strip(),
 				"parent_account_number": (row.parent_account_number or "").strip(),
 				"is_group": int(row.is_group or 0),
 				"industry_tag": (row.industry_tag or doc.industry_tag or "All").strip(),
@@ -347,6 +359,8 @@ def apply_coa_template_to_company(
 				if name_value:
 					gl.account_name = name_value
 			gl.account_type = r.get("account_type") or gl.account_type
+			gl.main_account_type = r.get("main_account_type") or gl.main_account_type
+			gl.sub_account_type = r.get("sub_account_type") or gl.sub_account_type
 			gl.is_group = int(r.get("is_group") or 0)
 			gl.pl_bucket = r.get("pl_bucket") or gl.pl_bucket
 			gl.cash_flow_section = r.get("cash_flow_section") or gl.cash_flow_section
@@ -372,6 +386,8 @@ def apply_coa_template_to_company(
 		gl.account_number = code
 		gl.account_name = _row_account_name(r, lang=lang) or code
 		gl.account_type = r.get("account_type")
+		gl.main_account_type = r.get("main_account_type")
+		gl.sub_account_type = r.get("sub_account_type")
 		gl.is_group = int(r.get("is_group") or 0)
 		gl.pl_bucket = r.get("pl_bucket")
 		gl.cash_flow_section = r.get("cash_flow_section")
