@@ -114,11 +114,12 @@ class GLAccount(NestedSet):
 	def _sync_account_label(self):
 		number = (self.account_number or "").strip()
 		name = (self.account_name or "").strip()
-		self.account_label = name or self.name
-		if number and name:
-			self.tree_label = f"{name} - {number}"
+		if name and number:
+			label = f"{name} - {number}"
 		else:
-			self.tree_label = name or number or self.name
+			label = name or number or self.name
+		self.account_label = label
+		self.tree_label = label
 
 	def _sync_advanced_mode_display_code(self):
 		"""Advanced-mode display only: CMP-branch-account_number. Never used as logic source."""
