@@ -3,6 +3,10 @@
 
 """Optional demo documents so workspace dashboard charts (Last Month / creation-based) are not empty.
 
+Creates **one aligned horizon** (default 12 months): each month gets **stock movements**, **journal entries**,
+and the full **sales + purchase** chain (orders, receipts, invoices, partial payments)—so the “inventory/GL”
+demo and the “trading” demo are the same depth, not 12 vs 6.
+
 Enable in site_config.json:
 
 	"omnexa_feature_flags": {
@@ -29,6 +33,9 @@ DEMO_TAX_RULE_TITLE = "Omnexa Demo VAT 15%"
 DEMO_TAX_GL_NO = "OMN-DEMO-TAX"
 DEMO_BANK_GL_NO = "OMN-DEMO-BANK"
 DEFAULT_KEY_SEEDED = "omnexa_demo_workspace_seeded"
+
+# Stock+JE and trading (SO/DN/SI, PO/PR/PI) share the same month count so reports line up across modules.
+DEMO_SEED_MONTHS = 12
 
 
 def _backdate_creation(doctype: str, name: str, days_ago: int) -> None:
@@ -288,20 +295,21 @@ def _get_expense_gl(company: str) -> str | None:
 
 
 def _is_full_demo_present(company: str) -> bool:
-	"""Allow re-seeding when old seed is too small."""
+	"""Allow re-seeding when old seed is too small (e.g. previous 6-month trading-only seed)."""
+	m = DEMO_SEED_MONTHS
 	try:
 		return (
-			(frappe.db.count("Sales Invoice", {"company": company, "docstatus": 1}) or 0) >= 6
-			and (frappe.db.count("Purchase Invoice", {"company": company, "docstatus": 1}) or 0) >= 6
-			and (frappe.db.count("Stock Entry", {"company": company, "docstatus": 1}) or 0) >= 6
-			and (frappe.db.count("Journal Entry", {"company": company, "docstatus": 1}) or 0) >= 6
+			(frappe.db.count("Sales Invoice", {"company": company, "docstatus": 1}) or 0) >= m
+			and (frappe.db.count("Purchase Invoice", {"company": company, "docstatus": 1}) or 0) >= m
+			and (frappe.db.count("Stock Entry", {"company": company, "docstatus": 1}) or 0) >= m * 2
+			and (frappe.db.count("Journal Entry", {"company": company, "docstatus": 1}) or 0) >= m
 		)
 	except Exception:
 		return False
 
 
 def ensure_demo_workspace_seed() -> None:
-	"""Create a complete demo dataset (12/6 months, tax-inclusive accounting, stock movements)."""
+	"""Create a complete demo dataset (aligned months: stock, JE, and full trading per month)."""
 	if frappe.flags.in_install or frappe.flags.in_uninstall:
 		return
 	if not is_feature_enabled("demo_workspace_seed"):
@@ -339,8 +347,8 @@ def ensure_demo_workspace_seed() -> None:
 			cust.customer_name = DEMO_CUSTOMER_NAME
 			cust.insert(ignore_permissions=True)
 
-		# 12 months of stock activity + journal entries.
-		for month_idx in range(12):
+		# Stock + journal entries: one pass per demo month (pairs with trading loop below).
+		for month_idx in range(DEMO_SEED_MONTHS):
 			days_ago = 30 * (month_idx + 1)
 			receipt_qty = 20 + month_idx
 			issue_qty = 10 + (month_idx % 5)
@@ -398,8 +406,8 @@ def ensure_demo_workspace_seed() -> None:
 				je.submit()
 				_backdate_creation("Journal Entry", je.name, days_ago - 2)
 
-		# 6 months of trading cycle: sales + purchases + inventory + payments.
-		for month_idx in range(6):
+		# Trading cycle: same month index / posting window as stock+JE (full AR/AP + inventory + payments).
+		for month_idx in range(DEMO_SEED_MONTHS):
 			days_ago = 30 * (month_idx + 1)
 			qty = 2 + month_idx
 			rate = 120 + (month_idx * 10)
@@ -547,9 +555,13 @@ def ensure_demo_workspace_seed() -> None:
 
 		if frappe.db.exists("DocType", "Pipeline Opportunity"):
 			for days_ago, stage, title in (
-				(60, "Qualified", "Omnexa demo opportunity A"),
-				(35, "Proposal", "Omnexa demo opportunity B"),
-				(12, "Negotiation", "Omnexa demo opportunity C"),
+				(360, "Qualified", "Omnexa demo opportunity Y1-Q1"),
+				(270, "Proposal", "Omnexa demo opportunity Y1-Q2"),
+				(180, "Negotiation", "Omnexa demo opportunity Y1-Q3"),
+				(90, "Qualified", "Omnexa demo opportunity Y1-Q4"),
+				(60, "Proposal", "Omnexa demo opportunity A"),
+				(35, "Negotiation", "Omnexa demo opportunity B"),
+				(12, "Qualified", "Omnexa demo opportunity C"),
 			):
 				po = frappe.new_doc("Pipeline Opportunity")
 				po.company = company
