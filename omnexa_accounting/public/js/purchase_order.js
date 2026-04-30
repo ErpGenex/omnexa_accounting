@@ -34,6 +34,7 @@ frappe.ui.form.on("Purchase Order Item", {
 		if (itemData?.message?.item_name) {
 			await frappe.model.set_value(cdt, cdn, "item_name", itemData.message.item_name);
 		}
+		await maybe_apply_contract_rate(frm, cdt, cdn);
 	},
 	async item_code(frm, cdt, cdn) {
 		const row = locals[cdt][cdn];
@@ -48,6 +49,10 @@ frappe.ui.form.on("Purchase Order Item", {
 			await frappe.model.set_value(cdt, cdn, "item_code", matches[0].item_code || "");
 			await frappe.model.set_value(cdt, cdn, "item_name", matches[0].item_name || "");
 		}
+		await maybe_apply_contract_rate(frm, cdt, cdn);
+	},
+	async qty(frm, cdt, cdn) {
+		await maybe_apply_contract_rate(frm, cdt, cdn);
 	},
 });
 
@@ -62,5 +67,40 @@ async function set_company_branch_defaults(frm) {
 		});
 		if (r?.message?.company && !frm.doc.company) await frm.set_value("company", r.message.company);
 		if (r?.message?.branch && !frm.doc.branch) await frm.set_value("branch", r.message.branch);
+	}
+}
+
+async function maybe_apply_contract_rate(frm, cdt, cdn) {
+	try {
+		if (!frm || frm.is_new() === false) {
+			// still allow on new+existing, but avoid heavy calls on every refresh
+		}
+		const row = locals[cdt][cdn];
+		if (!row) return;
+		if (!frm.doc.company || !frm.doc.supplier) return;
+		if (!row.item && !row.item_code) return;
+		if (row.rate && row.rate > 0) return; // don't override user-entered rate
+
+		const r = await frappe.call({
+			method: "omnexa_core.omnexa_core.procurement.api.get_best_purchase_rate",
+			args: {
+				company: frm.doc.company,
+				supplier: frm.doc.supplier,
+				item: row.item,
+				item_code: row.item_code,
+				qty: row.qty || 1,
+				posting_date: frm.doc.posting_date,
+				currency: frm.doc.currency,
+			},
+		});
+		const best = r?.message;
+		if (!best || !best.rate) return;
+
+		await frappe.model.set_value(cdt, cdn, "rate", best.rate);
+		if (best.discount_percentage && frappe.meta.has_field(cdt, "discount_percentage")) {
+			await frappe.model.set_value(cdt, cdn, "discount_percentage", best.discount_percentage);
+		}
+	} catch (e) {
+		// best-effort only
 	}
 }

@@ -1,0 +1,56 @@
+{
+  "actions": [],
+  "allow_rename": 1,
+  "autoname": "hash",
+  "creation": "2026-04-30 01:55:00.000000",
+  "doctype": "DocType",
+  "engine": "InnoDB",
+  "field_order": [
+    "rule_name",
+    "is_active",
+    "company",
+    "branch",
+    "doctype_name",
+    "entry_type",
+    "column_break_1",
+    "min_amount",
+    "max_amount",
+    "required_cost_center",
+    "required_project",
+    "enforce_reference",
+    "remarks"
+  ],
+  "fields": [
+    {"fieldname": "rule_name", "fieldtype": "Data", "in_list_view": 1, "label": "Rule Name", "reqd": 1},
+    {"fieldname": "is_active", "fieldtype": "Check", "label": "Active", "default": "1", "in_list_view": 1},
+    {"fieldname": "company", "fieldtype": "Link", "label": "Company", "options": "Company", "in_list_view": 1},
+    {"fieldname": "branch", "fieldtype": "Link", "label": "Branch", "options": "Branch", "in_list_view": 1},
+    {"fieldname": "doctype_name", "fieldtype": "Select", "label": "DocType", "options": "Journal Entry\nPayment Entry", "reqd": 1, "in_list_view": 1},
+    {"fieldname": "entry_type", "fieldtype": "Data", "label": "Entry Type (optional)", "description": "Example: Opening, Closing, Adjustment, Customer Receipt"},
+    {"fieldname": "column_break_1", "fieldtype": "Column Break"},
+    {"fieldname": "min_amount", "fieldtype": "Currency", "label": "Min Amount", "default": "0"},
+    {"fieldname": "max_amount", "fieldtype": "Currency", "label": "Max Amount"},
+    {"fieldname": "required_cost_center", "fieldtype": "Check", "label": "Require Cost Center", "default": "0"},
+    {"fieldname": "required_project", "fieldtype": "Check", "label": "Require Project", "default": "0"},
+    {"fieldname": "enforce_reference", "fieldtype": "Check", "label": "Require Reference", "default": "0"},
+    {"fieldname": "remarks", "fieldtype": "Small Text", "label": "Remarks"}
+  ],
+  "grid_page_length": 50,
+  "index_web_pages_for_search": 1,
+  "links": [],
+  "modified": "2026-04-30 01:55:00.000000",
+  "modified_by": "Administrator",
+  "module": "Omnexa Accounting",
+  "name": "Finance Posting Rule",
+  "naming_rule": "Random",
+  "owner": "Administrator",
+  "permissions": [
+    {"role": "System Manager", "read": 1, "write": 1, "create": 1, "delete": 1, "report": 1, "export": 1, "print": 1, "email": 1, "share": 1},
+    {"role": "Accounts Manager", "read": 1, "write": 1, "create": 1, "delete": 0, "report": 1, "export": 1, "print": 1, "email": 1, "share": 0}
+  ],
+  "sort_field": "modified",
+  "sort_order": "DESC",
+  "states": [],
+  "track_changes": 1
+}
+

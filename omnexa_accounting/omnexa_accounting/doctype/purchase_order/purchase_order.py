@@ -66,7 +66,9 @@ class PurchaseOrder(Document):
 				frappe.throw(_("Row {0}: Qty must be greater than zero.").format(row.idx), title=_("Items"))
 			if flt(row.rate) < 0:
 				frappe.throw(_("Row {0}: Rate cannot be negative.").format(row.idx), title=_("Items"))
-			row.amount = flt(row.qty) * flt(row.rate)
+			discount_pct = flt(row.get("discount_percentage")) if hasattr(row, "get") else 0.0
+			discount_pct = max(0.0, min(100.0, discount_pct))
+			row.amount = flt(row.qty) * flt(row.rate) * (1.0 - (discount_pct / 100.0))
 			total_qty += flt(row.qty)
 			total_amount += flt(row.amount)
 		self.total_qty = total_qty
