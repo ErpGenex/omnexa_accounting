@@ -10,10 +10,7 @@ import frappe
 
 @frappe.whitelist()
 def get_children(doctype, parent="", **filters):
-	"""
-	Tree provider for GL Account that always returns a user-friendly title.
-	Title format: Account Name - Account Number (without internal id/hash).
-	"""
+	"""Tree provider for GL Account that shows Account Name as label/title."""
 	meta = frappe.get_meta(doctype)
 	parent_field = meta.get("nsm_parent_field") or "parent_gl_account"
 	conditions = [[f"ifnull(`{parent_field}`,'')", "=", parent], ["docstatus", "<", 2]]
@@ -38,7 +35,6 @@ def get_children(doctype, parent="", **filters):
 	for r in rows:
 		account_name = (r.get("account_name") or r.get("account_label") or "").strip()
 		account_number = (r.get("account_number") or "").strip()
-		tree_label = (r.get("tree_label") or "").strip()
 		is_advanced = _is_advanced_number(account_number)
 
 		if display_mode == "Standard Only" and is_advanced:
@@ -46,12 +42,7 @@ def get_children(doctype, parent="", **filters):
 		if display_mode == "Advanced Only" and not is_advanced:
 			continue
 
-		if tree_label:
-			title = tree_label
-		elif account_name and account_number:
-			title = f"{account_name} - {account_number}"
-		else:
-			title = account_name or account_number or r.get("name")
+		title = account_name or account_number or r.get("name")
 		out.append(
 			{
 				"value": r.get("name"),

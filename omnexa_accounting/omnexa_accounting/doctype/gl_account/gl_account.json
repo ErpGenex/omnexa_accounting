@@ -316,7 +316,7 @@
 	"naming_rule": "Random",
 	"search_fields": "account_number,account_name,account_label,display_code,external_reference",
 	"show_title_field_in_link": 1,
-	"title_field": "tree_label",
+	"title_field": "account_name",
 	"nsm_parent_field": "parent_account",
 	"owner": "Administrator",
 	"permissions": [
