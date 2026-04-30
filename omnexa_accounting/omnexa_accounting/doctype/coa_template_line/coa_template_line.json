@@ -49,14 +49,16 @@
 		},
 		{
 			"fieldname": "main_account_type",
-			"fieldtype": "Data",
+			"fieldtype": "Select",
 			"in_list_view": 1,
-			"label": "Main Account Type"
+			"label": "Main Account Type",
+			"options": "\nCurrent Assets\nNon-Current Assets\nCurrent Liabilities\nNon-Current Liabilities\nEquity\nRevenue\nOther Income\nCOGS\nOperating Expenses\nOther Expenses"
 		},
 		{
 			"fieldname": "sub_account_type",
-			"fieldtype": "Data",
-			"label": "Sub Account Type"
+			"fieldtype": "Select",
+			"label": "Sub Account Type",
+			"options": "\nHeader\nCash\nBank\nTrade Receivables\nOther Receivables\nInventory\nPrepayments\nInput VAT Recoverable\nPPE\nIntangible Assets\nInvestments\nROU Assets\nTrade Payables\nAccruals\nOutput VAT Payable\nPayroll Liabilities\nTaxes & Zakat\nLease Liabilities\nRetained Earnings\nShare Capital\nSales Revenue\nService Revenue\nDiscounts & Returns\nInterest Income\nOther Non-Operating Income\nDirect Materials\nDirect Labor\nManufacturing Overhead\nSelling Expenses\nGeneral & Administrative\nDepreciation\nAmortization\nFinance Costs\nImpairment & Provisions\nOther Non-Operating Expenses"
 		},
 		{
 			"fieldname": "parent_account_number",

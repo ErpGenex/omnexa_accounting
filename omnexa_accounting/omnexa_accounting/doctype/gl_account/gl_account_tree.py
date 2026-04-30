@@ -21,7 +21,7 @@ def get_children(doctype, parent="", **filters):
 
 	rows = frappe.get_list(
 		doctype,
-		fields=["name", "account_name", "account_number", "is_group"],
+		fields=["name", "account_name", "account_number", "account_label", "tree_label", "is_group"],
 		filters=conditions,
 		order_by="account_number asc, account_name asc, name asc",
 	)
@@ -36,8 +36,9 @@ def get_children(doctype, parent="", **filters):
 
 	out = []
 	for r in rows:
-		account_name = (r.get("account_name") or "").strip()
+		account_name = (r.get("account_name") or r.get("account_label") or "").strip()
 		account_number = (r.get("account_number") or "").strip()
+		tree_label = (r.get("tree_label") or "").strip()
 		is_advanced = _is_advanced_number(account_number)
 
 		if display_mode == "Standard Only" and is_advanced:
@@ -45,13 +46,16 @@ def get_children(doctype, parent="", **filters):
 		if display_mode == "Advanced Only" and not is_advanced:
 			continue
 
-		if account_name and account_number:
+		if tree_label:
+			title = tree_label
+		elif account_name and account_number:
 			title = f"{account_name} - {account_number}"
 		else:
 			title = account_name or account_number or r.get("name")
 		out.append(
 			{
 				"value": r.get("name"),
+				"label": title,
 				"title": title,
 				"expandable": int(r.get("is_group") or 0),
 			}
