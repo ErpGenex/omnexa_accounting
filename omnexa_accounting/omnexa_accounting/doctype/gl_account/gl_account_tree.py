@@ -42,7 +42,10 @@ def get_children(doctype, parent="", **filters):
 		if display_mode == "Advanced Only" and not is_advanced:
 			continue
 
-		title = account_name or account_number or r.get("name")
+		if account_name and account_number:
+			title = f"{account_name} - {account_number}"
+		else:
+			title = account_name or account_number or "Unnamed Account"
 		out.append(
 			{
 				"value": r.get("name"),
