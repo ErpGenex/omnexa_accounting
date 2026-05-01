@@ -47,7 +47,7 @@ frappe.ui.form.on("Branch", {
 						fieldname: "daily_sales_invoices",
 						fieldtype: "Int",
 						label: __("Daily Sales Invoices"),
-						default: 50,
+						default: 10,
 						reqd: 1,
 					},
 					{

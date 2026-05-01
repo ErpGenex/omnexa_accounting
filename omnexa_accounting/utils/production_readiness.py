@@ -812,6 +812,8 @@ def _ensure_master_data(
 					"company": company,
 					"stock_uom": "Nos",
 					"is_stock_item": 1 if idx <= max(2, item_count // 2) else 0,
+					"is_sales_item": 1,
+					"is_purchase_item": 1,
 				}
 			)
 			doc.insert(ignore_permissions=True)
@@ -885,9 +887,46 @@ def _submit_if_draft(doc):
 		doc.submit()
 
 
+def _insert_payment_entry_for_invoice(
+	*,
+	company: str,
+	branch: str,
+	posting_date: str,
+	party_type: str,
+	party: str,
+	reference_doctype: str,
+	reference_name: str,
+	paid_amount: float,
+) -> str:
+	pe = frappe.get_doc(
+		{
+			"doctype": "Payment Entry",
+			"company": company,
+			"branch": branch,
+			"posting_date": posting_date,
+			"party_type": party_type,
+			"party": party,
+			"payment_purpose": "Customer Receipt" if party_type == "Customer" else "Supplier Payment",
+			"paid_amount": paid_amount,
+			"references": [
+				{
+					"reference_doctype": reference_doctype,
+					"reference_name": reference_name,
+					"allocated_amount": paid_amount,
+				}
+			],
+			"reference": f"SIM-{reference_doctype}-{reference_name}",
+		}
+	)
+	pe.insert(ignore_permissions=True)
+	_submit_if_draft(pe)
+	return pe.name
+
+
 def _insert_sales_invoice(company: str, branch: str, posting_date: str, customer: str, item: str, rate: float) -> str:
 	item_code = frappe.db.get_value("Item", item, "item_code")
 	currency = _company_currency(company)
+	update_stock = 1 if cint(frappe.db.get_value("Item", item, "is_stock_item")) else 0
 	si = frappe.get_doc(
 		{
 			"doctype": "Sales Invoice",
@@ -898,6 +937,8 @@ def _insert_sales_invoice(company: str, branch: str, posting_date: str, customer
 			"currency": currency,
 			"conversion_rate": 1,
 			"remarks": f"SIM-AUTO {branch} {posting_date}",
+			"update_stock": update_stock,
+			"set_warehouse": _leaf_warehouse(company, branch),
 			"items": [{"item": item, "item_code": item_code, "qty": 1, "rate": rate}],
 		}
 	)
@@ -911,6 +952,7 @@ def _insert_purchase_invoice(
 ) -> str:
 	item_code = frappe.db.get_value("Item", item, "item_code")
 	currency = _company_currency(company)
+	update_stock = 1 if cint(frappe.db.get_value("Item", item, "is_stock_item")) else 0
 	pi = frappe.get_doc(
 		{
 			"doctype": "Purchase Invoice",
@@ -921,12 +963,25 @@ def _insert_purchase_invoice(
 			"currency": currency,
 			"conversion_rate": 1,
 			"remarks": f"SIM-AUTO {branch} {posting_date}",
+			"update_stock": update_stock,
+			"set_warehouse": _leaf_warehouse(company, branch),
 			"items": [{"item": item, "item_code": item_code, "qty": 1, "rate": rate}],
 		}
 	)
 	pi.insert(ignore_permissions=True)
 	_submit_if_draft(pi)
 	return pi.name
+
+
+def _leaf_warehouse(company: str, branch: str) -> str | None:
+	# Prefer branch warehouse for stock posting on invoices.
+	filters = {"company": company}
+	if _has_field("Warehouse", "branch"):
+		filters["branch"] = branch
+	wh = frappe.db.get_value("Warehouse", filters, "name")
+	if wh:
+		return wh
+	return frappe.db.get_value("Warehouse", {"company": company}, "name")
 
 
 def _insert_stock_entries(
@@ -1025,8 +1080,8 @@ def run_branch_enterprise_simulation_seed(**kwargs):
 	branch = params.branch
 	company = params.company
 	months = cint(params.get("months") or 6)
-	daily_pi = cint(params.get("daily_purchase_invoices") or 10)
-	daily_si = cint(params.get("daily_sales_invoices") or 50)
+	daily_pi = min(10, max(1, cint(params.get("daily_purchase_invoices") or 10)))
+	daily_si = min(10, max(1, cint(params.get("daily_sales_invoices") or 10)))
 	employee_count = cint(params.get("employees") or 5)
 	customer_count = cint(params.get("customers") or 5)
 	supplier_count = cint(params.get("suppliers") or 5)
@@ -1102,26 +1157,83 @@ def run_branch_enterprise_simulation_seed(**kwargs):
 		day_counter = 0
 		while d <= end_date:
 			posting_date = str(d)
+			# Mix cash/credit so AR/AP statements and outstanding appear.
+			cash_sales_target = max(1, int(round(daily_si * 0.5)))
+			cash_purchase_target = max(1, int(round(daily_pi * 0.4)))
+			credit_sales_target = max(0, daily_si - cash_sales_target)
+			credit_purchase_target = max(0, daily_pi - cash_purchase_target)
+
+			# Prefer stock items for invoices to drive stock ledger and warehouse balances.
+			stock_sales_target = max(1, int(round(daily_si * 0.7)))
+			stock_purchase_target = max(1, int(round(daily_pi * 0.7)))
+
 			for i in range(daily_pi):
 				try:
 					supplier = suppliers[i % len(suppliers)]
-					item = service_items[i % len(service_items)]
+					is_stock = i < stock_purchase_target
+					item = (stock_items if is_stock else service_items)[i % len(stock_items if is_stock else service_items)]
 					rate = 70 + (i % 7)
-					_insert_purchase_invoice(company, branch, posting_date, supplier, item, rate=rate)
+					pi_name = _insert_purchase_invoice(company, branch, posting_date, supplier, item, rate=rate)
 					summary["transactions"]["purchase_invoice_submitted"] += 1
 					summary["kpis"]["simulated_purchase_total"] += float(rate)
 					summary["kpis"]["simulated_supplier_payables"] += float(rate)
+					# Cash purchases: create supplier payment to reduce outstanding (AP).
+					if i < cash_purchase_target:
+						try:
+							_insert_payment_entry_for_invoice(
+								company=company,
+								branch=branch,
+								posting_date=posting_date,
+								party_type="Supplier",
+								party=supplier,
+								reference_doctype="Purchase Invoice",
+								reference_name=pi_name,
+								paid_amount=float(rate),
+							)
+						except Exception:
+							_push_error(f"PAY-PI {posting_date}: {frappe.get_traceback()}")
 				except Exception:
 					_push_error(f"PI {posting_date}: {frappe.get_traceback()}")
 			for i in range(daily_si):
 				try:
 					customer = customers[i % len(customers)]
-					item = service_items[i % len(service_items)]
+					is_stock = i < stock_sales_target
+					item = (stock_items if is_stock else service_items)[i % len(stock_items if is_stock else service_items)]
 					rate = 110 + (i % 9)
-					_insert_sales_invoice(company, branch, posting_date, customer, item, rate=rate)
+					si_name = _insert_sales_invoice(company, branch, posting_date, customer, item, rate=rate)
 					summary["transactions"]["sales_invoice_submitted"] += 1
 					summary["kpis"]["simulated_sales_total"] += float(rate)
 					summary["kpis"]["simulated_customer_receivables"] += float(rate)
+					# Cash sales: immediate receipt; credit sales: partial receipt after 7 days (to show both).
+					if i < cash_sales_target:
+						try:
+							_insert_payment_entry_for_invoice(
+								company=company,
+								branch=branch,
+								posting_date=posting_date,
+								party_type="Customer",
+								party=customer,
+								reference_doctype="Sales Invoice",
+								reference_name=si_name,
+								paid_amount=float(rate),
+							)
+						except Exception:
+							_push_error(f"PAY-SI {posting_date}: {frappe.get_traceback()}")
+					elif i < (cash_sales_target + credit_sales_target) and day_counter % 3 == 0:
+						try:
+							partial_date = str(add_days(d, 7))
+							_insert_payment_entry_for_invoice(
+								company=company,
+								branch=branch,
+								posting_date=partial_date,
+								party_type="Customer",
+								party=customer,
+								reference_doctype="Sales Invoice",
+								reference_name=si_name,
+								paid_amount=round(float(rate) * 0.4, 2),
+							)
+						except Exception:
+							_push_error(f"PARTIAL-SI {posting_date}: {frappe.get_traceback()}")
 				except Exception:
 					_push_error(f"SI {posting_date}: {frappe.get_traceback()}")
 			try:
@@ -1151,6 +1263,29 @@ def run_branch_enterprise_simulation_seed(**kwargs):
 		month_end = getdate(end_date.replace(day=1))
 		while month_cursor <= month_end:
 			posting_date = str(month_cursor)
+			# Create HR payroll docs (if installed) so HR/Payroll reports are not empty.
+			if frappe.db.exists("DocType", "HR Payroll Entry"):
+				for emp in employees:
+					try:
+						if frappe.db.exists("HR Payroll Entry", {"employee": emp, "company": company, "payroll_month": posting_date}):
+							continue
+						pe = frappe.get_doc(
+							{
+								"doctype": "HR Payroll Entry",
+								"employee": emp,
+								"company": company,
+								"payroll_month": posting_date,
+								"basic_salary": 2500,
+								"allowances": 300,
+								"deductions": 150,
+								"bonus": 0,
+								"net_pay": 2650,
+								"status": "Paid",
+							}
+						)
+						pe.insert(ignore_permissions=True)
+					except Exception:
+						_push_error(f"HR-PAY {posting_date}: {frappe.get_traceback()}")
 			for emp in employees:
 				if salary_expense and bank_gl:
 					try:
