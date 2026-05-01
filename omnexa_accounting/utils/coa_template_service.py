@@ -72,6 +72,8 @@ _SUB_ACCOUNT_TYPES = {
 	"VAT",
 	"Tax",
 	"Fixed Assets",
+	"Intangibles",
+	"Intangible",
 	"Cash",
 	"Bank",
 	"Trade Receivables",
