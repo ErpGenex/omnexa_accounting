@@ -74,6 +74,7 @@ _SUB_ACCOUNT_TYPES = {
 	"Fixed Assets",
 	"Intangibles",
 	"Intangible",
+	"Payroll",
 	"Cash",
 	"Bank",
 	"Trade Receivables",
