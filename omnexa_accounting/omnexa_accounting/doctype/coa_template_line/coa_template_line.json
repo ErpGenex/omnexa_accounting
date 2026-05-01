@@ -58,7 +58,7 @@
 			"fieldname": "sub_account_type",
 			"fieldtype": "Select",
 			"label": "Sub Account Type",
-			"options": "\nHeader\nCurrent Assets\nNon-Current Assets\nCurrent Liabilities\nNon-Current Liabilities\nEquity\nIncome\nRevenue\nExpense\nExpenses\nAssets\nLiabilities\nReceivables\nPayables\nVAT\nFixed Assets\nCash\nBank\nTrade Receivables\nOther Receivables\nInventory\nPrepayments\nInput VAT Recoverable\nPPE\nIntangible Assets\nInvestments\nROU Assets\nTrade Payables\nAccruals\nOutput VAT Payable\nPayroll Liabilities\nTaxes & Zakat\nLease Liabilities\nRetained Earnings\nShare Capital\nSales Revenue\nService Revenue\nDiscounts & Returns\nInterest Income\nOther Non-Operating Income\nDirect Materials\nDirect Labor\nManufacturing Overhead\nSelling Expenses\nGeneral & Administrative\nDepreciation\nAmortization\nFinance Costs\nImpairment & Provisions\nOther Non-Operating Expenses"
+			"options": "\nHeader\nCurrent Assets\nNon-Current Assets\nCurrent Liabilities\nNon-Current Liabilities\nEquity\nIncome\nRevenue\nExpense\nExpenses\nAssets\nLiabilities\nReceivables\nPayables\nVAT\nTax\nFixed Assets\nCash\nBank\nTrade Receivables\nOther Receivables\nInventory\nPrepayments\nInput VAT Recoverable\nPPE\nIntangible Assets\nInvestments\nROU Assets\nTrade Payables\nAccruals\nOutput VAT Payable\nPayroll Liabilities\nTaxes & Zakat\nLease Liabilities\nRetained Earnings\nShare Capital\nSales Revenue\nService Revenue\nDiscounts & Returns\nInterest Income\nOther Non-Operating Income\nDirect Materials\nDirect Labor\nManufacturing Overhead\nSelling Expenses\nGeneral & Administrative\nDepreciation\nAmortization\nFinance Costs\nImpairment & Provisions\nOther Non-Operating Expenses"
 		},
 		{
 			"fieldname": "parent_account_number",

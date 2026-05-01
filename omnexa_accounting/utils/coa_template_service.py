@@ -34,6 +34,90 @@ CSV_COLUMNS = (
 	"is_stock_valuation",
 )
 
+_MAIN_ACCOUNT_TYPES = {
+	"",
+	"Assets",
+	"Current Assets",
+	"Non-Current Assets",
+	"Liabilities",
+	"Current Liabilities",
+	"Non-Current Liabilities",
+	"Equity",
+	"Income",
+	"Revenue",
+	"Other Income",
+	"Expenses",
+	"Expense",
+	"COGS",
+	"Operating Expenses",
+	"Other Expenses",
+}
+
+_SUB_ACCOUNT_TYPES = {
+	"",
+	"Header",
+	"Current Assets",
+	"Non-Current Assets",
+	"Current Liabilities",
+	"Non-Current Liabilities",
+	"Equity",
+	"Income",
+	"Revenue",
+	"Expense",
+	"Expenses",
+	"Assets",
+	"Liabilities",
+	"Receivables",
+	"Payables",
+	"VAT",
+	"Tax",
+	"Fixed Assets",
+	"Cash",
+	"Bank",
+	"Trade Receivables",
+	"Other Receivables",
+	"Inventory",
+	"Prepayments",
+	"Input VAT Recoverable",
+	"PPE",
+	"Intangible Assets",
+	"Investments",
+	"ROU Assets",
+	"Trade Payables",
+	"Accruals",
+	"Output VAT Payable",
+	"Payroll Liabilities",
+	"Taxes & Zakat",
+	"Lease Liabilities",
+	"Retained Earnings",
+	"Share Capital",
+	"Sales Revenue",
+	"Service Revenue",
+	"Discounts & Returns",
+	"Interest Income",
+	"Other Non-Operating Income",
+	"Direct Materials",
+	"Direct Labor",
+	"Manufacturing Overhead",
+	"Selling Expenses",
+	"General & Administrative",
+	"Depreciation",
+	"Amortization",
+	"Finance Costs",
+	"Impairment & Provisions",
+	"Other Non-Operating Expenses",
+}
+
+
+def _clean_main_account_type(value: str | None) -> str:
+	v = (value or "").strip()
+	return v if v in _MAIN_ACCOUNT_TYPES else ""
+
+
+def _clean_sub_account_type(value: str | None) -> str:
+	v = (value or "").strip()
+	return v if v in _SUB_ACCOUNT_TYPES else ""
+
 
 def _lang_is_ar(lang: str | None = None) -> bool:
 	lang = (lang or getattr(frappe.local, "lang", None) or "").lower()
@@ -359,8 +443,10 @@ def apply_coa_template_to_company(
 				if name_value:
 					gl.account_name = name_value
 			gl.account_type = r.get("account_type") or gl.account_type
-			gl.main_account_type = r.get("main_account_type") or gl.main_account_type
-			gl.sub_account_type = r.get("sub_account_type") or gl.sub_account_type
+			incoming_main = _clean_main_account_type(r.get("main_account_type"))
+			incoming_sub = _clean_sub_account_type(r.get("sub_account_type"))
+			gl.main_account_type = incoming_main or gl.main_account_type
+			gl.sub_account_type = incoming_sub or gl.sub_account_type
 			gl.is_group = int(r.get("is_group") or 0)
 			gl.pl_bucket = r.get("pl_bucket") or gl.pl_bucket
 			gl.cash_flow_section = r.get("cash_flow_section") or gl.cash_flow_section
@@ -386,8 +472,8 @@ def apply_coa_template_to_company(
 		gl.account_number = code
 		gl.account_name = _row_account_name(r, lang=lang) or code
 		gl.account_type = r.get("account_type")
-		gl.main_account_type = r.get("main_account_type")
-		gl.sub_account_type = r.get("sub_account_type")
+		gl.main_account_type = _clean_main_account_type(r.get("main_account_type"))
+		gl.sub_account_type = _clean_sub_account_type(r.get("sub_account_type"))
 		gl.is_group = int(r.get("is_group") or 0)
 		gl.pl_bucket = r.get("pl_bucket")
 		gl.cash_flow_section = r.get("cash_flow_section")
