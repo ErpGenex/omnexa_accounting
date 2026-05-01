@@ -5,6 +5,7 @@ from frappe import _
 from frappe.utils import add_days, add_months, cint, getdate, nowdate, today
 
 from omnexa_accounting.utils.coa_seed_templates import ACTIVITY_EXTENSIONS, BASE_COA_TEMPLATE
+from omnexa_accounting.utils.coa_template_service import _clean_main_account_type, _clean_sub_account_type
 
 
 def _localized_account_label(entry: dict) -> str:
@@ -101,10 +102,18 @@ def _ensure_account(entry: dict, company: str, branch: str | None, parent_map: d
 		"branch": branch,
 		"is_group": int(entry.get("group") or 0),
 		"account_type": entry["type"],
-		"main_account_type": entry.get("main"),
-		"sub_account_type": entry.get("sub"),
+		"main_account_type": _clean_main_account_type(entry.get("main")),
+		"sub_account_type": _clean_sub_account_type(entry.get("sub")),
 		"parent_account": parent_name,
 	}
+	account_name_value = (values.get("account_name") or "").strip()
+	account_number_value = (values.get("account_number") or "").strip()
+	values["account_label"] = account_name_value or "Unnamed Account"
+	values["tree_label"] = (
+		f"{account_name_value} - {account_number_value}"
+		if account_name_value and account_number_value
+		else (account_name_value or account_number_value or "Unnamed Account")
+	)
 	for opt in ("pl_bucket", "cash_flow_section", "working_capital_bucket"):
 		if entry.get(opt):
 			values[opt] = entry[opt]
@@ -732,7 +741,13 @@ def wipe_company_all_data(company: str, branch: str | None = None, confirm_text:
 	for dt in master_doctypes:
 		if not frappe.db.exists("DocType", dt):
 			continue
-		if not frappe.db.has_column(f"tab{dt}", "company"):
+		# `has_column` expects DocType name, not physical SQL table name.
+		# Using `tab{dt}` causes ProgrammingError ('DocType', 'tabCustomer') and stops the wipe.
+		try:
+			has_company_column = frappe.db.has_column(dt, "company")
+		except Exception:
+			has_company_column = False
+		if not has_company_column:
 			continue
 		filters = {"company": company}
 		before = frappe.db.count(dt, filters)

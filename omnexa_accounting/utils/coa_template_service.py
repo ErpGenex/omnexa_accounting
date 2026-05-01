@@ -63,6 +63,9 @@ _SUB_ACCOUNT_TYPES = {
 	"Equity",
 	"Income",
 	"Revenue",
+	"Other Income",
+	"COGS",
+	"OPEX",
 	"Expense",
 	"Expenses",
 	"Assets",
@@ -150,6 +153,10 @@ _SUB_TYPE_ALIASES = {
 	"P&L Reserves": "Retained Earnings",
 	"Income": "Sales Revenue",
 	"Revenue": "Sales Revenue",
+	"OPEX": "General & Administrative",
+	"D&A": "Depreciation",
+	"D & A": "Depreciation",
+	"Depreciation & Amortization": "Depreciation",
 	"Expense": "General & Administrative",
 	"Expenses": "General & Administrative",
 	"Assets": "Header",
@@ -172,6 +179,17 @@ def _clean_sub_account_type(value: str | None) -> str:
 	v = (value or "").strip()
 	v = _SUB_TYPE_ALIASES.get(v, v)
 	return v if v in _SUB_ACCOUNT_TYPES else ""
+
+
+def _sync_gl_labels(gl_doc) -> None:
+	name_value = (gl_doc.account_name or "").strip()
+	number_value = (gl_doc.account_number or "").strip()
+	gl_doc.account_label = name_value or _("Unnamed Account")
+	gl_doc.tree_label = (
+		f"{name_value} - {number_value}"
+		if name_value and number_value
+		else (name_value or number_value or _("Unnamed Account"))
+	)
 
 
 def _lang_is_ar(lang: str | None = None) -> bool:
@@ -244,8 +262,8 @@ def seed_coa_template(template_name: str, industry_tag: str = "All") -> dict:
 				"account_name_ar": r["account_name_ar"],
 				"account_name_en": r["account_name_en"],
 				"account_type": r["account_type"],
-				"main_account_type": r["main_account_type"],
-				"sub_account_type": r["sub_account_type"],
+				"main_account_type": _clean_main_account_type(r["main_account_type"]),
+				"sub_account_type": _clean_sub_account_type(r["sub_account_type"]),
 				"parent_account_number": r["parent_account"],
 				"is_group": r["is_group"],
 				"industry_tag": r["industry_tag"],
@@ -493,10 +511,9 @@ def apply_coa_template_to_company(
 		existing = find_existing_gl(code)
 		if existing:
 			gl = frappe.get_doc("GL Account", existing)
-			if overwrite_names:
-				name_value = _row_account_name(r, lang=lang)
-				if name_value:
-					gl.account_name = name_value
+			name_value = _row_account_name(r, lang=lang)
+			if name_value and (overwrite_names or not (gl.account_name or "").strip() or gl.account_name == gl.name):
+				gl.account_name = name_value
 			gl.account_type = r.get("account_type") or gl.account_type
 			incoming_main = _clean_main_account_type(r.get("main_account_type"))
 			incoming_sub = _clean_sub_account_type(r.get("sub_account_type"))
@@ -515,6 +532,7 @@ def apply_coa_template_to_company(
 				pass
 			if parent_gl:
 				gl.parent_account = parent_gl
+			_sync_gl_labels(gl)
 			gl.save(ignore_permissions=True)
 			mapping[code] = gl.name
 			updated += 1
@@ -536,6 +554,7 @@ def apply_coa_template_to_company(
 		gl.is_stock_valuation = int(r.get("is_stock_valuation") or 0)
 		if parent_gl:
 			gl.parent_account = parent_gl
+		_sync_gl_labels(gl)
 		gl.insert(ignore_permissions=True)
 		mapping[code] = gl.name
 		created += 1

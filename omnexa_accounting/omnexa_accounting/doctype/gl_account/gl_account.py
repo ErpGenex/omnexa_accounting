@@ -114,7 +114,7 @@ class GLAccount(NestedSet):
 	def _sync_account_label(self):
 		number = (self.account_number or "").strip()
 		name = (self.account_name or "").strip()
-		self.account_label = name or number or _("Unnamed Account")
+		self.account_label = name or _("Unnamed Account")
 		if name and number:
 			self.tree_label = f"{name} - {number}"
 		else:
