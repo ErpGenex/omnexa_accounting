@@ -80,6 +80,7 @@ _SUB_ACCOUNT_TYPES = {
 	"Unearned Revenue",
 	"Customer Advances",
 	"Provisions",
+	"Leases",
 	"Cash",
 	"Bank",
 	"Trade Receivables",
@@ -116,14 +117,52 @@ _SUB_ACCOUNT_TYPES = {
 	"Other Non-Operating Expenses",
 }
 
+_MAIN_TYPE_ALIASES = {
+	"Income": "Revenue",
+	"Expense": "Operating Expenses",
+	"Expenses": "Operating Expenses",
+	"Assets": "Current Assets",
+	"Liabilities": "Current Liabilities",
+}
+
+_SUB_TYPE_ALIASES = {
+	"Receivables": "Trade Receivables",
+	"Payables": "Trade Payables",
+	"VAT": "Output VAT Payable",
+	"Tax": "Output VAT Payable",
+	"Fixed Assets": "PPE",
+	"Intangible": "Intangible Assets",
+	"Intangibles": "Intangible Assets",
+	"Payroll": "Payroll Liabilities",
+	"Deferred Revenue": "Accruals",
+	"Deferred Income": "Accruals",
+	"Unearned Revenue": "Accruals",
+	"Customer Advances": "Accruals",
+	"Provisions": "Accruals",
+	"Leases": "Lease Liabilities",
+	"Income": "Sales Revenue",
+	"Revenue": "Sales Revenue",
+	"Expense": "General & Administrative",
+	"Expenses": "General & Administrative",
+	"Assets": "Header",
+	"Liabilities": "Header",
+	"Current Assets": "Header",
+	"Non-Current Assets": "Header",
+	"Current Liabilities": "Header",
+	"Non-Current Liabilities": "Header",
+	"Equity": "Header",
+}
+
 
 def _clean_main_account_type(value: str | None) -> str:
 	v = (value or "").strip()
+	v = _MAIN_TYPE_ALIASES.get(v, v)
 	return v if v in _MAIN_ACCOUNT_TYPES else ""
 
 
 def _clean_sub_account_type(value: str | None) -> str:
 	v = (value or "").strip()
+	v = _SUB_TYPE_ALIASES.get(v, v)
 	return v if v in _SUB_ACCOUNT_TYPES else ""
 
 
@@ -317,8 +356,8 @@ def import_coa_template_csv(
 				"account_name_ar": r.get("account_name_ar"),
 				"account_name_en": r.get("account_name_en"),
 				"account_type": r.get("account_type"),
-				"main_account_type": r.get("main_account_type"),
-				"sub_account_type": r.get("sub_account_type"),
+				"main_account_type": _clean_main_account_type(r.get("main_account_type")),
+				"sub_account_type": _clean_sub_account_type(r.get("sub_account_type")),
 				"parent_account_number": r.get("parent_account"),
 				"is_group": 1 if str(r.get("is_group") or "").strip() in {"1", "true", "yes"} else 0,
 				"industry_tag": r.get("industry_tag") or doc.industry_tag or "All",
