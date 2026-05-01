@@ -1,6 +1,6 @@
 {
  "charts": [],
- "content": "[{\"id\": \"erpgenex-onboarding\", \"type\": \"onboarding\", \"data\": {\"onboarding_name\": \"ERPGENEX — Accounting\", \"col\": 12}}, {\"id\": \"omx-acc-h1\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>Accounting & Finance</b></span><br><span class=\\\"text-muted\\\">المحرك المالي — شركة/فرع، دليل الحسابات، الأبعاد، الربط المخزني↔GL، التقارير العالمية</span>\", \"col\": 12}}, {\"id\": \"omx-acc-c1\", \"type\": \"card\", \"data\": {\"card_name\": \"Chart of accounts, company & dimensions\", \"col\": 4}}, {\"id\": \"omx-acc-c1b\", \"type\": \"card\", \"data\": {\"card_name\": \"Item master (stock ↔ GL)\", \"col\": 4}}, {\"id\": \"omx-acc-c2\", \"type\": \"card\", \"data\": {\"card_name\": \"Core financial operations\", \"col\": 4}}, {\"id\": \"omx-acc-c3\", \"type\": \"card\", \"data\": {\"card_name\": \"Global registers & ledgers\", \"col\": 4}}, {\"id\": \"omx-acc-c4\", \"type\": \"card\", \"data\": {\"card_name\": \"Trial balance & primary statements\", \"col\": 4}}, {\"id\": \"omx-acc-c5\", \"type\": \"card\", \"data\": {\"card_name\": \"Cash flow & liquidity (global)\", \"col\": 4}}, {\"id\": \"omx-acc-c6\", \"type\": \"card\", \"data\": {\"card_name\": \"AR, AP & working capital (global)\", \"col\": 4}}, {\"id\": \"omx-acc-c7\", \"type\": \"card\", \"data\": {\"card_name\": \"Budget & inventory (financial view)\", \"col\": 4}}, {\"id\": \"omx-acc-c8\", \"type\": \"card\", \"data\": {\"card_name\": \"Executive KPIs (global)\", \"col\": 4}}]",
+ "content": "[{\"id\": \"erpgenex-onboarding\", \"type\": \"onboarding\", \"data\": {\"onboarding_name\": \"ERPGENEX — Accounting\", \"col\": 12}}, {\"id\": \"omx-acc-h1\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>Accounting & Finance</b></span><br><span class=\\\"text-muted\\\">المحرك المالي — شركة/فرع، دليل الحسابات، الأبعاد، الربط المخزني↔GL، التقارير العالمية</span>\", \"col\": 12}}, {\"id\": \"omx-acc-csettings\", \"type\": \"card\", \"data\": {\"card_name\": \"Accounting settings\", \"col\": 4}}, {\"id\": \"omx-acc-c1\", \"type\": \"card\", \"data\": {\"card_name\": \"Chart of accounts, company & dimensions\", \"col\": 4}}, {\"id\": \"omx-acc-c1b\", \"type\": \"card\", \"data\": {\"card_name\": \"Item master (stock ↔ GL)\", \"col\": 4}}, {\"id\": \"omx-acc-c2\", \"type\": \"card\", \"data\": {\"card_name\": \"Core financial operations\", \"col\": 4}}, {\"id\": \"omx-acc-c3\", \"type\": \"card\", \"data\": {\"card_name\": \"Global registers & ledgers\", \"col\": 4}}, {\"id\": \"omx-acc-c4\", \"type\": \"card\", \"data\": {\"card_name\": \"Trial balance & primary statements\", \"col\": 4}}, {\"id\": \"omx-acc-c5\", \"type\": \"card\", \"data\": {\"card_name\": \"Cash flow & liquidity (global)\", \"col\": 4}}, {\"id\": \"omx-acc-c6\", \"type\": \"card\", \"data\": {\"card_name\": \"AR, AP & working capital (global)\", \"col\": 4}}, {\"id\": \"omx-acc-c7\", \"type\": \"card\", \"data\": {\"card_name\": \"Budget & inventory (financial view)\", \"col\": 4}}, {\"id\": \"omx-acc-c8\", \"type\": \"card\", \"data\": {\"card_name\": \"Executive KPIs (global)\", \"col\": 4}}]",
  "custom_blocks": [],
  "docstatus": 0,
  "doctype": "Workspace",
@@ -11,6 +11,34 @@
  "is_hidden": 0,
  "label": "Accounting",
  "links": [
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Accounting settings",
+   "link_count": 0,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Omnexa Accounting Settings",
+   "link_count": 0,
+   "link_to": "Omnexa Accounting Settings",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "CoA Settings",
+   "link_count": 0,
+   "link_to": "CoA Settings",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
   {
    "hidden": 0,
    "is_query_report": 0,

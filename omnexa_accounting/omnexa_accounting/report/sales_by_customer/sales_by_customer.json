@@ -9,7 +9,8 @@
   {"fieldname": "company", "fieldtype": "Link", "label": "Company", "options": "Company", "reqd": 1, "width": "200px"},
   {"fieldname": "from_date", "fieldtype": "Date", "label": "From Date", "reqd": 1, "width": "120px"},
   {"fieldname": "to_date", "fieldtype": "Date", "label": "To Date", "reqd": 1, "width": "120px"},
-  {"fieldname": "branch", "fieldtype": "Link", "label": "Branch", "options": "Branch", "width": "200px"}
+  {"fieldname": "branch", "fieldtype": "Link", "label": "Branch", "options": "Branch", "width": "200px"},
+  {"fieldname": "customer", "fieldtype": "Link", "label": "Customer", "options": "Customer", "reqd": 0, "width": "220px"}
  ],
  "is_standard": "Yes",
  "module": "Omnexa Accounting",

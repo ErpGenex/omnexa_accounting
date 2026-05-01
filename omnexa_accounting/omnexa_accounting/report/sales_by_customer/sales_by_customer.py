@@ -52,6 +52,10 @@ def execute(filters=None):
 		conditions.append("si.branch = %(branch)s")
 		params["branch"] = filters.branch
 
+	if filters.get("customer"):
+		conditions.append("si.customer = %(customer)s")
+		params["customer"] = filters.customer
+
 	where_sql = " AND ".join(conditions)
 
 	data = frappe.db.sql(
