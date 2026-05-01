@@ -149,7 +149,7 @@
 			"fieldname": "main_account_type",
 			"fieldtype": "Select",
 			"label": "Main Account Type",
-			"options": "\nAssets\nCurrent Assets\nNon-Current Assets\nLiabilities\nCurrent Liabilities\nNon-Current Liabilities\nEquity\nIncome\nRevenue\nOther Income\nExpenses\nCOGS\nOperating Expenses\nOther Expenses"
+			"options": "\nAssets\nCurrent Assets\nNon-Current Assets\nLiabilities\nCurrent Liabilities\nNon-Current Liabilities\nEquity\nIncome\nRevenue\nOther Income\nExpenses\nExpense\nCOGS\nOperating Expenses\nOther Expenses"
 		},
 		{
 			"fieldname": "sub_account_type",
