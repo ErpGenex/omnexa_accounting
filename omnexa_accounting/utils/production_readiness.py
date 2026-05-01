@@ -710,7 +710,8 @@ def wipe_company_all_data(company: str, branch: str | None = None, confirm_text:
 	if frappe.session.user != "Administrator":
 		frappe.throw(_("Only Administrator can run full company wipe."), frappe.PermissionError)
 	_assert_admin()
-	if (confirm_text or "").strip() != "DELETE ALL":
+	normalized_confirm = " ".join((confirm_text or "").strip().upper().split())
+	if normalized_confirm not in {"DELETE ALL", "DELETEALL"}:
 		frappe.throw(_("Type DELETE ALL to confirm full wipe."), title=_("Wipe Company Data"))
 	if not company or not frappe.db.exists("Company", company):
 		frappe.throw(_("Company is required"), title=_("Wipe Company Data"))

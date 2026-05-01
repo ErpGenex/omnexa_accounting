@@ -198,7 +198,6 @@ frappe.ui.form.on("Company", {
 								reqd: 1,
 							},
 						],
-						() => {},
 						__("Full Company Wipe"),
 						__("Execute")
 					);
