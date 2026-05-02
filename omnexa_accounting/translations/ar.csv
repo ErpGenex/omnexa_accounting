@@ -1,68 +1,82 @@
-"Source","Translation"
-"Business Context Links","روابط سياق الأعمال"
-"Tax and Shipping","الضرائب والشحن"
-"Tax Category","فئة الضريبة"
-"Tax Rate (%)","نسبة الضريبة (%)"
-"Tax Amount","قيمة الضريبة"
-"Tax Breakdown","تفصيل الضرائب"
-"Shipment Reference","مرجع الشحنة"
-"Shipping Cost","تكلفة الشحن"
-"Default Tax Rule","قاعدة الضريبة الافتراضية"
-"Payment","المدفوعات"
-"Payment Mode","طريقة السداد"
-"Payment Schedule","جدول السداد"
-"Payment Schedule row {0}: Due Date cannot be before Posting Date.","سطر جدول السداد {0}: تاريخ الاستحقاق لا يمكن أن يكون قبل تاريخ القيد."
-"Payment Schedule row {0}: Payment Amount must be greater than zero.","سطر جدول السداد {0}: مبلغ الدفعة يجب أن يكون أكبر من صفر."
-"Payment Schedule total must equal Grand Total.","إجمالي جدول السداد يجب أن يساوي الإجمالي النهائي."
-"Cash invoice cannot contain a payment schedule.","فاتورة النقدي لا يمكن أن تحتوي على جدول سداد."
-"Installment mode requires at least 2 schedule rows.","وضع التقسيط يتطلب سطرين على الأقل في جدول السداد."
-"Cash mode: Due Date = Posting Date","وضع النقدي: تاريخ الاستحقاق = تاريخ القيد"
-"Installment mode: add at least 2 rows in Payment Schedule","وضع التقسيط: أضف سطرين على الأقل في جدول السداد"
-"Credit","آجل"
-"Cash","نقدي"
-"Installment","تقسيط"
-"Items Subtotal","إجمالي البنود قبل الضريبة"
-"Products and Services","المنتجات والخدمات"
-"Totals","الإجماليات"
-"In company currency","بعملة الشركة"
-"No tax applied","لا توجد ضريبة مطبقة"
-"Tax Rate cannot be negative.","نسبة الضريبة لا يمكن أن تكون سالبة."
-"Default Tax Rule must belong to the same company.","قاعدة الضريبة الافتراضية يجب أن تتبع نفس الشركة."
-"Default Tax Rule Tax Category must match invoice Tax Category.","فئة الضريبة في القاعدة الافتراضية يجب أن تطابق فئة الضريبة في الفاتورة."
-"Tax Category does not exist.","فئة الضريبة غير موجودة."
-"Project Reference","مرجع المشروع"
-"Project Task Reference","مرجع مهمة المشروع"
-"Project Reference does not exist.","مرجع المشروع غير موجود."
-"Project Task Reference does not exist.","مرجع مهمة المشروع غير موجود."
-"Project Reference belongs to a different company.","مرجع المشروع يتبع شركة مختلفة."
-"Project Task Reference belongs to a different company.","مرجع مهمة المشروع يتبع شركة مختلفة."
-"Project Task Reference must belong to selected Project Reference.","مرجع مهمة المشروع يجب أن يتبع مرجع المشروع المحدد."
-"Due Date","تاريخ الاستحقاق"
-"Posting Date","تاريخ القيد"
-"Grand Total","الإجمالي النهائي"
-"Net Total","الإجمالي قبل الضريبة"
-"Tax Total","إجمالي الضريبة"
-"Outstanding Amount","الرصيد المستحق"
-"Total Items","عدد البنود"
-"Total Qty","إجمالي الكمية"
-"Update Stock","تحديث المخزون"
-"Set Warehouse","تحديد المخزن"
-"Posting Stock Entry","قيد حركة المخزون"
-"Posting Journal Entry","قيد اليومية المحاسبي"
-"View Posting Journal Entry","عرض قيد اليومية المحاسبي"
-"Item Movements","حركات الصنف"
-"No posting Journal Entry found for this invoice.","لم يتم العثور على قيد يومية محاسبي لهذه الفاتورة."
-"No item rows found.","لا توجد بنود أصناف."
-"Company","الشركة"
-"Branch","الفرع"
-"Customer","العميل"
-"Supplier","المورد"
-"Reference","المرجع"
-"External Reference","مرجع خارجي"
-"Sales Invoice","فاتورة بيع"
-"Purchase Invoice","فاتورة شراء"
-"Return Against","المرتجع على"
-"Is Return (Credit Note)","مرتجع (إشعار دائن)"
-"Is Return (Debit Note)","مرتجع (إشعار مدين)"
-"Project","المشروع"
-"Tax","الضرائب"
+"AR, AP & working capital (global)",المدينون والدائنون ورأس المال العامل (عام)
+Accounting,المحاسبة
+Accounting settings,إعدادات المحاسبة
+Branch,الفرع
+Budget,ميزانية
+Budget & inventory (financial view),الميزانية والمخزون (المنظور المالي)
+Business Context Links,روابط سياق الأعمال
+Cash,نقدي
+Cash flow & liquidity (global),التدفقات النقدية والسيولة (عام)
+Cash invoice cannot contain a payment schedule.,فاتورة النقدي لا يمكن أن تحتوي على جدول سداد.
+Cash mode: Due Date = Posting Date,وضع النقدي: تاريخ الاستحقاق = تاريخ القيد
+"Chart of accounts, company & dimensions",دليل الحسابات والشركة والأبعاد
+Company,الشركة
+Core financial operations,العمليات المالية الأساسية
+Credit,آجل
+Customer,العميل
+Customer Ledger,دفتر أستاذ العملاء
+Default Tax Rule,قاعدة الضريبة الافتراضية
+Default Tax Rule Tax Category must match invoice Tax Category.,فئة الضريبة في القاعدة الافتراضية يجب أن تطابق فئة الضريبة في الفاتورة.
+Default Tax Rule must belong to the same company.,قاعدة الضريبة الافتراضية يجب أن تتبع نفس الشركة.
+Due Date,تاريخ الاستحقاق
+Executive KPIs (global),مؤشرات الأداء التنفيذية (عام)
+External Reference,مرجع خارجي
+Global registers & ledgers,السجلات ودفاتر الأستاذ العالمية
+Grand Total,الإجمالي النهائي
+In company currency,بعملة الشركة
+Installment,تقسيط
+Installment mode requires at least 2 schedule rows.,وضع التقسيط يتطلب سطرين على الأقل في جدول السداد.
+Installment mode: add at least 2 rows in Payment Schedule,وضع التقسيط: أضف سطرين على الأقل في جدول السداد
+Is Return (Credit Note),مرتجع (إشعار دائن)
+Is Return (Debit Note),مرتجع (إشعار مدين)
+Item Movements,حركات الصنف
+Item master (stock ↔ GL account mapping),إدارة الأصناف (ربط المخزون ↔ الأستاذ العام)
+Items Subtotal,إجمالي البنود قبل الضريبة
+Mode of Payment,طريقة الدفع
+Net Total,الإجمالي قبل الضريبة
+No item rows found.,لا توجد بنود أصناف.
+No posting Journal Entry found for this invoice.,لم يتم العثور على قيد يومية محاسبي لهذه الفاتورة.
+No tax applied,لا توجد ضريبة مطبقة
+Outstanding Amount,الرصيد المستحق
+Payment,المدفوعات
+Payment Mode,طريقة السداد
+Payment Schedule,جدول السداد
+Payment Schedule row {0}: Due Date cannot be before Posting Date.,سطر جدول السداد {0}: تاريخ الاستحقاق لا يمكن أن يكون قبل تاريخ القيد.
+Payment Schedule row {0}: Payment Amount must be greater than zero.,سطر جدول السداد {0}: مبلغ الدفعة يجب أن يكون أكبر من صفر.
+Payment Schedule total must equal Grand Total.,إجمالي جدول السداد يجب أن يساوي الإجمالي النهائي.
+Posting Date,تاريخ القيد
+Posting Journal Entry,قيد اليومية المحاسبي
+Posting Stock Entry,قيد حركة المخزون
+Products and Services,المنتجات والخدمات
+Project,المشروع
+Project Reference,مرجع المشروع
+Project Reference belongs to a different company.,مرجع المشروع يتبع شركة مختلفة.
+Project Reference does not exist.,مرجع المشروع غير موجود.
+Project Task Reference,مرجع مهمة المشروع
+Project Task Reference belongs to a different company.,مرجع مهمة المشروع يتبع شركة مختلفة.
+Project Task Reference does not exist.,مرجع مهمة المشروع غير موجود.
+Project Task Reference must belong to selected Project Reference.,مرجع مهمة المشروع يجب أن يتبع مرجع المشروع المحدد.
+Purchase Invoice,فاتورة شراء
+Reference,المرجع
+Return Against,المرتجع على
+Sales Invoice,فاتورة بيع
+Set Warehouse,تحديد المخزن
+Shipment Reference,مرجع الشحنة
+Shipping Cost,تكلفة الشحن
+Supplier,المورد
+Supplier Ledger,مورد دفتر أستاذ
+Tax,الضرائب
+Tax Amount,قيمة الضريبة
+Tax Breakdown,تفصيل الضرائب
+Tax Category,فئة الضريبة
+Tax Category does not exist.,فئة الضريبة غير موجودة.
+Tax Rate (%),نسبة الضريبة (%)
+Tax Rate cannot be negative.,نسبة الضريبة لا يمكن أن تكون سالبة.
+Tax Total,إجمالي الضريبة
+Tax and Shipping,الضرائب والشحن
+Total Items,عدد البنود
+Total Qty,إجمالي الكمية
+Totals,الإجماليات
+Trial balance & primary statements,ميزان المراجعة والقوائم الأساسية
+Update Stock,تحديث المخزون
+View Posting Journal Entry,عرض قيد اليومية المحاسبي
