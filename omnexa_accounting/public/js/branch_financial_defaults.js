@@ -26,15 +26,15 @@ frappe.ui.form.on("Branch", {
 			return;
 		}
 
-		const launchSimulationSeed = async (defaultMonths) => {
+		/** Full business demo: aligned workspace seed (SO→DN→SI, PO→PR→PI, stock, JE) + enterprise daily volume. */
+		const launchIntegratedDemo = async (mode) => {
 			const values = await frappe.prompt(
 				[
 					{
-						fieldname: "months",
-						fieldtype: "Int",
-						label: __("Months"),
-						default: defaultMonths,
-						reqd: 1,
+						fieldname: "include_workspace_seed",
+						fieldtype: "Check",
+						label: __("Include full document chains (orders, receipts, workspace demo)"),
+						default: 1,
 					},
 					{
 						fieldname: "daily_purchase_invoices",
@@ -79,17 +79,18 @@ frappe.ui.form.on("Branch", {
 						reqd: 1,
 					},
 				],
-				__("Simulation Plan"),
-				__("Start")
+				mode === "6m" ? __("6-Month integrated demo plan") : __("12-Month integrated demo plan"),
+				__("Queue job")
 			);
 
 			if (!values) return;
 
 			await frappe.call({
-				method: "omnexa_accounting.utils.production_readiness.start_branch_enterprise_simulation_seed",
+				method: "omnexa_accounting.utils.production_readiness.enqueue_integrated_demo_simulation",
 				args: {
 					branch: frm.doc.name,
-					months: values.months,
+					mode,
+					include_workspace_seed: values.include_workspace_seed ? 1 : 0,
 					daily_purchase_invoices: values.daily_purchase_invoices,
 					daily_sales_invoices: values.daily_sales_invoices,
 					employees: values.employees,
@@ -98,13 +99,13 @@ frappe.ui.form.on("Branch", {
 					items: values.items,
 				},
 				freeze: true,
-				freeze_message: __("Queueing enterprise simulation seed..."),
+				freeze_message: __("Queueing full business simulation (workspace + transactional volume)..."),
 				callback: (r) => {
 					if (r.exc) return;
 					const m = r.message || {};
 					frappe.msgprint(
 						__(
-							"Simulation queued. Job: {0}<br>Open Production Seed Log later for summary.",
+							"Integrated demo queued (document chains when enabled + daily invoices, stock, payroll path). Job: {0}<br>Open Production Seed Log for summary when the job completes.",
 							[m.job_id || "n/a"]
 						)
 					);
@@ -112,12 +113,12 @@ frappe.ui.form.on("Branch", {
 			});
 		};
 
-		frm.add_custom_button(__("Seed 6-Month Enterprise Simulation"), async () => {
-			await launchSimulationSeed(6);
+		frm.add_custom_button(__("Seed 6-Month Full Business Simulation"), async () => {
+			await launchIntegratedDemo("6m");
 		});
 
-		frm.add_custom_button(__("Seed 12-Month Enterprise Simulation"), async () => {
-			await launchSimulationSeed(12);
+		frm.add_custom_button(__("Seed 12-Month Full Business Simulation"), async () => {
+			await launchIntegratedDemo("12m");
 		});
 	},
 });
