@@ -3,9 +3,9 @@
 
 """Optional demo documents so workspace dashboard charts (Last Month / creation-based) are not empty.
 
-Creates **one aligned horizon** (default 12 months): each month gets **stock movements**, **journal entries**,
-and the full **sales + purchase** chain (orders, receipts, invoices, partial payments)—so the “inventory/GL”
-demo and the “trading” demo are the same depth, not 12 vs 6.
+Creates **one aligned horizon** (default 12 months, override with ``months=`n``): each month gets **stock movements**,
+**journal entries**, and the full **sales + purchase** chain (orders, receipts, invoices, partial payments)—so
+the “inventory/GL” demo and the “trading” demo are the same depth.
 
 Enable in site_config.json:
 
@@ -20,7 +20,7 @@ marker customer "Omnexa Demo Seed" already exists (heals missing default).
 from __future__ import annotations
 
 import frappe
-from frappe.utils import add_to_date, get_table_name, now_datetime, today
+from frappe.utils import add_to_date, cint, get_table_name, now_datetime, today
 
 from omnexa_core.omnexa_core.feature_flags import is_feature_enabled
 
@@ -35,7 +35,7 @@ DEMO_BANK_GL_NO = "OMN-DEMO-BANK"
 DEFAULT_KEY_SEEDED = "omnexa_demo_workspace_seeded"
 
 # Stock+JE and trading (SO/DN/SI, PO/PR/PI) share the same month count so reports line up across modules.
-DEMO_SEED_MONTHS = 12
+DEFAULT_DEMO_SEED_MONTHS = 12
 
 
 def _backdate_creation(doctype: str, name: str, days_ago: int) -> None:
@@ -294,9 +294,9 @@ def _get_expense_gl(company: str) -> str | None:
 	)
 
 
-def _is_full_demo_present(company: str) -> bool:
+def _is_full_demo_present(company: str, required_months: int) -> bool:
 	"""Allow re-seeding when old seed is too small (e.g. previous 6-month trading-only seed)."""
-	m = DEMO_SEED_MONTHS
+	m = max(1, min(24, cint(required_months)))
 	try:
 		return (
 			(frappe.db.count("Sales Invoice", {"company": company, "docstatus": 1}) or 0) >= m
@@ -308,11 +308,19 @@ def _is_full_demo_present(company: str) -> bool:
 		return False
 
 
-def ensure_demo_workspace_seed(*, company: str | None = None, branch: str | None = None, forced: bool = False) -> None:
+def ensure_demo_workspace_seed(
+	*,
+	company: str | None = None,
+	branch: str | None = None,
+	months: int | None = None,
+	forced: bool = False,
+) -> None:
 	"""Create a complete demo dataset (aligned months: stock, JE, and full trading per month).
 
 	By default this is guarded by the `demo_workspace_seed` feature flag. For explicit operator-triggered
 	seeding (e.g. setup wizard / demo reset), pass `forced=True` to bypass the feature flag.
+
+	:param months: Horizon length (1–24); default follows ``DEFAULT_DEMO_SEED_MONTHS`` (typically 12).
 	"""
 	if frappe.flags.in_install or frappe.flags.in_uninstall:
 		return
@@ -324,8 +332,17 @@ def ensure_demo_workspace_seed(*, company: str | None = None, branch: str | None
 	branch = (branch or "").strip() or _get_branch(company)
 	if not branch:
 		return
+	if months is None:
+		seed_months = DEFAULT_DEMO_SEED_MONTHS
+	else:
+		seed_months = max(1, min(24, cint(months)))
 	flag_force = is_feature_enabled("demo_workspace_seed_force")
-	if not forced and not flag_force and frappe.db.get_default(DEFAULT_KEY_SEEDED) == "1" and _is_full_demo_present(company):
+	if (
+		not forced
+		and not flag_force
+		and frappe.db.get_default(DEFAULT_KEY_SEEDED) == "1"
+		and _is_full_demo_present(company, seed_months)
+	):
 		return
 
 	currency = frappe.db.get_value("Company", company, "default_currency") or "EGP"
@@ -351,7 +368,7 @@ def ensure_demo_workspace_seed(*, company: str | None = None, branch: str | None
 			cust.insert(ignore_permissions=True)
 
 		# Stock + journal entries: one pass per demo month (pairs with trading loop below).
-		for month_idx in range(DEMO_SEED_MONTHS):
+		for month_idx in range(seed_months):
 			days_ago = 30 * (month_idx + 1)
 			receipt_qty = 20 + month_idx
 			issue_qty = 10 + (month_idx % 5)
@@ -410,7 +427,7 @@ def ensure_demo_workspace_seed(*, company: str | None = None, branch: str | None
 				_backdate_creation("Journal Entry", je.name, days_ago - 2)
 
 		# Trading cycle: same month index / posting window as stock+JE (full AR/AP + inventory + payments).
-		for month_idx in range(DEMO_SEED_MONTHS):
+		for month_idx in range(seed_months):
 			days_ago = 30 * (month_idx + 1)
 			qty = 2 + month_idx
 			rate = 120 + (month_idx * 10)

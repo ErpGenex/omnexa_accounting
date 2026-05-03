@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import frappe
 from frappe import _
-from frappe.utils import add_days, add_months, add_years, cint, getdate, nowdate, today
+from frappe.utils import add_days, add_months, add_years, cint, flt, get_last_day, getdate, nowdate, today
 
 from omnexa_accounting.utils.coa_seed_templates import ACTIVITY_EXTENSIONS, BASE_COA_TEMPLATE
 from omnexa_accounting.utils.coa_template_service import _clean_main_account_type, _clean_sub_account_type
@@ -1131,6 +1131,157 @@ def _insert_journal_entry(
 	return je.name
 
 
+def _ensure_hr_payroll_company_settings_for_sim(company: str, branch: str) -> str | None:
+	"""Create HR Payroll Company Settings for simulation GL mapping when missing."""
+	if not frappe.db.exists("DocType", "HR Payroll Company Settings"):
+		return None
+	row = frappe.db.get_value("HR Payroll Company Settings", {"company": company}, "name")
+	if row:
+		return row
+	salary_exp = _pick_leaf_account(company, branch, "5101")
+	liability = _pick_leaf_account(company, branch, "2101")
+	if not salary_exp or not liability:
+		return None
+	doc = frappe.get_doc(
+		{
+			"doctype": "HR Payroll Company Settings",
+			"company": company,
+			"default_branch": branch,
+			"salary_expense_account": salary_exp,
+			"payroll_liability_account": liability,
+		}
+	)
+	doc.insert(ignore_permissions=True)
+	return doc.name
+
+
+def _simulate_hr_payroll_advanced_month(
+	*,
+	company: str,
+	branch: str,
+	month_start: str | object,
+	employees: list[str],
+	summary: dict,
+	bank_gl: str | None,
+	_push_error,
+) -> bool:
+	"""Submitted HR Salary Slip(s) + HR Payroll Run (+ accrual JE) and one bank disbursement JE when possible."""
+	settings_name = _ensure_hr_payroll_company_settings_for_sim(company, branch)
+	if not settings_name:
+		return False
+	if not frappe.db.exists("DocType", "HR Salary Slip") or not frappe.db.exists("DocType", "HR Payroll Run"):
+		return False
+
+	m_start = getdate(month_start)
+	m_end = get_last_day(m_start)
+	posting_date = str(m_end)
+	currency = _company_currency(company)
+
+	if frappe.db.exists(
+		"HR Payroll Run",
+		{"company": company, "period_start": m_start, "period_end": m_end},
+	):
+		return True
+
+	slip_names: list[str] = []
+	for emp in employees:
+		existing = frappe.db.sql(
+			"""
+			SELECT name FROM `tabHR Salary Slip`
+			WHERE company = %s AND employee = %s AND period_start = %s AND docstatus = 1
+			LIMIT 1
+			""",
+			(company, emp, m_start),
+		)
+		if existing:
+			slip_names.append(existing[0][0])
+			continue
+		try:
+			slip = frappe.get_doc(
+				{
+					"doctype": "HR Salary Slip",
+					"employee": emp,
+					"company": company,
+					"branch": branch,
+					"period_start": m_start,
+					"period_end": m_end,
+					"posting_date": posting_date,
+					"currency": currency,
+					"conversion_rate": 1,
+					"skip_attendance_check": 1,
+					"remarks": f"SIM demo payroll {m_start}",
+					"lines": [
+						{
+							"component_label": "Basic Salary",
+							"component_type": "Earning",
+							"amount": 2500,
+						},
+						{
+							"component_label": "Allowances",
+							"component_type": "Earning",
+							"amount": 300,
+						},
+						{
+							"component_label": "Deductions",
+							"component_type": "Deduction",
+							"amount": 150,
+						},
+						{
+							"component_label": "Employer contribution (demo)",
+							"component_type": "Employer Contribution",
+							"amount": 200,
+						},
+					],
+				}
+			)
+			slip.insert(ignore_permissions=True)
+			slip.submit()
+			slip_names.append(slip.name)
+			summary["transactions"]["hr_salary_slip_submitted"] += 1
+		except Exception:
+			_push_error(f"SALARY-SLIP {m_start} {emp}: {frappe.get_traceback()}")
+
+	if not slip_names:
+		return False
+
+	try:
+		run = frappe.new_doc("HR Payroll Run")
+		run.company = company
+		run.branch = branch
+		run.period_start = m_start
+		run.period_end = m_end
+		run.posting_date = posting_date
+		run.remarks = f"SIM demo payroll run {m_start}"
+		for sn in slip_names:
+			run.append("lines", {"salary_slip": sn})
+		run.insert(ignore_permissions=True)
+		run.submit()
+		summary["transactions"]["hr_payroll_run_submitted"] += 1
+	except Exception:
+		_push_error(f"PAYROLL-RUN {m_start}: {frappe.get_traceback()}")
+		return False
+
+	try:
+		settings = frappe.get_doc("HR Payroll Company Settings", settings_name)
+		liab_gl = settings.payroll_liability_account
+		total_net = sum(flt(frappe.db.get_value("HR Salary Slip", sn, "net_pay")) for sn in slip_names)
+		if bank_gl and liab_gl and total_net > 0:
+			_insert_journal_entry(
+				company=company,
+				branch=branch,
+				posting_date=posting_date,
+				remarks=f"SIM Payroll bank disbursement {m_start}",
+				debit_account=liab_gl,
+				credit_account=bank_gl,
+				amount=flt(total_net, 2),
+			)
+			summary["transactions"]["payroll_disbursement_journal_submitted"] += 1
+	except Exception:
+		_push_error(f"PAYROLL-BANK {m_start}: {frappe.get_traceback()}")
+
+	return True
+
+
 @frappe.whitelist(methods=["POST"])
 def start_branch_enterprise_simulation_seed(
 	branch: str,
@@ -1144,10 +1295,12 @@ def start_branch_enterprise_simulation_seed(
 ):
 	_assert_admin()
 	branch, company = _ensure_branch(branch)
+	q_months = max(1, cint(months or 6))
+	job_timeout = 18000 if q_months >= 12 else 10800 if q_months >= 9 else 7200
 	payload = {
 		"branch": branch,
 		"company": company,
-		"months": max(1, cint(months or 6)),
+		"months": q_months,
 		"daily_purchase_invoices": max(1, cint(daily_purchase_invoices or 10)),
 		"daily_sales_invoices": max(1, cint(daily_sales_invoices or 50)),
 		"employees": max(1, cint(employees or 5)),
@@ -1159,10 +1312,93 @@ def start_branch_enterprise_simulation_seed(
 	job = frappe.enqueue(
 		"omnexa_accounting.utils.production_readiness.run_branch_enterprise_simulation_seed",
 		queue="long",
-		timeout=7200,
+		timeout=job_timeout,
+		job_name=f"Enterprise SIM {branch} ({q_months}m)",
 		**payload,
 	)
 	return {"ok": True, "queued": True, "job_id": job.id if job else None, "config": payload}
+
+
+@frappe.whitelist(methods=["POST"])
+def enqueue_integrated_demo_simulation(
+	branch: str,
+	mode: str = "12m",
+	include_workspace_seed: int | str = 1,
+	daily_purchase_invoices: int | str | None = None,
+	daily_sales_invoices: int | str | None = None,
+	employees: int | str | None = None,
+	customers: int | str | None = None,
+	suppliers: int | str | None = None,
+	items: int | str | None = None,
+):
+	"""Queue aligned **workspace** demo (SO→DN→SI + PO→PR→PI…) plus **enterprise** volume simulation for 6 or 12 months."""
+	_assert_admin()
+	branch, company = _ensure_branch(branch)
+	mode_clean = (mode or "12m").strip().lower()
+	if mode_clean in ("6", "6m", "half", "six", "six_month"):
+		q_months = 6
+	elif mode_clean in ("12", "12m", "year", "twelve", "full", "annual"):
+		q_months = 12
+	else:
+		frappe.throw(_("Demo mode must be 6m or 12m (got {0})").format(mode))
+
+	def _intval(v, fallback: int):
+		return fallback if v is None else max(1, cint(v))
+
+	dpi_default = 6 if q_months >= 12 else 8
+	dsi_default = 6 if q_months >= 12 else 10
+	do_ws = 1 if cint(include_workspace_seed if include_workspace_seed is not None else 1) == 1 else 0
+	payload = {
+		"branch": branch,
+		"company": company,
+		"months": q_months,
+		"include_workspace_seed": do_ws,
+		"daily_purchase_invoices": _intval(daily_purchase_invoices, dpi_default),
+		"daily_sales_invoices": _intval(daily_sales_invoices, dsi_default),
+		"employees": _intval(employees, 5),
+		"customers": _intval(customers, 5),
+		"suppliers": _intval(suppliers, 5),
+		"items": max(2, _intval(items, 10)),
+		"user": frappe.session.user,
+	}
+	job_timeout = 21600 if q_months >= 12 else 9000 if q_months >= 6 else 7200
+	job = frappe.enqueue(
+		"omnexa_accounting.utils.production_readiness.run_integrated_demo_simulation",
+		queue="long",
+		timeout=job_timeout,
+		job_name=f"Integrated demo ({q_months}m) {branch}",
+		**payload,
+	)
+	out = payload.copy()
+	return {"ok": True, "queued": True, "job_id": job.id if job else None, "timeout_s": job_timeout, "config": out}
+
+
+def run_integrated_demo_simulation(**kwargs):
+	params = frappe._dict(kwargs or {})
+	if isinstance(params.get("kwargs"), dict):
+		params = frappe._dict(params.get("kwargs"))
+	frappe.set_user(params.get("user") or "Administrator")
+	branch = params.branch
+	company = params.company
+	months = max(1, cint(params.get("months") or 6))
+
+	if cint(params.get("include_workspace_seed") or 0) == 1:
+		from omnexa_accounting.utils.demo_workspace_seed import ensure_demo_workspace_seed
+
+		ensure_demo_workspace_seed(company=company, branch=branch, forced=True, months=months)
+
+	return run_branch_enterprise_simulation_seed(
+		branch=branch,
+		company=company,
+		months=months,
+		user=params.get("user"),
+		daily_purchase_invoices=cint(params.get("daily_purchase_invoices") or 8),
+		daily_sales_invoices=cint(params.get("daily_sales_invoices") or 10),
+		employees=cint(params.get("employees") or 5),
+		customers=cint(params.get("customers") or 5),
+		suppliers=cint(params.get("suppliers") or 5),
+		items=cint(params.get("items") or 10),
+	)
 
 
 def run_branch_enterprise_simulation_seed(**kwargs):
@@ -1227,6 +1463,9 @@ def run_branch_enterprise_simulation_seed(**kwargs):
 				"stock_receipt_submitted": 0,
 				"stock_issue_submitted": 0,
 				"salary_journal_submitted": 0,
+				"hr_salary_slip_submitted": 0,
+				"hr_payroll_run_submitted": 0,
+				"payroll_disbursement_journal_submitted": 0,
 				"opex_journal_submitted": 0,
 				"finance_cost_journal_submitted": 0,
 				"bank_deposit_journal_submitted": 0,
@@ -1356,7 +1595,22 @@ def run_branch_enterprise_simulation_seed(**kwargs):
 		month_end = getdate(end_date.replace(day=1))
 		while month_cursor <= month_end:
 			posting_date = str(month_cursor)
-			# Create HR payroll docs (if installed) so HR/Payroll reports are not empty.
+			# Advanced payroll (Salary Slip → Payroll Run → accrual JE) when HR + GL settings exist; avoids duplicate legacy salary JEs.
+			adv_payroll_ok = False
+			try:
+				adv_payroll_ok = _simulate_hr_payroll_advanced_month(
+					company=company,
+					branch=branch,
+					month_start=month_cursor,
+					employees=employees,
+					summary=summary,
+					bank_gl=bank_gl,
+					_push_error=_push_error,
+				)
+			except Exception:
+				_push_error(f"ADV-HR-PAYROLL {posting_date}: {frappe.get_traceback()}")
+				adv_payroll_ok = False
+
 			if frappe.db.exists("DocType", "HR Payroll Entry"):
 				for emp in employees:
 					try:
@@ -1379,34 +1633,36 @@ def run_branch_enterprise_simulation_seed(**kwargs):
 						pe.insert(ignore_permissions=True)
 					except Exception:
 						_push_error(f"HR-PAY {posting_date}: {frappe.get_traceback()}")
-			for emp in employees:
-				if salary_expense and bank_gl:
-					try:
-						_insert_journal_entry(
-							company=company,
-							branch=branch,
-							posting_date=posting_date,
-							remarks=f"SIM Payroll {emp} {posting_date}",
-							debit_account=salary_expense,
-							credit_account=bank_gl if not payable_gl else payable_gl,
-							amount=2500,
-						)
-						summary["transactions"]["salary_journal_submitted"] += 1
-					except Exception:
-						_push_error(f"PAY {posting_date}: {frappe.get_traceback()}")
-					if payable_gl and bank_gl:
+
+			if not adv_payroll_ok:
+				for emp in employees:
+					if salary_expense and bank_gl:
 						try:
 							_insert_journal_entry(
 								company=company,
 								branch=branch,
 								posting_date=posting_date,
-								remarks=f"SIM Payroll Payment {emp} {posting_date}",
-								debit_account=payable_gl,
-								credit_account=bank_gl,
+								remarks=f"SIM Payroll {emp} {posting_date}",
+								debit_account=salary_expense,
+								credit_account=bank_gl if not payable_gl else payable_gl,
 								amount=2500,
 							)
+							summary["transactions"]["salary_journal_submitted"] += 1
 						except Exception:
-							_push_error(f"PAYMENT {posting_date}: {frappe.get_traceback()}")
+							_push_error(f"PAY {posting_date}: {frappe.get_traceback()}")
+						if payable_gl and bank_gl:
+							try:
+								_insert_journal_entry(
+									company=company,
+									branch=branch,
+									posting_date=posting_date,
+									remarks=f"SIM Payroll Payment {emp} {posting_date}",
+									debit_account=payable_gl,
+									credit_account=bank_gl,
+									amount=2500,
+								)
+							except Exception:
+								_push_error(f"PAYMENT {posting_date}: {frappe.get_traceback()}")
 			if bank_gl and equity_gl:
 				try:
 					deposit_amount = 250000 if month_cursor == getdate(start_date.replace(day=1)) else 50000
