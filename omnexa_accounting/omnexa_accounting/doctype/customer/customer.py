@@ -6,8 +6,13 @@ from frappe import _
 from frappe.model.document import Document
 from frappe.utils import cint, flt
 
+from omnexa_accounting.utils.customer_codes import assign_customer_code_if_missing
+
 
 class Customer(Document):
+	def before_validate(self):
+		assign_customer_code_if_missing(self)
+
 	def validate(self):
 		if flt(self.credit_limit) < 0:
 			frappe.throw(_("Credit limit cannot be negative."), title=_("Credit"))

@@ -43,6 +43,7 @@ def after_install():
 	ensure_warehouse_stock_snapshot_fields_and_layout()
 	ensure_coa_settings_defaults()
 	ensure_pos_basics()
+	ensure_customer_codes_backfilled()
 	_run_post_install_auto_bootstrap()
 
 
@@ -78,7 +79,18 @@ def after_migrate():
 	ensure_warehouse_stock_snapshot_fields_and_layout()
 	ensure_coa_settings_defaults()
 	ensure_pos_basics()
+	ensure_customer_codes_backfilled()
 	_run_post_install_auto_bootstrap()
+
+
+def ensure_customer_codes_backfilled():
+	"""Fill missing Customer.customer_code for legacy rows (auto series per company)."""
+	try:
+		from omnexa_accounting.utils.customer_codes import backfill_missing_customer_codes
+
+		backfill_missing_customer_codes()
+	except Exception:
+		frappe.log_error(frappe.get_traceback(), "Omnexa Accounting: ensure_customer_codes_backfilled")
 
 
 def ensure_journal_entry_entry_type_not_duplicate_custom_field():
