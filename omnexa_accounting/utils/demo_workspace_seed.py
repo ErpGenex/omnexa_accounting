@@ -345,6 +345,13 @@ def ensure_demo_workspace_seed(
 	):
 		return
 
+	try:
+		from omnexa_accounting.utils.company_financial_defaults import apply_company_default_gl_from_coa
+
+		apply_company_default_gl_from_coa(company, branch=branch, overwrite=0)
+	except Exception:
+		frappe.log_error(frappe.get_traceback(), "Omnexa: demo_workspace_seed apply_company_default_gl_from_coa")
+
 	currency = frappe.db.get_value("Company", company, "default_currency") or "EGP"
 	item = _get_or_create_demo_item(company)
 	rev = _get_or_create_demo_revenue_gl(company)
@@ -413,15 +420,24 @@ def ensure_demo_workspace_seed(
 			se_out.submit()
 			_backdate_creation("Stock Entry", se_out.name, days_ago - 5)
 
-			if cash_gl and expense_gl:
+			# Prefer Company default OPEX/bank GLs (CoA-linked) so rows match posting controls (e.g. cost center).
+			exp_gl_use = frappe.db.get_value("Company", company, "default_opex_gl") or expense_gl
+			cash_gl_use = (
+				frappe.db.get_value("Company", company, "default_bank_operating_gl")
+				or frappe.db.get_value("Company", company, "default_petty_cash_gl")
+				or cash_gl
+			)
+			if cash_gl_use and exp_gl_use:
 				je = frappe.new_doc("Journal Entry")
 				je.company = company
-				je.voucher_type = "Journal Entry"
+				je.branch = branch
 				je.posting_date = add_to_date(today(), days=-(days_ago - 2))
-				je.user_remark = f"Omnexa Demo Journal Month {month_idx + 1}"
+				if je.meta.has_field("entry_type"):
+					je.entry_type = "Standard"
+				je.remarks = f"Omnexa Demo Journal Month {month_idx + 1}"
 				amount = 300 + (month_idx * 20)
-				je.append("accounts", {"account": expense_gl, "debit_in_account_currency": amount})
-				je.append("accounts", {"account": cash_gl, "credit_in_account_currency": amount})
+				je.append("accounts", {"account": exp_gl_use, "debit": amount, "credit": 0})
+				je.append("accounts", {"account": cash_gl_use, "debit": 0, "credit": amount})
 				je.insert(ignore_permissions=True)
 				je.submit()
 				_backdate_creation("Journal Entry", je.name, days_ago - 2)

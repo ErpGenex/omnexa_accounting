@@ -10,6 +10,16 @@ from omnexa_accounting.utils.coa_template_service import _clean_main_account_typ
 _SIM_TAX_RULE_CACHE: dict[str, str | None] = {}
 
 
+def _apply_company_gl_defaults_for_sim(company: str, branch: str | None = None) -> None:
+	"""Map Company → CoA leaf accounts so stock posting and JEs can validate (inventory, COGS, OPEX…)."""
+	try:
+		from omnexa_accounting.utils.company_financial_defaults import apply_company_default_gl_from_coa
+
+		apply_company_default_gl_from_coa(company, branch=branch, overwrite=0)
+	except Exception:
+		frappe.log_error(frappe.get_traceback(), "Omnexa: apply_company_default_gl_from_coa (simulation)")
+
+
 def _localized_account_label(entry: dict) -> str:
 	"""Pick account label for `account_name` by session/user language (ar vs en)."""
 	legacy = (entry.get("name") or "").strip()
@@ -1080,16 +1090,28 @@ def _leaf_warehouse(company: str, branch: str) -> str | None:
 def _insert_stock_entries(
 	company: str, branch: str, posting_date: str, warehouse: str, item: str, receipt_qty: float, issue_qty: float
 ) -> tuple[str | None, str | None]:
+	"""Omnexa Stock Entry uses ``purpose`` + row ``item`` (required); not ERPNext ``stock_entry_type`` / ``basic_rate``."""
 	item_code = frappe.db.get_value("Item", item, "item_code")
+	stock_uom = frappe.db.get_value("Item", item, "stock_uom") or "Nos"
 	receipt = frappe.get_doc(
 		{
 			"doctype": "Stock Entry",
-			"stock_entry_type": "Material Receipt",
+			"purpose": "Material Receipt",
 			"company": company,
 			"branch": branch,
 			"posting_date": posting_date,
+			"to_warehouse": warehouse,
 			"remarks": f"SIM-STOCK-RECEIPT {branch} {posting_date}",
-			"items": [{"item_code": item_code, "t_warehouse": warehouse, "qty": receipt_qty, "basic_rate": 80}],
+			"items": [
+				{
+					"item": item,
+					"item_code": item_code,
+					"t_warehouse": warehouse,
+					"qty": receipt_qty,
+					"rate": 80,
+					"uom": stock_uom,
+				}
+			],
 		}
 	)
 	receipt.insert(ignore_permissions=True)
@@ -1097,12 +1119,22 @@ def _insert_stock_entries(
 	issue = frappe.get_doc(
 		{
 			"doctype": "Stock Entry",
-			"stock_entry_type": "Material Issue",
+			"purpose": "Material Issue",
 			"company": company,
 			"branch": branch,
 			"posting_date": posting_date,
+			"from_warehouse": warehouse,
 			"remarks": f"SIM-STOCK-ISSUE {branch} {posting_date}",
-			"items": [{"item_code": item_code, "s_warehouse": warehouse, "qty": issue_qty, "basic_rate": 80}],
+			"items": [
+				{
+					"item": item,
+					"item_code": item_code,
+					"s_warehouse": warehouse,
+					"qty": issue_qty,
+					"rate": 80,
+					"uom": stock_uom,
+				}
+			],
 		}
 	)
 	issue.insert(ignore_permissions=True)
@@ -1382,6 +1414,8 @@ def run_integrated_demo_simulation(**kwargs):
 	company = params.company
 	months = max(1, cint(params.get("months") or 6))
 
+	_apply_company_gl_defaults_for_sim(company, branch)
+
 	if cint(params.get("include_workspace_seed") or 0) == 1:
 		from omnexa_accounting.utils.demo_workspace_seed import ensure_demo_workspace_seed
 
@@ -1418,6 +1452,7 @@ def run_branch_enterprise_simulation_seed(**kwargs):
 
 	frappe.set_user(params.user or "Administrator")
 	try:
+		_apply_company_gl_defaults_for_sim(company, branch)
 		masters = _ensure_master_data(
 			company=company,
 			branch=branch,
