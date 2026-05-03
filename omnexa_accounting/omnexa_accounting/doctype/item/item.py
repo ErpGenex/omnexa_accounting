@@ -5,8 +5,13 @@ import frappe
 from frappe import _
 from frappe.model.document import Document
 
+from omnexa_accounting.utils.item_codes import assign_item_code_if_missing
+
 
 class Item(Document):
+	def before_validate(self):
+		assign_item_code_if_missing(self)
+
 	def validate(self):
 		self._sync_product_type_logic()
 		self._validate_inventory_control_gl()

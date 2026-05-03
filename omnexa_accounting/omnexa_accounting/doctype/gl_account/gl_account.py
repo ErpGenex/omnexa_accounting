@@ -8,6 +8,7 @@ from frappe.utils import cint
 
 from omnexa_core.omnexa_core.feature_flags import is_feature_enabled
 from omnexa_accounting.utils.coa_settings import get_coa_settings, get_company_masks, get_manual_override_roles
+from omnexa_accounting.utils.gl_account_codes import assign_fallback_gl_account_number
 
 
 _INCOME_BUCKETS = frozenset(("", "Revenue", "Other Income"))
@@ -98,10 +99,13 @@ class GLAccount(NestedSet):
 	def _apply_auto_numbering(self):
 		if self.account_number:
 			return
-		if not self.company or not self.account_class:
+		if self.company and self.account_class:
+			mask = get_company_masks(self.company).get(self.account_class)
+			if mask:
+				self.account_number = _next_number_from_mask(mask, self.company) or self.account_number
+		if (self.account_number or "").strip():
 			return
-		mask = get_company_masks(self.company).get(self.account_class)
-		self.account_number = _next_number_from_mask(mask, self.company) if mask else self.account_number
+		assign_fallback_gl_account_number(self)
 
 	def _enforce_manual_override_permission(self):
 		if not cint(getattr(self, "manual_number_override", 0)):

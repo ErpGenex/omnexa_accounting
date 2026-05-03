@@ -6,8 +6,13 @@ from frappe import _
 from frappe.model.document import Document
 from frappe.utils import cint
 
+from omnexa_accounting.utils.supplier_codes import assign_supplier_code_if_missing
+
 
 class Supplier(Document):
+	def before_validate(self):
+		assign_supplier_code_if_missing(self)
+
 	def validate(self):
 		if cint(self.credit_days) < 0:
 			frappe.throw(_("Credit Days cannot be negative."), title=_("Payment Terms"))

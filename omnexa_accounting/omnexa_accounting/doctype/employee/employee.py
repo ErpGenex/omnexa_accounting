@@ -6,8 +6,13 @@ from frappe import _
 from frappe.model.document import Document
 from frappe.utils import add_days, getdate
 
+from omnexa_accounting.utils.employee_codes import assign_employee_code_if_missing
+
 
 class Employee(Document):
+	def before_validate(self):
+		assign_employee_code_if_missing(self)
+
 	def validate(self):
 		existing = frappe.db.get_value(
 			"Employee",

@@ -44,6 +44,10 @@ def after_install():
 	ensure_coa_settings_defaults()
 	ensure_pos_basics()
 	ensure_customer_codes_backfilled()
+	ensure_supplier_codes_backfilled()
+	ensure_item_codes_backfilled()
+	ensure_gl_account_fallback_numbers_backfilled()
+	ensure_employee_codes_backfilled()
 	_run_post_install_auto_bootstrap()
 
 
@@ -80,6 +84,10 @@ def after_migrate():
 	ensure_coa_settings_defaults()
 	ensure_pos_basics()
 	ensure_customer_codes_backfilled()
+	ensure_supplier_codes_backfilled()
+	ensure_item_codes_backfilled()
+	ensure_gl_account_fallback_numbers_backfilled()
+	ensure_employee_codes_backfilled()
 	_run_post_install_auto_bootstrap()
 
 
@@ -91,6 +99,42 @@ def ensure_customer_codes_backfilled():
 		backfill_missing_customer_codes()
 	except Exception:
 		frappe.log_error(frappe.get_traceback(), "Omnexa Accounting: ensure_customer_codes_backfilled")
+
+
+def ensure_supplier_codes_backfilled():
+	try:
+		from omnexa_accounting.utils.supplier_codes import backfill_missing_supplier_codes
+
+		backfill_missing_supplier_codes()
+	except Exception:
+		frappe.log_error(frappe.get_traceback(), "Omnexa Accounting: ensure_supplier_codes_backfilled")
+
+
+def ensure_item_codes_backfilled():
+	try:
+		from omnexa_accounting.utils.item_codes import backfill_missing_item_codes
+
+		backfill_missing_item_codes()
+	except Exception:
+		frappe.log_error(frappe.get_traceback(), "Omnexa Accounting: ensure_item_codes_backfilled")
+
+
+def ensure_gl_account_fallback_numbers_backfilled():
+	try:
+		from omnexa_accounting.utils.gl_account_codes import backfill_missing_gl_account_fallback_numbers
+
+		backfill_missing_gl_account_fallback_numbers()
+	except Exception:
+		frappe.log_error(frappe.get_traceback(), "Omnexa Accounting: ensure_gl_account_fallback_numbers_backfilled")
+
+
+def ensure_employee_codes_backfilled():
+	try:
+		from omnexa_accounting.utils.employee_codes import backfill_missing_employee_codes
+
+		backfill_missing_employee_codes()
+	except Exception:
+		frappe.log_error(frappe.get_traceback(), "Omnexa Accounting: ensure_employee_codes_backfilled")
 
 
 def ensure_journal_entry_entry_type_not_duplicate_custom_field():
