@@ -6,12 +6,14 @@
 	"doctype": "DocType",
 	"engine": "InnoDB",
 	"field_order": [
+		"tab_break_overview",
 		"company",
 		"opportunity_name",
 		"pipeline_lead",
 		"column_break_omnexa_1",
 		"customer",
 		"stage",
+		"tab_break_details",
 		"amount",
 		"column_break_omnexa_2",
 		"probability",
@@ -20,6 +22,16 @@
 		"owner_user"
 	],
 	"fields": [
+		{
+			"fieldname": "tab_break_overview",
+			"fieldtype": "Tab Break",
+			"label": "Overview"
+		},
+		{
+			"fieldname": "tab_break_details",
+			"fieldtype": "Tab Break",
+			"label": "Details"
+		},
 		{
 			"fieldname": "company",
 			"fieldtype": "Link",
@@ -97,7 +109,7 @@
 	"grid_page_length": 50,
 	"index_web_pages_for_search": 1,
 	"links": [],
-	"modified": "2026-04-15 14:45:00",
+	"modified": "2026-05-07 12:00:00",
 	"modified_by": "Administrator",
 	"module": "Omnexa Accounting",
 	"name": "Pipeline Opportunity",

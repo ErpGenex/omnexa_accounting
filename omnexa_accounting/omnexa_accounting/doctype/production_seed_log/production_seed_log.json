@@ -6,11 +6,13 @@
 	"doctype": "DocType",
 	"engine": "InnoDB",
 	"field_order": [
+		"tab_break_overview",
 		"operation",
 		"company",
 		"branch",
 		"activity",
 		"executed_by",
+		"tab_break_details",
 		"executed_on",
 		"dry_run",
 		"status",
@@ -18,6 +20,16 @@
 		"owner_user"
 	],
 	"fields": [
+		{
+			"fieldname": "tab_break_overview",
+			"fieldtype": "Tab Break",
+			"label": "Overview"
+		},
+		{
+			"fieldname": "tab_break_details",
+			"fieldtype": "Tab Break",
+			"label": "Details"
+		},
 		{
 			"fieldname": "operation",
 			"fieldtype": "Select",
@@ -81,7 +93,7 @@
 	],
 	"index_web_pages_for_search": 0,
 	"links": [],
-	"modified": "2026-04-19 00:00:00.000000",
+	"modified": "2026-05-07 12:00:00",
 	"modified_by": "Administrator",
 	"module": "Omnexa Accounting",
 	"name": "Production Seed Log",

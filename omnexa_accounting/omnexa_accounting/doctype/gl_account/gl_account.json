@@ -7,6 +7,7 @@
 	"doctype": "DocType",
 	"engine": "InnoDB",
 	"field_order": [
+		"tab_break_overview",
 		"account_number",
 		"manual_number_override",
 		"account_name",
@@ -27,6 +28,7 @@
 		"pl_bucket",
 		"cash_flow_section",
 		"working_capital_bucket",
+		"tab_break_details",
 		"consolidation_account_code",
 		"group_reporting_tag",
 		"intercompany_account",
@@ -49,6 +51,16 @@
 		"external_reference"
 	],
 	"fields": [
+		{
+			"fieldname": "tab_break_overview",
+			"fieldtype": "Tab Break",
+			"label": "Overview"
+		},
+		{
+			"fieldname": "tab_break_details",
+			"fieldtype": "Tab Break",
+			"label": "Details"
+		},
 		{
 			"fieldname": "account_number",
 			"fieldtype": "Data",
@@ -308,7 +320,7 @@
 	"grid_page_length": 50,
 	"index_web_pages_for_search": 1,
 	"links": [],
-	"modified": "2026-04-17 23:00:00",
+	"modified": "2026-05-07 12:00:00",
 	"modified_by": "Administrator",
 	"module": "omnexa_accounting",
 	"custom": 1,

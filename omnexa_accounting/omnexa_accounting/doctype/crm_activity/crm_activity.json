@@ -6,12 +6,14 @@
 	"doctype": "DocType",
 	"engine": "InnoDB",
 	"field_order": [
+		"tab_break_overview",
 		"company",
 		"branch",
 		"activity_type",
 		"column_break_omnexa_1",
 		"subject",
 		"reference_doctype",
+		"tab_break_details",
 		"reference_name",
 		"scheduled_datetime",
 		"column_break_omnexa_2",
@@ -21,6 +23,16 @@
 		"owner_user"
 	],
 	"fields": [
+		{
+			"fieldname": "tab_break_overview",
+			"fieldtype": "Tab Break",
+			"label": "Overview"
+		},
+		{
+			"fieldname": "tab_break_details",
+			"fieldtype": "Tab Break",
+			"label": "Details"
+		},
 		{
 			"fieldname": "company",
 			"fieldtype": "Link",
@@ -108,7 +120,7 @@
 	"index_web_pages_for_search": 1,
 	"is_submittable": 0,
 	"links": [],
-	"modified": "2026-04-15 00:10:00",
+	"modified": "2026-05-07 12:00:00",
 	"modified_by": "Administrator",
 	"module": "Omnexa Accounting",
 	"name": "CRM Activity",

@@ -6,6 +6,7 @@
 	"doctype": "DocType",
 	"engine": "InnoDB",
 	"field_order": [
+		"tab_break_overview",
 		"item_code",
 		"item_name",
 		"item_grouping_break",
@@ -15,6 +16,7 @@
 		"requires_dynamic_composition",
 		"company",
 		"stock_uom",
+		"tab_break_details",
 		"column_flags",
 		"is_stock_item",
 		"current_stock_qty",
@@ -27,6 +29,16 @@
 		"classification_code"
 	],
 	"fields": [
+		{
+			"fieldname": "tab_break_overview",
+			"fieldtype": "Tab Break",
+			"label": "Overview"
+		},
+		{
+			"fieldname": "tab_break_details",
+			"fieldtype": "Tab Break",
+			"label": "Details"
+		},
 		{
 			"fieldname": "item_code",
 			"fieldtype": "Data",
@@ -151,7 +163,7 @@
 	"grid_page_length": 50,
 	"index_web_pages_for_search": 1,
 	"links": [],
-	"modified": "2026-04-14 10:00:00",
+	"modified": "2026-05-07 12:00:00",
 	"modified_by": "Administrator",
 	"module": "Omnexa Accounting",
 	"name": "Item",

@@ -6,6 +6,7 @@
 	"doctype": "DocType",
 	"engine": "InnoDB",
 	"field_order": [
+		"tab_break_overview",
 		"customer_code",
 		"customer_name",
 		"company",
@@ -13,6 +14,7 @@
 		"credit_limit",
 		"column_break_omnexa_1",
 		"payment_terms",
+		"tab_break_details",
 		"credit_days",
 		"tax_id",
 		"email",
@@ -23,6 +25,16 @@
 		"external_reference"
 	],
 	"fields": [
+		{
+			"fieldname": "tab_break_overview",
+			"fieldtype": "Tab Break",
+			"label": "Overview"
+		},
+		{
+			"fieldname": "tab_break_details",
+			"fieldtype": "Tab Break",
+			"label": "Details"
+		},
 		{
 			"fieldname": "customer_code",
 			"fieldtype": "Data",
@@ -115,7 +127,7 @@
 	"grid_page_length": 50,
 	"index_web_pages_for_search": 1,
 	"links": [],
-	"modified": "2026-04-14 14:00:00",
+	"modified": "2026-05-07 12:00:00",
 	"modified_by": "Administrator",
 	"module": "Omnexa Accounting",
 	"name": "Customer",

@@ -5,6 +5,7 @@
 	"doctype": "DocType",
 	"engine": "InnoDB",
 	"field_order": [
+		"tab_break_overview",
 		"company",
 		"branch",
 		"posting_date",
@@ -18,6 +19,7 @@
 		"bank_account",
 		"mode_of_payment",
 		"paid_amount",
+		"tab_break_1",
 		"remittance_section",
 		"remittance_reference",
 		"remittance_date",
@@ -27,6 +29,16 @@
 		"workflow_state"
 	],
 	"fields": [
+		{
+			"fieldname": "tab_break_overview",
+			"fieldtype": "Tab Break",
+			"label": "Overview"
+		},
+		{
+			"fieldname": "tab_break_1",
+			"fieldtype": "Tab Break",
+			"label": "Details"
+		},
 		{
 			"fieldname": "company",
 			"fieldtype": "Link",
@@ -164,7 +176,7 @@
 	"index_web_pages_for_search": 1,
 	"is_submittable": 1,
 	"links": [],
-	"modified": "2026-04-20 22:00:00",
+	"modified": "2026-05-07 12:00:00",
 	"modified_by": "Administrator",
 	"module": "Omnexa Accounting",
 	"name": "Payment Entry",

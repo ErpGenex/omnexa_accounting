@@ -6,6 +6,7 @@
 	"doctype": "DocType",
 	"engine": "InnoDB",
 	"field_order": [
+		"tab_break_overview",
 		"employee_code",
 		"employee_name",
 		"employee_photo",
@@ -15,6 +16,7 @@
 		"column_break_omnexa_1",
 		"competency_level",
 		"primary_license_type",
+		"tab_break_details",
 		"license_number",
 		"license_issue_date",
 		"license_expiry_date",
@@ -27,6 +29,16 @@
 		"external_reference"
 	],
 	"fields": [
+		{
+			"fieldname": "tab_break_overview",
+			"fieldtype": "Tab Break",
+			"label": "Overview"
+		},
+		{
+			"fieldname": "tab_break_details",
+			"fieldtype": "Tab Break",
+			"label": "Details"
+		},
 		{
 			"fieldname": "employee_code",
 			"fieldtype": "Data",
@@ -139,7 +151,7 @@
 	"index_web_pages_for_search": 1,
 	"image_field": "employee_photo",
 	"links": [],
-	"modified": "2026-04-15 13:30:00",
+	"modified": "2026-05-07 12:00:00",
 	"modified_by": "Administrator",
 	"module": "Omnexa Accounting",
 	"name": "Employee",

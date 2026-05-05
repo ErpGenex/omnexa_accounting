@@ -6,6 +6,7 @@
 	"doctype": "DocType",
 	"engine": "InnoDB",
 	"field_order": [
+		"tab_break_overview",
 		"carrier_name",
 		"company",
 		"is_active",
@@ -16,6 +17,11 @@
 		"api_secret"
 	],
 	"fields": [
+		{
+			"fieldname": "tab_break_overview",
+			"fieldtype": "Tab Break",
+			"label": "Overview"
+		},
 		{
 			"fieldname": "carrier_name",
 			"fieldtype": "Data",
@@ -67,7 +73,7 @@
 	"grid_page_length": 50,
 	"index_web_pages_for_search": 1,
 	"links": [],
-	"modified": "2026-04-27 03:00:00",
+	"modified": "2026-05-07 12:00:00",
 	"modified_by": "Administrator",
 	"module": "Omnexa Accounting",
 	"name": "Shipment Carrier",
@@ -117,4 +123,3 @@
 	"states": [],
 	"track_changes": 1
 }
-

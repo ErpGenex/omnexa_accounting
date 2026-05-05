@@ -5,6 +5,7 @@
 	"doctype": "DocType",
 	"engine": "InnoDB",
 	"field_order": [
+		"tab_break_overview",
 		"company",
 		"branch",
 		"posting_date",
@@ -16,6 +17,7 @@
 		"column_break_header_2",
 		"po_reference",
 		"goods_receipt_reference",
+		"tab_break_1",
 		"business_context_section",
 		"service_contract",
 		"project_contract",
@@ -33,15 +35,19 @@
 		"currency",
 		"conversion_rate",
 		"default_tax_rule",
+		"tab_break_2",
 		"payment_section",
 		"payment_schedule",
+		"tab_break_3",
 		"items_section",
 		"items",
+		"tab_break_4",
 		"totals_section",
 		"net_total",
 		"tax_total",
 		"grand_total",
 		"outstanding_amount",
+		"tab_break_5",
 		"base_totals_section",
 		"base_net_total",
 		"base_tax_total",
@@ -51,6 +57,36 @@
 		"workflow_state"
 	],
 	"fields": [
+		{
+			"fieldname": "tab_break_overview",
+			"fieldtype": "Tab Break",
+			"label": "Overview"
+		},
+		{
+			"fieldname": "tab_break_1",
+			"fieldtype": "Tab Break",
+			"label": "Details"
+		},
+		{
+			"fieldname": "tab_break_2",
+			"fieldtype": "Tab Break",
+			"label": "Further"
+		},
+		{
+			"fieldname": "tab_break_3",
+			"fieldtype": "Tab Break",
+			"label": "Posting"
+		},
+		{
+			"fieldname": "tab_break_4",
+			"fieldtype": "Tab Break",
+			"label": "More"
+		},
+		{
+			"fieldname": "tab_break_5",
+			"fieldtype": "Tab Break",
+			"label": "References"
+		},
 		{
 			"fieldname": "company",
 			"fieldtype": "Link",
@@ -321,7 +357,7 @@
 	"index_web_pages_for_search": 1,
 	"is_submittable": 1,
 	"links": [],
-	"modified": "2026-04-21 10:00:00",
+	"modified": "2026-05-07 12:00:00",
 	"modified_by": "Administrator",
 	"module": "Omnexa Accounting",
 	"name": "Purchase Invoice",

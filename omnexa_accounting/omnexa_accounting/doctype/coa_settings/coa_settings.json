@@ -6,22 +6,40 @@
 	"editable_grid": 1,
 	"engine": "InnoDB",
 	"field_order": [
+		"tab_break_overview",
 		"company",
 		"enable_numbering_engine",
 		"default_consolidation_view",
 		"manual_number_override_roles",
+		"tab_break_1",
 		"section_break_masks",
 		"asset_mask",
 		"liability_mask",
 		"equity_mask",
 		"revenue_mask",
 		"expense_mask",
+		"tab_break_2",
 		"section_break_controls",
 		"require_group_reporting_tag_for_intercompany",
 		"enforce_account_currency_match",
 		"allow_direct_posting_default"
 	],
 	"fields": [
+		{
+			"fieldname": "tab_break_overview",
+			"fieldtype": "Tab Break",
+			"label": "Overview"
+		},
+		{
+			"fieldname": "tab_break_1",
+			"fieldtype": "Tab Break",
+			"label": "Details"
+		},
+		{
+			"fieldname": "tab_break_2",
+			"fieldtype": "Tab Break",
+			"label": "Further"
+		},
 		{
 			"fieldname": "company",
 			"fieldtype": "Link",
@@ -117,7 +135,7 @@
 	"grid_page_length": 50,
 	"index_web_pages_for_search": 1,
 	"links": [],
-	"modified": "2026-04-27 04:00:00",
+	"modified": "2026-05-07 12:00:00",
 	"modified_by": "Administrator",
 	"module": "Omnexa Accounting",
 	"name": "CoA Settings",

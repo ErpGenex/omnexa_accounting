@@ -5,6 +5,7 @@
 	"doctype": "DocType",
 	"engine": "InnoDB",
 	"field_order": [
+		"tab_break_overview",
 		"identity_section",
 		"company",
 		"branch",
@@ -16,13 +17,30 @@
 		"column_break_identity_2",
 		"remarks",
 		"is_opening",
+		"tab_break_1",
 		"accounts_section",
 		"accounts",
+		"tab_break_2",
 		"control_section",
 		"amended_from",
 		"workflow_state"
 	],
 	"fields": [
+		{
+			"fieldname": "tab_break_overview",
+			"fieldtype": "Tab Break",
+			"label": "Overview"
+		},
+		{
+			"fieldname": "tab_break_1",
+			"fieldtype": "Tab Break",
+			"label": "Details"
+		},
+		{
+			"fieldname": "tab_break_2",
+			"fieldtype": "Tab Break",
+			"label": "Further"
+		},
 		{
 			"fieldname": "identity_section",
 			"fieldtype": "Section Break",
@@ -132,7 +150,7 @@
 	"index_web_pages_for_search": 1,
 	"is_submittable": 1,
 	"links": [],
-	"modified": "2026-04-20 12:00:00",
+	"modified": "2026-05-07 12:00:00",
 	"modified_by": "Administrator",
 	"module": "Omnexa Accounting",
 	"name": "Journal Entry",
