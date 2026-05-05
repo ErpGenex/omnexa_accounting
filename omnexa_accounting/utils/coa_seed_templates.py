@@ -1345,3 +1345,6 @@ ACTIVITY_EXTENSIONS: dict[str, list[dict]] = {
 		]
 	),
 }
+
+# Hotel / fixed-asset operations vertical: reuse hospitality CoA slice until a dedicated template exists.
+ACTIVITY_EXTENSIONS["Hotel Assets (إدارة أصول الفنادق)"] = ACTIVITY_EXTENSIONS["Tourism"]

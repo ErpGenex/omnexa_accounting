@@ -27,6 +27,7 @@ frappe.pages["production-readiness-console"].on_page_load = function (wrapper) {
 						<option>Manufacturing</option>
 						<option>Agriculture</option>
 						<option>Tourism</option>
+						<option>Hotel Assets (إدارة أصول الفنادق)</option>
 						<option>Trading</option>
 						<option>Services</option>
 						<option>Financial Services</option>
