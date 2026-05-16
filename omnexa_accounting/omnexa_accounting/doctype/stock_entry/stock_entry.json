@@ -9,6 +9,7 @@
 		"tab_break_overview",
 		"company",
 		"branch",
+		"cost_center",
 		"posting_date",
 		"column_break_se_1",
 		"purpose",
@@ -51,6 +52,13 @@
 			"options": "Branch",
 			"in_list_view": 1,
 			"reqd": 1
+		},
+		{
+			"description": "Passed through to Journal Entry lines when stock movements auto-post GL.",
+			"fieldname": "cost_center",
+			"fieldtype": "Link",
+			"label": "Cost Center",
+			"options": "Cost Center"
 		},
 		{
 			"fieldname": "posting_date",
@@ -145,7 +153,7 @@
 	"index_web_pages_for_search": 1,
 	"is_submittable": 1,
 	"links": [],
-	"modified": "2026-05-07 12:00:00",
+	"modified": "2026-05-15 22:00:00",
 	"modified_by": "Administrator",
 	"module": "Omnexa Accounting",
 	"name": "Stock Entry",

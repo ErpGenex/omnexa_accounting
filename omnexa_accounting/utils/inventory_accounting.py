@@ -90,14 +90,23 @@ def _find_posting_je(doc) -> str | None:
 	return frappe.db.get_value("Journal Entry", filters, "name")
 
 
-def _append_line(lines: list[dict], account: str, debit: float = 0, credit: float = 0):
+def _append_line(
+	lines: list[dict],
+	account: str,
+	debit: float = 0,
+	credit: float = 0,
+	cost_center: str | None = None,
+):
 	if not account:
 		return
 	debit = flt(debit)
 	credit = flt(credit)
 	if debit == 0 and credit == 0:
 		return
-	lines.append({"account": account, "debit": debit, "credit": credit})
+	row = {"account": account, "debit": debit, "credit": credit}
+	if cost_center:
+		row["cost_center"] = cost_center
+	lines.append(row)
 
 
 def post_stock_entry_gl(doc) -> str | None:
@@ -109,6 +118,8 @@ def post_stock_entry_gl(doc) -> str | None:
 	existing = _find_posting_je(doc)
 	if existing:
 		return existing
+
+	header_cc = doc.cost_center if doc.meta.has_field("cost_center") else None
 
 	lines: list[dict] = []
 	cogs = _resolve_cogs_account(doc.company)
@@ -122,12 +133,12 @@ def post_stock_entry_gl(doc) -> str | None:
 		if doc.purpose == "Material Receipt":
 			inv = _resolve_inventory_account(doc.company, target_wh, row.item)
 			adj = _resolve_adjustment_account(doc.company, target_wh)
-			_append_line(lines, inv, debit=amount, credit=0)
-			_append_line(lines, adj, debit=0, credit=amount)
+			_append_line(lines, inv, debit=amount, credit=0, cost_center=header_cc)
+			_append_line(lines, adj, debit=0, credit=amount, cost_center=header_cc)
 		elif doc.purpose == "Material Issue":
 			inv = _resolve_inventory_account(doc.company, source_wh, row.item)
-			_append_line(lines, cogs, debit=amount, credit=0)
-			_append_line(lines, inv, debit=0, credit=amount)
+			_append_line(lines, cogs, debit=amount, credit=0, cost_center=header_cc)
+			_append_line(lines, inv, debit=0, credit=amount, cost_center=header_cc)
 
 	if not lines:
 		return None

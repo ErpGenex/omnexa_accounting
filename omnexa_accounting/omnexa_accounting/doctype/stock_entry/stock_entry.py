@@ -14,6 +14,11 @@ from omnexa_accounting.utils.warehouse_stock_metrics import recompute_warehouse_
 
 class StockEntry(Document):
 	def validate(self):
+		if getattr(self, "cost_center", None):
+			cc_company = frappe.db.get_value("Cost Center", self.cost_center, "company")
+			if cc_company and cc_company != self.company:
+				frappe.throw(_("Cost Center belongs to a different company."), title=_("Company"))
+
 		if self.is_new() and self.amended_from and self.meta.has_field("workflow_state"):
 			self.workflow_state = None
 
