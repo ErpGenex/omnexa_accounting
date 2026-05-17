@@ -16,6 +16,7 @@ from omnexa_core.omnexa_core.constants import (
 	DOC_STATUS_SUBMITTED,
 )
 from omnexa_accounting.utils.branch import validate_branch_company
+from omnexa_accounting.utils.tax_rule_resolver import apply_invoice_tax_rule_defaults
 from omnexa_accounting.utils.currency import apply_multi_currency_to_invoice
 from omnexa_accounting.utils.party import get_effective_credit_days
 from omnexa_accounting.utils.posting import assert_posting_date_open
@@ -38,6 +39,7 @@ class SalesInvoice(Document):
 		self._validate_due_date()
 		self._validate_return()
 		self._sync_and_validate_line_items()
+		apply_invoice_tax_rule_defaults(self)
 		self._set_amounts()
 		apply_multi_currency_to_invoice(self)
 		self._validate_payment_schedule()
@@ -313,6 +315,16 @@ class SalesInvoice(Document):
 		self.due_date = max_due_date
 
 	def _validate_tax_rules(self):
+		if (self.items or []) and not self.default_tax_rule:
+			if not any((row.tax_rule or "").strip() for row in self.items or []):
+				if not flt(getattr(self, "tax_rate", 0)):
+					frappe.throw(
+						_(
+							"No Tax Rule found for company {0}. Create one under Accounting → Tax Rule, "
+							"or set Default Tax Rule on this invoice."
+						).format(self.company),
+						title=_("Tax"),
+					)
 		if self.tax_category and not frappe.db.exists("Tax Category", self.tax_category):
 			frappe.throw(_("Tax Category does not exist."), title=_("Tax"))
 		if self.default_tax_rule:
@@ -414,6 +426,10 @@ class SalesInvoice(Document):
 	def _enqueue_eta_submission(self):
 		if self.is_return:
 			return
+		if self.meta.has_field("eta_billing_type"):
+			billing = (self.eta_billing_type or "Regular").strip()
+			if billing != "E-Invoice":
+				return
 		scope = self._resolve_einvoice_scope()
 		if not scope.get("enabled"):
 			return
@@ -452,8 +468,11 @@ class SalesInvoice(Document):
 		doc.branch = self.branch
 		doc.reference_doctype = self.doctype
 		doc.reference_name = self.name
-		doc.tax_authority_profile = scope["tax_authority_profile"]
-		doc.signing_profile = scope["signing_profile"]
+		# Legacy E-Document Submission links optional profiles; ETA config is on Branch.
+		if frappe.db.has_column("E-Document Submission", "tax_authority_profile"):
+			doc.tax_authority_profile = None
+		if frappe.db.has_column("E-Document Submission", "signing_profile"):
+			doc.signing_profile = None
 		doc.payload_hash = h
 		doc.authority_operation = "submit"
 		doc.authority_status = DOC_STATUS_QUEUED
@@ -461,45 +480,19 @@ class SalesInvoice(Document):
 		doc.submit()
 
 	def _resolve_einvoice_scope(self):
-		"""Resolve ETA setup by branch first, then company fallback."""
-		if self.branch:
-			branch = frappe.db.get_value(
-				"Branch",
-				self.branch,
-				["eta_einvoice_enabled", "tax_authority_profile", "signing_profile"],
-				as_dict=True,
-			)
-			if branch and branch.get("eta_einvoice_enabled"):
-				if not branch.get("tax_authority_profile") or not branch.get("signing_profile"):
-					frappe.throw(
-						_("Branch ETA settings are incomplete: set Tax Authority Profile and Signing Profile."),
-						title=_("ETA"),
-					)
-				return {
-					"enabled": True,
-					"tax_authority_profile": branch.get("tax_authority_profile"),
-					"signing_profile": branch.get("signing_profile"),
-				}
-
-		company = frappe.db.get_value(
-			"Company",
-			self.company,
-			[
-				"eta_einvoice_enabled",
-				"company_tax_authority_profile",
-				"company_signing_profile",
-			],
-			as_dict=True,
-		)
-		if not company or not company.get("eta_einvoice_enabled"):
+		"""ETA settings live on Branch only (Egypt ETA tab)."""
+		if not self.branch:
 			return {"enabled": False}
-		if not company.get("company_tax_authority_profile") or not company.get("company_signing_profile"):
-			frappe.throw(
-				_("Company ETA settings are incomplete: set Tax Authority Profile and Signing Profile."),
-				title=_("ETA"),
-			)
-		return {
-			"enabled": True,
-			"tax_authority_profile": company.get("company_tax_authority_profile"),
-			"signing_profile": company.get("company_signing_profile"),
-		}
+		if not frappe.db.get_value("Branch", self.branch, "eta_einvoice_enabled"):
+			return {"enabled": False}
+		try:
+			from omnexa_einvoice.branch_eta import branch_eta_is_configured
+
+			if not branch_eta_is_configured(self.branch, kind="invoice"):
+				frappe.throw(
+					_("Complete Egypt ETA settings on Branch {0} (tab: Egypt ETA).").format(self.branch),
+					title=_("ETA"),
+				)
+		except ImportError:
+			pass
+		return {"enabled": True, "branch": self.branch}

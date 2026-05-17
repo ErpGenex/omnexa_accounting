@@ -8,6 +8,8 @@
 		"tab_break_overview",
 		"company",
 		"branch",
+		"eta_section",
+		"eta_billing_type",
 		"posting_date",
 		"due_date",
 		"column_break_header_1",
@@ -104,6 +106,20 @@
 			"label": "Branch",
 			"options": "Branch",
 			"reqd": 1
+		},
+		{
+			"fieldname": "eta_section",
+			"fieldtype": "Section Break",
+			"label": "Egypt ETA"
+		},
+		{
+			"default": "Regular",
+			"description": "Regular: no ETA submission. Electronic Invoice: B2B ETA invoice. Electronic Receipt: POS-style ETA receipt.",
+			"fieldname": "eta_billing_type",
+			"fieldtype": "Select",
+			"in_standard_filter": 1,
+			"label": "Billing Type",
+			"options": "Regular\nE-Invoice\nE-Receipt"
 		},
 		{
 			"fieldname": "column_break_header_1",
