@@ -41,10 +41,26 @@ def resolve_default_tax_rule(
 	return None
 
 
+def _default_sales_tax_category() -> str | None:
+	try:
+		from omnexa_core.omnexa_core.doctype.omnexa_sales_settings.omnexa_sales_settings import (
+			get_sales_settings,
+		)
+
+		cat = (get_sales_settings().get("default_sales_tax_category") or "").strip()
+		return cat or None
+	except Exception:
+		return None
+
+
 def apply_invoice_tax_rule_defaults(doc) -> bool:
 	"""Set header (and line) tax_rule when missing. Returns True if a rule was applied."""
 	if not doc.get("company"):
 		return False
+	if doc.meta.has_field("tax_category") and not doc.get("tax_category"):
+		cat = _default_sales_tax_category()
+		if cat and frappe.db.exists("Tax Category", cat):
+			doc.tax_category = cat
 	if doc.meta.has_field("default_tax_rule") and doc.get("default_tax_rule"):
 		return False
 	if any((row.get("tax_rule") or "").strip() for row in doc.get("items") or []):

@@ -1808,6 +1808,23 @@ class TestOmnexaAccounting(FrappeTestCase):
 		si.insert(ignore_permissions=True)
 		self.assertEqual(getdate(si.due_date), add_days(getdate(si.posting_date), 7))
 
+	def test_sales_invoice_due_date_default_when_party_has_no_terms(self):
+		cust = frappe.new_doc("Customer")
+		cust.company = self.company
+		cust.customer_name = "No Terms Cust"
+		cust.insert(ignore_permissions=True)
+		leaf = self._gl("7312", "Rev Def", 0)
+		si = frappe.new_doc("Sales Invoice")
+		si.company = self.company
+		si.customer = cust.name
+		si.posting_date = today()
+		si.append("items", {"item_code": "x", "qty": 1, "rate": 1, "income_account": leaf})
+		si.insert(ignore_permissions=True)
+		from omnexa_accounting.utils.party import get_default_sales_invoice_due_days
+
+		expected_days = get_default_sales_invoice_due_days()
+		self.assertEqual(getdate(si.due_date), add_days(getdate(si.posting_date), expected_days))
+
 	def test_credit_days_takes_priority_over_net_phrase(self):
 		cust = frappe.new_doc("Customer")
 		cust.company = self.company

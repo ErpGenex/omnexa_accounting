@@ -4,6 +4,7 @@ frappe.ui.form.on("Sales Invoice", {
 			return;
 		}
 		await set_company_branch_defaults(frm);
+		await apply_sales_invoice_form_defaults(frm);
 	},
 
 	async refresh(frm) {
@@ -145,6 +146,18 @@ frappe.ui.form.on("Sales Invoice", {
 			});
 		}
 	},
+	posting_date(frm) {
+		if (!frm.is_new() || frm.doc.due_date || frm.doc.payment_mode === "Cash") {
+			return;
+		}
+		apply_sales_invoice_due_date_default(frm);
+	},
+	customer(frm) {
+		if (!frm.is_new() || frm.doc.due_date) {
+			return;
+		}
+		apply_sales_invoice_due_date_default(frm);
+	},
 });
 
 frappe.ui.form.on("Sales Invoice Item", {
@@ -185,6 +198,34 @@ frappe.ui.form.on("Sales Invoice Item", {
 		}
 	},
 });
+
+async function apply_sales_invoice_form_defaults(frm) {
+	if (!frm.is_new()) {
+		return;
+	}
+	let defaults = null;
+	try {
+		const r = await frappe.call({
+			method: "omnexa_accounting.omnexa_accounting.doctype.sales_invoice.sales_invoice.get_form_defaults",
+		});
+		defaults = r.message || {};
+	} catch (e) {
+		return;
+	}
+	if (defaults.tax_category && frm.fields_dict.tax_category && !frm.doc.tax_category) {
+		await frm.set_value("tax_category", defaults.tax_category);
+	}
+	frm._omnexa_default_due_days = defaults.due_days || 7;
+	await apply_sales_invoice_due_date_default(frm);
+}
+
+async function apply_sales_invoice_due_date_default(frm) {
+	if (!frm.is_new() || frm.doc.due_date || frm.doc.payment_mode === "Cash" || !frm.doc.posting_date) {
+		return;
+	}
+	const days = frm._omnexa_default_due_days || 7;
+	await frm.set_value("due_date", frappe.datetime.add_days(frm.doc.posting_date, days));
+}
 
 async function set_company_branch_defaults(frm) {
 	const defaultCompany = frappe.defaults.get_user_default("Company");

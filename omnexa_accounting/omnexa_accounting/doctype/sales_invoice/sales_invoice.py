@@ -18,7 +18,7 @@ from omnexa_core.omnexa_core.constants import (
 from omnexa_accounting.utils.branch import validate_branch_company
 from omnexa_accounting.utils.tax_rule_resolver import apply_invoice_tax_rule_defaults
 from omnexa_accounting.utils.currency import apply_multi_currency_to_invoice
-from omnexa_accounting.utils.party import get_effective_credit_days
+from omnexa_accounting.utils.party import get_default_sales_invoice_due_days, get_effective_credit_days
 from omnexa_accounting.utils.posting import assert_posting_date_open
 from omnexa_accounting.utils.enterprise_codes import ensure_invoice_name
 
@@ -110,6 +110,8 @@ class SalesInvoice(Document):
 		if self.due_date or self.is_return or not self.customer:
 			return
 		days = get_effective_credit_days("Customer", self.customer)
+		if days <= 0:
+			days = get_default_sales_invoice_due_days()
 		if days > 0:
 			self.due_date = add_days(getdate(self.posting_date), days)
 
@@ -496,3 +498,20 @@ class SalesInvoice(Document):
 		except ImportError:
 			pass
 		return {"enabled": True, "branch": self.branch}
+
+
+@frappe.whitelist()
+def get_form_defaults() -> dict:
+	"""Defaults for new Sales Invoice form (tax category, due days)."""
+	out = {"tax_category": None, "due_days": get_default_sales_invoice_due_days()}
+	try:
+		from omnexa_core.omnexa_core.doctype.omnexa_sales_settings.omnexa_sales_settings import (
+			get_sales_settings,
+		)
+
+		cat = (get_sales_settings().get("default_sales_tax_category") or "").strip()
+		if cat and frappe.db.exists("Tax Category", cat):
+			out["tax_category"] = cat
+	except Exception:
+		pass
+	return out

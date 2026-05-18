@@ -33,6 +33,19 @@ def get_or_create_web_guest_customer(company: str) -> str:
 	return doc.name
 
 
+def get_default_sales_invoice_due_days() -> int:
+	"""Days after posting date when customer has no credit terms (Omnexa Sales Settings, default 7)."""
+	try:
+		from omnexa_core.omnexa_core.doctype.omnexa_sales_settings.omnexa_sales_settings import (
+			get_sales_settings,
+		)
+
+		days = cint(get_sales_settings().get("default_sales_invoice_due_days"))
+	except Exception:
+		days = 0
+	return days if days > 0 else 7
+
+
 def get_effective_credit_days(party_doctype: str, party_name: str) -> int:
 	"""Days after posting date for default due date: explicit ``credit_days``, else ``Net N`` in ``payment_terms``."""
 	if not party_name or party_doctype not in ("Customer", "Supplier"):
