@@ -428,6 +428,13 @@ class SalesInvoice(Document):
 	def _enqueue_eta_submission(self):
 		if self.is_return:
 			return
+		try:
+			from omnexa_einvoice.sales_invoice_eta import sales_invoice_is_egypt_branch
+
+			if not sales_invoice_is_egypt_branch(self):
+				return
+		except ImportError:
+			pass
 		if self.meta.has_field("eta_billing_type"):
 			billing = (self.eta_billing_type or "Regular").strip()
 			if billing != "E-Invoice":
