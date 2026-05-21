@@ -6,8 +6,20 @@
  "docstatus": 0,
  "doctype": "Report",
  "filters": [
-  {"fieldname": "company", "fieldtype": "Link", "label": "Company", "options": "Company", "reqd": 1, "width": "200px"},
-  {"fieldname": "as_of_date", "fieldtype": "Date", "label": "As Of Date", "default": "Today", "reqd": 1, "width": "120px"}
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company",
+   "reqd": 1,
+   "width": "180px"
+  },
+  {
+   "fieldname": "as_of_date",
+   "fieldtype": "Date",
+   "label": "As Of Date",
+   "width": "120px"
+  }
  ],
  "is_standard": "Yes",
  "module": "Omnexa Accounting",
@@ -16,8 +28,14 @@
  "report_name": "Receivables Aging",
  "report_type": "Script Report",
  "roles": [
-  {"role": "System Manager"},
-  {"role": "Accounts Manager"},
-  {"role": "Accounts User"}
+  {
+   "role": "System Manager"
+  },
+  {
+   "role": "Accounts Manager"
+  },
+  {
+   "role": "Accounts User"
+  }
  ]
 }

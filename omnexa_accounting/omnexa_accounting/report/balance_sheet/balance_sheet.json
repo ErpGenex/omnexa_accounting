@@ -6,9 +6,27 @@
  "docstatus": 0,
  "doctype": "Report",
  "filters": [
-  {"fieldname": "company", "fieldtype": "Link", "label": "Company", "options": "Company", "reqd": 1, "width": "200px"},
-  {"fieldname": "to_date", "fieldtype": "Date", "label": "To Date", "width": "120px"},
-  {"fieldname": "consolidation_view", "fieldtype": "Check", "label": "Consolidation View", "default": "0", "width": "140px"}
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company",
+   "reqd": 1,
+   "width": "180px"
+  },
+  {
+   "fieldname": "to_date",
+   "fieldtype": "Date",
+   "label": "To Date",
+   "width": "120px"
+  },
+  {
+   "fieldname": "branch",
+   "fieldtype": "Link",
+   "label": "Branch",
+   "options": "Branch",
+   "width": "180px"
+  }
  ],
  "idx": 0,
  "is_standard": "Yes",
@@ -23,8 +41,14 @@
  "report_name": "Balance Sheet",
  "report_type": "Script Report",
  "roles": [
-  {"role": "System Manager"},
-  {"role": "Accounts Manager"},
-  {"role": "Accounts User"}
+  {
+   "role": "System Manager"
+  },
+  {
+   "role": "Accounts Manager"
+  },
+  {
+   "role": "Accounts User"
+  }
  ]
 }

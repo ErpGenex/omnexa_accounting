@@ -6,9 +6,28 @@
  "docstatus": 0,
  "doctype": "Report",
  "filters": [
-  {"fieldname": "budget", "fieldtype": "Link", "label": "Budget", "options": "Budget", "reqd": 1, "width": "220px"},
-  {"fieldname": "branch", "fieldtype": "Link", "label": "Branch", "options": "Branch", "width": "200px"},
-  {"fieldname": "cost_center", "fieldtype": "Link", "label": "Cost Center (filter)", "options": "Cost Center", "width": "200px"}
+  {
+   "fieldname": "budget",
+   "fieldtype": "Link",
+   "label": "Budget",
+   "options": "Budget",
+   "reqd": 1,
+   "width": "200px"
+  },
+  {
+   "fieldname": "branch",
+   "fieldtype": "Link",
+   "label": "Branch",
+   "options": "Branch",
+   "width": "180px"
+  },
+  {
+   "fieldname": "cost_center",
+   "fieldtype": "Link",
+   "label": "Cost Center",
+   "options": "Cost Center",
+   "width": "180px"
+  }
  ],
  "is_standard": "Yes",
  "module": "Omnexa Accounting",
@@ -17,8 +36,14 @@
  "report_name": "Budget vs Actual",
  "report_type": "Script Report",
  "roles": [
-  {"role": "System Manager"},
-  {"role": "Accounts Manager"},
-  {"role": "Accounts User"}
+  {
+   "role": "System Manager"
+  },
+  {
+   "role": "Accounts Manager"
+  },
+  {
+   "role": "Accounts User"
+  }
  ]
 }
