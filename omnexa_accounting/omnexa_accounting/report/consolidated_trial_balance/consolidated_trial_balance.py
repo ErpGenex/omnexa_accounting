@@ -5,6 +5,7 @@ import frappe
 from frappe import _
 
 from omnexa_accounting.omnexa_accounting.report.trial_balance.trial_balance import _build_rows
+from omnexa_accounting.utils.report_bilingual import insert_account_name_ar_column
 
 
 def execute(filters=None):
@@ -26,11 +27,15 @@ def execute(filters=None):
 
 	branch = filters.get("branch") if len(companies) == 1 else None
 
-	columns = [
+	columns = insert_account_name_ar_column(
+		[
 		{"label": _("Company"), "fieldname": "company", "fieldtype": "Link", "options": "Company", "width": 140},
 		{"label": _("Account"), "fieldname": "account", "fieldtype": "Link", "options": "GL Account", "width": 170},
 		{"label": _("Account Name"), "fieldname": "account_name", "fieldtype": "Data", "width": 180},
 		{"label": _("Account Type"), "fieldname": "account_type", "fieldtype": "Data", "width": 100},
+		]
+	)
+	columns += [
 		{"label": _("Opening Dr"), "fieldname": "opening_debit", "fieldtype": "Currency", "width": 110},
 		{"label": _("Opening Cr"), "fieldname": "opening_credit", "fieldtype": "Currency", "width": 110},
 		{"label": _("Period Dr"), "fieldname": "period_debit", "fieldtype": "Currency", "width": 110},

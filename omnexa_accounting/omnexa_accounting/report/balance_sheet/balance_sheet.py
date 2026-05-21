@@ -7,6 +7,11 @@ from frappe.utils import flt
 
 from omnexa_core.omnexa_core.branch_access import get_allowed_branches
 from omnexa_accounting.utils.coa_settings import should_use_consolidation_view
+from omnexa_accounting.utils.report_bilingual import (
+	gl_account_name_ar_select,
+	has_gl_account_name_ar,
+	insert_account_name_ar_column,
+)
 
 
 def execute(filters=None):
@@ -14,12 +19,14 @@ def execute(filters=None):
 	if not filters.get("company"):
 		frappe.throw(_("Company filter is required."), title=_("Filters"))
 
-	columns = [
-		{"label": _("Section"), "fieldname": "section", "fieldtype": "Data", "width": 140},
-		{"label": _("Account"), "fieldname": "account", "fieldtype": "Data", "width": 180},
-		{"label": _("Account Name"), "fieldname": "account_name", "fieldtype": "Data", "width": 220},
-		{"label": _("Balance"), "fieldname": "balance", "fieldtype": "Currency", "width": 140},
-	]
+	columns = insert_account_name_ar_column(
+		[
+			{"label": _("Section"), "fieldname": "section", "fieldtype": "Data", "width": 140},
+			{"label": _("Account"), "fieldname": "account", "fieldtype": "Data", "width": 180},
+			{"label": _("Account Name"), "fieldname": "account_name", "fieldtype": "Data", "width": 220},
+			{"label": _("Balance"), "fieldname": "balance", "fieldtype": "Currency", "width": 140},
+		]
+	)
 
 	consolidation_view = should_use_consolidation_view(filters, filters.company)
 	assets = _rows_for_type(filters, "Asset", "Assets", consolidation_view=consolidation_view)
@@ -57,7 +64,7 @@ def _rows_for_type(filters, account_type, section_label, consolidation_view=Fals
 		INNER JOIN `tabJournal Entry Account` jea ON jea.parent = je.name
 		INNER JOIN `tabGL Account` ga ON ga.name = jea.account
 		WHERE {' AND '.join(conditions)}
-		GROUP BY jea.account, ga.account_name, ga.consolidation_account_code
+		GROUP BY jea.account, ga.account_name{", ga.account_name_ar" if has_gl_account_name_ar() else ""}, ga.consolidation_account_code
 		ORDER BY ga.account_number, ga.account_name
 		""",
 		params,
@@ -84,12 +91,18 @@ def _rows_for_type(filters, account_type, section_label, consolidation_view=Fals
 				"section": _(section_label),
 				"account": account_display,
 				"account_name": account_name,
+				"account_name_ar": row.account_name_ar,
 				"balance": balance,
 			}
 		)
 	if consolidation_view:
 		data = [
-			{"section": _(section_label), "account": k, "account_name": _("Consolidated Group"), "balance": v}
+			{
+				"section": _(section_label),
+				"account": k,
+				"account_name": _("Consolidated Group"),
+				"balance": v,
+			}
 			for k, v in sorted(aggregate.items())
 		]
 	return data

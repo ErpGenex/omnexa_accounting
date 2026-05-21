@@ -6,6 +6,11 @@ from frappe import _
 from frappe.utils import flt
 
 from omnexa_core.omnexa_core.branch_access import get_allowed_branches
+from omnexa_accounting.utils.report_bilingual import (
+	gl_account_name_ar_select,
+	has_gl_account_name_ar,
+	insert_account_name_ar_column,
+)
 
 
 def execute(filters=None):
@@ -14,10 +19,14 @@ def execute(filters=None):
 	if not company:
 		frappe.throw(_("Company filter is required."), title=_("Filters"))
 
-	columns = [
-		{"label": _("Account"), "fieldname": "account", "fieldtype": "Link", "options": "GL Account", "width": 190},
-		{"label": _("Account Name"), "fieldname": "account_name", "fieldtype": "Data", "width": 200},
-		{"label": _("Account Type"), "fieldname": "account_type", "fieldtype": "Data", "width": 110},
+	columns = insert_account_name_ar_column(
+		[
+			{"label": _("Account"), "fieldname": "account", "fieldtype": "Link", "options": "GL Account", "width": 190},
+			{"label": _("Account Name"), "fieldname": "account_name", "fieldtype": "Data", "width": 200},
+			{"label": _("Account Type"), "fieldname": "account_type", "fieldtype": "Data", "width": 110},
+		]
+	)
+	columns += [
 		{"label": _("Opening Dr"), "fieldname": "opening_debit", "fieldtype": "Currency", "width": 120},
 		{"label": _("Opening Cr"), "fieldname": "opening_credit", "fieldtype": "Currency", "width": 120},
 		{"label": _("Period Dr"), "fieldname": "period_debit", "fieldtype": "Currency", "width": 120},
@@ -53,6 +62,7 @@ def _build_rows(filters):
 		SELECT
 			jea.account,
 			ga.account_name,
+			{gl_account_name_ar_select()} AS account_name_ar,
 			COALESCE(NULLIF(ga.account_type, ''), 'Unclassified') AS account_type,
 			SUM(CASE WHEN {opening_condition} THEN jea.debit ELSE 0 END) AS opening_debit,
 			SUM(CASE WHEN {opening_condition} THEN jea.credit ELSE 0 END) AS opening_credit,
@@ -62,7 +72,7 @@ def _build_rows(filters):
 		INNER JOIN `tabJournal Entry Account` jea ON jea.parent = je.name
 		INNER JOIN `tabGL Account` ga ON ga.name = jea.account
 		WHERE {' AND '.join(conditions)}
-		GROUP BY jea.account, ga.account_name, ga.account_type
+		GROUP BY jea.account, ga.account_name{", ga.account_name_ar" if has_gl_account_name_ar() else ""}, ga.account_type
 		ORDER BY ga.account_type, ga.account_number, ga.account_name
 		""",
 		filters,

@@ -11,6 +11,7 @@
 		"account_number",
 		"manual_number_override",
 		"account_name",
+		"account_name_ar",
 		"account_label",
 		"tree_label",
 		"company",
@@ -81,6 +82,12 @@
 			"in_list_view": 1,
 			"label": "Account Name",
 			"reqd": 1
+		},
+		{
+			"fieldname": "account_name_ar",
+			"fieldtype": "Data",
+			"label": "Account Name (Arabic)",
+			"insert_after": "account_name"
 		},
 		{
 			"fieldname": "account_label",
