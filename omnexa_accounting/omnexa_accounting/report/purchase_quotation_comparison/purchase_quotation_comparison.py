@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import frappe
+from frappe import _
 from frappe.utils import flt
 
 
@@ -8,27 +9,27 @@ def execute(filters=None):
 	filters = frappe._dict(filters or {})
 
 	columns = [
-		{"label": "Quotation Date", "fieldname": "quotation_date", "fieldtype": "Date", "width": 110},
+		{"label": _("Quotation Date"), "fieldname": "quotation_date", "fieldtype": "Date", "width": 110},
 		{
-			"label": "Purchase Quotation",
+			"label": _("Purchase Quotation"),
 			"fieldname": "quotation",
 			"fieldtype": "Link",
 			"options": "Purchase Quotation",
 			"width": 170,
 		},
-		{"label": "Company", "fieldname": "company", "fieldtype": "Link", "options": "Company", "width": 150},
-		{"label": "Branch", "fieldname": "branch", "fieldtype": "Link", "options": "Branch", "width": 120},
-		{"label": "Purchase Request", "fieldname": "purchase_request", "fieldtype": "Link", "options": "Purchase Request", "width": 160},
-		{"label": "Supplier", "fieldname": "supplier", "fieldtype": "Link", "options": "Supplier", "width": 190},
-		{"label": "Currency", "fieldname": "currency", "fieldtype": "Link", "options": "Currency", "width": 90},
-		{"label": "Item", "fieldname": "item", "fieldtype": "Link", "options": "Item", "width": 160},
-		{"label": "Item Code", "fieldname": "item_code", "fieldtype": "Data", "width": 120},
-		{"label": "Qty", "fieldname": "qty", "fieldtype": "Float", "width": 80},
-		{"label": "Rate", "fieldname": "rate", "fieldtype": "Currency", "width": 110},
-		{"label": "Discount %", "fieldname": "discount_percentage", "fieldtype": "Float", "width": 100},
-		{"label": "Effective Rate", "fieldname": "effective_rate", "fieldtype": "Currency", "width": 120},
-		{"label": "Amount", "fieldname": "amount", "fieldtype": "Currency", "width": 120},
-		{"label": "Is Best", "fieldname": "is_best", "fieldtype": "Check", "width": 70},
+		{"label": _("Company"), "fieldname": "company", "fieldtype": "Link", "options": "Company", "width": 150},
+		{"label": _("Branch"), "fieldname": "branch", "fieldtype": "Link", "options": "Branch", "width": 120},
+		{"label": _("Purchase Request"), "fieldname": "purchase_request", "fieldtype": "Link", "options": "Purchase Request", "width": 160},
+		{"label": _("Supplier"), "fieldname": "supplier", "fieldtype": "Link", "options": "Supplier", "width": 190},
+		{"label": _("Currency"), "fieldname": "currency", "fieldtype": "Link", "options": "Currency", "width": 90},
+		{"label": _("Item"), "fieldname": "item", "fieldtype": "Link", "options": "Item", "width": 160},
+		{"label": _("Item Code"), "fieldname": "item_code", "fieldtype": "Data", "width": 120},
+		{"label": _("Qty"), "fieldname": "qty", "fieldtype": "Float", "width": 80},
+		{"label": _("Rate"), "fieldname": "rate", "fieldtype": "Currency", "width": 110},
+		{"label": _("Discount %"), "fieldname": "discount_percentage", "fieldtype": "Float", "width": 100},
+		{"label": _("Effective Rate"), "fieldname": "effective_rate", "fieldtype": "Currency", "width": 120},
+		{"label": _("Amount"), "fieldname": "amount", "fieldtype": "Currency", "width": 120},
+		{"label": _("Is Best"), "fieldname": "is_best", "fieldtype": "Check", "width": 70},
 	]
 
 	conditions = ["pq.docstatus = 1"]
@@ -127,9 +128,9 @@ def execute(filters=None):
 	report_summary = []
 	if rows:
 		report_summary = [
-			{"label": "Quotations", "value": len({r.get("quotation") for r in rows}), "indicator": "Blue"},
-			{"label": "Lines", "value": len(rows), "indicator": "Blue"},
-			{"label": "Best Offers", "value": sum(1 for r in rows if r.get("is_best")), "indicator": "Green"},
+			{"label": _("Quotations"), "value": len({r.get("quotation") for r in rows}), "indicator": "Blue"},
+			{"label": _("Lines"), "value": len(rows), "indicator": "Blue"},
+			{"label": _("Best Offers"), "value": sum(1 for r in rows if r.get("is_best")), "indicator": "Green"},
 		]
 
 	return columns, rows, None, chart, report_summary

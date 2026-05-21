@@ -1,20 +1,21 @@
 import frappe
+from frappe import _
 
 
 def execute(filters=None):
 	filters = frappe._dict(filters or {})
 
 	columns = [
-		{"label": "Posting Date", "fieldname": "posting_date", "fieldtype": "Date", "width": 110},
-		{"label": "Sales Invoice", "fieldname": "name", "fieldtype": "Link", "options": "Sales Invoice", "width": 170},
-		{"label": "Company", "fieldname": "company", "fieldtype": "Link", "options": "Company", "width": 160},
-		{"label": "Branch", "fieldname": "branch", "fieldtype": "Link", "options": "Branch", "width": 140},
-		{"label": "Customer", "fieldname": "customer", "fieldtype": "Link", "options": "Customer", "width": 200},
-		{"label": "Due Date", "fieldname": "due_date", "fieldtype": "Date", "width": 110},
-		{"label": "Currency", "fieldname": "currency", "fieldtype": "Link", "options": "Currency", "width": 90},
-		{"label": "Grand Total", "fieldname": "grand_total", "fieldtype": "Currency", "width": 130},
-		{"label": "Outstanding", "fieldname": "outstanding_amount", "fieldtype": "Currency", "width": 120},
-		{"label": "Base Grand Total", "fieldname": "base_grand_total", "fieldtype": "Currency", "width": 140},
+		{"label": _("Posting Date"), "fieldname": "posting_date", "fieldtype": "Date", "width": 110},
+		{"label": _("Sales Invoice"), "fieldname": "name", "fieldtype": "Link", "options": "Sales Invoice", "width": 170},
+		{"label": _("Company"), "fieldname": "company", "fieldtype": "Link", "options": "Company", "width": 160},
+		{"label": _("Branch"), "fieldname": "branch", "fieldtype": "Link", "options": "Branch", "width": 140},
+		{"label": _("Customer"), "fieldname": "customer", "fieldtype": "Link", "options": "Customer", "width": 200},
+		{"label": _("Due Date"), "fieldname": "due_date", "fieldtype": "Date", "width": 110},
+		{"label": _("Currency"), "fieldname": "currency", "fieldtype": "Link", "options": "Currency", "width": 90},
+		{"label": _("Grand Total"), "fieldname": "grand_total", "fieldtype": "Currency", "width": 130},
+		{"label": _("Outstanding"), "fieldname": "outstanding_amount", "fieldtype": "Currency", "width": 120},
+		{"label": _("Base Grand Total"), "fieldname": "base_grand_total", "fieldtype": "Currency", "width": 140},
 	]
 
 	conditions = ["si.docstatus = 1"]

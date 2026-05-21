@@ -40,3 +40,15 @@ def gl_account_name_ar_select(alias: str = "ga") -> str:
 	if has_gl_account_name_ar():
 		return f"{alias}.account_name_ar"
 	return "NULL AS account_name_ar"
+
+
+def localize_column_labels(columns: list[dict]) -> list[dict]:
+	"""Ensure column labels use _() for Desk/print translation."""
+	out = []
+	for col in columns:
+		c = dict(col)
+		label = c.get("label")
+		if isinstance(label, str) and label and not label.startswith("_("):
+			c["label"] = _(label)
+		out.append(c)
+	return out

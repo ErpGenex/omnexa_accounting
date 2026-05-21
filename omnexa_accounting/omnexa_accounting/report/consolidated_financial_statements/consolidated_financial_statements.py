@@ -30,6 +30,7 @@ def execute(filters=None):
 
 	apply_eliminations = cint(filters.get("apply_eliminations", 1))
 	show_consolidated = cint(filters.get("show_consolidated_total", 1))
+	show_elimination_detail = cint(filters.get("show_elimination_detail", 0))
 
 	columns = insert_account_name_ar_column(
 		[
@@ -83,6 +84,7 @@ def execute(filters=None):
 				to_date=filters.to_date,
 				statement="balance_sheet",
 				per_company_rows=data,
+				show_elimination_detail=show_elimination_detail,
 			)
 		)
 		data.extend(
@@ -92,6 +94,7 @@ def execute(filters=None):
 				to_date=filters.to_date,
 				statement="income_statement",
 				per_company_rows=data,
+				show_elimination_detail=show_elimination_detail,
 			)
 		)
 		msg_parts.append(

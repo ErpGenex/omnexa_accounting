@@ -1,23 +1,24 @@
 from __future__ import annotations
 
 import frappe
+from frappe import _
 
 
 def execute(filters=None):
 	filters = frappe._dict(filters or {})
 	columns = [
-		{"label": "Posting Date", "fieldname": "posting_date", "fieldtype": "Date", "width": 110},
-		{"label": "Stock Entry", "fieldname": "stock_entry", "fieldtype": "Link", "options": "Stock Entry", "width": 170},
-		{"label": "Company", "fieldname": "company", "fieldtype": "Link", "options": "Company", "width": 140},
-		{"label": "Branch", "fieldname": "branch", "fieldtype": "Link", "options": "Branch", "width": 120},
-		{"label": "From Warehouse", "fieldname": "from_warehouse", "fieldtype": "Link", "options": "Warehouse", "width": 170},
-		{"label": "To Warehouse", "fieldname": "to_warehouse", "fieldtype": "Link", "options": "Warehouse", "width": 170},
-		{"label": "Item", "fieldname": "item", "fieldtype": "Link", "options": "Item", "width": 150},
-		{"label": "Item Code", "fieldname": "item_code", "fieldtype": "Data", "width": 120},
-		{"label": "Qty", "fieldname": "qty", "fieldtype": "Float", "width": 90},
-		{"label": "Rate", "fieldname": "rate", "fieldtype": "Currency", "width": 100},
-		{"label": "Amount", "fieldname": "amount", "fieldtype": "Currency", "width": 120},
-		{"label": "Transfer Request", "fieldname": "transfer_request", "fieldtype": "Link", "options": "Stock Transfer Request", "width": 170},
+		{"label": _("Posting Date"), "fieldname": "posting_date", "fieldtype": "Date", "width": 110},
+		{"label": _("Stock Entry"), "fieldname": "stock_entry", "fieldtype": "Link", "options": "Stock Entry", "width": 170},
+		{"label": _("Company"), "fieldname": "company", "fieldtype": "Link", "options": "Company", "width": 140},
+		{"label": _("Branch"), "fieldname": "branch", "fieldtype": "Link", "options": "Branch", "width": 120},
+		{"label": _("From Warehouse"), "fieldname": "from_warehouse", "fieldtype": "Link", "options": "Warehouse", "width": 170},
+		{"label": _("To Warehouse"), "fieldname": "to_warehouse", "fieldtype": "Link", "options": "Warehouse", "width": 170},
+		{"label": _("Item"), "fieldname": "item", "fieldtype": "Link", "options": "Item", "width": 150},
+		{"label": _("Item Code"), "fieldname": "item_code", "fieldtype": "Data", "width": 120},
+		{"label": _("Qty"), "fieldname": "qty", "fieldtype": "Float", "width": 90},
+		{"label": _("Rate"), "fieldname": "rate", "fieldtype": "Currency", "width": 100},
+		{"label": _("Amount"), "fieldname": "amount", "fieldtype": "Currency", "width": 120},
+		{"label": _("Transfer Request"), "fieldname": "transfer_request", "fieldtype": "Link", "options": "Stock Transfer Request", "width": 170},
 	]
 
 	conditions = ["se.docstatus = 1", "se.purpose = 'Material Transfer'"]
