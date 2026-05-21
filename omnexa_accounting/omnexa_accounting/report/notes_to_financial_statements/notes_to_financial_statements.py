@@ -28,6 +28,7 @@ def execute(filters=None):
 		{"label": _("Section"), "fieldname": "section", "fieldtype": "Data", "width": 220},
 		{"label": _("Disclosure"), "fieldname": "disclosure", "fieldtype": "Text", "width": 420},
 		{"label": _("Reference"), "fieldname": "reference", "fieldtype": "Data", "width": 160},
+		{"label": _("Amount"), "fieldname": "amount", "fieldtype": "Currency", "width": 120},
 	]
 
 	data = [
@@ -83,5 +84,7 @@ def execute(filters=None):
 			"reference": "IAS 10",
 		},
 	]
+	for row in data:
+		row["amount"] = 0
 
 	return columns, data

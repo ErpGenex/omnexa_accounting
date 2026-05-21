@@ -54,7 +54,15 @@ def execute(filters=None):
 			in_qty = flt(row.qty)
 		elif row.purpose == "Material Issue":
 			out_qty = flt(row.qty)
-		data.append({**row, "in_qty": in_qty, "out_qty": out_qty, "net_qty": in_qty - out_qty})
+		data.append(
+			{
+				**row,
+				"in_qty": in_qty,
+				"out_qty": out_qty,
+				"net_qty": in_qty - out_qty,
+				"stock_value": 0,
+			}
+		)
 
 	return _columns(), data
 
@@ -71,5 +79,6 @@ def _columns():
 		{"label": _("In Qty"), "fieldname": "in_qty", "fieldtype": "Float", "width": 90},
 		{"label": _("Out Qty"), "fieldname": "out_qty", "fieldtype": "Float", "width": 90},
 		{"label": _("Net Qty"), "fieldname": "net_qty", "fieldtype": "Float", "width": 90},
+		{"label": _("Value"), "fieldname": "stock_value", "fieldtype": "Currency", "width": 100},
 		{"label": _("Branch"), "fieldname": "branch", "fieldtype": "Link", "options": "Branch", "width": 120},
 	]

@@ -13,6 +13,7 @@ def execute(filters=None):
 		{"label": _("Title"), "fieldname": "title", "fieldtype": "Data", "width": 200},
 		{"label": _("Treatment"), "fieldname": "treatment", "fieldtype": "Data", "width": 120},
 		{"label": _("Rate %"), "fieldname": "rate", "fieldtype": "Float", "width": 90},
+		{"label": _("Tax Amount"), "fieldname": "tax_amount", "fieldtype": "Currency", "width": 110},
 		{"label": _("Company"), "fieldname": "company", "fieldtype": "Link", "options": "Company", "width": 160},
 		{"label": _("Valid from"), "fieldname": "valid_from", "fieldtype": "Date", "width": 110},
 		{"label": _("Valid to"), "fieldname": "valid_to", "fieldtype": "Date", "width": 110},
@@ -46,6 +47,7 @@ def execute(filters=None):
 					"valid_from": None,
 					"valid_to": None,
 					"notes": note,
+					"tax_amount": 0,
 				}
 			)
 
@@ -79,6 +81,7 @@ def execute(filters=None):
 				"valid_from": r.valid_from,
 				"valid_to": r.valid_to,
 				"notes": r.tax_category or "",
+				"tax_amount": 0,
 			}
 		)
 

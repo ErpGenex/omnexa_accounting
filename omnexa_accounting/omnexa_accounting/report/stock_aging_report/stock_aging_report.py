@@ -33,6 +33,7 @@ def execute(filters=None):
 		as_dict=True,
 	)
 	for r in data:
+		r["stock_value"] = 0
 		aging = r.get("aging_days")
 		if aging is None:
 			r["aging_bucket"] = "No Movement"
@@ -50,6 +51,7 @@ def execute(filters=None):
 		{"label": _("Item Code"), "fieldname": "item_code", "fieldtype": "Data", "width": 130},
 		{"label": _("Item Name"), "fieldname": "item_name", "fieldtype": "Data", "width": 220},
 		{"label": _("Current Qty"), "fieldname": "current_stock_qty", "fieldtype": "Float", "width": 110},
+		{"label": _("Stock Value"), "fieldname": "stock_value", "fieldtype": "Currency", "width": 110},
 		{"label": _("Last Movement Date"), "fieldname": "last_movement_date", "fieldtype": "Date", "width": 130},
 		{"label": _("Aging Days"), "fieldname": "aging_days", "fieldtype": "Int", "width": 100},
 		{"label": _("Aging Bucket"), "fieldname": "aging_bucket", "fieldtype": "Data", "width": 100},
