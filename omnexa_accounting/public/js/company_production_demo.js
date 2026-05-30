@@ -3,6 +3,7 @@
 
 function setup_company_production_demo_buttons(frm) {
 	const company = frm.doc.name;
+	const demo_btn = (label, fn, group) => erpgenex.company_demo.demo_btn(frm, label, fn, group);
 	const branch = () => {
 		const v = (frm.doc.production_demo_branch || "").trim();
 		return v || null;
@@ -48,7 +49,7 @@ function setup_company_production_demo_buttons(frm) {
 
 	const group = __("Production demo");
 
-	frm.add_custom_button(
+	demo_btn(
 		__("Generate professional COA"),
 		() =>
 			run(
@@ -60,7 +61,7 @@ function setup_company_production_demo_buttons(frm) {
 	);
 
 	const ifrsGroup = __("IFRS defaults");
-	frm.add_custom_button(
+	demo_btn(
 		__("Fill default GLs from CoA (by account number)"),
 		() =>
 			run(
@@ -71,7 +72,7 @@ function setup_company_production_demo_buttons(frm) {
 		ifrsGroup,
 	);
 
-	frm.add_custom_button(
+	demo_btn(
 		__("Resync COA labels (names from template)"),
 		() =>
 			run(
@@ -82,7 +83,7 @@ function setup_company_production_demo_buttons(frm) {
 		group,
 	);
 
-	frm.add_custom_button(
+	demo_btn(
 		__("Seed demo data (masters)"),
 		() =>
 			run(
@@ -98,7 +99,7 @@ function setup_company_production_demo_buttons(frm) {
 		group,
 	);
 
-	frm.add_custom_button(
+	demo_btn(
 		__("Seed demo data + transactions"),
 		() =>
 			run(
@@ -114,7 +115,7 @@ function setup_company_production_demo_buttons(frm) {
 		group,
 	);
 
-	frm.add_custom_button(
+	demo_btn(
 		__("Reset transactions (dry run)"),
 		() =>
 			run(
@@ -125,7 +126,7 @@ function setup_company_production_demo_buttons(frm) {
 		group,
 	);
 
-	frm.add_custom_button(
+	demo_btn(
 		__("Reset transactions (execute)"),
 		() => {
 			frappe.confirm(
@@ -146,7 +147,9 @@ function setup_company_production_demo_buttons(frm) {
 
 	if (frappe.session.user === "Administrator") {
 		const dangerGroup = __("Danger Zone");
-		frm.add_custom_button(
+		erpgenex.company_demo.add_action(
+			frm,
+			dangerGroup,
 			__("Delete ALL company data (DANGER)"),
 			async () => {
 				const values = await new Promise((resolve) => {
@@ -175,7 +178,7 @@ function setup_company_production_demo_buttons(frm) {
 					__("Full company wipe"),
 				);
 			},
-			dangerGroup,
+			{ danger: true },
 		);
 	}
 }
