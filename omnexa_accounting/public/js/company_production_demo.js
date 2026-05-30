@@ -216,6 +216,7 @@ frappe.ui.form.on("Company", {
 
 		if (window.erpgenex?.company_demo?.register) {
 			erpgenex.company_demo.register(setup_company_production_demo_buttons);
+			erpgenex.company_demo.refresh_panel(frm);
 		}
 	},
 });
