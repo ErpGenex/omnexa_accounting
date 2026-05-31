@@ -321,7 +321,16 @@ doc_events = {
 # Ignore links to specified DocTypes when deleting documents
 # -----------------------------------------------------------
 
-# ignore_links_on_delete = ["Communication", "ToDo"]
+ignore_links_on_delete = [
+	"COA Reset Audit Log",
+	"Production Seed Log",
+	"Experience Tenant Theme",
+	"Catalog Item",
+	"Web Order",
+	"Payment Intent",
+	"Booking",
+	"Bookable Resource",
+]
 
 # Request Events
 # ----------------

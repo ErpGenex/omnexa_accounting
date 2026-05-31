@@ -67,7 +67,13 @@ def get_company_gl_by_account_number(company: str, account_number: str, branch: 
 	return rows[0].name if rows else None
 
 
-def apply_company_default_gl_from_coa(company: str, branch: str | None = None, overwrite: int | bool = 0) -> dict:
+def apply_company_default_gl_from_coa(
+	company: str,
+	branch: str | None = None,
+	overwrite: int | bool = 0,
+	*,
+	touch_modified: bool = True,
+) -> dict:
 	"""Set Company GL default links from existing CoA rows (by account_number). Empty fields only unless overwrite=1."""
 	if not company or not frappe.db.exists("Company", company):
 		frappe.throw(_("Company is required"))
@@ -82,9 +88,12 @@ def apply_company_default_gl_from_coa(company: str, branch: str | None = None, o
 			continue
 		gl = get_company_gl_by_account_number(company, code, branch=branch)
 		if gl:
-			doc.set(fieldname, gl)
 			updated.append(fieldname)
-	if updated:
+			if touch_modified:
+				doc.set(fieldname, gl)
+			else:
+				frappe.db.set_value("Company", company, fieldname, gl, update_modified=False)
+	if updated and touch_modified:
 		doc.save(ignore_permissions=True)
 	return {"ok": True, "company": company, "updated_fields": updated, "branch_filter": branch}
 

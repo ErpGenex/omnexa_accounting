@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import time
+
 import frappe
 from frappe import _
 from frappe.utils import add_days, add_months, add_years, cint, flt, get_last_day, getdate, nowdate, today
@@ -232,19 +234,27 @@ def seed_activity_demo_data(
 	activity: str | None = None,
 	include_transactions: int | str | None = 0,
 ):
-	"""Seed minimal demo data per activity to support pilots/training."""
+	"""Seed minimal demo data per branch to support pilots/training."""
 	_assert_admin()
 	if not company:
 		frappe.throw(_("Company is required"))
+	if not branch:
+		frappe.throw(_("Branch is required — demo data is branch-scoped only"))
 	if not frappe.db.exists("Company", company):
 		frappe.throw(_("Company {0} not found").format(company))
+	if not frappe.db.exists("Branch", branch):
+		frappe.throw(_("Branch {0} not found").format(branch))
+	b_company = frappe.db.get_value("Branch", branch, "company")
+	if b_company != company:
+		frappe.throw(_("Branch does not belong to this company"))
 
+	tag = branch
 	created = {"customer": None, "supplier": None, "warehouse": None, "item": None}
 	if not frappe.db.exists("UOM", "Nos"):
 		uom = frappe.get_doc({"doctype": "UOM", "uom_name": "Nos"})
 		uom.insert(ignore_permissions=True)
 
-	cust_name = f"DEMO-CUST-{company}"
+	cust_name = f"DEMO-CUST-{tag}"
 	existing_cust = frappe.db.get_value("Customer", {"customer_name": cust_name, "company": company}, "name")
 	if existing_cust:
 		created["customer"] = existing_cust
@@ -253,7 +263,7 @@ def seed_activity_demo_data(
 		cust.insert(ignore_permissions=True)
 		created["customer"] = cust.name
 
-	supp_name = f"DEMO-SUPP-{company}"
+	supp_name = f"DEMO-SUPP-{tag}"
 	existing_supp = frappe.db.get_value("Supplier", {"supplier_name": supp_name, "company": company}, "name")
 	if existing_supp:
 		created["supplier"] = existing_supp
@@ -262,24 +272,23 @@ def seed_activity_demo_data(
 		supp.insert(ignore_permissions=True)
 		created["supplier"] = supp.name
 
-	wh_name = f"DEMO-WH-{company}"
-	wh_code = ("DM" + "".join(ch for ch in company if ch.isalnum()).upper())[:12]
+	wh_name = f"DEMO-WH-{tag}"
+	wh_code = ("DM" + "".join(ch for ch in tag if ch.isalnum()).upper())[:12]
 	existing_wh = frappe.db.get_value("Warehouse", {"warehouse_name": wh_name, "company": company}, "name")
 	if existing_wh:
 		created["warehouse"] = existing_wh
 	else:
-		wh = frappe.get_doc(
-			{
-				"doctype": "Warehouse",
-				"warehouse_name": wh_name,
-				"warehouse_code": wh_code,
-				"company": company,
-			}
-		)
+		wh_doc = {
+			"doctype": "Warehouse",
+			"warehouse_name": wh_name,
+			"warehouse_code": wh_code,
+			"company": company,
+		}
+		wh = frappe.get_doc(wh_doc)
 		wh.insert(ignore_permissions=True)
 		created["warehouse"] = wh.name
 
-	item_code = f"DEMO-ITEM-{company}"
+	item_code = f"DEMO-ITEM-{tag}"
 	existing_item = frappe.db.get_value("Item", {"item_code": item_code, "company": company}, "name")
 	if existing_item:
 		created["item"] = existing_item
@@ -288,7 +297,7 @@ def seed_activity_demo_data(
 			{
 				"doctype": "Item",
 				"item_code": item_code,
-				"item_name": f"Demo Item {activity or 'General'}",
+				"item_name": f"Demo Item {activity or 'General'} ({tag})",
 				"company": company,
 				"stock_uom": "Nos",
 				"is_stock_item": 1,
@@ -744,7 +753,285 @@ def enqueue_reset_transactions(
 	return {"ok": True, "queued": True, "job_id": job.id if job else None}
 
 
-def run_reset_transactions_batched(company: str, branch: str | None = None, limit: int = 0, batch_size: int = 200, user: str | None = None):
+def _purge_gl_entries(company: str) -> int:
+	"""Remove ledger rows that block COA reset after transaction wipe."""
+	if not frappe.db.exists("DocType", "GL Entry"):
+		return 0
+	if not frappe.db.has_column("GL Entry", "company"):
+		return 0
+	before = frappe.db.count("GL Entry", {"company": company})
+	if before:
+		frappe.db.delete("GL Entry", {"company": company})
+		frappe.db.commit()
+	return before
+
+
+_COMPANY_TRASH_PURGE_DOCTYPES = (
+	"COA Reset Audit Log",
+	"Production Seed Log",
+	"CoA Settings",
+	"Experience Tenant Theme",
+	"Catalog Item",
+	"Web Order",
+	"Payment Intent",
+	"Booking",
+	"Bookable Resource",
+	"Insurance Claim",
+	"Insurance Incident",
+	"Insurance Policy",
+	"Audit Alert",
+)
+
+
+def _delete_company_docs_by_company_field(doctype: str, company: str) -> int:
+	if not frappe.db.exists("DocType", doctype) or not frappe.db.has_column(doctype, "company"):
+		return 0
+	names = frappe.get_all(doctype, filters={"company": company}, pluck="name")
+	for name in names:
+		try:
+			frappe.delete_doc(doctype, name, ignore_permissions=True, force=1)
+		except Exception:
+			frappe.db.delete(doctype, {"name": name})
+	return len(names)
+
+
+def _delete_company_fixed_assets(company: str) -> dict[str, int]:
+	summary: dict[str, int] = {}
+	for dt in ("Fixed Asset Acquisition", "Fixed Asset", "Fixed Asset Category"):
+		summary[dt] = _delete_company_docs_by_company_field(dt, company)
+	return summary
+
+
+def _delete_company_gl_accounts(company: str) -> int:
+	if not frappe.db.exists("DocType", "GL Account") or not frappe.db.has_column("GL Account", "company"):
+		return 0
+	deleted = 0
+	while True:
+		names = frappe.get_all(
+			"GL Account",
+			filters={"company": company},
+			pluck="name",
+			limit=500,
+			order_by="lft desc",
+		)
+		if not names:
+			break
+		for name in names:
+			try:
+				frappe.delete_doc("GL Account", name, ignore_permissions=True, force=1)
+				deleted += 1
+			except Exception:
+				try:
+					frappe.db.delete("GL Account", {"name": name})
+					deleted += 1
+				except Exception:
+					frappe.log_error(frappe.get_traceback(), f"Company delete: GL Account {name}")
+	return deleted
+
+
+def _purge_remaining_company_links(company: str, max_rounds: int = 12) -> dict[str, int]:
+	"""Delete any documents still statically linked to Company (catch-all for app-specific masters)."""
+	from frappe.model.delete_doc import get_linked_docs
+
+	summary: dict[str, int] = {}
+	if not frappe.db.exists("Company", company):
+		return summary
+
+	for _ in range(max_rounds):
+		links = get_linked_docs(frappe.get_doc("Company", company), method="Delete")
+		if not links:
+			break
+		progress = False
+		for link in links:
+			dt = link["reference_doctype"]
+			name = link["reference_docname"]
+			if dt == "Company":
+				continue
+			try:
+				meta = frappe.get_meta(dt)
+			except Exception:
+				continue
+			if meta.issingle:
+				continue
+			try:
+				frappe.delete_doc(dt, name, ignore_permissions=True, force=1)
+				summary[dt] = summary.get(dt, 0) + 1
+				progress = True
+			except Exception:
+				try:
+					frappe.db.delete(dt, {"name": name})
+					summary[dt] = summary.get(dt, 0) + 1
+					progress = True
+				except Exception:
+					frappe.log_error(frappe.get_traceback(), f"Company delete: {dt} {name}")
+		frappe.db.commit()
+		if not progress:
+			break
+	return summary
+
+
+def purge_company_for_deletion(company: str) -> dict:
+	"""Remove Omnexa rows that block Company trash (call from Company.on_trash for privileged users)."""
+	if not company:
+		return {"ok": False}
+
+	summary: dict = {"company": company}
+	for dt in _COMPANY_TRASH_PURGE_DOCTYPES:
+		summary[dt] = _delete_company_docs_by_company_field(dt, company)
+
+	summary["fixed_assets"] = _delete_company_fixed_assets(company)
+	summary["gl_accounts"] = _delete_company_gl_accounts(company)
+
+	if frappe.db.exists("DocType", "User Branch Access") and frappe.db.has_column("User Branch Access", "company"):
+		summary["user_branch_access"] = frappe.db.count("User Branch Access", {"company": company})
+		if summary["user_branch_access"]:
+			frappe.db.delete("User Branch Access", {"company": company})
+
+	summary["branches_deleted"] = _delete_all_branches_for_company(company)
+	summary["remaining_links"] = _purge_remaining_company_links(company)
+	frappe.db.commit()
+	summary["ok"] = True
+	return summary
+
+
+def _delete_all_branches_for_company(company: str) -> list[str]:
+	branch_names = frappe.get_all("Branch", filters={"company": company}, pluck="name", order_by="creation desc")
+	if not branch_names:
+		return []
+
+	if frappe.db.exists("DocType", "User Branch Access"):
+		frappe.db.delete("User Branch Access", {"branch": ["in", branch_names]})
+
+	# Break parent/child links so delete order is not blocked.
+	frappe.db.sql(
+		"UPDATE `tabBranch` SET parent_branch = NULL WHERE company = %s",
+		(company,),
+	)
+
+	if "omnexa_construction" in (frappe.get_installed_apps() or []):
+		from omnexa_construction.utils.demo_seed import reset_construction_demo_for_branch
+
+		for b in branch_names:
+			try:
+				reset_construction_demo_for_branch(company=company, branch=b, dry_run=0)
+			except Exception:
+				frappe.log_error(frappe.get_traceback(), f"Wipe: construction demo for branch {b}")
+
+	deleted: list[str] = []
+	for b in branch_names:
+		try:
+			frappe.delete_doc("Branch", b, ignore_permissions=True, force=1)
+			deleted.append(b)
+		except Exception:
+			frappe.log_error(frappe.get_traceback(), f"Wipe: delete branch {b}")
+	frappe.db.commit()
+	return deleted
+
+
+def _run_with_deadlock_retry(fn, *, retries: int = 5):
+	for attempt in range(retries):
+		try:
+			return fn()
+		except frappe.QueryDeadlockError:
+			frappe.db.rollback()
+			if attempt >= retries - 1:
+				raise
+			time.sleep(0.4 * (attempt + 1))
+
+
+_WIPE_CHILD_TABLES = {
+	"Journal Entry": "Journal Entry Account",
+	"Payment Entry": "Payment Entry Reference",
+	"Sales Invoice": "Sales Invoice Item",
+	"Purchase Invoice": "Purchase Invoice Item",
+	"Sales Order": "Sales Order Item",
+	"Purchase Order": "Purchase Order Item",
+	"Delivery Note": "Delivery Note Item",
+	"Purchase Receipt": "Purchase Receipt Item",
+	"Stock Entry": "Stock Entry Detail",
+	"Stock Reconciliation": "Stock Reconciliation Item",
+	"Landed Cost Voucher": "Landed Cost Item",
+}
+
+
+def _resolve_company_branch_for_wipe(company: str) -> str | None:
+	"""Ensure a head-office branch exists for compliance during wipe (CoA reset logs)."""
+	if not frappe.db.get_value("Company", company, "enable_branches"):
+		return None
+	ho = frappe.db.get_value("Branch", {"company": company, "is_head_office": 1}, "name")
+	if ho:
+		return ho
+	company_doc = frappe.get_doc("Company", company)
+	company_doc._ensure_head_office_branch()
+	frappe.db.commit()
+	return frappe.db.get_value("Branch", {"company": company, "is_head_office": 1}, "name")
+
+
+def _bulk_delete_company_transactions(company: str) -> dict:
+	"""Fast SQL purge during full company wipe (skips per-doc hooks)."""
+	summary: dict[str, int] = {}
+	if not company:
+		return summary
+
+	_purge_gl_entries(company)
+
+	for dt in reversed(_RESET_DOCTYPES):
+		if not frappe.db.exists("DocType", dt):
+			continue
+		if not frappe.db.has_column(dt, "company"):
+			continue
+		child_dt = _WIPE_CHILD_TABLES.get(dt)
+		deleted = 0
+
+		def _delete_batch(dt=dt, child_dt=child_dt):
+			nonlocal deleted
+			while True:
+				names = frappe.get_all(dt, filters={"company": company}, pluck="name", limit=200)
+				if not names:
+					break
+				if child_dt and frappe.db.exists("DocType", child_dt):
+					frappe.db.sql(f"DELETE FROM `tab{child_dt}` WHERE parent IN %s", (names,))
+				frappe.db.delete(dt, {"name": ["in", names]})
+				frappe.db.commit()
+				deleted += len(names)
+
+		_run_with_deadlock_retry(_delete_batch)
+		if deleted:
+			summary[dt] = deleted
+	return summary
+
+
+@frappe.whitelist(methods=["POST"])
+def enqueue_wipe_company_all_data(
+	company: str,
+	branch: str | None = None,
+	confirm_text: str | None = None,
+):
+	from omnexa_core.omnexa_core.branch_access import user_can_wipe_company
+
+	if not user_can_wipe_company():
+		frappe.throw(_("Only System Manager can run full company wipe."), frappe.PermissionError)
+	_assert_admin()
+	job = frappe.enqueue(
+		"omnexa_accounting.utils.production_readiness.wipe_company_all_data",
+		queue="long",
+		timeout=7200,
+		company=company,
+		branch=branch,
+		confirm_text=confirm_text,
+		user=frappe.session.user,
+	)
+	return {"ok": True, "queued": True, "job_id": job.id if job else None}
+
+
+def run_reset_transactions_batched(
+	company: str,
+	branch: str | None = None,
+	limit: int = 0,
+	batch_size: int = 200,
+	user: str | None = None,
+	skip_log: bool = False,
+):
 	"""Cancel + delete transactions in batches until empty (or until limit reached)."""
 	frappe.set_user(user or "Administrator")
 	_assert_admin()
@@ -756,6 +1043,7 @@ def run_reset_transactions_batched(company: str, branch: str | None = None, limi
 			continue
 		deleted_total = 0
 		cancelled_total = 0
+		stalled = 0
 		while True:
 			to_fetch = batch_size
 			if limit and (deleted_total + cancelled_total) >= limit:
@@ -765,42 +1053,60 @@ def run_reset_transactions_batched(company: str, branch: str | None = None, limi
 			names = frappe.get_all(dt, filters=filters, pluck="name", limit=to_fetch)
 			if not names:
 				break
+			batch_progress = 0
 			for name in reversed(names):
-				doc = frappe.get_doc(dt, name)
+				try:
+					doc = frappe.get_doc(dt, name)
+				except frappe.DoesNotExistError:
+					batch_progress += 1
+					continue
 				if hasattr(doc, "docstatus") and int(doc.docstatus or 0) == 1:
 					try:
 						doc.cancel()
 						cancelled_total += 1
+						batch_progress += 1
 					except Exception:
-						# even if cancel fails, still attempt forced delete
 						pass
 				try:
 					frappe.delete_doc(dt, name, ignore_permissions=True, force=1)
 					deleted_total += 1
+					batch_progress += 1
 				except Exception:
-					pass
+					frappe.log_error(frappe.get_traceback(), f"Wipe: delete {dt} {name}")
 			frappe.db.commit()
-		overall["details"].append({"doctype": dt, "cancelled": cancelled_total, "deleted": deleted_total})
+			if batch_progress == 0:
+				stalled = len(names)
+				break
+		row = {"doctype": dt, "cancelled": cancelled_total, "deleted": deleted_total}
+		if stalled:
+			row["stalled"] = stalled
+		overall["details"].append(row)
 
-	log_id = _log_seed_operation(
-		"Reset Transactions",
-		company,
-		branch,
-		None,
-		0,
-		"Success",
-		overall,
-	)
+	log_id = None
+	if not skip_log:
+		log_id = _log_seed_operation(
+			"Reset Transactions",
+			company,
+			branch,
+			None,
+			0,
+			"Success",
+			overall,
+		)
 	overall["log_id"] = log_id
 	frappe.db.commit()
 	return overall
 
 
 @frappe.whitelist(methods=["POST"])
-def wipe_company_all_data(company: str, branch: str | None = None, confirm_text: str | None = None):
+def wipe_company_all_data(company: str, branch: str | None = None, confirm_text: str | None = None, user: str | None = None):
 	"""Hard wipe for one company scope: transactions + CoA + core masters."""
-	if frappe.session.user != "Administrator":
-		frappe.throw(_("Only Administrator can run full company wipe."), frappe.PermissionError)
+	if user:
+		frappe.set_user(user)
+	from omnexa_core.omnexa_core.branch_access import user_can_wipe_company
+
+	if not user_can_wipe_company():
+		frappe.throw(_("Only System Manager can run full company wipe."), frappe.PermissionError)
 	_assert_admin()
 	normalized_confirm = " ".join((confirm_text or "").strip().upper().split())
 	if normalized_confirm not in {"DELETE ALL", "DELETEALL"}:
@@ -808,15 +1114,33 @@ def wipe_company_all_data(company: str, branch: str | None = None, confirm_text:
 	if not company or not frappe.db.exists("Company", company):
 		frappe.throw(_("Company is required"), title=_("Wipe Company Data"))
 
-	# 1) Cancel + delete all transactions synchronously.
+	# 1) Fast bulk purge then batched cleanup for anything left.
+	try:
+		bulk = _bulk_delete_company_transactions(company)
+	except Exception:
+		frappe.log_error(frappe.get_traceback(), f"Wipe: bulk purge for {company}")
+		bulk = {"error": "bulk_purge_failed"}
 	tx = run_reset_transactions_batched(
-		company=company, branch=branch, limit=0, batch_size=300, user=frappe.session.user
+		company=company,
+		branch=branch,
+		limit=0,
+		batch_size=300,
+		user=frappe.session.user,
+		skip_log=True,
 	)
+	tx["bulk_purge"] = bulk
+
+	# 1b) Purge GL Entry rows left after journal deletion (blocks COA reset otherwise).
+	gl_purged = _purge_gl_entries(company)
+
+	wipe_branch = branch or _resolve_company_branch_for_wipe(company)
 
 	# 2) Reset chart of accounts (with backup + audit log).
 	from omnexa_accounting.utils.coa_reset_service import reset_coa
 
-	coa = reset_coa(company=company, branch=branch, confirm_text="RESET COA")
+	coa = reset_coa(
+		company=company, branch=wipe_branch, confirm_text="RESET COA", skip_ledger_checks=True
+	)
 
 	# 3) Delete core master data bound to this company.
 	master_doctypes = ["Customer", "Supplier", "Item", "Employee", "Warehouse", "Bank Account", "Cost Center"]
@@ -840,16 +1164,38 @@ def wipe_company_all_data(company: str, branch: str | None = None, confirm_text:
 		after = frappe.db.count(dt, filters)
 		master_deleted.append({"doctype": dt, "before": before, "deleted": max(before - after, 0), "after": after})
 
+	branches_deleted: list[str] = []
+	construction_wipes: list[dict] = []
+	log_branch = branch
+	if not branch:
+		branches_deleted = _delete_all_branches_for_company(company)
+		if frappe.db.get_value("Company", company, "enable_branches"):
+			try:
+				company_doc = frappe.get_doc("Company", company)
+				company_doc._ensure_head_office_branch()
+				frappe.db.commit()
+				log_branch = frappe.db.get_value(
+					"Branch", {"company": company, "is_head_office": 1}, "name"
+				)
+			except Exception:
+				frappe.log_error(frappe.get_traceback(), f"Wipe: recreate head office for {company}")
+
 	result = {
 		"ok": True,
 		"company": company,
 		"branch": branch,
 		"transactions": tx,
+		"gl_entries_purged": gl_purged,
 		"coa_reset": coa,
 		"masters": master_deleted,
+		"branches_deleted": branches_deleted,
+		"construction_wipes": construction_wipes,
 	}
-	log_id = _log_seed_operation("Reset Transactions", company, branch, None, 0, "Success", result)
-	result["log_id"] = log_id
+	try:
+		log_id = _log_seed_operation("Reset Transactions", company, log_branch, None, 0, "Success", result)
+		result["log_id"] = log_id
+	except Exception:
+		frappe.log_error(frappe.get_traceback(), f"Wipe: seed log for {company}")
 	return result
 
 

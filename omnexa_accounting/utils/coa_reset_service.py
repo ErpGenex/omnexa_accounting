@@ -7,7 +7,7 @@ import json
 
 import frappe
 from frappe import _
-from frappe.utils import now_datetime
+from frappe.utils import cint, now_datetime
 
 from omnexa_accounting.utils.company_financial_defaults import (
 	BRANCH_DEFAULT_GL_FIELDS,
@@ -79,26 +79,19 @@ def _write_audit_log(
 
 
 def _clear_company_gl_defaults(company: str, branch: str | None = None) -> None:
+	"""Clear GL default links without bumping Company.modified (avoids desk timestamp conflicts)."""
 	if not frappe.db.exists("Company", company):
 		return
 	co = frappe.get_doc("Company", company)
-	changed = False
 	for fieldname in COMPANY_GL_CODE_BY_FIELD:
 		if co.meta.has_field(fieldname) and co.get(fieldname):
-			co.set(fieldname, None)
-			changed = True
-	if changed:
-		co.save(ignore_permissions=True)
+			frappe.db.set_value("Company", company, fieldname, None, update_modified=False)
 
 	if branch and frappe.db.exists("Branch", branch):
 		br = frappe.get_doc("Branch", branch)
-		changed = False
 		for fieldname in BRANCH_DEFAULT_GL_FIELDS:
 			if br.meta.has_field(fieldname) and br.get(fieldname):
-				br.set(fieldname, None)
-				changed = True
-		if changed:
-			br.save(ignore_permissions=True)
+				frappe.db.set_value("Branch", branch, fieldname, None, update_modified=False)
 
 
 @frappe.whitelist(methods=["POST"])
@@ -106,6 +99,7 @@ def reset_coa(
 	company: str,
 	confirm_text: str,
 	branch: str | None = None,
+	skip_ledger_checks: bool | int = False,
 ) -> dict:
 	"""
 	Secure COA reset.
@@ -137,26 +131,27 @@ def reset_coa(
 		)
 		frappe.throw(_("Type RESET COA to confirm."), title=_("Reset COA"))
 
-	# Hard-stops: Journals and GL entries
-	if _doctype_has_rows("Journal Entry", {"company": company}):
-		_write_audit_log(
-			company=company,
-			branch=branch,
-			status="blocked",
-			confirm_text=confirm_text,
-			blocked_reason="Journal Entries exist",
-		)
-		frappe.throw(_("Reset blocked: Journal Entries exist."), title=_("Reset COA"))
+	# Hard-stops: Journals and GL entries (skipped during full company wipe after ledger purge).
+	if not cint(skip_ledger_checks):
+		if _doctype_has_rows("Journal Entry", {"company": company}):
+			_write_audit_log(
+				company=company,
+				branch=branch,
+				status="blocked",
+				confirm_text=confirm_text,
+				blocked_reason="Journal Entries exist",
+			)
+			frappe.throw(_("Reset blocked: Journal Entries exist."), title=_("Reset COA"))
 
-	if _doctype_has_rows("GL Entry", {"company": company}):
-		_write_audit_log(
-			company=company,
-			branch=branch,
-			status="blocked",
-			confirm_text=confirm_text,
-			blocked_reason="GL Entries exist",
-		)
-		frappe.throw(_("Reset blocked: GL Entries exist."), title=_("Reset COA"))
+		if _doctype_has_rows("GL Entry", {"company": company}):
+			_write_audit_log(
+				company=company,
+				branch=branch,
+				status="blocked",
+				confirm_text=confirm_text,
+				blocked_reason="GL Entries exist",
+			)
+			frappe.throw(_("Reset blocked: GL Entries exist."), title=_("Reset COA"))
 
 	if not frappe.db.exists("DocType", "GL Account"):
 		_write_audit_log(
