@@ -72,6 +72,7 @@ doctype_list_js = {
 	"GL Account": "public/js/gl_account_list.js",
 	"Customer": "public/js/customer_list.js",
 	"Warehouse": "public/js/warehouse_list.js",
+	"Sales Invoice": "public/js/sales_invoice_list.js",
 }
 doctype_tree_js = {
 	"GL Account": "public/js/gl_account_tree.js",
