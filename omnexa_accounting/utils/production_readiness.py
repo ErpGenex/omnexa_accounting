@@ -61,6 +61,26 @@ def _assert_admin():
 		frappe.throw(_("Not permitted"), frappe.PermissionError)
 
 
+def _resolve_demo_activity(company: str, branch: str | None = None) -> str:
+	if branch and frappe.db.exists("Branch", branch):
+		branch_activity = (frappe.db.get_value("Branch", branch, "branch_demo_activity") or "").strip()
+		if branch_activity and branch_activity.lower() != "general":
+			return branch_activity
+	if company and frappe.db.exists("Company", company):
+		row = frappe.db.get_value(
+			"Company",
+			company,
+			["business_activity", "industry_sector", "production_demo_activity"],
+			as_dict=True,
+		)
+		if row:
+			for key in ("business_activity", "industry_sector", "production_demo_activity"):
+				val = (row.get(key) or "").strip()
+				if val and val.lower() != "general":
+					return val.split("(")[0].strip()
+	return "General"
+
+
 def _log_seed_operation(
 	operation: str,
 	company: str,
@@ -249,19 +269,30 @@ def seed_activity_demo_data(
 		frappe.throw(_("Branch does not belong to this company"))
 
 	tag = branch
-	created = {"customer": None, "supplier": None, "warehouse": None, "item": None}
+	created = {"customer": None, "patient": None, "supplier": None, "warehouse": None, "item": None}
 	if not frappe.db.exists("UOM", "Nos"):
 		uom = frappe.get_doc({"doctype": "UOM", "uom_name": "Nos"})
 		uom.insert(ignore_permissions=True)
 
-	cust_name = f"DEMO-CUST-{tag}"
-	existing_cust = frappe.db.get_value("Customer", {"customer_name": cust_name, "company": company}, "name")
-	if existing_cust:
-		created["customer"] = existing_cust
+	_use_patients = False
+	if "omnexa_healthcare" in (frappe.get_installed_apps() or []):
+		from omnexa_healthcare.utils.demo_parties import seed_demo_patient_master, should_use_patients
+
+		_use_patients = should_use_patients(activity)
+
+	if _use_patients:
+		party = seed_demo_patient_master(company, branch, tag)
+		created["patient"] = party.get("patient")
+		created["customer"] = party.get("billing_customer")
 	else:
-		cust = frappe.get_doc({"doctype": "Customer", "customer_name": cust_name, "company": company})
-		cust.insert(ignore_permissions=True)
-		created["customer"] = cust.name
+		cust_name = f"DEMO-CUST-{tag}"
+		existing_cust = frappe.db.get_value("Customer", {"customer_name": cust_name, "company": company}, "name")
+		if existing_cust:
+			created["customer"] = existing_cust
+		else:
+			cust = frappe.get_doc({"doctype": "Customer", "customer_name": cust_name, "company": company})
+			cust.insert(ignore_permissions=True)
+			created["customer"] = cust.name
 
 	supp_name = f"DEMO-SUPP-{tag}"
 	existing_supp = frappe.db.get_value("Supplier", {"supplier_name": supp_name, "company": company}, "name")
@@ -1215,6 +1246,7 @@ def _ensure_master_data(
 	customer_count: int,
 	supplier_count: int,
 	employee_count: int,
+	activity: str | None = None,
 ) -> dict:
 	def _has_field(doctype: str, fieldname: str) -> bool:
 		return bool(frappe.get_meta(doctype).has_field(fieldname))
@@ -1269,15 +1301,26 @@ def _ensure_master_data(
 			service_items.append(items[-1])
 
 	customers = []
-	for idx in range(1, customer_count + 1):
-		customer_name = f"SIM-CUST-{branch}-{idx:02d}"
-		existing = frappe.db.get_value("Customer", {"customer_name": customer_name, "company": company}, "name")
-		if existing:
-			customers.append(existing)
-			continue
-		doc = frappe.get_doc({"doctype": "Customer", "customer_name": customer_name, "company": company})
-		doc.insert(ignore_permissions=True)
-		customers.append(doc.name)
+	patients: list[str] = []
+	_use_patients = False
+	if "omnexa_healthcare" in (frappe.get_installed_apps() or []):
+		from omnexa_healthcare.utils.demo_parties import seed_simulation_patients, should_use_patients
+
+		_use_patients = should_use_patients(activity)
+	if _use_patients:
+		batch = seed_simulation_patients(company, branch, customer_count)
+		patients = batch.get("patients") or []
+		customers = batch.get("billing_accounts") or []
+	else:
+		for idx in range(1, customer_count + 1):
+			customer_name = f"SIM-CUST-{branch}-{idx:02d}"
+			existing = frappe.db.get_value("Customer", {"customer_name": customer_name, "company": company}, "name")
+			if existing:
+				customers.append(existing)
+				continue
+			doc = frappe.get_doc({"doctype": "Customer", "customer_name": customer_name, "company": company})
+			doc.insert(ignore_permissions=True)
+			customers.append(doc.name)
 
 	suppliers = []
 	for idx in range(1, supplier_count + 1):
@@ -1318,6 +1361,7 @@ def _ensure_master_data(
 		"service_items": service_items or items,
 		"stock_items": stock_items or items,
 		"customers": customers,
+		"patients": patients,
 		"suppliers": suppliers,
 		"employees": employees,
 	}
@@ -1799,6 +1843,7 @@ def run_branch_enterprise_simulation_seed(**kwargs):
 	frappe.set_user(params.user or "Administrator")
 	try:
 		_apply_company_gl_defaults_for_sim(company, branch)
+		activity = _resolve_demo_activity(company, branch)
 		masters = _ensure_master_data(
 			company=company,
 			branch=branch,
@@ -1806,6 +1851,7 @@ def run_branch_enterprise_simulation_seed(**kwargs):
 			customer_count=customer_count,
 			supplier_count=supplier_count,
 			employee_count=employee_count,
+			activity=activity,
 		)
 
 		end_date = getdate(nowdate())
@@ -1834,6 +1880,7 @@ def run_branch_enterprise_simulation_seed(**kwargs):
 			"masters": {
 				"items": len(masters.get("items") or []),
 				"customers": len(customers),
+				"patients": len(masters.get("patients") or []),
 				"suppliers": len(suppliers),
 				"employees": len(employees),
 				"warehouse": warehouse,
@@ -2219,6 +2266,7 @@ def auto_bootstrap_defaults_after_install() -> dict:
 					customer_count=5,
 					supplier_count=5,
 					employee_count=5,
+					activity=_resolve_demo_activity(company, branch),
 				)
 				summary["demo_masters_seeded"] += 1
 			except Exception:
