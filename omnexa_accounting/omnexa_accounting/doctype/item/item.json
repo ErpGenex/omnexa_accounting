@@ -11,33 +11,31 @@
 		"item_name",
 		"item_grouping_break",
 		"product_type",
-		"manufacturing_role",
-		"can_be_manufactured",
-		"requires_dynamic_composition",
 		"company",
 		"stock_uom",
-		"tab_break_details",
+		"classification_code",
+		"disabled",
+		"tab_break_sales",
+		"is_sales_item",
+		"tab_break_purchase",
+		"is_purchase_item",
+		"tab_break_inventory",
 		"column_flags",
 		"is_stock_item",
 		"current_stock_qty",
 		"last_stock_reconciliation_date",
-		"is_sales_item",
-		"is_purchase_item",
 		"has_batch_no",
 		"inventory_control_account",
-		"disabled",
-		"classification_code"
+		"tab_break_manufacturing",
+		"manufacturing_role",
+		"can_be_manufactured",
+		"requires_dynamic_composition"
 	],
 	"fields": [
 		{
 			"fieldname": "tab_break_overview",
 			"fieldtype": "Tab Break",
 			"label": "Overview"
-		},
-		{
-			"fieldname": "tab_break_details",
-			"fieldtype": "Tab Break",
-			"label": "Details"
 		},
 		{
 			"fieldname": "item_code",
@@ -67,25 +65,6 @@
 			"reqd": 1
 		},
 		{
-			"default": "Finished Good",
-			"fieldname": "manufacturing_role",
-			"fieldtype": "Select",
-			"label": "Manufacturing Role",
-			"options": "Finished Good\nRaw Material\nConsumable\nSub Assembly\nService"
-		},
-		{
-			"default": "0",
-			"fieldname": "can_be_manufactured",
-			"fieldtype": "Check",
-			"label": "Can Be Manufactured"
-		},
-		{
-			"default": "0",
-			"fieldname": "requires_dynamic_composition",
-			"fieldtype": "Check",
-			"label": "Requires Dynamic Composition"
-		},
-		{
 			"fieldname": "company",
 			"fieldtype": "Link",
 			"in_list_view": 1,
@@ -99,6 +78,44 @@
 			"label": "Stock UOM",
 			"options": "UOM",
 			"reqd": 1
+		},
+		{
+			"fieldname": "classification_code",
+			"fieldtype": "Data",
+			"label": "Classification Code"
+		},
+		{
+			"default": "0",
+			"fieldname": "disabled",
+			"fieldtype": "Check",
+			"label": "Disabled"
+		},
+		{
+			"fieldname": "tab_break_sales",
+			"fieldtype": "Tab Break",
+			"label": "Sales"
+		},
+		{
+			"default": "1",
+			"fieldname": "is_sales_item",
+			"fieldtype": "Check",
+			"label": "Is Sales Item"
+		},
+		{
+			"fieldname": "tab_break_purchase",
+			"fieldtype": "Tab Break",
+			"label": "Purchase"
+		},
+		{
+			"default": "1",
+			"fieldname": "is_purchase_item",
+			"fieldtype": "Check",
+			"label": "Is Purchase Item"
+		},
+		{
+			"fieldname": "tab_break_inventory",
+			"fieldtype": "Tab Break",
+			"label": "Inventory & Warehouses"
 		},
 		{
 			"fieldname": "column_flags",
@@ -123,18 +140,6 @@
 			"read_only": 1
 		},
 		{
-			"default": "1",
-			"fieldname": "is_sales_item",
-			"fieldtype": "Check",
-			"label": "Is Sales Item"
-		},
-		{
-			"default": "1",
-			"fieldname": "is_purchase_item",
-			"fieldtype": "Check",
-			"label": "Is Purchase Item"
-		},
-		{
 			"default": "0",
 			"description": "When enabled, stock voucher lines should carry batch / serial identifiers (see Stock Entry, Receipt, Delivery).",
 			"fieldname": "has_batch_no",
@@ -149,21 +154,34 @@
 			"options": "GL Account"
 		},
 		{
-			"default": "0",
-			"fieldname": "disabled",
-			"fieldtype": "Check",
-			"label": "Disabled"
+			"fieldname": "tab_break_manufacturing",
+			"fieldtype": "Tab Break",
+			"label": "Manufacturing"
 		},
 		{
-			"fieldname": "classification_code",
-			"fieldtype": "Data",
-			"label": "Classification Code"
+			"default": "Finished Good",
+			"fieldname": "manufacturing_role",
+			"fieldtype": "Select",
+			"label": "Manufacturing Role",
+			"options": "Finished Good\nRaw Material\nConsumable\nSub Assembly\nService"
+		},
+		{
+			"default": "0",
+			"fieldname": "can_be_manufactured",
+			"fieldtype": "Check",
+			"label": "Can Be Manufactured"
+		},
+		{
+			"default": "0",
+			"fieldname": "requires_dynamic_composition",
+			"fieldtype": "Check",
+			"label": "Requires Dynamic Composition"
 		}
 	],
 	"grid_page_length": 50,
 	"index_web_pages_for_search": 1,
 	"links": [],
-	"modified": "2026-05-07 12:00:00",
+	"modified": "2026-06-13 12:00:00",
 	"modified_by": "Administrator",
 	"module": "Omnexa Accounting",
 	"name": "Item",
