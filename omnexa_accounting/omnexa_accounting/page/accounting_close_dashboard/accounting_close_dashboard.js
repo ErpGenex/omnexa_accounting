@@ -1,0 +1,1 @@
+frappe.pages["accounting-close-dashboard"].on_page_load = function(w){ frappe.ui.make_app_page({parent:w, title:"accounting-close-dashboard", single_column:1}); };

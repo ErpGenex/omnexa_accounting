@@ -14,3 +14,11 @@ def preview_co_allocation(lines: str | None = None) -> dict:
 	if not isinstance(raw, list):
 		frappe.throw("lines must be a JSON array")
 	return _preview(raw)
+
+
+@frappe.whitelist()
+def preview_sector_kpi(scenario: str | None = None, params: str | None = None) -> dict:
+	"""SAP Wave C — sector KPI preview (omnexa_core bridge)."""
+	from omnexa_core.omnexa_core.vertical_api import preview_sector_kpi as _core_preview
+
+	return _core_preview("accounting", scenario=scenario, params=params)
