@@ -15,7 +15,7 @@ add_to_apps_screen = [
 		"name": "omnexa_accounting",
 		"logo": "/assets/omnexa_accounting/logo.png",
 		"title": "FinTruth",
-		"route": "/app/accounting",
+		"route": "/app/acct-executive-dashboard",
 		"has_permission": "omnexa_core.omnexa_core.finance_demo.finance_app_permission.has_app_permission",
 	}
 ]
