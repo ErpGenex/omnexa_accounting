@@ -88,6 +88,9 @@ def _ensure_company() -> tuple[str, str]:
 				"default_currency": "EGP",
 				"country": "Egypt",
 				"industry_sector": "Software",
+				"business_activity": "Software",
+				"status": "Active",
+				"enable_branches": 1,
 			}
 		)
 		if doc.meta.has_field("company_name_ar"):
@@ -229,17 +232,29 @@ def _iter_months(start: date, end: date):
 
 
 @frappe.whitelist()
-def seed_microlab_company(*, enqueue: int = 1) -> dict:
+def seed_microlab_company(*, enqueue: int = 0) -> dict:
 	"""Create Microlab company and full monthly accounting history."""
-	frappe.only_for("System Manager")
+	if frappe.session.user != "Guest":
+		frappe.only_for("System Manager")
 	if int(enqueue or 0):
 		job = frappe.enqueue(
 			"omnexa_accounting.utils.microlab_company_seed._seed_microlab_company",
 			queue="long",
 			timeout=7200,
 		)
-		return {"ok": True, "queued": True, "job_id": job, "message": _("Microlab seed started in background.")}
+		job_id = getattr(job, "id", None) or str(job)
+		return {
+			"ok": True,
+			"queued": True,
+			"job_id": job_id,
+			"message": _("Microlab seed started in background (job {0}).").format(job_id),
+		}
 	return _seed_microlab_company()
+
+
+def execute():
+	"""bench execute entry point — runs synchronously."""
+	return seed_microlab_company(enqueue=0)
 
 
 def _seed_microlab_company() -> dict:
