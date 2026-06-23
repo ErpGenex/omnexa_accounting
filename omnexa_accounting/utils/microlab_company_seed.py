@@ -85,9 +85,13 @@ def _ensure_company() -> tuple[str, str]:
 				frappe.db.set_value(
 					"Company",
 					COMPANY_ABBR,
-					{"business_activity": "Services", "industry_sector": "Software"},
+					{"business_activity": "Services", "industry_sector": "Services"},
 					update_modified=False,
 				)
+		if frappe.db.has_column("Company", "industry_sector"):
+			sector = frappe.db.get_value("Company", COMPANY_ABBR, "industry_sector")
+			if sector in (None, "", "Software"):
+				frappe.db.set_value("Company", COMPANY_ABBR, "industry_sector", "Services", update_modified=False)
 	else:
 		doc = frappe.get_doc(
 			{
@@ -96,7 +100,7 @@ def _ensure_company() -> tuple[str, str]:
 				"abbr": COMPANY_ABBR,
 				"default_currency": "EGP",
 				"country": "Egypt",
-				"industry_sector": "Software",
+				"industry_sector": "Services",
 				"business_activity": "Services",
 				"status": "Active",
 				"enable_branches": 1,
@@ -144,13 +148,15 @@ def _ensure_product(company: str) -> str:
 		return ""
 	code = "ERP-POS-MICROLAB"
 	item_group = frappe.db.get_value("Item Group", {"is_group": 0}, "name", order_by="creation asc") or "All Item Groups"
-	if frappe.db.exists("Item", code):
-		return code
+	existing = frappe.db.get_value("Item", {"company": company, "item_code": code}, "name")
+	if existing:
+		return existing
 	item = frappe.get_doc(
 		{
 			"doctype": "Item",
 			"item_code": code,
 			"item_name": PRODUCT_NAME,
+			"company": company,
 			"item_group": item_group,
 			"stock_uom": "Nos",
 			"is_stock_item": 1,
@@ -159,6 +165,7 @@ def _ensure_product(company: str) -> str:
 			"description": "Internally developed ERP & POS software — current asset / inventory, no depreciation.",
 		}
 	)
+	item.flags.ignore_branch_access = True
 	item.insert(ignore_permissions=True)
 	return item.name
 
@@ -198,6 +205,7 @@ def _create_je(
 			"accounts": accounts,
 		}
 	)
+	je.flags.ignore_branch_access = True
 	je.insert(ignore_permissions=True)
 	_submit(je)
 	return je.name
@@ -277,7 +285,7 @@ def _seed_microlab_company() -> dict:
 	exp_rent = _account(company, branch, "5104")
 	exp_utilities = _account(company, branch, "5105")
 	exp_maintenance = _account(company, branch, "5108")
-	inventory = _account(company, branch, "1115")
+	inventory = _account(company, branch, "1104")
 
 	created = {"journal_entries": 0, "skipped": 0}
 
@@ -396,15 +404,10 @@ def get_partner_equity_report(company: str | None = None) -> dict:
 	)
 	sayed_total = Decimal("0")
 	if partner_acc:
-		rows = frappe.db.sql(
-			"""
-			SELECT SUM(debit) - SUM(credit) AS balance
-			FROM `tabGL Entry`
-			WHERE company = %s AND account = %s AND is_cancelled = 0
-			""",
-			(company, partner_acc),
-		)
-		sayed_total = _d(rows[0][0] or 0)
+		from omnexa_accounting.utils.ledger_tools import get_gl_account_balance
+
+		bal = get_gl_account_balance(company, partner_acc, branch=branch)
+		sayed_total = _d(bal.get("balance") or 0)
 
 	ownership_target_20 = _d(sayed_total * Decimal("0.20") / Decimal("0.80"))
 	return {

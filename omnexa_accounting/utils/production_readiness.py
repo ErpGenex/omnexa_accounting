@@ -156,9 +156,11 @@ def _ensure_account(entry: dict, company: str, branch: str | None, parent_map: d
 	if name:
 		doc = frappe.get_doc("GL Account", name)
 		doc.update(values)
+		doc.flags.ignore_branch_access = True
 		doc.save(ignore_permissions=True)
 		return doc.name
 	doc = frappe.get_doc({"doctype": "GL Account", **values})
+	doc.flags.ignore_branch_access = True
 	doc.insert(ignore_permissions=True)
 	return doc.name
 
