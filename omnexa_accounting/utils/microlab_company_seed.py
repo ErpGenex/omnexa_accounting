@@ -88,7 +88,7 @@ def _ensure_company() -> tuple[str, str]:
 				"default_currency": "EGP",
 				"country": "Egypt",
 				"industry_sector": "Software",
-				"business_activity": "Software",
+				"business_activity": "Services",
 				"status": "Active",
 				"enable_branches": 1,
 			}
