@@ -79,6 +79,15 @@ def _ensure_partner_accounts(company: str, branch: str | None, parent_map: dict)
 def _ensure_company() -> tuple[str, str]:
 	if frappe.db.exists("Company", COMPANY_ABBR):
 		company = COMPANY_ABBR
+		if frappe.db.has_column("Company", "business_activity"):
+			current = frappe.db.get_value("Company", COMPANY_ABBR, "business_activity")
+			if current in (None, "", "Software"):
+				frappe.db.set_value(
+					"Company",
+					COMPANY_ABBR,
+					{"business_activity": "Services", "industry_sector": "Software"},
+					update_modified=False,
+				)
 	else:
 		doc = frappe.get_doc(
 			{
@@ -117,7 +126,7 @@ def _ensure_company() -> tuple[str, str]:
 def _ensure_coa(company: str, branch: str) -> dict:
 	from omnexa_accounting.utils.production_readiness import _run_professional_coa_sync
 
-	result = _run_professional_coa_sync(company, branch, "Software")
+	result = _run_professional_coa_sync(company, branch, "Services")
 	parent_map = {}
 	for row in frappe.get_all(
 		"GL Account",
