@@ -8,13 +8,23 @@ from typing import Any
 import frappe
 from frappe import _
 from frappe.desk.query_report import generate_report_result, get_report_doc
-from frappe.utils import fmt_money, formatdate
 from frappe.utils.pdf import get_file_data_from_writer, get_pdf
 from pypdf import PdfWriter
 
 from omnexa_accounting.omnexa_accounting.doctype.company_partner_legal_setup.company_partner_legal_setup import (
 	get_funding_partner,
 	get_primary_liable_partner,
+)
+from omnexa_accounting.utils.partner_legal_arabic import (
+	arabize_row,
+	arabize_text,
+	format_cell_ar,
+	format_date_ar,
+	format_money_ar,
+	get_branch_name_ar,
+	get_company_name_ar,
+	get_user_display_ar,
+	prepare_columns_for_arabic,
 )
 from omnexa_accounting.utils.partner_legal_reporting import generate_court_evidence_package
 
@@ -58,41 +68,16 @@ AR_META = {
 	"serial": "م",
 }
 
-AR_COLUMN_LABELS = {
-	"Year": "السنة",
-	"Fiscal Year": "السنة المالية",
-	"Section": "القسم",
-	"Account": "رقم الحساب",
-	"Account Name": "اسم الحساب",
-	"Account Name (Arabic)": "اسم الحساب بالعربية",
-	"Balance": "الرصيد",
-	"Amount": "المبلغ",
-	"Total Expenses": "إجمالي المصروفات",
-	"Cumulative Debt": "المديونية المتراكمة",
-	"Net Result": "صافي النتيجة",
-	"Partner": "الشريك",
-	"Ownership %": "نسبة الملكية",
-	"Component": "البند",
-	"Notes": "ملاحظات",
-	"Line No": "م",
-	"Net Profit / Loss": "صافي الربح / الخسارة",
-	"Opening Balance": "الرصيد الافتتاحي",
-	"Capital Contribution Deficiency": "عجز مساهمة رأس المال",
-	"Expense Contribution Deficiency": "عجز مساهمة المصروفات",
-	"Loss Allocation": "حصة الخسائر",
-	"Settlements / Credits": "التسويات والسداد",
-	"Closing Balance Due": "الرصيد الختامي المستحق",
-	"Item": "البند",
-	"Value": "القيمة",
-	"Required Funding": "التمويل المطلوب",
-	"Actual Funding": "التمويل الفعلي",
-	"Variance": "الفرق",
-	"Recovery Amount": "مبلغ الاسترداد",
-	"Voucher": "المستند",
-	"Posting Date": "تاريخ القيد",
-	"Debit": "مدين",
-	"Credit": "دائن",
-}
+
+def _format_datetime_ar() -> str:
+	dt = frappe.utils.get_datetime(frappe.utils.now_datetime())
+	return f"{format_date_ar(dt.date())} — {dt.hour:02d}:{dt.minute:02d}"
+
+
+def _arabic_notes(text: str | None) -> str:
+	if not text:
+		return ""
+	return arabize_text(text)
 
 
 def _read_financial_print_css() -> str:
@@ -102,27 +87,6 @@ def _read_financial_print_css() -> str:
 			return handle.read()
 	except OSError:
 		return ""
-
-
-def _company_display_name(company: str) -> str:
-	name_ar = None
-	if frappe.db.has_column("Company", "company_name_ar"):
-		name_ar = frappe.db.get_value("Company", company, "company_name_ar")
-	name_en = frappe.db.get_value("Company", company, "company_name") or company
-	if name_ar:
-		return f"{name_ar} ({name_en})"
-	return name_en
-
-
-def _arabic_column_label(col: dict) -> str:
-	label = (col.get("label") or "").strip()
-	if label in AR_COLUMN_LABELS:
-		return AR_COLUMN_LABELS[label]
-	# Dynamic labels like "{partner} Share"
-	for en, ar in AR_COLUMN_LABELS.items():
-		if en in label:
-			return label.replace(en, ar)
-	return label or col.get("fieldname") or "—"
 
 
 def build_report_filters_from_setup(setup, from_date: str, to_date: str) -> dict[str, Any]:
@@ -159,25 +123,6 @@ def _report_filters(base: dict, spec: dict) -> dict:
 		filters.pop("from_date", None)
 		filters.pop("to_date", None)
 	return filters
-
-
-def _format_cell(value: Any, fieldtype: str | None, row: dict | None = None, fieldname: str | None = None) -> str:
-	if fieldname == "account_name" and row and row.get("account_name_ar"):
-		return frappe.as_unicode(row["account_name_ar"])
-	if value in (None, ""):
-		return "—"
-	ft = (fieldtype or "").strip()
-	if ft == "Currency":
-		return fmt_money(value)
-	if ft == "Percent":
-		return f"{float(value or 0):.2f}%"
-	if ft == "Float":
-		return f"{float(value or 0):,.2f}"
-	if ft == "Int":
-		return str(int(value or 0))
-	if ft == "Date":
-		return formatdate(value)
-	return frappe.as_unicode(value)
 
 
 def _html_shell(*, css: str, body: str, landscape: bool = True) -> str:
@@ -218,13 +163,18 @@ def _doc_banner(*, doc_no: int | None, title_ar: str, subtitle_ar: str = "") -> 
 
 
 def _meta_grid(filters: dict, company: str) -> str:
+	period_from = format_date_ar(filters.get("from_date")) if filters.get("from_date") else "—"
+	period_to = format_date_ar(filters.get("to_date") or filters.get("as_of_date")) if (
+		filters.get("to_date") or filters.get("as_of_date")
+	) else "—"
 	items = [
-		(AR_META["company"], _company_display_name(company)),
-		(AR_META["period"], f'{AR_META["from"]}: {filters.get("from_date") or "—"} — {AR_META["to"]}: {filters.get("to_date") or filters.get("as_of_date") or "—"}'),
-		(AR_META["branch"], filters.get("branch") or AR_META["all_branches"]),
+		(AR_META["company"], get_company_name_ar(company)),
+		(AR_META["period"], f'{AR_META["from"]}: {period_from} — {AR_META["to"]}: {period_to}'),
+		(AR_META["branch"], get_branch_name_ar(filters.get("branch"))),
 	]
 	if filters.get("legal_case_reference"):
-		items.append((AR_META["legal_case"], filters["legal_case_reference"]))
+		items.append((AR_META["legal_case"], arabize_text(filters["legal_case_reference"]))
+	)
 	return "".join(
 		f'<div class="erpg-fin-print__meta-box"><div class="erpg-fin-print__meta-label">{k}</div>'
 		f'<div class="erpg-fin-print__meta-value">{frappe.as_unicode(v)}</div></div>'
@@ -241,24 +191,28 @@ def _render_report_section_html(
 	rows: list[dict],
 ) -> str:
 	css = _read_financial_print_css()
-	visible_columns = [c for c in columns if c.get("fieldname") and c.get("fieldname") != "_check"]
+	company = filters.get("company") or ""
+	visible_columns = prepare_columns_for_arabic(
+		[c for c in columns if c.get("fieldname") and c.get("fieldname") != "_check"]
+	)
 
-	head = "".join(f"<th>{_arabic_column_label(col)}</th>" for col in visible_columns)
+	head = "".join(f"<th>{frappe.as_unicode(col.get('label'))}</th>" for col in visible_columns)
 	fieldnames = [c.get("fieldname") for c in visible_columns]
 	body_rows = []
 	row_num = 0
-	for row in rows or []:
-		if isinstance(row, (list, tuple)):
-			row = {fieldnames[i]: row[i] if i < len(row) else None for i in range(len(row))}
-		if not isinstance(row, dict):
+	for raw in rows or []:
+		if isinstance(raw, (list, tuple)):
+			raw = {fieldnames[i]: raw[i] if i < len(raw) else None for i in range(len(fieldnames))}
+		if not isinstance(raw, dict):
 			continue
+		row = arabize_row(raw, company=company)
 		row_class = ""
 		if row.get("year_header"):
 			row_class = "year-header"
 		elif row.get("is_total_row") or row.get("bold"):
 			row_class = "total-row"
 		cells = "".join(
-			f"<td>{_format_cell(row.get(col.get('fieldname')), col.get('fieldtype'), row, col.get('fieldname'))}</td>"
+			f"<td>{format_cell_ar(row.get(col.get('fieldname')), col.get('fieldtype'), row, col.get('fieldname'), company=company)}</td>"
 			for col in visible_columns
 		)
 		serial = "" if row.get("year_header") else str(row_num + 1)
@@ -279,7 +233,7 @@ def _render_report_section_html(
 	<div class="erpg-fin-print__meta-grid">{_meta_grid(filters, filters.get("company"))}</div>
 	{table_html}
 	<div class="erpg-fin-print__footer-meta" style="margin-top:12px;font-size:9px;">
-		{AR_META["generated_by"]}: {frappe.session.user} | {AR_META["printed_at"]}: {frappe.utils.now_datetime()}
+		{AR_META["generated_by"]}: {get_user_display_ar()} | {AR_META["printed_at"]}: {_format_datetime_ar()}
 	</div>
 </div>"""
 	return _html_shell(css=css, body=body)
@@ -288,17 +242,19 @@ def _render_report_section_html(
 def _render_cover_html(*, setup, filters: dict, package: dict) -> str:
 	css = _read_financial_print_css()
 	cert = package.get("certificate") or {}
-	company_label = _company_display_name(setup.company)
+	company_label = get_company_name_ar(setup.company)
 
 	partners_html = "".join(
 		f"<li><b>{frappe.as_unicode(p.partner_name_ar or p.partner_name)}</b>"
-		f" — نسبة الملكية: {float(p.ownership_percent or 0):.2f}%"
+		f" — نسبة الملكية: {float(p.ownership_percent or 0):.2f}٪"
 		f"{' — <u>الشريك الممول</u>' if p.is_funding_partner else ''}</li>"
 		for p in setup.partners or []
 	)
 	docs_html = "".join(
 		f"<li>المستند {spec['doc_no']}: {frappe.as_unicode(spec['title_ar'])}</li>" for spec in LEGAL_DOC_SECTIONS
 	)
+	period_from = format_date_ar(filters.get("from_date"))
+	period_to = format_date_ar(filters.get("to_date"))
 
 	body = f"""
 <div class="erpg-fin-print">
@@ -310,15 +266,15 @@ def _render_cover_html(*, setup, filters: dict, package: dict) -> str:
 		<div class="erpg-fin-print__meta-box"><div class="erpg-fin-print__meta-label">{AR_META['company']}</div>
 		<div class="erpg-fin-print__meta-value">{company_label}</div></div>
 		<div class="erpg-fin-print__meta-box"><div class="erpg-fin-print__meta-label">{AR_META['period']}</div>
-		<div class="erpg-fin-print__meta-value">{filters.get('from_date')} — {filters.get('to_date')}</div></div>
+		<div class="erpg-fin-print__meta-value">{period_from} — {period_to}</div></div>
 		<div class="erpg-fin-print__meta-box"><div class="erpg-fin-print__meta-label">الشريك المدين</div>
-		<div class="erpg-fin-print__meta-value">{cert.get('debtor_partner')}</div></div>
+		<div class="erpg-fin-print__meta-value">{arabize_text(cert.get('debtor_partner'))}</div></div>
 		<div class="erpg-fin-print__meta-box"><div class="erpg-fin-print__meta-label">إجمالي المديونية المستحقة</div>
-		<div class="erpg-fin-print__meta-value">{fmt_money(cert.get('final_amount_due'))}</div></div>
+		<div class="erpg-fin-print__meta-value">{format_money_ar(cert.get('final_amount_due'))}</div></div>
 	</div>
 	<h4>الشركاء</h4><ul>{partners_html}</ul>
 	<h4>قائمة المستندات المرفقة ({len(LEGAL_DOC_SECTIONS)} مستندات)</h4><ul>{docs_html}</ul>
-	<p style="font-size:0.85rem;color:#444;">{setup.notes or ''}</p>
+	<p style="font-size:0.85rem;color:#444;">{_arabic_notes(setup.notes)}</p>
 </div>"""
 	return _html_shell(css=css, body=body, landscape=False)
 
@@ -330,7 +286,7 @@ def _render_final_period_summary_html(
 	cert = package.get("certificate") or {}
 	funder = get_funding_partner(setup)
 	liable = get_primary_liable_partner(setup)
-	company_label = _company_display_name(setup.company)
+	company_label = get_company_name_ar(setup.company)
 	liable_pct = float(liable.ownership_percent or 0) if liable else 0
 	funder_name = (funder.partner_name_ar or funder.partner_name) if funder else "—"
 	liable_name = (liable.partner_name_ar or liable.partner_name) if liable else "—"
@@ -341,42 +297,44 @@ def _render_final_period_summary_html(
 	total_share = sum(float(r.get("secondary_share") or 0) for r in debt_rows)
 	total_paid = sum(float(r.get("secondary_paid") or 0) for r in debt_rows)
 	final_debt = float(cert.get("final_amount_due") or 0)
+	period_from = format_date_ar(filters.get("from_date"))
+	period_to = format_date_ar(filters.get("to_date"))
 
 	debt_table = "".join(
 		f"<tr><td>{r.get('year')}</td>"
-		f"<td>{fmt_money(r.get('total_expenses'))}</td>"
-		f"<td>{fmt_money(r.get('secondary_share'))}</td>"
-		f"<td>{fmt_money(r.get('secondary_paid'))}</td>"
-		f"<td>{fmt_money(r.get('debt_year'))}</td>"
-		f"<td>{fmt_money(r.get('cumulative_debt'))}</td></tr>"
+		f"<td>{format_money_ar(r.get('total_expenses'))}</td>"
+		f"<td>{format_money_ar(r.get('secondary_share'))}</td>"
+		f"<td>{format_money_ar(r.get('secondary_paid'))}</td>"
+		f"<td>{format_money_ar(r.get('debt_year'))}</td>"
+		f"<td>{format_money_ar(r.get('cumulative_debt'))}</td></tr>"
 		for r in debt_rows
 	)
 
 	loss_table = "".join(
 		f"<tr><td>{r.get('year')}</td>"
-		f"<td>{fmt_money(r.get('net_result'))}</td>"
-		f"<td>{fmt_money(r.get('secondary_share'))}</td>"
-		f"<td>{fmt_money(r.get('cumulative_loss_share'))}</td></tr>"
+		f"<td>{format_money_ar(r.get('net_result'))}</td>"
+		f"<td>{format_money_ar(r.get('secondary_share'))}</td>"
+		f"<td>{format_money_ar(r.get('cumulative_loss_share'))}</td></tr>"
 		for r in loss_rows
 	)
 
 	narrative = f"""
 <p>
 	نحن الموقّعون أدناه، نُصدر هذا <b>التقرير النهائي عن المدة</b> للفترة من
-	<b>{filters.get('from_date')}</b> إلى <b>{filters.get('to_date')}</b>
+	<b>{period_from}</b> إلى <b>{period_to}</b>
 	بخصوص شركة <b>{company_label}</b>.
 </p>
 <p>
 	يُقرّ التقرير بأن الشريك الممول <b>{funder_name}</b> قام بتمويل مصروفات الشركة التشغيلية
 	عبر حساب الجاري، وأن الشريك <b>{liable_name}</b> يتحمل نسبة ملكية قدرها
-	<b>{liable_pct:.2f}%</b> من النتائج والتزامات التمويل وفق القيود المحاسبية المُعتمدة.
+	<b>{liable_pct:.2f}٪</b> من النتائج والتزامات التمويل وفق القيود المحاسبية المُعتمدة.
 </p>
 <p>
 	<b>ملخص المديونية:</b> إجمالي المصروفات الممولة خلال الفترة
-	<b>{fmt_money(total_expenses)}</b>، وحصة الشريك المدين
-	<b>{fmt_money(total_share)}</b>، والمبالغ المسددة
-	<b>{fmt_money(total_paid)}</b>، والمديونية المتراكمة المستحقة حتى نهاية الفترة
-	<b>{fmt_money(final_debt)}</b>.
+	<b>{format_money_ar(total_expenses)}</b>، وحصة الشريك المدين
+	<b>{format_money_ar(total_share)}</b>، والمبالغ المسددة
+	<b>{format_money_ar(total_paid)}</b>، والمديونية المتراكمة المستحقة حتى نهاية الفترة
+	<b>{format_money_ar(final_debt)}</b>.
 </p>
 """
 
@@ -385,8 +343,8 @@ def _render_final_period_summary_html(
 	<b>الخلاصة القانونية:</b> بناءً على الميزانية العمومية وقائمة الدخل لكل سنة،
 	وكشوف مديونية الشركاء وتوزيع الخسائر وبيان المطالبة القانونية المرفقة،
 	تُثبت المديونية المستحقة على الشريك <b>{liable_name}</b>
-	بمبلغ <b>{fmt_money(final_debt)}</b> حتى تاريخ
-	<b>{filters.get('to_date')}</b>.
+	بمبلغ <b>{format_money_ar(final_debt)}</b> حتى تاريخ
+	<b>{period_to}</b>.
 </p>
 <p style="margin-top:24px;">
 	<table style="width:100%;border:none;"><tr>
@@ -433,7 +391,7 @@ def _normalize_rows(rows: list, columns: list[dict]) -> list[dict]:
 		if isinstance(row, dict):
 			out.append(row)
 		elif isinstance(row, (list, tuple)):
-			out.append({names[i]: row[i] if i < len(names) else None for i in range(len(row))})
+			out.append({names[i]: row[i] if i < len(row) else None for i in range(len(names))})
 	return out
 
 
@@ -520,7 +478,6 @@ def _preview_section(spec: dict, filters: dict) -> dict:
 		_, rows = _run_report(spec["report"], report_filters)
 		return {
 			"doc_no": spec["doc_no"],
-			"report": spec.get("report"),
 			"title_ar": spec["title_ar"],
 			"row_count": len(rows or []),
 			"ok": True,
@@ -528,10 +485,9 @@ def _preview_section(spec: dict, filters: dict) -> dict:
 	except Exception as exc:
 		return {
 			"doc_no": spec["doc_no"],
-			"report": spec.get("report"),
 			"title_ar": spec["title_ar"],
 			"ok": False,
-			"error": str(exc),
+			"error": arabize_text(str(exc)),
 		}
 
 
@@ -553,7 +509,7 @@ def get_partner_legal_print_preview(company: str, from_date: str, to_date: str, 
 	return {
 		"ok": True,
 		"company": company,
-		"company_display": _company_display_name(company),
+		"company_display": get_company_name_ar(company),
 		"from_date": from_date,
 		"to_date": to_date,
 		"branch": branch or setup.branch,

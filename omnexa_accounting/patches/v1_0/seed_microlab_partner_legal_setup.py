@@ -32,8 +32,8 @@ def execute():
 	doc.branch = branch
 	doc.default_from_date = getdate(START_DATE)
 	doc.default_to_date = getdate(END_DATE)
-	doc.legal_case_reference = "Microlab Partner Litigation"
-	doc.notes = "Auto-created from Microlab seed — funding partner pays expenses; liable partner owes ownership share."
+	doc.legal_case_reference = "قضية شركاء ميكرولاب"
+	doc.notes = "أُنشئ تلقائياً من بذرة ميكرولاب — الشريك الممول يدفع المصروفات والشريك المدين يستحق حصة الملكية."
 	doc.set("partners", [])
 	doc.append(
 		"partners",
