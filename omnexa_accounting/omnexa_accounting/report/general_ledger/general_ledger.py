@@ -40,7 +40,9 @@ def execute(filters=None):
 		after="account",
 	)
 	columns += [
+		{"label": _("Account Name"), "fieldname": "account_name", "fieldtype": "Data", "width": 200},
 		{"label": _("Voucher"), "fieldname": "voucher", "fieldtype": "Link", "options": "Journal Entry", "width": 130},
+		{"label": _("Remarks"), "fieldname": "remarks", "fieldtype": "Data", "width": 220},
 		{"label": _("Debit"), "fieldname": "debit", "fieldtype": "Currency", "width": 120},
 		{"label": _("Credit"), "fieldname": "credit", "fieldtype": "Currency", "width": 120},
 		{"label": _("Balance"), "fieldname": "balance", "fieldtype": "Currency", "width": 120},
@@ -53,8 +55,10 @@ def execute(filters=None):
 		SELECT
 			je.posting_date,
 			jea.account,
+			ga.account_name,
 			{gl_account_name_ar_select("ga")} AS account_name_ar,
 			je.name AS voucher,
+			COALESCE(je.remarks, '') AS remarks,
 			jea.debit,
 			jea.credit,
 			je.branch,
