@@ -3,6 +3,8 @@
 
 import frappe
 from frappe import _
+
+from omnexa_core.omnexa_core.utils.report_charts import auto_chart_for_columns
 from frappe.utils import flt
 
 from omnexa_core.omnexa_core.branch_access import get_allowed_branches
@@ -76,4 +78,5 @@ def execute(filters=None):
 		{"label": _("Amount"), "fieldname": "amount", "fieldtype": "Currency", "width": 140},
 	]
 
-	return columns, data, None, None, None, False
+	chart = auto_chart_for_columns(data, columns)
+	return columns, data, None, chart, None, False

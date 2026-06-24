@@ -5,6 +5,8 @@
 
 import frappe
 from frappe import _
+
+from omnexa_core.omnexa_core.utils.report_charts import auto_chart_for_columns
 from frappe.utils import flt
 
 from omnexa_core.omnexa_core.branch_access import get_allowed_branches

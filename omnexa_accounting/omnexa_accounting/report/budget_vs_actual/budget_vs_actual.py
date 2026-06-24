@@ -5,6 +5,8 @@
 
 import frappe
 from frappe import _
+
+from omnexa_core.omnexa_core.utils.report_charts import auto_chart_for_columns
 from frappe.utils import flt, getdate
 
 from omnexa_core.omnexa_core.branch_access import get_allowed_branches
@@ -69,9 +71,9 @@ def execute(filters=None):
 		"If a line **Cost Center** is set, Journal Entry Account lines must match (string match). "
 		"Optional report filter **Cost Center** further restricts lines to that center."
 	)
-	return _cols(), data, msg, None, None, False
-
-
+	columns = _cols()
+	chart = auto_chart_for_columns(data, columns)
+	return columns, data, msg, chart, None, False
 def _line_actual(
 	*,
 	company: str,

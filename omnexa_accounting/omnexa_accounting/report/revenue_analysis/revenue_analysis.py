@@ -3,6 +3,8 @@
 
 import frappe
 from frappe import _
+
+from omnexa_core.omnexa_core.utils.report_charts import auto_chart_for_columns
 from frappe.utils import flt
 
 from omnexa_core.omnexa_core.branch_access import get_allowed_branches
@@ -51,9 +53,9 @@ def execute(filters=None):
 	)
 	for r in rows:
 		r["revenue"] = flt(r.get("revenue"), 2)
-	return _cols(), rows
-
-
+	columns = _cols()
+	chart = auto_chart_for_columns(rows, columns)
+	return columns, rows, None, chart
 def _cols():
 	return [
 		{"label": _("Period"), "fieldname": "period", "fieldtype": "Data", "width": 120},

@@ -5,6 +5,8 @@
 
 import frappe
 from frappe import _
+
+from omnexa_core.omnexa_core.utils.report_charts import auto_chart_for_columns
 from frappe.utils import flt
 
 
@@ -77,9 +79,9 @@ def execute(filters=None):
 		"GL balance is cumulative debit−credit on the control account up to As Of Date; value is split across items on that account by **Current Stock Qty** share. "
 		"Requires consistent mapping; not a substitute for perpetual inventory subledger."
 	)
-	return _cols(), data, msg, None, None, False
-
-
+	columns = _cols()
+	chart = auto_chart_for_columns(data, columns)
+	return columns, data, msg, chart, None, False
 def _cols():
 	return [
 		{"label": _("Control GL"), "fieldname": "gl_account", "fieldtype": "Link", "options": "GL Account", "width": 160},

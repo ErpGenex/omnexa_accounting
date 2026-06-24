@@ -3,6 +3,8 @@
 
 import frappe
 from frappe import _
+
+from omnexa_core.omnexa_core.utils.report_charts import auto_chart_for_columns
 from frappe.utils import flt
 
 from omnexa_core.omnexa_core.branch_access import get_allowed_branches
@@ -53,9 +55,9 @@ def execute(filters=None):
 	for r in rows:
 		r["spend"] = flt(r.get("spend"), 2)
 		r["invoice_count"] = int(r.get("invoice_count") or 0)
-	return _cols(), rows
-
-
+	columns = _cols()
+	chart = auto_chart_for_columns(rows, columns)
+	return columns, rows, None, chart
 def _cols():
 	return [
 		{"label": _("Supplier"), "fieldname": "supplier", "fieldtype": "Link", "options": "Supplier", "width": 200},
