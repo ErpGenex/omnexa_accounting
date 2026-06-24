@@ -29,6 +29,13 @@ WORKSPACE_SECTIONS: list[tuple[str, list[WorkspaceLink]]] = [
 		],
 	),
 	(
+		"⚖️ Partner Legal",
+		[
+			("DocType", "Company Partner Legal Setup", "إعداد الشركاء القانوني"),
+			("Page", "partner-legal-print-center", "طباعة المستندات القانونية"),
+		],
+	),
+	(
 		"📒 GL & Masters",
 		[
 			("DocType", "GL Account", "GL Account"),

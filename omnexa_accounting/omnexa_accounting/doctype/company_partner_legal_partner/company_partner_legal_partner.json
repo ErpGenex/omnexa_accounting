@@ -1,0 +1,71 @@
+{
+ "actions": [],
+ "creation": "2026-06-25 10:00:00",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "partner_name",
+  "partner_name_ar",
+  "ownership_percent",
+  "is_funding_partner",
+  "partner_current_account",
+  "due_from_partner_account"
+ ],
+ "fields": [
+  {
+   "fieldname": "partner_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Partner Name",
+   "reqd": 1
+  },
+  {
+   "fieldname": "partner_name_ar",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Partner Name (Arabic)"
+  },
+  {
+   "default": "20",
+   "fieldname": "ownership_percent",
+   "fieldtype": "Percent",
+   "in_list_view": 1,
+   "label": "Ownership %",
+   "reqd": 1
+  },
+  {
+   "default": "0",
+   "description": "Partner who funded company expenses (credited on partner current account).",
+   "fieldname": "is_funding_partner",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Funding Partner"
+  },
+  {
+   "fieldname": "partner_current_account",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Partner Current Account",
+   "options": "GL Account"
+  },
+  {
+   "fieldname": "due_from_partner_account",
+   "fieldtype": "Link",
+   "label": "Due From Partner Account",
+   "options": "GL Account"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2026-06-25 10:00:00",
+ "modified_by": "Administrator",
+ "module": "Omnexa Accounting",
+ "name": "Company Partner Legal Partner",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
