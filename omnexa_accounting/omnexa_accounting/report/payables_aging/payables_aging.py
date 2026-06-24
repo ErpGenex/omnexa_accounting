@@ -5,6 +5,8 @@ import frappe
 from frappe import _
 from frappe.utils import flt, getdate
 
+from omnexa_accounting.utils.report_charts import aging_bucket_chart
+
 
 def execute(filters=None):
 	filters = frappe._dict(filters or {})
@@ -55,5 +57,6 @@ def execute(filters=None):
 	]
 
 	message = _("Aging from due date, or posting date if due date is empty. Unpaid supplier invoices only.")
+	chart = aging_bucket_chart(data)
 
-	return columns, data, message, None, None, False
+	return columns, data, message, chart, None, False

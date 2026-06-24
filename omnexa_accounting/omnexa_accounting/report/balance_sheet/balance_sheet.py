@@ -12,6 +12,7 @@ from omnexa_accounting.utils.report_bilingual import (
 	has_gl_account_name_ar,
 	insert_account_name_ar_column,
 )
+from omnexa_accounting.utils.report_charts import balance_sheet_chart
 
 
 def execute(filters=None):
@@ -34,7 +35,11 @@ def execute(filters=None):
 	equity = _rows_for_type(filters, "Equity", "Equity", consolidation_view=consolidation_view)
 
 	data = assets + liabilities + equity
-	return columns, data
+	asset_total = flt(sum(flt((r or {}).get("balance")) for r in assets))
+	liability_total = flt(sum(flt((r or {}).get("balance")) for r in liabilities))
+	equity_total = flt(sum(flt((r or {}).get("balance")) for r in equity))
+	chart = balance_sheet_chart(asset_total, liability_total, equity_total)
+	return columns, data, None, chart
 
 
 def _rows_for_type(filters, account_type, section_label, consolidation_view=False):

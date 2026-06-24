@@ -19,6 +19,36 @@ def currency_bar_chart(rows: list[dict], *, label_field: str, value_field: str, 
 	}
 
 
+def balance_sheet_chart(assets: float, liabilities: float, equity: float) -> dict:
+	return {
+		"data": {
+			"labels": [_("Assets"), _("Liabilities"), _("Equity")],
+			"datasets": [{"name": _("Balance"), "values": [assets, liabilities, equity]}],
+		},
+		"type": "bar",
+		"title": _("Assets vs Liabilities vs Equity"),
+		"height": 280,
+	}
+
+
+def aging_bucket_chart(rows: list[dict], *, bucket_field: str = "aging_bucket", value_field: str = "outstanding") -> dict:
+	totals: dict[str, float] = {}
+	order = ["Current", "1-30 days", "31-60 days", "61-90 days", "90+ days"]
+	for row in rows:
+		bucket = str(row.get(bucket_field) or "")
+		totals[bucket] = totals.get(bucket, 0.0) + float(row.get(value_field) or 0)
+	labels = [b for b in order if b in totals] + [b for b in totals if b not in order]
+	return {
+		"data": {
+			"labels": labels,
+			"datasets": [{"name": _("Outstanding"), "values": [totals[b] for b in labels]}],
+		},
+		"type": "bar",
+		"title": _("Outstanding by Aging Bucket"),
+		"height": 280,
+	}
+
+
 def trial_balance_chart(rows: list[dict]) -> dict:
 	"""Top accounts by closing balance magnitude."""
 	scored = []
