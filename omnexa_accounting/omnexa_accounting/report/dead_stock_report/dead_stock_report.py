@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import frappe
 from frappe import _
+
+from omnexa_core.omnexa_core.utils.report_charts import auto_chart_for_columns
 from frappe.utils import cint
 
 
@@ -43,5 +45,5 @@ def execute(filters=None):
 		{"label": _("Current Qty"), "fieldname": "current_stock_qty", "fieldtype": "Float", "width": 110},
 		{"label": _("Last Movement Date"), "fieldname": "last_movement_date", "fieldtype": "Date", "width": 130},
 	]
-	return columns, data
-
+	chart = auto_chart_for_columns(data, columns)
+	return columns, data, None, chart

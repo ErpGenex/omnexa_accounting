@@ -3,6 +3,8 @@
 
 import frappe
 from frappe import _
+
+from omnexa_core.omnexa_core.utils.report_charts import auto_chart_for_columns
 from frappe.utils import flt
 from omnexa_core.omnexa_core.branch_access import get_allowed_branches
 
@@ -52,4 +54,5 @@ def execute(filters=None):
 		balances[key] = flt(balances.get(key)) + flt(row.debit) - flt(row.credit)
 		row.balance = balances[key]
 		data.append(row)
-	return columns, data
+	chart = auto_chart_for_columns(data, columns)
+	return columns, data, None, chart

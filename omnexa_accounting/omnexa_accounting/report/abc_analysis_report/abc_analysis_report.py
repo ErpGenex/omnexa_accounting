@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import frappe
 from frappe import _
+
+from omnexa_core.omnexa_core.utils.report_charts import auto_chart_for_columns
 from frappe.utils import flt
 
 
@@ -67,5 +69,5 @@ def execute(filters=None):
 		{"label": _("Cumulative %"), "fieldname": "cumulative_pct", "fieldtype": "Percent", "width": 110},
 		{"label": _("ABC Class"), "fieldname": "abc_class", "fieldtype": "Data", "width": 80},
 	]
-	return columns, rows
-
+	chart = auto_chart_for_columns(rows, columns)
+	return columns, rows, None, chart

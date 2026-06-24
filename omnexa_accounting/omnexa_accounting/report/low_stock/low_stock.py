@@ -3,6 +3,8 @@
 
 import frappe
 from frappe import _
+
+from omnexa_core.omnexa_core.utils.report_charts import auto_chart_for_columns
 from frappe.utils import flt
 
 
@@ -54,5 +56,5 @@ def execute(filters=None):
 			"width": 130,
 		},
 	]
-
-	return columns, data
+	chart = auto_chart_for_columns(data, columns)
+	return columns, data, None, chart

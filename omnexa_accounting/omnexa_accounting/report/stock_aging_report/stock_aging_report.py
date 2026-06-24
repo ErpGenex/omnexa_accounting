@@ -3,6 +3,8 @@ from __future__ import annotations
 import frappe
 from frappe import _
 
+from omnexa_core.omnexa_core.utils.report_charts import auto_chart_for_columns
+
 
 def execute(filters=None):
 	filters = frappe._dict(filters or {})
@@ -56,5 +58,5 @@ def execute(filters=None):
 		{"label": _("Aging Days"), "fieldname": "aging_days", "fieldtype": "Int", "width": 100},
 		{"label": _("Aging Bucket"), "fieldname": "aging_bucket", "fieldtype": "Data", "width": 100},
 	]
-	return columns, data
-
+	chart = auto_chart_for_columns(data, columns)
+	return columns, data, None, chart

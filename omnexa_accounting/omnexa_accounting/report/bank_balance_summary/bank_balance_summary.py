@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import frappe
 from frappe import _
+
+from omnexa_core.omnexa_core.utils.report_charts import auto_chart_for_columns
 from frappe.utils import flt
 
 
@@ -45,5 +47,5 @@ def execute(filters=None):
 		{"label": _("Currency"), "fieldname": "currency", "fieldtype": "Link", "options": "Currency", "width": 90},
 		{"label": _("Posted Movements"), "fieldname": "posted_movements", "fieldtype": "Currency", "width": 130},
 	]
-	return columns, data
-
+	chart = auto_chart_for_columns(data, columns)
+	return columns, data, None, chart

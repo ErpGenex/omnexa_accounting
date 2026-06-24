@@ -4,6 +4,8 @@
 import frappe
 from frappe import _
 
+from omnexa_core.omnexa_core.utils.report_charts import auto_chart_for_columns
+
 
 def execute(filters=None):
 	filters = frappe._dict(filters or {})
@@ -33,4 +35,5 @@ def execute(filters=None):
 		{"label": _("DocType"), "fieldname": "ref_doctype", "fieldtype": "Data", "width": 220},
 		{"label": _("Version events"), "fieldname": "version_events", "fieldtype": "Int", "width": 140},
 	]
-	return columns, rows
+	chart = auto_chart_for_columns(rows, columns)
+	return columns, rows, None, chart
