@@ -38,7 +38,18 @@ def execute(filters=None):
 	)
 
 	data = income_rows + expense_rows + [{"section": _("Net Result"), "account_name": _("Net Profit / Loss"), "amount": net_profit}]
-	return columns, data
+	revenue_total = flt(sum(flt((r or {}).get("amount")) for r in income_rows))
+	expense_total = flt(sum(flt((r or {}).get("amount")) for r in expense_rows))
+	chart = {
+		"data": {
+			"labels": [_("Revenue"), _("Expense"), _("Net Result")],
+			"datasets": [{"name": _("Amount"), "values": [revenue_total, expense_total, net_profit]}],
+		},
+		"type": "bar",
+		"title": _("Income Statement Overview"),
+		"height": 260,
+	}
+	return columns, data, None, chart
 
 
 def _rows_for_type(filters, account_type, section_label, consolidation_view=False):

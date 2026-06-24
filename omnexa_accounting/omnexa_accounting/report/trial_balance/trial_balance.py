@@ -36,7 +36,9 @@ def execute(filters=None):
 	]
 
 	data = _build_rows(filters)
-	return columns, data
+	from omnexa_accounting.utils.report_charts import trial_balance_chart
+
+	return columns, data, None, trial_balance_chart(data)
 
 
 def _build_rows(filters):

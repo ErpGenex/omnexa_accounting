@@ -1,0 +1,32 @@
+/* Omnexa Accounting — financial report print & desk accents */
+.omn-fin-report-hero {
+	padding: 14px 18px;
+	margin-bottom: 14px;
+	border-radius: 10px;
+	background: linear-gradient(135deg, #f4f8ff 0%, #eef6f0 55%, #fff8ee 100%);
+	border: 1px solid var(--border-color, #d1d8dd);
+	border-inline-start: 4px solid var(--primary, #2490ef);
+}
+.omn-fin-report-hero__title {
+	font-size: 1.15rem;
+	font-weight: 700;
+	color: var(--text-color, #1f272e);
+}
+.omn-fin-report-hero__subtitle {
+	margin-top: 4px;
+	font-size: 0.85rem;
+	color: var(--text-muted, #6c7680);
+}
+.omn-fin-report-hero__meta {
+	margin-top: 8px;
+	font-size: 0.75rem;
+	color: var(--text-muted, #6c7680);
+}
+.omn-fin-report-table thead th {
+	background: #f8fafc;
+	font-weight: 600;
+}
+.omn-fin-row-total td {
+	font-weight: 700;
+	background: #fafbfc;
+}

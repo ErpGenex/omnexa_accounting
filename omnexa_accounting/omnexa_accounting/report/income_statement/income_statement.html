@@ -1,15 +1,18 @@
-<!-- ERPGENEX report print template v1 — standard -->
-{% if title %}
-<h2 class="text-center">{{ __(title) }}</h2>
-<hr>
-{% endif %}
+<!-- ERPGENEX financial report print template v2 -->
+<div class="omn-fin-report-hero">
+	<div class="omn-fin-report-hero__title">{{ __(title) }}</div>
+	{% if subtitle %}
+	<div class="omn-fin-report-hero__subtitle">{{ subtitle }}</div>
+	{% endif %}
+	<div class="omn-fin-report-hero__meta">
+		<span>{{ __("Generated") }}: {{ frappe.utils.now_datetime() }}</span>
+		{% if frappe.session.user %}
+		<span> · {{ __("User") }}: {{ frappe.session.user }}</span>
+		{% endif %}
+	</div>
+</div>
 
-{% if subtitle %}
-{{ subtitle }}
-<hr>
-{% endif %}
-
-<table class="table table-bordered">
+<table class="table table-bordered omn-fin-report-table">
 	<thead>
 		<tr>
 			<th>#</th>
@@ -25,14 +28,12 @@
 	</thead>
 	<tbody>
 		{% for row in data %}
-		<tr>
-			<td {% if row.bold == 1 %}style="font-weight: bold"{% endif %}>
-				<span>{{ row._index + 1 }}</span>
-			</td>
+		<tr class="{% if row.bold == 1 %}omn-fin-row-total{% endif %}">
+			<td><span>{{ row._index + 1 }}</span></td>
 			{% for col in columns %}
 			{% if col.name && col._id !== "_check" %}
 			{% var value = col.fieldname ? row[col.fieldname] : row[col.id] %}
-			<td {% if row.bold == 1 %}style="font-weight: bold"{% endif %} class="{% if frappe.model.is_numeric_field(col.fieldtype) %}text-right{% endif %}">
+			<td class="{% if frappe.model.is_numeric_field(col.fieldtype) %}text-right{% endif %}">
 				<span {% if col._index == 0 %}style="padding-left: {%= cint(row.indent) * 2 %}em"{% endif %}>
 					{% format_data = row.is_total_row && ["Currency", "Float"].includes(col.fieldtype) ? data[0] : row %}
 					{% if (row.is_total_row && col._index == 0) { %}

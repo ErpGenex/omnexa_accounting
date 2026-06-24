@@ -26,6 +26,7 @@ add_to_apps_screen = [
 
 # include js, css files in header of desk.html
 # app_include_css = "/assets/omnexa_accounting/css/omnexa_accounting.css"
+app_include_css = "/assets/omnexa_accounting/css/financial_reports.css"
 app_include_js = [
 	"/assets/omnexa_accounting/js/link_formatters.js",
 ]

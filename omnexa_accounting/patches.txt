@@ -11,3 +11,5 @@ omnexa_accounting.patches.v1_0.create_default_coa_settings
 omnexa_accounting.patches.v1_0.backfill_gl_account_label_name_only
 omnexa_accounting.patches.v1_0.normalize_legacy_coa_type_values
 omnexa_accounting.patches.v1_0.add_gl_account_name_ar
+omnexa_accounting.patches.v1_0.sync_accounting_report_filters
+omnexa_accounting.patches.v1_0.apply_financial_print_templates
