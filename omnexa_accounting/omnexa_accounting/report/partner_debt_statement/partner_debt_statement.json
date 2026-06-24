@@ -1,0 +1,114 @@
+{
+ "add_total_row": 0,
+ "columns": [],
+ "creation": "2026-06-24 12:15:00",
+ "disabled": 0,
+ "docstatus": 0,
+ "doctype": "Report",
+ "filters": [
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company",
+   "reqd": 1,
+   "width": "180px"
+  },
+  {
+   "fieldname": "from_date",
+   "fieldtype": "Date",
+   "label": "From Date",
+   "reqd": 1,
+   "width": "120px"
+  },
+  {
+   "fieldname": "to_date",
+   "fieldtype": "Date",
+   "label": "To Date",
+   "reqd": 1,
+   "width": "120px"
+  },
+  {
+   "fieldname": "fiscal_year",
+   "fieldtype": "Int",
+   "label": "Fiscal Year (single)",
+   "width": "120px"
+  },
+  {
+   "fieldname": "from_year",
+   "fieldtype": "Int",
+   "label": "From Year",
+   "width": "100px"
+  },
+  {
+   "fieldname": "to_year",
+   "fieldtype": "Int",
+   "label": "To Year",
+   "width": "100px"
+  },
+  {
+   "fieldname": "compare_year",
+   "fieldtype": "Int",
+   "label": "Compare With Year",
+   "width": "140px"
+  },
+  {
+   "fieldname": "primary_partner_name",
+   "fieldtype": "Data",
+   "label": "Primary Partner Name",
+   "width": "180px"
+  },
+  {
+   "fieldname": "secondary_partner_name",
+   "fieldtype": "Data",
+   "label": "Secondary Partner Name",
+   "width": "180px"
+  },
+  {
+   "fieldname": "branch",
+   "fieldtype": "Link",
+   "label": "Branch",
+   "options": "Branch",
+   "width": "180px"
+  },
+  {
+   "fieldname": "primary_current_account",
+   "fieldtype": "Link",
+   "label": "Primary Current Account",
+   "options": "GL Account",
+   "width": "220px"
+  },
+  {
+   "fieldname": "secondary_due_account",
+   "fieldtype": "Link",
+   "label": "Secondary Due Account",
+   "options": "GL Account",
+   "width": "220px"
+  },
+  {
+   "fieldname": "secondary_pct",
+   "fieldtype": "Float",
+   "label": "Secondary Ownership %",
+   "default": "20",
+   "width": "120px"
+  }
+ ],
+ "idx": 0,
+ "is_standard": "Yes",
+ "modified": "2026-06-24 12:15:00",
+ "modified_by": "Administrator",
+ "module": "Omnexa Accounting",
+ "name": "Partner Debt Statement",
+ "owner": "Administrator",
+ "prepared_report": 0,
+ "query": "",
+ "ref_doctype": "Journal Entry",
+ "report_name": "Partner Debt Statement",
+ "report_type": "Script Report",
+ "roles": [
+  { "role": "System Manager" },
+  { "role": "Accounts Manager" },
+  { "role": "Accounts User" }
+ ]
+}
+

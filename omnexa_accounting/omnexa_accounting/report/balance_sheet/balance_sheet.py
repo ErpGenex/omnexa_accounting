@@ -3,7 +3,7 @@
 
 import frappe
 from frappe import _
-from frappe.utils import flt
+from frappe.utils import flt, getdate
 
 from omnexa_core.omnexa_core.branch_access import get_allowed_branches
 from omnexa_accounting.utils.coa_settings import should_use_consolidation_view
@@ -19,9 +19,12 @@ def execute(filters=None):
 	filters = frappe._dict(filters or {})
 	if not filters.get("company"):
 		frappe.throw(_("Company filter is required."), title=_("Filters"))
+	if not filters.get("from_date") or not filters.get("to_date"):
+		frappe.throw(_("From Date and To Date are required."), title=_("Filters"))
 
 	columns = insert_account_name_ar_column(
 		[
+			{"label": _("Year"), "fieldname": "fiscal_year", "fieldtype": "Data", "width": 70},
 			{"label": _("Section"), "fieldname": "section", "fieldtype": "Data", "width": 140},
 			{"label": _("Account"), "fieldname": "account", "fieldtype": "Data", "width": 180},
 			{"label": _("Account Name"), "fieldname": "account_name", "fieldtype": "Data", "width": 220},
@@ -30,16 +33,71 @@ def execute(filters=None):
 	)
 
 	consolidation_view = should_use_consolidation_view(filters, filters.company)
-	assets = _rows_for_type(filters, "Asset", "Assets", consolidation_view=consolidation_view)
-	liabilities = _rows_for_type(filters, "Liability", "Liabilities", consolidation_view=consolidation_view)
-	equity = _rows_for_type(filters, "Equity", "Equity", consolidation_view=consolidation_view)
-
-	data = assets + liabilities + equity
-	asset_total = flt(sum(flt((r or {}).get("balance")) for r in assets))
-	liability_total = flt(sum(flt((r or {}).get("balance")) for r in liabilities))
-	equity_total = flt(sum(flt((r or {}).get("balance")) for r in equity))
-	chart = balance_sheet_chart(asset_total, liability_total, equity_total)
+	data = []
+	chart_assets = chart_liabilities = chart_equity = 0.0
+	last_year = None
+	for year, year_filters in _iter_year_filters(filters):
+		assets = _rows_for_type(year_filters, "Asset", "Assets", consolidation_view=consolidation_view)
+		liabilities = _rows_for_type(year_filters, "Liability", "Liabilities", consolidation_view=consolidation_view)
+		equity = _rows_for_type(year_filters, "Equity", "Equity", consolidation_view=consolidation_view)
+		asset_total = flt(sum(flt((r or {}).get("balance")) for r in assets))
+		liability_total = flt(sum(flt((r or {}).get("balance")) for r in liabilities))
+		equity_total = flt(sum(flt((r or {}).get("balance")) for r in equity))
+		data.append(
+			{
+				"fiscal_year": str(year),
+				"section": _("Balance Sheet"),
+				"account_name": _("As at {0}").format(year_filters.to_date),
+				"bold": 1,
+				"year_header": 1,
+				"page_break_before": 1 if data else 0,
+			}
+		)
+		for row in assets + liabilities + equity:
+			row["fiscal_year"] = str(year)
+			data.append(row)
+		data.extend(
+			[
+				{
+					"fiscal_year": str(year),
+					"section": _("Assets"),
+					"account_name": _("Total Assets"),
+					"balance": asset_total,
+					"bold": 1,
+					"is_total_row": 1,
+				},
+				{
+					"fiscal_year": str(year),
+					"section": _("Liabilities"),
+					"account_name": _("Total Liabilities"),
+					"balance": liability_total,
+					"bold": 1,
+					"is_total_row": 1,
+				},
+				{
+					"fiscal_year": str(year),
+					"section": _("Equity"),
+					"account_name": _("Total Equity"),
+					"balance": equity_total,
+					"bold": 1,
+					"is_total_row": 1,
+				},
+			]
+		)
+		chart_assets, chart_liabilities, chart_equity = asset_total, liability_total, equity_total
+		last_year = year
+	chart = balance_sheet_chart(chart_assets, chart_liabilities, chart_equity)
 	return columns, data, None, chart
+
+
+def _iter_year_filters(filters):
+	start = getdate(filters.from_date)
+	end = getdate(filters.to_date)
+	for year in range(start.year, end.year + 1):
+		year_end = min(end, getdate(f"{year}-12-31"))
+		year_filters = frappe._dict(filters.copy())
+		year_filters.to_date = year_end
+		yield year, year_filters
 
 
 def _rows_for_type(filters, account_type, section_label, consolidation_view=False):

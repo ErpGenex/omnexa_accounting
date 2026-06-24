@@ -20,7 +20,55 @@ WORKSPACE_NAME = "Accounting"
 
 _SHORTCUT_COLORS = ("Blue", "Green", "Orange", "Red", "Cyan", "Purple", "Teal", "Pink", "Yellow")
 
-WORKSPACE_SECTIONS: list[tuple[str, list[WorkspaceLink]]] = [('📊 Dashboards', [('Page', 'acct-executive-dashboard', 'Executive Dashboard'), ('Page', 'accounting-close-dashboard', 'Close Dashboard')]), ('📒 GL & Masters', [('DocType', 'GL Account', 'GL Account'), ('DocType', 'Cost Center', 'Cost Center'), ('DocType', 'Journal Entry', 'Journal Entry'), ('DocType', 'Payment Entry', 'Payment Entry')]), ('📈 Reports', [('Report', 'General Ledger', 'General Ledger'), ('Report', 'Trial Balance', 'Trial Balance'), ('Report', 'Profit and Loss Statement', 'P&L'), ('Report', 'Balance Sheet', 'Balance Sheet')]), ('💼 AR/AP', [('DocType', 'Sales Invoice', 'Sales Invoice'), ('DocType', 'Purchase Invoice', 'Purchase Invoice'), ('DocType', 'Customer', 'Customer'), ('DocType', 'Supplier', 'Supplier')])]
+WORKSPACE_SECTIONS: list[tuple[str, list[WorkspaceLink]]] = [
+	(
+		"📊 Dashboards",
+		[
+			("Page", "acct-executive-dashboard", "Executive Dashboard"),
+			("Page", "accounting-close-dashboard", "Close Dashboard"),
+		],
+	),
+	(
+		"📒 GL & Masters",
+		[
+			("DocType", "GL Account", "GL Account"),
+			("DocType", "Cost Center", "Cost Center"),
+			("DocType", "Journal Entry", "Journal Entry"),
+			("DocType", "Payment Entry", "Payment Entry"),
+		],
+	),
+	(
+		"📈 Reports",
+		[
+			("Report", "General Ledger", "General Ledger"),
+			("Report", "Trial Balance", "Trial Balance"),
+			("Report", "Profit and Loss Statement", "P&L"),
+			("Report", "Balance Sheet", "Balance Sheet"),
+			("Report", "General Journal", "General Journal"),
+			("Report", "Income Statement", "Income Statement"),
+		],
+	),
+	(
+		"⚖️ Partner Legal Reports",
+		[
+			("Report", "Partner Debt Statement", "Partner Debt Statement"),
+			("Report", "Partner Contribution Report", "Partner Contribution"),
+			("Report", "Partner Loss Allocation Report", "Partner Loss Allocation"),
+			("Report", "Partner Recovery Report", "Partner Recovery"),
+			("Report", "Legal Claim Statement", "Legal Claim Statement"),
+			("Report", "Liquidation Historical Report", "Liquidation Historical"),
+		],
+	),
+	(
+		"💼 AR/AP",
+		[
+			("DocType", "Sales Invoice", "Sales Invoice"),
+			("DocType", "Purchase Invoice", "Purchase Invoice"),
+			("DocType", "Customer", "Customer"),
+			("DocType", "Supplier", "Supplier"),
+		],
+	),
+]
 
 
 

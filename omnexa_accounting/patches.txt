@@ -13,3 +13,4 @@ omnexa_accounting.patches.v1_0.normalize_legacy_coa_type_values
 omnexa_accounting.patches.v1_0.add_gl_account_name_ar
 omnexa_accounting.patches.v1_0.sync_accounting_report_filters
 omnexa_accounting.patches.v1_0.apply_financial_print_templates
+omnexa_accounting.patches.v1_0.sync_partner_legal_workspace

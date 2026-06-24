@@ -1,60 +1,131 @@
-<!-- ERPGENEX report print template v1 — standard -->
-{% if title %}
-<h2 class="text-center">{{ __(title) }}</h2>
-<hr>
-{% endif %}
+<!-- ERPGENEX report print template — financial v3 -->
+<!-- erpg-fin-print -->
+<div class="erpg-fin-print" dir="rtl" lang="ar">
+	<div class="erpg-fin-print__banner">
+		<div class="erpg-fin-print__banner-icon">📊</div>
+		<div class="erpg-fin-print__banner-body">
+			<div class="erpg-fin-print__banner-title">{{ __(title) }}</div>
+			<div class="erpg-fin-print__banner-sub">
+				{{ __("Financial Statements & Reports") }} — ERPGENEX
+			</div>
+		</div>
+	</div>
 
-{% if subtitle %}
-{{ subtitle }}
-<hr>
-{% endif %}
+	<div class="erpg-fin-print__meta-grid">
+		<div class="erpg-fin-print__meta-box">
+			<div class="erpg-fin-print__meta-label">{{ __("Company") }}</div>
+			<div class="erpg-fin-print__meta-value">
+				{% if filters.company %}{{ filters.company }}{% else %}—{% endif %}
+			</div>
+		</div>
+		<div class="erpg-fin-print__meta-box">
+			<div class="erpg-fin-print__meta-label">{{ __("Period") }}</div>
+			<div class="erpg-fin-print__meta-value">
+				{% if filters.from_date %}{{ __("From") }}: {{ filters.from_date }}{% endif %}
+				{% if filters.to_date %} · {{ __("To") }}: {{ filters.to_date }}{% endif %}
+				{% if filters.as_of_date %} · {{ __("As Of") }}: {{ filters.as_of_date }}{% endif %}
+				{% if !filters.from_date && !filters.to_date && !filters.as_of_date %}—{% endif %}
+			</div>
+		</div>
+		<div class="erpg-fin-print__meta-box">
+			<div class="erpg-fin-print__meta-label">{{ __("Branch") }}</div>
+			<div class="erpg-fin-print__meta-value">
+				{% if filters.branch %}{{ filters.branch }}{% else %}{{ __("All Branches") }}{% endif %}
+			</div>
+		</div>
+		<div class="erpg-fin-print__meta-box">
+			<div class="erpg-fin-print__meta-label">{{ __("Currency") }}</div>
+			<div class="erpg-fin-print__meta-value">EGP</div>
+		</div>
+	</div>
 
-<table class="table table-bordered">
-	<thead>
-		<tr>
-			<th>#</th>
-			{% for col in columns %}
-			{% if col.name && col._id !== "_check" %}
-			<th
-				{% if col.minWidth %}style="min-width: {{ col.minWidth }}px"{% endif %}
-				{% if frappe.model.is_numeric_field(col.fieldtype) %}class="text-right"{% endif %}
-			>{{ __(col.name) }}</th>
-			{% endif %}
+	{% if subtitle %}
+	<div class="erpg-fin-print__subtitle">{{ subtitle }}</div>
+	{% endif %}
+
+	<table class="table table-bordered erpg-fin-print__table">
+		<thead>
+			<tr>
+				<th class="erpg-fin-print__th-num">#</th>
+				{% for col in columns %}
+				{% if col.name && col._id !== "_check" %}
+				<th
+					class="{% if frappe.model.is_numeric_field(col.fieldtype) %}text-left{% endif %}"
+					{% if col.minWidth %}style="min-width: {{ col.minWidth }}px"{% endif %}
+				>{{ __(col.name) }}</th>
+				{% endif %}
+				{% endfor %}
+			</tr>
+		</thead>
+		<tbody>
+			{% for row in data %}
+			<tr
+				class="{% if row.bold == 1 %}erpg-fin-print__row-bold{% endif %}{% if row.is_total_row %} erpg-fin-print__row-total{% endif %}{% if row.year_header %} erpg-fin-print__row-year{% endif %}"
+				{% if row.page_break_before %}style="page-break-before: always;"{% endif %}
+			>
+				<td class="erpg-fin-print__td-num">
+					{% if !row.year_header %}<span>{{ row._index + 1 }}</span>{% endif %}
+				</td>
+				{% for col in columns %}
+				{% if col.name && col._id !== "_check" %}
+				{% var value = col.fieldname ? row[col.fieldname] : row[col.id] %}
+				<td class="{% if frappe.model.is_numeric_field(col.fieldtype) %}text-left{% endif %}">
+					<span {% if col._index == 0 && !row.year_header %}style="padding-right: {%= cint(row.indent) * 2 %}em"{% endif %}>
+						{% if row.year_header && col.fieldname != "fiscal_year" && col.fieldname != "section" && col.fieldname != "account_name" && col.fieldname != "voucher" && col.fieldname != "remarks" && col.fieldtype != "Currency" && col.fieldtype != "Float" && col.fieldtype != "Int" %}
+							&nbsp;
+						{% else %}
+						{% format_data = row.is_total_row && ["Currency", "Float"].includes(col.fieldtype) ? data[0] : row %}
+						{% if (row.is_total_row && col._index == 0) { %}
+							{{ __("Total") }}
+						{% } else if (col.fieldtype == "Check") { %}
+							{{ value == 1 ? "✓" : "✗" }}
+						{% } else { %}
+							{{
+								col.formatter
+									? col.formatter(row._index, col._index, value, col, format_data, true)
+									: col.format
+										? col.format(value, row, col, format_data)
+										: col.docfield
+											? frappe.format(value, col.docfield)
+											: value
+							}}
+						{% } %}
+						{% endif %}
+					</span>
+				</td>
+				{% endif %}
+				{% endfor %}
+			</tr>
 			{% endfor %}
-		</tr>
-	</thead>
-	<tbody>
-		{% for row in data %}
-		<tr>
-			<td {% if row.bold == 1 %}style="font-weight: bold"{% endif %}>
-				<span>{{ row._index + 1 }}</span>
-			</td>
-			{% for col in columns %}
-			{% if col.name && col._id !== "_check" %}
-			{% var value = col.fieldname ? row[col.fieldname] : row[col.id] %}
-			<td {% if row.bold == 1 %}style="font-weight: bold"{% endif %} class="{% if frappe.model.is_numeric_field(col.fieldtype) %}text-right{% endif %}">
-				<span {% if col._index == 0 %}style="padding-left: {%= cint(row.indent) * 2 %}em"{% endif %}>
-					{% format_data = row.is_total_row && ["Currency", "Float"].includes(col.fieldtype) ? data[0] : row %}
-					{% if (row.is_total_row && col._index == 0) { %}
-						{{ __("Total") }}
-					{% } else if (col.fieldtype == "Check") { %}
-						{{ value == 1 ? "✓" : "✗" }}
-					{% } else { %}
-						{{
-							col.formatter
-								? col.formatter(row._index, col._index, value, col, format_data, true)
-								: col.format
-									? col.format(value, row, col, format_data)
-									: col.docfield
-										? frappe.format(value, col.docfield)
-										: value
-						}}
-					{% } %}
-				</span>
-			</td>
-			{% endif %}
-			{% endfor %}
-		</tr>
-		{% endfor %}
-	</tbody>
-</table>
+		</tbody>
+	</table>
+
+	<div class="erpg-fin-print__notes">
+		<div class="erpg-fin-print__notes-title">{{ __("Notes to Financial Statements") }}</div>
+		<div class="erpg-fin-print__notes-grid">
+			<div class="erpg-fin-print__note-card">{{ __("Accounting Policies") }}</div>
+			<div class="erpg-fin-print__note-card">{{ __("Fixed Assets") }}</div>
+			<div class="erpg-fin-print__note-card">{{ __("Inventory") }}</div>
+			<div class="erpg-fin-print__note-card">{{ __("Customers & Suppliers") }}</div>
+			<div class="erpg-fin-print__note-card">{{ __("Liabilities") }}</div>
+			<div class="erpg-fin-print__note-card">{{ __("Related Parties") }}</div>
+			<div class="erpg-fin-print__note-card">{{ __("Financial Risks") }}</div>
+			<div class="erpg-fin-print__note-card">{{ __("Subsequent Events") }}</div>
+		</div>
+	</div>
+
+	<div class="erpg-fin-print__footer">
+		<table style="width:100%; border-collapse:collapse;">
+			<tr>
+				<td style="width:33%; font-size:9px;">{{ __("Prepared by") }}: _______________</td>
+				<td style="width:33%; font-size:9px; text-align:center;">{{ __("Reviewed by") }}: _______________</td>
+				<td style="width:33%; font-size:9px; text-align:left;">{{ __("Approved by") }}: _______________</td>
+			</tr>
+		</table>
+		<div class="erpg-fin-print__footer-meta">
+			{{ __("Generated by") }}: {{ frappe.session.user }} |
+			{{ __("Printed at") }}: {{ frappe.datetime.now_datetime() }} |
+			{{ __("Page") }} <span class="page"></span>
+		</div>
+	</div>
+</div>

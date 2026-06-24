@@ -3,7 +3,7 @@
 
 import frappe
 from frappe import _
-from frappe.utils import flt
+from frappe.utils import flt, getdate
 
 from omnexa_core.omnexa_core.branch_access import get_allowed_branches
 from omnexa_accounting.utils.coa_settings import should_use_consolidation_view
@@ -23,6 +23,7 @@ def execute(filters=None):
 
 	columns = insert_account_name_ar_column(
 		[
+			{"label": _("Year"), "fieldname": "fiscal_year", "fieldtype": "Data", "width": 70},
 			{"label": _("Section"), "fieldname": "section", "fieldtype": "Data", "width": 140},
 			{"label": _("Account"), "fieldname": "account", "fieldtype": "Data", "width": 180},
 			{"label": _("Account Name"), "fieldname": "account_name", "fieldtype": "Data", "width": 220},
@@ -31,25 +32,63 @@ def execute(filters=None):
 	)
 
 	consolidation_view = should_use_consolidation_view(filters, filters.company)
-	income_rows = _rows_for_type(filters, "Revenue", "Revenue", consolidation_view=consolidation_view)
-	expense_rows = _rows_for_type(filters, "Expense", "Expense", consolidation_view=consolidation_view)
-	net_profit = flt(sum(flt((r or {}).get("amount")) for r in income_rows)) - flt(
-		sum(flt((r or {}).get("amount")) for r in expense_rows)
-	)
+	data = []
+	chart_labels = []
+	chart_values = []
+	for year, year_filters in _iter_year_filters(filters):
+		income_rows = _rows_for_type(year_filters, "Revenue", "Revenue", consolidation_view=consolidation_view)
+		expense_rows = _rows_for_type(year_filters, "Expense", "Expense", consolidation_view=consolidation_view)
+		revenue_total = flt(sum(flt((r or {}).get("amount")) for r in income_rows))
+		expense_total = flt(sum(flt((r or {}).get("amount")) for r in expense_rows))
+		net_profit = revenue_total - expense_total
+		data.append(
+			{
+				"fiscal_year": str(year),
+				"section": _("Income Statement"),
+				"account_name": _("Fiscal Year {0}").format(year),
+				"bold": 1,
+				"year_header": 1,
+				"page_break_before": 1 if data else 0,
+			}
+		)
+		for row in income_rows + expense_rows:
+			row["fiscal_year"] = str(year)
+			data.append(row)
+		data.append(
+			{
+				"fiscal_year": str(year),
+				"section": _("Net Result"),
+				"account_name": _("Net Profit / Loss"),
+				"amount": net_profit,
+				"bold": 1,
+				"is_total_row": 1,
+			}
+		)
+		chart_labels.append(str(year))
+		chart_values.append(net_profit)
 
-	data = income_rows + expense_rows + [{"section": _("Net Result"), "account_name": _("Net Profit / Loss"), "amount": net_profit}]
-	revenue_total = flt(sum(flt((r or {}).get("amount")) for r in income_rows))
-	expense_total = flt(sum(flt((r or {}).get("amount")) for r in expense_rows))
 	chart = {
 		"data": {
-			"labels": [_("Revenue"), _("Expense"), _("Net Result")],
-			"datasets": [{"name": _("Amount"), "values": [revenue_total, expense_total, net_profit]}],
+			"labels": chart_labels,
+			"datasets": [{"name": _("Net Result"), "values": chart_values}],
 		},
 		"type": "bar",
-		"title": _("Income Statement Overview"),
+		"title": _("Income Statement by Year"),
 		"height": 260,
 	}
 	return columns, data, None, chart
+
+
+def _iter_year_filters(filters):
+	start = getdate(filters.from_date)
+	end = getdate(filters.to_date)
+	for year in range(start.year, end.year + 1):
+		year_start = max(start, getdate(f"{year}-01-01"))
+		year_end = min(end, getdate(f"{year}-12-31"))
+		year_filters = frappe._dict(filters.copy())
+		year_filters.from_date = year_start
+		year_filters.to_date = year_end
+		yield year, year_filters
 
 
 def _rows_for_type(filters, account_type, section_label, consolidation_view=False):
