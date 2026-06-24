@@ -1,16 +1,13 @@
 # Copyright (c) 2026, Omnexa and contributors
 # License: MIT
 
-"""Seed Microlab company — legal partner debt tracking + litigation-ready accounting.
+"""Seed Microlab company — minimal partner litigation accounting (2015–2026).
 
-Key legal/accounting model:
-- 100% of historical funding paid by Partner 1 (سيد هاشم حسن).
-- Expenses are *never* split at entry time; they stay as actually paid:
-  Dr Expense / Cr Partner Current — Sayed (3111)
-- Year-end engines:
-  - Close current year result into partner retained earnings (3191/3192) by ownership %.
-  - Recognize Elham unpaid funding share as Due From Partner — Elham (1332),
-    offset to Partner Current — Sayed (3111) as recoverable claim.
+Accounting model (per legal instructions):
+- Chart: capital (سيد 8000 / إلهام 2000), جاري سيد, مستحق من إلهام, four OPEX accounts only.
+- Every expense: Dr Expense / Cr جاري سيد (paid by سيد هاشم حسن).
+- Year-end: Dr مستحق من إلهام / Cr جاري سيد for 20% of annual expenses (إلهام مصطفى محمد أحمد).
+- No assets, inventory, products, or software accounts.
 """
 
 from __future__ import annotations
@@ -33,31 +30,126 @@ PARTNER_FUNDED = "سيد هاشم حسن"
 PARTNER_SILENT = "إلهام مصطفى محمد أحمد"
 OWNERSHIP_SAYED = Decimal("0.80")
 OWNERSHIP_ELHAM = Decimal("0.20")
+CAPITAL_SAYED = Decimal("8000")
+CAPITAL_ELHAM = Decimal("2000")
 FORMATION_AMOUNT = Decimal("14000")
 MODIFICATION_AMOUNT = Decimal("15000")
-PRODUCT_VALUE = Decimal("150000")
-PRODUCT_NAME = "برنامج ERP ونقاط بيع POS"
 SEED_TAG = "MICROLAB-SEED"
 
-# Arabic GL labels (fallback for legal outputs)
-ACCOUNTS_AR = {
-	"5104": "إيجارات وتأجير — مصروفات تشغيلية",
-	"5105": "مرافق واتصالات — كهرباء ومياه وإنترنت",
-	"5107": "اتعاب مهنية وقانونية — تأسيس وتعديل بيانات",
-	"5109": "تكاليف تمويل — عمولات ورسوم بنكية",
-	"5111": "صيانة وإصلاحات — المقر والأجهزة",
-	"5106": "قرطاسية ومطبوعات — مستلزمات مكتبية",
-	"1104": "مخزون برمجيات — أصل متداول (ERP/POS)",
-	"3101": f"رأس مال الشريك — {PARTNER_FUNDED}",
-	"3102": f"رأس مال الشريك — {PARTNER_SILENT}",
-	"3111": f"جاري الشريك — {PARTNER_FUNDED}",
-	"3112": f"جاري الشريك — {PARTNER_SILENT}",
-	"3191": f"أرباح محتجزة — {PARTNER_FUNDED}",
-	"3192": f"أرباح محتجزة — {PARTNER_SILENT}",
-	"1331": f"مدينون — مستحق من الشريك {PARTNER_FUNDED}",
-	"1332": f"مدينون — مستحق من الشريك {PARTNER_SILENT}",
-	"3103": "نتيجة العام الحالي (إقفال)",
-}
+# Allowed Microlab leaf accounts only
+ACCOUNT_SPECS: list[dict] = [
+	{"code": "1", "name_en": "Assets", "name_ar": "الأصول", "type": "Asset", "group": 1, "parent": ""},
+	{"code": "13", "name_en": "Other Receivables", "name_ar": "مدينون آخرون", "type": "Asset", "group": 1, "parent": "1"},
+	{
+		"code": "1332",
+		"name_en": f"Due From Partner — {PARTNER_SILENT}",
+		"name_ar": "مستحق من إلهام",
+		"type": "Asset",
+		"group": 0,
+		"parent": "13",
+		"main": "Assets",
+		"sub": "Other Receivables",
+	},
+	{"code": "3", "name_en": "Equity", "name_ar": "حقوق الملكية", "type": "Equity", "group": 1, "parent": ""},
+	{
+		"code": "31011",
+		"name_en": f"Partner Capital — {PARTNER_FUNDED}",
+		"name_ar": "رأس مال سيد",
+		"type": "Equity",
+		"group": 0,
+		"parent": "3",
+		"main": "Equity",
+		"sub": "Capital",
+	},
+	{
+		"code": "31012",
+		"name_en": f"Partner Capital — {PARTNER_SILENT}",
+		"name_ar": "رأس مال إلهام",
+		"type": "Equity",
+		"group": 0,
+		"parent": "3",
+		"main": "Equity",
+		"sub": "Capital",
+	},
+	{
+		"code": "3111",
+		"name_en": f"Partner Current — {PARTNER_FUNDED}",
+		"name_ar": "جاري سيد",
+		"type": "Equity",
+		"group": 0,
+		"parent": "3",
+		"main": "Equity",
+		"sub": "Partner Current",
+	},
+	{"code": "5", "name_en": "Expenses", "name_ar": "المصروفات", "type": "Expense", "group": 1, "parent": ""},
+	{"code": "51", "name_en": "Operating Expenses", "name_ar": "مصروفات تشغيلية", "type": "Expense", "group": 1, "parent": "5"},
+	{
+		"code": "5101",
+		"name_en": "Rent Expense",
+		"name_ar": "مصروف إيجار",
+		"type": "Expense",
+		"group": 0,
+		"parent": "51",
+		"main": "Expense",
+		"sub": "OPEX",
+		"pl_bucket": "Operating Expense",
+	},
+	{
+		"code": "5102",
+		"name_en": "Electricity Expense",
+		"name_ar": "مصروف كهرباء",
+		"type": "Expense",
+		"group": 0,
+		"parent": "51",
+		"main": "Expense",
+		"sub": "OPEX",
+		"pl_bucket": "Operating Expense",
+	},
+	{
+		"code": "5103",
+		"name_en": "Internet Expense",
+		"name_ar": "مصروف إنترنت",
+		"type": "Expense",
+		"group": 0,
+		"parent": "51",
+		"main": "Expense",
+		"sub": "OPEX",
+		"pl_bucket": "Operating Expense",
+	},
+	{
+		"code": "5104",
+		"name_en": "Legal Fees Expense",
+		"name_ar": "مصروف أتعاب محاماة",
+		"type": "Expense",
+		"group": 0,
+		"parent": "51",
+		"main": "Expense",
+		"sub": "OPEX",
+		"pl_bucket": "Operating Expense",
+	},
+]
+
+ALLOWED_ACCOUNT_CODES = frozenset(spec["code"] for spec in ACCOUNT_SPECS)
+EXPENSE_CODES = frozenset({"5101", "5102", "5103", "5104"})
+
+# Legacy codes to disable when re-seeding (assets / inventory / software / extra OPEX)
+LEGACY_CODES_TO_DISABLE = frozenset(
+	{
+		"1104",
+		"5105",
+		"5106",
+		"5107",
+		"5109",
+		"5111",
+		"3112",
+		"3191",
+		"3192",
+		"1331",
+		"3103",
+		"3101",
+		"3102",
+	}
+)
 
 
 def _d(value) -> Decimal:
@@ -85,127 +177,10 @@ def _account_label_ar(company: str, branch: str | None, code: str) -> str:
 		ar = frappe.db.get_value("GL Account", acc, "account_name_ar")
 		if ar:
 			return ar
-	return ACCOUNTS_AR.get(code, frappe.db.get_value("GL Account", acc, "account_name") or code)
-
-
-def _ensure_partner_accounts(company: str, branch: str | None, parent_map: dict) -> dict[str, str]:
-	from omnexa_accounting.utils.production_readiness import _ensure_account
-
-	# NOTE: base CoA uses 3101/3102 as Share Capital / Retained Earnings defaults.
-	# For legal partner tracking we create partner-specific accounts:
-	# - Partner Capital: 31011/31012
-	# - Partner Current: 3111/3112
-	# - Retained Earnings: 3191/3192
-	# - Due From Partner: 1331/1332
-	entries = [
-		{
-			"code": "31011",
-			"name_en": f"Partner Capital — {PARTNER_FUNDED}",
-			"name_ar": f"رأس مال الشريك — {PARTNER_FUNDED}",
-			"type": "Equity",
-			"group": 0,
-			"parent": "3",
-			"main": "Equity",
-			"sub": "Capital",
-		},
-		{
-			"code": "31012",
-			"name_en": f"Partner Capital — {PARTNER_SILENT}",
-			"name_ar": f"رأس مال الشريك — {PARTNER_SILENT}",
-			"type": "Equity",
-			"group": 0,
-			"parent": "3",
-			"main": "Equity",
-			"sub": "Capital",
-		},
-		{
-			"code": "3111",
-			"name_en": f"Partner Current — {PARTNER_FUNDED}",
-			"name_ar": f"جاري الشريك — {PARTNER_FUNDED}",
-			"type": "Equity",
-			"group": 0,
-			"parent": "3",
-			"main": "Equity",
-			"sub": "Partner Current",
-		},
-		{
-			"code": "3112",
-			"name_en": f"Partner Current — {PARTNER_SILENT}",
-			"name_ar": f"جاري الشريك — {PARTNER_SILENT}",
-			"type": "Equity",
-			"group": 0,
-			"parent": "3",
-			"main": "Equity",
-			"sub": "Partner Current",
-		},
-		{
-			"code": "3191",
-			"name_en": f"Retained Earnings — {PARTNER_FUNDED}",
-			"name_ar": f"الأرباح المحتجزة — {PARTNER_FUNDED}",
-			"type": "Equity",
-			"group": 0,
-			"parent": "3",
-			"main": "Equity",
-			"sub": "Retained Earnings",
-		},
-		{
-			"code": "3192",
-			"name_en": f"Retained Earnings — {PARTNER_SILENT}",
-			"name_ar": f"الأرباح المحتجزة — {PARTNER_SILENT}",
-			"type": "Equity",
-			"group": 0,
-			"parent": "3",
-			"main": "Equity",
-			"sub": "Retained Earnings",
-		},
-		{
-			"code": "1331",
-			"name_en": f"Due From Partner — {PARTNER_FUNDED}",
-			"name_ar": f"مدينون — مستحق من الشريك {PARTNER_FUNDED}",
-			"type": "Asset",
-			"group": 0,
-			"parent": "13",
-			"main": "Assets",
-			"sub": "Other Receivables",
-		},
-		{
-			"code": "1332",
-			"name_en": f"Due From Partner — {PARTNER_SILENT}",
-			"name_ar": f"مدينون — مستحق من الشريك {PARTNER_SILENT}",
-			"type": "Asset",
-			"group": 0,
-			"parent": "13",
-			"main": "Assets",
-			"sub": "Other Receivables",
-		},
-	]
-	out = {}
-	for entry in entries:
-		out[entry["code"]] = _ensure_account(entry, company, branch, parent_map)
-	return out
-
-
-def _ensure_operating_accounts(company: str, branch: str | None, parent_map: dict) -> dict[str, str]:
-	"""Accounts required by Microlab seed but only in General activity extension."""
-	from omnexa_accounting.utils.production_readiness import _ensure_account
-
-	entries = [
-		{
-			"code": "5111",
-			"name_en": "Repairs & Maintenance",
-			"name_ar": ACCOUNTS_AR["5111"],
-			"type": "Expense",
-			"group": 0,
-			"parent": "5",
-			"main": "Expense",
-			"sub": "OPEX",
-			"pl_bucket": "Operating Expense",
-		},
-	]
-	out: dict[str, str] = {}
-	for entry in entries:
-		out[entry["code"]] = _ensure_account(entry, company, branch, parent_map)
-	return out
+	for spec in ACCOUNT_SPECS:
+		if spec["code"] == code:
+			return spec.get("name_ar") or spec.get("name_en") or code
+	return frappe.db.get_value("GL Account", acc, "account_name") or code
 
 
 def _ensure_company() -> tuple[str, str]:
@@ -261,11 +236,10 @@ def _ensure_company() -> tuple[str, str]:
 	return company, branch
 
 
-def _ensure_coa(company: str, branch: str) -> dict:
-	from omnexa_accounting.utils.production_readiness import _run_professional_coa_sync
+def _ensure_minimal_coa(company: str, branch: str) -> dict[str, str]:
+	from omnexa_accounting.utils.production_readiness import _ensure_account
 
-	result = _run_professional_coa_sync(company, branch, "Services")
-	parent_map = {}
+	parent_map: dict[str, str] = {}
 	for row in frappe.get_all(
 		"GL Account",
 		filters={"company": company, "branch": branch},
@@ -273,46 +247,47 @@ def _ensure_coa(company: str, branch: str) -> dict:
 	):
 		if row.account_number:
 			parent_map[row.account_number] = row.name
-	partners = _ensure_partner_accounts(company, branch, parent_map)
-	operating = _ensure_operating_accounts(company, branch, parent_map)
-	partners.update(operating)
-	return {"coa": result, "partners": partners, "parent_map": parent_map}
+
+	accounts: dict[str, str] = {}
+	for spec in ACCOUNT_SPECS:
+		code = spec["code"]
+		accounts[code] = _ensure_account(spec, company, branch, parent_map)
+		parent_map[code] = accounts[code]
+	return accounts
 
 
-def _ensure_product(company: str) -> str:
-	if not frappe.db.exists("DocType", "Item"):
-		return ""
-	code = "ERP-POS-MICROLAB"
-	item_group = frappe.db.get_value("Item Group", {"is_group": 0}, "name", order_by="creation asc") or "All Item Groups"
-	existing = frappe.db.get_value("Item", {"company": company, "item_code": code}, "name")
-	if existing:
-		return existing
-	item = frappe.get_doc(
-		{
-			"doctype": "Item",
-			"item_code": code,
-			"item_name": PRODUCT_NAME,
-			"company": company,
-			"item_group": item_group,
-			"stock_uom": "Nos",
-			"is_stock_item": 1,
-			"valuation_rate": float(PRODUCT_VALUE),
-			"standard_rate": float(PRODUCT_VALUE),
-			"description": "برنامج ERP ونقاط بيع — أصل متداول / مخزون برمجيات (بدون إهلاك).",
-		}
+def _disable_legacy_microlab_accounts(company: str, branch: str) -> int:
+	"""Freeze asset/inventory/software/extra expense accounts not in the minimal chart."""
+	if not frappe.db.has_column("GL Account", "is_frozen"):
+		return 0
+	frozen = 0
+	rows = frappe.get_all(
+		"GL Account",
+		filters={"company": company, "branch": branch, "is_group": 0},
+		fields=["name", "account_number", "is_frozen"],
 	)
-	item.flags.ignore_branch_access = True
-	item.insert(ignore_permissions=True)
-	return item.name
+	for row in rows:
+		code = (row.account_number or "").strip()
+		if not code or code in ALLOWED_ACCOUNT_CODES:
+			continue
+		if code in LEGACY_CODES_TO_DISABLE or code.startswith(("11", "12", "14", "15", "16", "17", "18", "19")):
+			if not row.is_frozen:
+				frappe.db.set_value("GL Account", row.name, "is_frozen", 1, update_modified=False)
+				frozen += 1
+	return frozen
+
+
+def _delete_microlab_product(company: str) -> None:
+	if not frappe.db.exists("DocType", "Item"):
+		return
+	for code in ("ERP-POS-MICROLAB",):
+		name = frappe.db.get_value("Item", {"company": company, "item_code": code}, "name")
+		if name:
+			frappe.delete_doc("Item", name, force=1, ignore_permissions=True)
 
 
 def _je_exists(company: str, reference: str) -> bool:
 	return bool(frappe.db.exists("Journal Entry", {"company": company, "reference": reference}))
-
-
-def _budget_exists(company: str, year: int) -> bool:
-	title = f"موازنة تقديرية حكومية — {COMPANY_NAME_AR} — {year}"
-	return bool(frappe.db.exists("Budget", {"company": company, "title": title, "docstatus": 1}))
 
 
 class _JeLine:
@@ -369,98 +344,29 @@ def _create_je(
 	return je.name
 
 
-def _sum_year_net_result(company: str, branch: str, year: int) -> Decimal:
-	"""Compute net profit/loss for the year from Journal Entries (docstatus=1)."""
-	from_date = date(year, 1, 1)
-	to_date = date(year, 12, 31)
-	rows = frappe.db.sql(
-		"""
-		SELECT
-			ga.account_type,
-			SUM(jea.debit) AS dr,
-			SUM(jea.credit) AS cr
-		FROM `tabJournal Entry` je
-		INNER JOIN `tabJournal Entry Account` jea ON jea.parent = je.name
-		INNER JOIN `tabGL Account` ga ON ga.name = jea.account
-		WHERE je.company=%s AND je.branch=%s AND je.docstatus=1
-		  AND je.posting_date BETWEEN %s AND %s
-		GROUP BY ga.account_type
-		""",
-		(company, branch, from_date, to_date),
-		as_dict=True,
-	)
-	revenue = Decimal("0")
-	expense = Decimal("0")
-	for r in rows:
-		at = (r.account_type or "").strip()
-		dr = _d(r.dr or 0)
-		cr = _d(r.cr or 0)
-		if at in ("Revenue", "Income"):
-			revenue += cr - dr
-		elif at == "Expense":
-			expense += dr - cr
-	return _d(revenue - expense)
-
-
-def _close_year_result_to_retained(
-	company: str,
-	branch: str,
-	year: int,
-	*,
-	current_year_result_acc: str,
-	retained_sayed: str,
-	retained_elham: str,
-) -> bool:
-	"""Post closing entry: 3103 -> retained earnings split by ownership."""
-	ref = f"{SEED_TAG}-CLOSE-PL-{year}"
-	if _je_exists(company, ref):
-		return False
-	net = _sum_year_net_result(company, branch, year)
-	if net == 0:
-		return False
-	sayed_share = _d(net * OWNERSHIP_SAYED)
-	elham_share = _d(net - sayed_share)
-	remarks = f"قيد إقفال نتيجة العام {year} وتوزيع الربح/الخسارة حسب نسب الملكية (80%/20%)"
-	lines: list[_JeLine] = []
-	posting = date(year, 12, 31)
-	# Profit: net > 0
-	if net > 0:
-		lines.append(_JeLine(current_year_result_acc, net, Decimal("0"), f"مدين — إقفال ربح العام {year}"))
-		lines.append(_JeLine(retained_sayed, Decimal("0"), sayed_share, f"دائن — أرباح محتجزة سيد ({int(OWNERSHIP_SAYED*100)}%)"))
-		lines.append(_JeLine(retained_elham, Decimal("0"), elham_share, f"دائن — أرباح محتجزة إلهام ({int(OWNERSHIP_ELHAM*100)}%)"))
-	else:
-		loss = _d(-net)
-		lines.append(_JeLine(current_year_result_acc, Decimal("0"), loss, f"دائن — إقفال خسارة العام {year}"))
-		lines.append(_JeLine(retained_sayed, _d(loss * OWNERSHIP_SAYED), Decimal("0"), f"مدين — خسائر محتجزة سيد ({int(OWNERSHIP_SAYED*100)}%)"))
-		lines.append(_JeLine(retained_elham, _d(loss * OWNERSHIP_ELHAM), Decimal("0"), f"مدين — خسائر محتجزة إلهام ({int(OWNERSHIP_ELHAM*100)}%)"))
-	return bool(_create_je(company, branch, posting, ref, remarks, lines))
-
-
-def _recognize_elham_funding_debt(
+def _recognize_elham_expense_share(
 	company: str,
 	branch: str,
 	year: int,
 	*,
 	due_from_elham: str,
 	partner_current_sayed: str,
-	total_funding_to_date: Decimal,
-	elham_actual_paid_to_date: Decimal,
+	annual_expenses: Decimal,
 ) -> bool:
-	"""Recognize Elham unpaid share of total funding as receivable (1332) owed to Sayed (3111)."""
+	"""Year-end: Dr مستحق من إلهام / Cr جاري سيد for 20% of annual expenses."""
 	ref = f"{SEED_TAG}-DEBT-{year}"
 	if _je_exists(company, ref):
 		return False
-	required = _d(total_funding_to_date * OWNERSHIP_ELHAM)
-	debt = _d(required - elham_actual_paid_to_date)
-	if debt <= 0:
+	share = _d(annual_expenses * OWNERSHIP_ELHAM)
+	if share <= 0:
 		return False
 	remarks = (
-		f"إثبات مديونية الشريك {PARTNER_SILENT} حتى 31/12/{year} "
-		f"(حصة 20% من إجمالي تمويل الشركة) — مستحق لصالح {PARTNER_FUNDED}"
+		f"إثبات حصة الشريك {PARTNER_SILENT} (20%) من مصروفات العام {year} "
+		f"— مدفوعة بالكامل من {PARTNER_FUNDED} — مستحق لصالح جاري سيد"
 	)
 	lines = [
-		_JeLine(due_from_elham, debt, Decimal("0"), f"مدين — مستحق من {PARTNER_SILENT} حتى {year}"),
-		_JeLine(partner_current_sayed, Decimal("0"), debt, f"دائن — مستحق لصالح {PARTNER_FUNDED}"),
+		_JeLine(due_from_elham, share, Decimal("0"), f"مدين — مستحق من إلهام — {year}"),
+		_JeLine(partner_current_sayed, Decimal("0"), share, f"دائن — جاري سيد — تحميل حصة الشريك"),
 	]
 	return bool(_create_je(company, branch, date(year, 12, 31), ref, remarks, lines))
 
@@ -477,24 +383,18 @@ def _expense_je(
 	amount: Decimal,
 	title_ar: str,
 	year_expense_totals: dict[int, Decimal],
-	year_funding_totals: dict[int, Decimal],
 ) -> bool:
 	if amount <= 0:
 		return False
 	exp_label = _account_label_ar(company, branch, expense_code)
-	partner_label = _account_label_ar(company, branch, "3111")
-	remarks = (
-		f"{title_ar} | حساب المصروف: {exp_label} | تمويل من {PARTNER_FUNDED} | "
-		f"مرجع: {reference}"
-	)
+	remarks = f"{title_ar} | {exp_label} | دفع: {PARTNER_FUNDED} | {reference}"
 	lines = [
-		_JeLine(expense_acc, amount, Decimal("0"), f"مدين — {exp_label} — {title_ar}"),
-		_JeLine(partner_sayed, Decimal("0"), amount, f"دائن — {partner_label} — تمويل الشريك"),
+		_JeLine(expense_acc, amount, Decimal("0"), f"مدين — {exp_label}"),
+		_JeLine(partner_sayed, Decimal("0"), amount, f"دائن — جاري سيد — {PARTNER_FUNDED}"),
 	]
 	created = _create_je(company, branch, posting_date, reference, remarks, lines)
 	if created:
 		year_expense_totals[posting_date.year] += amount
-		year_funding_totals[posting_date.year] += amount
 	return bool(created)
 
 
@@ -529,82 +429,12 @@ def _annual_legal_fee(year: int) -> Decimal:
 	return _d(2500 + (year - 2015) * 150)
 
 
-def _annual_insurance(year: int) -> Decimal:
-	return _d(1800 + (year - 2015) * 120)
-
-
-def _quarterly_stationery(year: int, quarter: int) -> Decimal:
-	return _d(400 + quarter * 50 + (year - 2015) * 30)
-
-
-def _monthly_bank_charges(year: int) -> Decimal:
-	return _d(75 + (year - 2015) * 5)
-
-
 def _iter_months(start: date, end: date):
 	cursor = get_first_day(start)
 	last = get_first_day(end)
 	while cursor <= last:
 		yield cursor.year, cursor.month
 		cursor = add_months(cursor, 1)
-
-
-def _create_annual_budget(
-	company: str,
-	branch: str,
-	year: int,
-	budget_lines: list[tuple[str, str, date, Decimal]],
-) -> str | None:
-	if _budget_exists(company, year):
-		return None
-	if not budget_lines:
-		return None
-
-	from_date = date(year, 1, 1) if year > START_DATE.year else START_DATE
-	to_date = date(year, 12, 31)
-	if to_date > END_DATE:
-		to_date = END_DATE
-
-	title = f"موازنة تقديرية حكومية — {COMPANY_NAME_AR} — {year}"
-	policy = f"قرار مجلس الإدارة / موازنة تقديرية سنوية — السنة المالية {year} — جمهورية مصر العربية"
-
-	aggregated: dict[tuple[str, date], Decimal] = defaultdict(Decimal)
-	for gl_code, _gl_name, period_month, amount in budget_lines:
-		if amount <= 0:
-			continue
-		aggregated[(gl_code, period_month)] += _d(amount)
-
-	rows = []
-	for (gl_code, period_month), amount in sorted(aggregated.items()):
-		if amount <= 0:
-			continue
-		acc = _account(company, branch, gl_code)
-		rows.append(
-			{
-				"gl_account": acc,
-				"period_month": period_month,
-				"budget_amount": float(amount),
-				"policy_reference": policy,
-			}
-		)
-	if not rows:
-		return None
-
-	bdoc = frappe.get_doc(
-		{
-			"doctype": "Budget",
-			"title": title,
-			"company": company,
-			"from_date": from_date,
-			"to_date": to_date,
-			"budget_scenario": "Base",
-			"policy_reference": policy,
-			"budget_lines": rows,
-		}
-	)
-	bdoc.insert(ignore_permissions=True)
-	_submit(bdoc)
-	return bdoc.name
 
 
 def _cumulative_by_year(year_totals: dict[int, Decimal]) -> dict[int, Decimal]:
@@ -616,9 +446,150 @@ def _cumulative_by_year(year_totals: dict[int, Decimal]) -> dict[int, Decimal]:
 	return out
 
 
+def _report_url(report_name: str, **params) -> str:
+	from urllib.parse import urlencode
+
+	base = f"/app/query-report/{report_name}"
+	if not params:
+		return base
+	return f"{base}?{urlencode(params)}"
+
+
+def get_microlab_report_links(company: str | None = None, branch: str | None = None) -> dict:
+	"""Standard + partner litigation report routes for Microlab."""
+	company = company or COMPANY_ABBR
+	if not branch:
+		branch = frappe.db.get_value("Branch", {"company": company}, "name")
+	sayed_acc = frappe.db.get_value(
+		"GL Account", {"company": company, "account_number": "3111", "branch": branch}, "name"
+	)
+	elham_due = frappe.db.get_value(
+		"GL Account", {"company": company, "account_number": "1332", "branch": branch}, "name"
+	)
+	common = {
+		"company": company,
+		"from_date": str(START_DATE),
+		"to_date": str(END_DATE),
+	}
+	partner_filters = {
+		**common,
+		"branch": branch or "",
+		"primary_partner_name": PARTNER_FUNDED,
+		"secondary_partner_name": PARTNER_SILENT,
+		"secondary_pct": "20",
+	}
+	return {
+		"general_journal": {
+			"title_ar": "اليومية العامة",
+			"url": _report_url("General Journal", **common),
+		},
+		"general_ledger": {
+			"title_ar": "الأستاذ العام",
+			"url": _report_url("General Ledger", **common),
+		},
+		"trial_balance": {
+			"title_ar": "ميزان المراجعة",
+			"url": _report_url("Trial Balance", **common),
+		},
+		"income_statement": {
+			"title_ar": "قائمة الدخل",
+			"url": _report_url("Profit and Loss Statement", **common),
+		},
+		"balance_sheet": {
+			"title_ar": "الميزانية العمومية",
+			"url": _report_url("Balance Sheet", **{**common, "as_on_date": str(END_DATE)}),
+		},
+		"sayed_current_statement": {
+			"title_ar": "كشف جاري سيد",
+			"url": _report_url(
+				"General Ledger",
+				**common,
+				account=sayed_acc or "",
+			),
+		},
+		"elham_debt_statement": {
+			"title_ar": "كشف مديونية إلهام",
+			"url": _report_url("Partner Debt Statement", **partner_filters),
+		},
+		"legal_claim_statement": {
+			"title_ar": "تقرير قانوني — إثبات مديونية الشريك",
+			"url": _report_url("Legal Claim Statement", **partner_filters),
+		},
+		"partner_recovery_report": {
+			"title_ar": "تقرير استرداد مساهمات الشريك",
+			"url": _report_url("Partner Recovery Report", **partner_filters),
+		},
+		"account_elham_due": elham_due,
+		"account_sayed_current": sayed_acc,
+	}
+
+
+@frappe.whitelist()
+def get_microlab_legal_report(company: str | None = None) -> dict:
+	"""Litigation-ready package: expenses by year, Elham 20%, cumulative debt 2015–2026."""
+	company = company or COMPANY_ABBR
+	if not frappe.db.exists("Company", company):
+		return {"error": "Company not found"}
+
+	branch = frappe.db.get_value("Branch", {"company": company}, "name")
+	from omnexa_accounting.utils.partner_legal_reporting import (
+		generate_court_evidence_package,
+		partner_debt_rows,
+		resolve_partner_accounts,
+	)
+
+	years = list(range(START_DATE.year, END_DATE.year + 1))
+	accounts = resolve_partner_accounts(company, {}, branch=branch)
+	debt_rows = partner_debt_rows(
+		company=company,
+		branch=branch,
+		years=years,
+		primary_current_account=accounts["primary_current"],
+		secondary_due_account=accounts["secondary_due"],
+		secondary_pct=OWNERSHIP_ELHAM,
+	)
+	cumulative = debt_rows[-1]["cumulative_debt"] if debt_rows else 0.0
+	total_expenses = sum(r["total_expenses"] for r in debt_rows)
+	total_elham_share = sum(r["secondary_share"] for r in debt_rows)
+
+	package = generate_court_evidence_package(
+		company=company,
+		branch=branch,
+		from_date=str(START_DATE),
+		to_date=str(END_DATE),
+		from_year=START_DATE.year,
+		to_year=END_DATE.year,
+		primary_partner_name=PARTNER_FUNDED,
+		secondary_partner_name=PARTNER_SILENT,
+		secondary_pct="0.20",
+	)
+
+	return {
+		"company": company,
+		"company_name": COMPANY_NAME,
+		"company_name_ar": COMPANY_NAME_AR,
+		"partner_funded": PARTNER_FUNDED,
+		"partner_silent": PARTNER_SILENT,
+		"ownership_silent_pct": 20,
+		"period": {"from": str(START_DATE), "to": str(END_DATE)},
+		"total_expenses_paid_by_sayed": total_expenses,
+		"total_elham_share_20pct": total_elham_share,
+		"cumulative_debt_elham": cumulative,
+		"yearly_breakdown": debt_rows,
+		"legal_narrative_ar": (
+			f"أثبتت الشركة {COMPANY_NAME_AR} أن الشريك {PARTNER_FUNDED} تحمّل مصروفات التشغيل "
+			f"بالكامل من {START_DATE.year} حتى {END_DATE.year} بإجمالي {total_expenses:,.2f} جنيه مصري. "
+			f"حصة الشريك {PARTNER_SILENT} البالغة 20% من المصروفات تبلغ {total_elham_share:,.2f} جنيه مصري. "
+			f"الرصيد المستحق على الشريك إلهام (تراكمي) حتى {END_DATE.year}: {cumulative:,.2f} جنيه مصري."
+		),
+		"report_links": get_microlab_report_links(company, branch),
+		"court_package": package,
+	}
+
+
 @frappe.whitelist()
 def seed_microlab_company(*, enqueue: int = 0) -> dict:
-	"""Create Microlab company and full monthly accounting history (2015–2026)."""
+	"""Create Microlab company and monthly expense history (2015–2026)."""
 	if frappe.session.user != "Guest":
 		frappe.only_for("System Manager")
 	if int(enqueue or 0):
@@ -644,115 +615,75 @@ def execute():
 
 def _seed_microlab_company() -> dict:
 	company, branch = _ensure_company()
-	coa = _ensure_coa(company, branch)
-	partner_sayed = coa["partners"]["3111"]
-	partner_elham = coa["partners"]["3112"]
-	retained_sayed = coa["partners"]["3191"]
-	retained_elham = coa["partners"]["3192"]
-	due_from_elham = coa["partners"]["1332"]
-	product_item = _ensure_product(company)
+	accounts = _ensure_minimal_coa(company, branch)
+	disabled_legacy = _disable_legacy_microlab_accounts(company, branch)
+	_delete_microlab_product(company)
 
-	exp_formation = _account(company, branch, "5107")
-	exp_modification = _account(company, branch, "5107")
-	exp_rent = _account(company, branch, "5104")
-	exp_utilities = _account(company, branch, "5105")
-	exp_maintenance = _account(company, branch, "5111")
-	exp_stationery = _account(company, branch, "5106")
-	exp_bank = _account(company, branch, "5109")
-	inventory = _account(company, branch, "1104")
-	current_year_result = _account(company, branch, "3103")
+	capital_sayed = accounts["31011"]
+	capital_elham = accounts["31012"]
+	partner_sayed = accounts["3111"]
+	due_from_elham = accounts["1332"]
+	exp_rent = accounts["5101"]
+	exp_electric = accounts["5102"]
+	exp_internet = accounts["5103"]
+	exp_legal = accounts["5104"]
 
-	created = {"journal_entries": 0, "skipped": 0, "budgets": 0}
+	created = {"journal_entries": 0, "frozen_legacy_accounts": disabled_legacy}
 	year_expense_totals: dict[int, Decimal] = defaultdict(Decimal)
-	year_funding_totals: dict[int, Decimal] = defaultdict(Decimal)
-	budget_accumulator: dict[int, list[tuple[str, str, date, Decimal]]] = defaultdict(list)
 
-	def _bud(year: int, code: str, label: str, period: date, amount: Decimal):
-		budget_accumulator[year].append((code, label, period, amount))
+	# —— Opening capital (سيد 8000 / إلهام 2000) funded via جاري سيد — 01-03-2015
+	if not _je_exists(company, f"{SEED_TAG}-CAPITAL"):
+		total_capital = CAPITAL_SAYED + CAPITAL_ELHAM
+		_create_je(
+			company,
+			branch,
+			START_DATE,
+			f"{SEED_TAG}-CAPITAL",
+			f"قيد رأس المال — {PARTNER_FUNDED} 80% / {PARTNER_SILENT} 20%",
+			[
+				_JeLine(partner_sayed, total_capital, Decimal("0"), "مدين — جاري سيد — تمويل رأس المال"),
+				_JeLine(capital_sayed, Decimal("0"), CAPITAL_SAYED, "دائن — رأس مال سيد"),
+				_JeLine(capital_elham, Decimal("0"), CAPITAL_ELHAM, "دائن — رأس مال إلهام"),
+			],
+		)
+		created["journal_entries"] += 1
 
-	# —— Formation — 01-03-2015
+	# —— Formation legal fees — 01-03-2015
 	if not _je_exists(company, f"{SEED_TAG}-FORMATION"):
-		_create_je(
-			company,
-			branch,
-			START_DATE,
-			f"{SEED_TAG}-FORMATION",
-			f"مصروفات تأسيس الشركة — {COMPANY_NAME_AR} — بموجب عقد التأسيس",
-			[
-				_JeLine(
-					exp_formation,
-					FORMATION_AMOUNT,
-					Decimal("0"),
-					f"مدين — {_account_label_ar(company, branch, '5107')} — تأسيس",
-				),
-				_JeLine(
-					partner_sayed,
-					Decimal("0"),
-					FORMATION_AMOUNT,
-					f"دائن — {_account_label_ar(company, branch, '3111')} — تمويل سيد هاشم",
-				),
-			],
-		)
-		created["journal_entries"] += 1
-		year_funding_totals[START_DATE.year] += FORMATION_AMOUNT
+		if _expense_je(
+			company=company,
+			branch=branch,
+			posting_date=START_DATE,
+			reference=f"{SEED_TAG}-FORMATION",
+			expense_acc=exp_legal,
+			expense_code="5104",
+			partner_sayed=partner_sayed,
+			amount=FORMATION_AMOUNT,
+			title_ar=f"أتعاب محاماة تأسيس الشركة — {COMPANY_NAME_AR}",
+			year_expense_totals=year_expense_totals,
+		):
+			created["journal_entries"] += 1
 
-	# —— Product capitalization
-	if not _je_exists(company, f"{SEED_TAG}-PRODUCT"):
-		_create_je(
-			company,
-			branch,
-			START_DATE,
-			f"{SEED_TAG}-PRODUCT",
-			f"قيد إثبات المنتج البرمجي (ERP/POS) — مخزون / أصل متداول — {PRODUCT_NAME}",
-			[
-				_JeLine(
-					inventory,
-					PRODUCT_VALUE,
-					Decimal("0"),
-					f"مدين — {_account_label_ar(company, branch, '1104')}",
-				),
-				_JeLine(
-					partner_sayed,
-					Decimal("0"),
-					PRODUCT_VALUE,
-					f"دائن — {_account_label_ar(company, branch, '3111')} — تمويل سيد هاشم",
-				),
-			],
-		)
-		created["journal_entries"] += 1
-		year_funding_totals[START_DATE.year] += PRODUCT_VALUE
-
-	# —— Company modification — 01-01-2020
+	# —— Company modification legal fees — 01-01-2020
 	if not _je_exists(company, f"{SEED_TAG}-MODIFICATION"):
-		_create_je(
-			company,
-			branch,
-			date(2020, 1, 1),
-			f"{SEED_TAG}-MODIFICATION",
-			"مصروفات تعديل بيانات الشركة لدى السجل التجاري",
-			[
-				_JeLine(
-					exp_modification,
-					MODIFICATION_AMOUNT,
-					Decimal("0"),
-					f"مدين — {_account_label_ar(company, branch, '5107')} — تعديل بيانات",
-				),
-				_JeLine(
-					partner_sayed,
-					Decimal("0"),
-					MODIFICATION_AMOUNT,
-					f"دائن — {_account_label_ar(company, branch, '3111')}",
-				),
-			],
-		)
-		created["journal_entries"] += 1
-		year_funding_totals[2020] += MODIFICATION_AMOUNT
+		if _expense_je(
+			company=company,
+			branch=branch,
+			posting_date=date(2020, 1, 1),
+			reference=f"{SEED_TAG}-MODIFICATION",
+			expense_acc=exp_legal,
+			expense_code="5104",
+			partner_sayed=partner_sayed,
+			amount=MODIFICATION_AMOUNT,
+			title_ar="أتعاب محاماة تعديل بيانات الشركة لدى السجل التجاري",
+			year_expense_totals=year_expense_totals,
+		):
+			created["journal_entries"] += 1
 
 	end = min(END_DATE, getdate(today()))
 
 	for year, month in _iter_months(START_DATE, end):
 		posting = date(year, month, calendar.monthrange(year, month)[1])
-		month_first = date(year, month, 1)
 
 		rent = _monthly_rent(year, month)
 		if rent > 0:
@@ -763,15 +694,13 @@ def _seed_microlab_company() -> dict:
 				posting_date=posting,
 				reference=ref,
 				expense_acc=exp_rent,
-				expense_code="5104",
+				expense_code="5101",
 				partner_sayed=partner_sayed,
 				amount=rent,
 				title_ar=f"إيجار المقر — {month:02d}/{year}",
 				year_expense_totals=year_expense_totals,
-				year_funding_totals=year_funding_totals,
 			):
 				created["journal_entries"] += 1
-				_bud(year, "5104", "إيجارات", month_first, rent)
 
 		electric = _electricity_amount(year, month)
 		ref = f"{SEED_TAG}-ELEC-{year:04d}-{month:02d}"
@@ -780,16 +709,14 @@ def _seed_microlab_company() -> dict:
 			branch=branch,
 			posting_date=posting,
 			reference=ref,
-			expense_acc=exp_utilities,
-			expense_code="5105",
+			expense_acc=exp_electric,
+			expense_code="5102",
 			partner_sayed=partner_sayed,
 			amount=electric,
-			title_ar=f"كهرباء ومياه — {month:02d}/{year}",
+			title_ar=f"كهرباء — {month:02d}/{year}",
 			year_expense_totals=year_expense_totals,
-			year_funding_totals=year_funding_totals,
 		):
 			created["journal_entries"] += 1
-			_bud(year, "5105", "مرافق — كهرباء", month_first, electric)
 
 		internet = _gradual_monthly(Decimal("250"), Decimal("525"), year)
 		ref = f"{SEED_TAG}-NET-{year:04d}-{month:02d}"
@@ -798,75 +725,15 @@ def _seed_microlab_company() -> dict:
 			branch=branch,
 			posting_date=posting,
 			reference=ref,
-			expense_acc=exp_utilities,
-			expense_code="5105",
+			expense_acc=exp_internet,
+			expense_code="5103",
 			partner_sayed=partner_sayed,
 			amount=internet,
-			title_ar=f"إنترنت واتصالات — {month:02d}/{year}",
+			title_ar=f"إنترنت — {month:02d}/{year}",
 			year_expense_totals=year_expense_totals,
-			year_funding_totals=year_funding_totals,
 		):
 			created["journal_entries"] += 1
-			_bud(year, "5105", "مرافق — إنترنت", month_first, internet)
 
-		maint = _gradual_monthly(Decimal("100"), Decimal("550"), year)
-		ref = f"{SEED_TAG}-MAINT-{year:04d}-{month:02d}"
-		if _expense_je(
-			company=company,
-			branch=branch,
-			posting_date=posting,
-			reference=ref,
-			expense_acc=exp_maintenance,
-			expense_code="5111",
-			partner_sayed=partner_sayed,
-			amount=maint,
-			title_ar=f"صيانة وإصلاحات — {month:02d}/{year}",
-			year_expense_totals=year_expense_totals,
-			year_funding_totals=year_funding_totals,
-		):
-			created["journal_entries"] += 1
-			_bud(year, "5111", "صيانة", month_first, maint)
-
-		bank = _monthly_bank_charges(year)
-		ref = f"{SEED_TAG}-BANK-{year:04d}-{month:02d}"
-		if _expense_je(
-			company=company,
-			branch=branch,
-			posting_date=posting,
-			reference=ref,
-			expense_acc=exp_bank,
-			expense_code="5109",
-			partner_sayed=partner_sayed,
-			amount=bank,
-			title_ar=f"عمولات بنكية — {month:02d}/{year}",
-			year_expense_totals=year_expense_totals,
-			year_funding_totals=year_funding_totals,
-		):
-			created["journal_entries"] += 1
-			_bud(year, "5109", "تكاليف تمويل", month_first, bank)
-
-		# Quarterly stationery (Mar, Jun, Sep, Dec)
-		if month in (3, 6, 9, 12):
-			q = {3: 1, 6: 2, 9: 3, 12: 4}[month]
-			stationery = _quarterly_stationery(year, q)
-			ref = f"{SEED_TAG}-STAT-{year:04d}-Q{q}"
-			if _expense_je(
-				company=company,
-				branch=branch,
-				posting_date=posting,
-				reference=ref,
-				expense_acc=exp_stationery,
-				expense_code="5106",
-				partner_sayed=partner_sayed,
-				amount=stationery,
-				title_ar=f"قرطاسية ومطبوعات — الربع {q} / {year}",
-				year_expense_totals=year_expense_totals,
-				year_funding_totals=year_funding_totals,
-			):
-				created["journal_entries"] += 1
-				_bud(year, "5106", "قرطاسية", month_first, stationery)
-
-		# Annual legal & insurance in December
 		if month == 12:
 			legal = _annual_legal_fee(year)
 			ref = f"{SEED_TAG}-LEGAL-{year:04d}"
@@ -875,138 +742,55 @@ def _seed_microlab_company() -> dict:
 				branch=branch,
 				posting_date=posting,
 				reference=ref,
-				expense_acc=exp_formation,
-				expense_code="5107",
+				expense_acc=exp_legal,
+				expense_code="5104",
 				partner_sayed=partner_sayed,
 				amount=legal,
-				title_ar=f"اتعاب قانونية وامتثال سنوي — {year}",
+				title_ar=f"أتعاب محاماة وامتثال سنوي — {year}",
 				year_expense_totals=year_expense_totals,
-				year_funding_totals=year_funding_totals,
 			):
 				created["journal_entries"] += 1
-				_bud(year, "5107", "اتعاب قانونية", month_first, legal)
 
-			insurance = _annual_insurance(year)
-			ref = f"{SEED_TAG}-INS-{year:04d}"
-			if _expense_je(
-				company=company,
-				branch=branch,
-				posting_date=posting,
-				reference=ref,
-				expense_acc=exp_maintenance,
-				expense_code="5111",
-				partner_sayed=partner_sayed,
-				amount=insurance,
-				title_ar=f"تأمين مقر سنوي — {year}",
-				year_expense_totals=year_expense_totals,
-				year_funding_totals=year_funding_totals,
-			):
-				created["journal_entries"] += 1
-				_bud(year, "5111", "تأمين", month_first, insurance)
-
-	# —— Annual government budgets
-	for year in range(START_DATE.year, END_DATE.year + 1):
-		if budget_accumulator.get(year):
-			if _create_annual_budget(company, branch, year, budget_accumulator[year]):
-				created["budgets"] += 1
-
-	# —— Year-end engines: (1) Close P/L to retained earnings, (2) Recognize Elham unpaid funding share as receivable.
-	funding_cum = _cumulative_by_year(year_funding_totals)
-	# For now we assume Elham actual cash funding = credits to her partner current in seed (typically 0).
-	elham_actual_paid_to_date = Decimal("0")
+	# —— Year-end: 20% of annual expenses → مستحق من إلهام / جاري سيد
+	expense_cum = _cumulative_by_year(year_expense_totals)
 	for year in range(START_DATE.year, end.year + 1):
-		# (1) closing entry
-		if _close_year_result_to_retained(
-			company,
-			branch,
-			year,
-			current_year_result_acc=current_year_result,
-			retained_sayed=retained_sayed,
-			retained_elham=retained_elham,
-		):
-			created["journal_entries"] += 1
-		# (2) debt recognition vs total funding to date
-		total_funding_to_date = funding_cum.get(year, Decimal("0"))
-		if _recognize_elham_funding_debt(
+		annual = year_expense_totals.get(year, Decimal("0"))
+		if _recognize_elham_expense_share(
 			company,
 			branch,
 			year,
 			due_from_elham=due_from_elham,
 			partner_current_sayed=partner_sayed,
-			total_funding_to_date=total_funding_to_date,
-			elham_actual_paid_to_date=elham_actual_paid_to_date,
+			annual_expenses=annual,
 		):
 			created["journal_entries"] += 1
 
 	frappe.db.commit()
-	partner_report = get_partner_equity_report(company)
+	legal_report = get_microlab_legal_report(company)
 	return {
 		"ok": True,
 		"company": company,
 		"company_name": COMPANY_NAME,
 		"company_name_ar": COMPANY_NAME_AR,
 		"branch": branch,
-		"product_item": product_item,
+		"accounts": {
+			"capital_sayed": "31011",
+			"capital_elham": "31012",
+			"sayed_current": "3111",
+			"due_from_elham": "1332",
+			"expenses": sorted(EXPENSE_CODES),
+		},
 		"period": {"from": str(START_DATE), "to": str(end)},
 		"created": created,
 		"year_expense_totals": {str(y): float(v) for y, v in sorted(year_expense_totals.items())},
-		"year_funding_totals": {str(y): float(v) for y, v in sorted(year_funding_totals.items())},
-		"partner_report": partner_report,
-		"message": _("Microlab company seeded successfully (legal debt tracking enabled)."),
+		"year_expense_cumulative": {str(y): float(v) for y, v in sorted(expense_cum.items())},
+		"legal_report": legal_report,
+		"report_links": get_microlab_report_links(company, branch),
+		"message": _("Microlab company seeded (minimal chart, litigation reports ready)."),
 	}
 
 
 @frappe.whitelist()
 def get_partner_equity_report(company: str | None = None) -> dict:
-	company = company or COMPANY_ABBR
-	if not frappe.db.exists("Company", company):
-		return {"error": "Company not found"}
-
-	branch = frappe.db.get_value("Branch", {"company": company}, "name")
-	partner_sayed_acc = frappe.db.get_value(
-		"GL Account", {"company": company, "account_number": "3111", "branch": branch}, "name"
-	)
-	partner_elham_acc = frappe.db.get_value(
-		"GL Account", {"company": company, "account_number": "3112", "branch": branch}, "name"
-	)
-
-	from omnexa_accounting.utils.ledger_tools import get_gl_account_balance
-
-	sayed_bal = Decimal("0")
-	elham_bal = Decimal("0")
-	if partner_sayed_acc:
-		sayed_bal = _d(get_gl_account_balance(company, partner_sayed_acc, branch=branch).get("balance") or 0)
-	if partner_elham_acc:
-		elham_bal = _d(get_gl_account_balance(company, partner_elham_acc, branch=branch).get("balance") or 0)
-
-	# Equity partner current: credit balance negative in some conventions — normalize for display
-	sayed_credit = -sayed_bal if sayed_bal < 0 else sayed_bal
-	elham_debit = elham_bal if elham_bal > 0 else -elham_bal
-
-	total_expense_alloc = elham_debit
-	ownership_target_20 = _d(sayed_credit * OWNERSHIP_ELHAM / (Decimal("1") - OWNERSHIP_ELHAM))
-
-	return {
-		"company": company,
-		"company_name": COMPANY_NAME,
-		"company_name_ar": COMPANY_NAME_AR,
-		"partner_funded": PARTNER_FUNDED,
-		"partner_silent": PARTNER_SILENT,
-		"ownership_funded_pct": 80,
-		"ownership_silent_pct": 20,
-		"sayed_role": "دائن (ممول)",
-		"elham_role": "مدين (حصة 20% من المصروفات)",
-		"sayed_partner_current_balance": float(sayed_bal),
-		"sayed_display_credit": float(sayed_credit),
-		"elham_partner_current_balance": float(elham_bal),
-		"elham_display_debit": float(elham_debit),
-		"elham_cumulative_20pct_expenses": float(total_expense_alloc),
-		"elham_capital_gap_to_20pct": float(max(Decimal("0"), ownership_target_20)),
-		"reports_hint": {
-			"trial_balance": f"/app/query-report/Trial Balance?company={company}",
-			"balance_sheet": f"/app/query-report/Balance Sheet?company={company}",
-			"profit_and_loss": f"/app/query-report/Profit and Loss Statement?company={company}",
-			"general_ledger": f"/app/query-report/General Ledger?company={company}",
-			"budget_vs_actual": f"/app/query-report/Budget vs Actual?company={company}",
-		},
-	}
+	"""Backward-compatible alias — returns Microlab legal litigation package."""
+	return get_microlab_legal_report(company)
