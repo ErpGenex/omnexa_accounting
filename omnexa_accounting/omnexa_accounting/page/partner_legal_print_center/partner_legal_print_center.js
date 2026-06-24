@@ -8,8 +8,8 @@ frappe.pages["partner-legal-print-center"].on_page_load = function (wrapper) {
 	const $root = $(`
 		<div class="partner-legal-print-center" dir="rtl">
 			<div class="alert alert-info mb-3">
-				أضف الشركاء ونسب الملكية لأي شركة، ثم اطبع جميع المستندات القانونية
-				(الميزانية العمومية، قائمة الدخل، كشوف المديونية، والتقرير النهائي) في ملف PDF واحد.
+				أضف الشركاء ونسب الملكية لأي شركة، ثم حمّل حزمة ZIP —
+				<b>ملف PDF منفصل</b> لكل سنة (ميزانية، قائمة دخل، قيود يومية) بدون أي تداخل.
 			</div>
 			<div class="row g-2 mb-3">
 				<div class="col-md-4">
@@ -33,7 +33,7 @@ frappe.pages["partner-legal-print-center"].on_page_load = function (wrapper) {
 			</div>
 			<div class="d-flex gap-2 flex-wrap mb-3">
 				<button class="btn btn-primary btn-sm" data-action="preview">معاينة الحزمة</button>
-				<button class="btn btn-success btn-sm" data-action="print-all">طباعة كل المستندات القانونية (PDF)</button>
+				<button class="btn btn-success btn-sm" data-action="print-all">تحميل الحزمة (ZIP — ملف لكل سنة)</button>
 				<button class="btn btn-outline-secondary btn-sm" data-action="open-setup">إعداد الشركاء القانوني</button>
 			</div>
 			<div data-section="summary" class="mb-3"></div>
@@ -43,14 +43,15 @@ frappe.pages["partner-legal-print-center"].on_page_load = function (wrapper) {
 					<table class="table table-sm mb-0">
 						<thead>
 							<tr>
-								<th>م</th>
-								<th>اسم المستند</th>
-								<th>عدد الصفوف</th>
+								<th>السنة</th>
+								<th>اسم الملف</th>
+								<th>المستند</th>
+								<th>الصفوف</th>
 								<th>الحالة</th>
 							</tr>
 						</thead>
 						<tbody data-section="reports">
-							<tr><td colspan="4" class="text-muted">اضغط «معاينة الحزمة» لعرض المستندات.</td></tr>
+							<tr><td colspan="5" class="text-muted">اضغط «معاينة الحزمة» لعرض المستندات.</td></tr>
 						</tbody>
 					</table>
 				</div>
@@ -139,7 +140,9 @@ frappe.pages["partner-legal-print-center"].on_page_load = function (wrapper) {
 				&nbsp;|&nbsp; <b>الشريك المدين:</b> ${frappe.utils.escape_html(cert.debtor_partner || "—")}
 				&nbsp;|&nbsp; <b>الشريك الممول:</b> ${frappe.utils.escape_html(cert.funding_partner || "—")}
 				&nbsp;|&nbsp; <b>المديونية المستحقة:</b> ${format_currency(cert.final_amount_due || 0)}
-				&nbsp;|&nbsp; <b>عدد المستندات:</b> ${data.document_count || "—"}
+				&nbsp;|&nbsp; <b>عدد الملفات:</b> ${data.document_count || "—"}
+				&nbsp;|&nbsp; <b>السنوات:</b> ${(data.years || []).join("، ") || "—"}
+				&nbsp;|&nbsp; <b>التسليم:</b> ZIP
 			</div>
 		`);
 		const rows = (data.reports || [])
@@ -148,14 +151,15 @@ frappe.pages["partner-legal-print-center"].on_page_load = function (wrapper) {
 					? `<span class="text-success">جاهز</span>`
 					: `<span class="text-danger">${frappe.utils.escape_html(r.error || "خطأ")}</span>`;
 				return `<tr>
-					<td>${r.doc_no || "—"}</td>
+					<td>${r.year != null ? r.year : "—"}</td>
+					<td><code>${frappe.utils.escape_html(r.file || "")}</code></td>
 					<td>${frappe.utils.escape_html(r.title_ar || "")}</td>
 					<td>${r.row_count != null ? r.row_count : "—"}</td>
 					<td>${status}</td>
 				</tr>`;
 			})
 			.join("");
-		$root.find('[data-section="reports"]').html(rows || `<tr><td colspan="4">لا توجد مستندات</td></tr>`);
+		$root.find('[data-section="reports"]').html(rows || `<tr><td colspan="5">لا توجد مستندات</td></tr>`);
 	};
 
 	const preview = async () => {

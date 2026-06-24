@@ -101,6 +101,10 @@ AR_EXACT: dict[str, str] = {
 	"Historical Liquidation Snapshot": "ملخص التصفية التاريخي",
 	"Net": "الصافي",
 	"Liquidation": "التصفية",
+	"Year Total": "إجمالي السنة",
+	"Party Type": "نوع الطرف",
+	"Party": "الطرف",
+	"Remarks": "البيان",
 	"Liquidation cost": "تكلفة التصفية",
 	"Partner debt (due)": "مديونية الشريك (مستحق)",
 	"Net liquidation value": "صافي قيمة التصفية",
@@ -123,6 +127,8 @@ AR_PHRASE_PATTERNS: list[tuple[str, str]] = [
 	(r"^(.+) unpaid expense share across funded expenses\.$", r"حصة المصروفات غير المسددة عبر المصروفات الممولة لـ \1."),
 	(r"^(.+) share of cumulative losses\.$", r"حصة الخسائر المتراكمة لـ \1."),
 	(r"^Credits posted as settlement \(Due From Partner account\) for (.+)\.$", r"قيود دائنة مسجّلة كتسوية (حساب مستحق من الشريك) لـ \1."),
+	(r"^Journal Entries for Fiscal Year (.+)$", r"قيود اليومية للسنة المالية \1"),
+	(r"^Official journal from (.+) to (.+)$", r"دفتر اليومية الرسمي من \1 إلى \2"),
 ]
 
 AR_WORD_REPLACEMENTS = {
@@ -246,6 +252,9 @@ def arabize_text(value: Any) -> str:
 	as_at = re.match(r"^As at (.+)$", text)
 	if as_at:
 		return f"كما في {format_date_ar(as_at.group(1))}"
+	official = re.match(r"^Official journal from (.+) to (.+)$", text)
+	if official:
+		return f"دفتر اليومية الرسمي من {format_date_ar(official.group(1))} إلى {format_date_ar(official.group(2))}"
 	pattern_out = _apply_pattern(text)
 	if pattern_out:
 		return pattern_out

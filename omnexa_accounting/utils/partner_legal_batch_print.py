@@ -3,11 +3,14 @@
 
 from __future__ import annotations
 
-from typing import Any
+import io
+import zipfile
+from typing import Any, Iterator
 
 import frappe
 from frappe import _
 from frappe.desk.query_report import generate_report_result, get_report_doc
+from frappe.utils import getdate
 from frappe.utils.pdf import get_file_data_from_writer, get_pdf
 from pypdf import PdfWriter
 
@@ -28,25 +31,30 @@ from omnexa_accounting.utils.partner_legal_arabic import (
 )
 from omnexa_accounting.utils.partner_legal_reporting import generate_court_evidence_package
 
-# ── أسماء المستندات القانونية بالعربية ─────────────────────────────────────
-LEGAL_DOC_SECTIONS: list[dict[str, Any]] = [
-	{"kind": "final_summary", "doc_no": 1, "title_ar": "التقرير النهائي عن المدة — ملخص مديونيات الشركاء"},
-	{"kind": "report", "doc_no": 2, "report": "Balance Sheet", "title_ar": "الميزانية العمومية لكل سنة"},
-	{"kind": "report", "doc_no": 3, "report": "Income Statement", "title_ar": "قائمة الدخل لكل سنة"},
+# ── مستندات سنوية (ملف PDF منفصل لكل سنة) ───────────────────────────────────
+YEARLY_REPORT_SPECS: list[dict[str, Any]] = [
+	{"report": "Balance Sheet", "slug": "01-الميزانية-العمومية", "title_ar": "الميزانية العمومية"},
+	{"report": "Income Statement", "slug": "02-قائمة-الدخل", "title_ar": "قائمة الدخل"},
+	{"report": "General Journal", "slug": "03-قيود-اليومية", "title_ar": "قيود اليومية"},
+]
+
+# ── مستندات قانونية للفترة كاملة (ملف منفصل لكل نوع) ───────────────────────
+PARTNER_PERIOD_SECTIONS: list[dict[str, Any]] = [
+	{"kind": "final_summary", "slug": "01-التقرير-النهائي", "title_ar": "التقرير النهائي عن المدة — ملخص مديونيات الشركاء"},
 	{
 		"kind": "report",
-		"doc_no": 4,
+		"slug": "02-كشف-مديونية-الشريك",
 		"report": "Partner Debt Statement",
 		"title_ar": "كشف مديونية الشريك — تفصيل سنوي",
 		"debt_pct_fraction": True,
 	},
-	{"kind": "report", "doc_no": 5, "report": "Partner Contribution Report", "title_ar": "تقرير مساهمة الشركاء في التمويل"},
-	{"kind": "report", "doc_no": 6, "report": "Partner Loss Allocation Report", "title_ar": "تقرير توزيع الخسائر على الشركاء"},
-	{"kind": "report", "doc_no": 7, "report": "Partner Recovery Report", "title_ar": "تقرير استرداد مساهمات الشريك"},
-	{"kind": "report", "doc_no": 8, "report": "Legal Claim Statement", "title_ar": "بيان المطالبة القانونية — إثبات المديونية"},
+	{"kind": "report", "slug": "03-مساهمة-الشركاء", "report": "Partner Contribution Report", "title_ar": "تقرير مساهمة الشركاء في التمويل"},
+	{"kind": "report", "slug": "04-توزيع-الخسائر", "report": "Partner Loss Allocation Report", "title_ar": "تقرير توزيع الخسائر على الشركاء"},
+	{"kind": "report", "slug": "05-استرداد-المساهمات", "report": "Partner Recovery Report", "title_ar": "تقرير استرداد مساهمات الشريك"},
+	{"kind": "report", "slug": "06-بيان-المطالبة-القانونية", "report": "Legal Claim Statement", "title_ar": "بيان المطالبة القانونية — إثبات المديونية"},
 	{
 		"kind": "report",
-		"doc_no": 9,
+		"slug": "07-تقرير-التصفية",
 		"report": "Liquidation Historical Report",
 		"title_ar": "تقرير التصفية التاريخي",
 		"as_of_only": True,
@@ -78,6 +86,57 @@ def _arabic_notes(text: str | None) -> str:
 	if not text:
 		return ""
 	return arabize_text(text)
+
+
+def _iter_years(from_date: str, to_date: str) -> Iterator[tuple[int, str, str]]:
+	start = getdate(from_date)
+	end = getdate(to_date)
+	for year in range(start.year, end.year + 1):
+		year_start = max(start, getdate(f"{year}-01-01"))
+		year_end = min(end, getdate(f"{year}-12-31"))
+		yield year, str(year_start), str(year_end)
+
+
+def _build_document_plan(from_date: str, to_date: str) -> list[dict[str, Any]]:
+	"""Each entry = one separate PDF inside the ZIP (no year mixing)."""
+	plan: list[dict[str, Any]] = [
+		{"kind": "cover", "file": "00-غلاف-الحزمة.pdf", "title_ar": "غلاف حزمة المستندات القانونية", "year": None},
+	]
+	for year, year_from, year_to in _iter_years(from_date, to_date):
+		folder = str(year)
+		for spec in YEARLY_REPORT_SPECS:
+			plan.append(
+				{
+					"kind": "yearly_report",
+					"year": year,
+					"file": f"{folder}/{spec['slug']}-{year}.pdf",
+					"title_ar": f"{spec['title_ar']} — {year}",
+					"report": spec["report"],
+					"from_date": year_from,
+					"to_date": year_to,
+					"landscape": True,
+				}
+			)
+	for spec in PARTNER_PERIOD_SECTIONS:
+		plan.append(
+			{
+				**spec,
+				"file": f"تقارير-الفترة/{spec['slug']}.pdf",
+				"year": None,
+				"landscape": spec.get("kind") != "final_summary",
+			}
+		)
+	return plan
+
+
+def _pdf_options(*, landscape: bool) -> dict[str, str]:
+	return {"orientation": "Landscape" if landscape else "Portrait", "page-size": "A4"}
+
+
+def _html_to_pdf(html: str, *, landscape: bool) -> bytes:
+	writer = PdfWriter()
+	get_pdf(html, _pdf_options(landscape=landscape), output=writer)
+	return get_file_data_from_writer(writer)
 
 
 def _read_financial_print_css() -> str:
@@ -189,6 +248,7 @@ def _render_report_section_html(
 	filters: dict,
 	columns: list[dict],
 	rows: list[dict],
+	subtitle_ar: str = "مستند قانوني — محاسبة الشركاء",
 ) -> str:
 	css = _read_financial_print_css()
 	company = filters.get("company") or ""
@@ -229,7 +289,7 @@ def _render_report_section_html(
 
 	body = f"""
 <div class="erpg-fin-print">
-	{_doc_banner(doc_no=doc_no, title_ar=title_ar, subtitle_ar="مستند قانوني — محاسبة الشركاء")}
+	{_doc_banner(doc_no=doc_no, title_ar=title_ar, subtitle_ar=subtitle_ar)}
 	<div class="erpg-fin-print__meta-grid">{_meta_grid(filters, filters.get("company"))}</div>
 	{table_html}
 	<div class="erpg-fin-print__footer-meta" style="margin-top:12px;font-size:9px;">
@@ -239,7 +299,7 @@ def _render_report_section_html(
 	return _html_shell(css=css, body=body)
 
 
-def _render_cover_html(*, setup, filters: dict, package: dict) -> str:
+def _render_cover_html(*, setup, filters: dict, package: dict, document_plan: list[dict]) -> str:
 	css = _read_financial_print_css()
 	cert = package.get("certificate") or {}
 	company_label = get_company_name_ar(setup.company)
@@ -251,16 +311,19 @@ def _render_cover_html(*, setup, filters: dict, package: dict) -> str:
 		for p in setup.partners or []
 	)
 	docs_html = "".join(
-		f"<li>المستند {spec['doc_no']}: {frappe.as_unicode(spec['title_ar'])}</li>" for spec in LEGAL_DOC_SECTIONS
+		f"<li>{frappe.as_unicode(item['file'])} — {frappe.as_unicode(item['title_ar'])}</li>"
+		for item in document_plan
+		if item.get("kind") != "cover"
 	)
 	period_from = format_date_ar(filters.get("from_date"))
 	period_to = format_date_ar(filters.get("to_date"))
+	yearly_count = len([d for d in document_plan if d.get("kind") == "yearly_report"])
 
 	body = f"""
 <div class="erpg-fin-print">
 	<div class="legal-doc-header">
 		<h1>حزمة المستندات القانونية للشركاء</h1>
-		<h2>طباعة موحّدة لجميع التقارير المحاسبية والقانونية</h2>
+		<h2>ملف PDF منفصل لكل سنة ولكل نوع مستند — بدون أي تداخل</h2>
 	</div>
 	<div class="erpg-fin-print__meta-grid">
 		<div class="erpg-fin-print__meta-box"><div class="erpg-fin-print__meta-label">{AR_META['company']}</div>
@@ -273,7 +336,8 @@ def _render_cover_html(*, setup, filters: dict, package: dict) -> str:
 		<div class="erpg-fin-print__meta-value">{format_money_ar(cert.get('final_amount_due'))}</div></div>
 	</div>
 	<h4>الشركاء</h4><ul>{partners_html}</ul>
-	<h4>قائمة المستندات المرفقة ({len(LEGAL_DOC_SECTIONS)} مستندات)</h4><ul>{docs_html}</ul>
+	<h4>محتويات الحزمة ({len(document_plan)} ملف PDF — {yearly_count} مستنداً سنوياً)</h4>
+	<ul>{docs_html}</ul>
 	<p style="font-size:0.85rem;color:#444;">{_arabic_notes(setup.notes)}</p>
 </div>"""
 	return _html_shell(css=css, body=body, landscape=False)
@@ -383,8 +447,6 @@ def _render_final_period_summary_html(
 def _normalize_rows(rows: list, columns: list[dict]) -> list[dict]:
 	if not rows:
 		return []
-	if isinstance(rows[0], dict):
-		return rows
 	names = [c.get("fieldname") for c in columns]
 	out: list[dict] = []
 	for row in rows:
@@ -403,41 +465,88 @@ def _run_report(report_name: str, filters: dict) -> tuple[list[dict], list[dict]
 	return columns, rows
 
 
-def _iter_package_sections(setup, filters: dict, package: dict) -> list[tuple[dict, str, bool]]:
-	"""Return (spec, html, landscape) for each section."""
-	sections: list[tuple[dict, str, bool]] = []
-	for spec in LEGAL_DOC_SECTIONS:
-		if spec.get("kind") == "final_summary":
-			sections.append(
-				(
-					spec,
-					_render_final_period_summary_html(
-						setup=setup, filters=filters, package=package, doc_no=spec["doc_no"]
-					),
-					False,
-				)
-			)
+def _filter_rows_for_single_year(rows: list[dict], year: int) -> list[dict]:
+	"""Ensure no data from other fiscal years appears in a yearly PDF."""
+	year_s = str(year)
+	out: list[dict] = []
+	active = False
+	for row in rows or []:
+		fy = row.get("fiscal_year")
+		if fy is not None and str(fy) != year_s:
+			if active:
+				break
 			continue
+		if fy is not None and str(fy) == year_s:
+			active = True
+		if active or fy is None:
+			out.append(row)
+	return out if out else [r for r in rows or [] if str(r.get("fiscal_year") or year_s) == year_s or not r.get("fiscal_year")]
 
-		report_filters = _report_filters(filters, spec)
-		columns, rows = _run_report(spec["report"], report_filters)
-		sections.append(
-			(
-				spec,
-				_render_report_section_html(
-					doc_no=spec["doc_no"],
-					title_ar=spec["title_ar"],
-					filters=report_filters,
-					columns=columns,
-					rows=rows,
-				),
-				True,
-			)
+
+def _year_scoped_filters(base: dict, item: dict) -> dict:
+	filters = dict(base)
+	filters["from_date"] = item["from_date"]
+	filters["to_date"] = item["to_date"]
+	filters["as_of_date"] = item["to_date"]
+	return filters
+
+
+def _generate_document_pdf(
+	*,
+	item: dict,
+	setup,
+	base_filters: dict,
+	package: dict,
+	doc_index: int,
+) -> bytes:
+	kind = item.get("kind")
+	if kind == "cover":
+		html = _render_cover_html(
+			setup=setup,
+			filters=base_filters,
+			package=package,
+			document_plan=_build_document_plan(base_filters["from_date"], base_filters["to_date"]),
 		)
-	return sections
+		return _html_to_pdf(html, landscape=False)
+
+	if kind == "final_summary":
+		html = _render_final_period_summary_html(
+			setup=setup, filters=base_filters, package=package, doc_no=doc_index
+		)
+		return _html_to_pdf(html, landscape=False)
+
+	if kind == "yearly_report":
+		report_filters = _year_scoped_filters(base_filters, item)
+		columns, rows = _run_report(item["report"], report_filters)
+		rows = _normalize_rows(rows, columns)
+		rows = _filter_rows_for_single_year(rows, int(item["year"]))
+		html = _render_report_section_html(
+			doc_no=doc_index,
+			title_ar=item["title_ar"],
+			filters=report_filters,
+			columns=columns,
+			rows=rows,
+			subtitle_ar=f"سنة {item['year']} — بدون تداخل مع سنوات أخرى",
+		)
+		return _html_to_pdf(html, landscape=True)
+
+	if kind == "report":
+		report_filters = _report_filters(base_filters, item)
+		columns, rows = _run_report(item["report"], report_filters)
+		html = _render_report_section_html(
+			doc_no=doc_index,
+			title_ar=item["title_ar"],
+			filters=report_filters,
+			columns=columns,
+			rows=rows,
+			subtitle_ar="تقرير الفترة الكاملة",
+		)
+		return _html_to_pdf(html, landscape=bool(item.get("landscape", True)))
+
+	frappe.throw(_("Unsupported document kind: {0}").format(kind))
 
 
-def build_merged_partner_legal_pdf(company: str, from_date: str, to_date: str, branch: str | None = None) -> bytes:
+def build_partner_legal_zip(company: str, from_date: str, to_date: str, branch: str | None = None) -> bytes:
 	if not frappe.db.exists("Company Partner Legal Setup", company):
 		frappe.throw(
 			_("Create a Company Partner Legal Setup for {0} first.").format(company),
@@ -453,39 +562,55 @@ def build_merged_partner_legal_pdf(company: str, from_date: str, to_date: str, b
 	package_filters["secondary_pct"] = float(filters.get("secondary_pct") or 0) / 100.0
 	package = generate_court_evidence_package(**package_filters)
 
-	writer = PdfWriter()
-	landscape_opts = {"orientation": "Landscape", "page-size": "A4"}
-	portrait_opts = {"orientation": "Portrait", "page-size": "A4"}
+	plan = _build_document_plan(from_date, to_date)
+	buffer = io.BytesIO()
+	with zipfile.ZipFile(buffer, "w", compression=zipfile.ZIP_DEFLATED) as zf:
+		for idx, item in enumerate(plan, start=1):
+			pdf_bytes = _generate_document_pdf(
+				item=item,
+				setup=setup,
+				base_filters=filters,
+				package=package,
+				doc_index=idx,
+			)
+			zf.writestr(item["file"], pdf_bytes)
+	return buffer.getvalue()
 
-	get_pdf(_render_cover_html(setup=setup, filters=filters, package=package), portrait_opts, output=writer)
 
-	for spec, html, landscape in _iter_package_sections(setup, filters, package):
-		get_pdf(html, landscape_opts if landscape else portrait_opts, output=writer)
-
-	return get_file_data_from_writer(writer)
-
-
-def _preview_section(spec: dict, filters: dict) -> dict:
-	if spec.get("kind") == "final_summary":
-		return {
-			"doc_no": spec["doc_no"],
-			"title_ar": spec["title_ar"],
-			"kind": "final_summary",
-			"ok": True,
-		}
-	report_filters = _report_filters(filters, spec)
+def _preview_document_item(item: dict, base_filters: dict) -> dict:
 	try:
-		_, rows = _run_report(spec["report"], report_filters)
-		return {
-			"doc_no": spec["doc_no"],
-			"title_ar": spec["title_ar"],
-			"row_count": len(rows or []),
-			"ok": True,
-		}
+		if item.get("kind") == "cover":
+			return {"file": item["file"], "title_ar": item["title_ar"], "year": None, "ok": True}
+		if item.get("kind") == "final_summary":
+			return {"file": item["file"], "title_ar": item["title_ar"], "year": None, "kind": "final_summary", "ok": True}
+		if item.get("kind") == "yearly_report":
+			report_filters = _year_scoped_filters(base_filters, item)
+			columns, rows = _run_report(item["report"], report_filters)
+			rows = _normalize_rows(rows, columns)
+			rows = _filter_rows_for_single_year(rows, int(item["year"]))
+			return {
+				"file": item["file"],
+				"title_ar": item["title_ar"],
+				"year": item["year"],
+				"row_count": len(rows or []),
+				"ok": True,
+			}
+		if item.get("kind") == "report":
+			report_filters = _report_filters(base_filters, item)
+			_, rows = _run_report(item["report"], report_filters)
+			return {
+				"file": item["file"],
+				"title_ar": item["title_ar"],
+				"year": None,
+				"row_count": len(rows or []),
+				"ok": True,
+			}
+		return {"file": item.get("file"), "title_ar": item.get("title_ar"), "ok": False, "error": "نوع مستند غير معروف"}
 	except Exception as exc:
 		return {
-			"doc_no": spec["doc_no"],
-			"title_ar": spec["title_ar"],
+			"file": item.get("file"),
+			"title_ar": item.get("title_ar"),
+			"year": item.get("year"),
 			"ok": False,
 			"error": arabize_text(str(exc)),
 		}
@@ -504,7 +629,8 @@ def get_partner_legal_print_preview(company: str, from_date: str, to_date: str, 
 	package_filters["secondary_pct"] = float(filters.get("secondary_pct") or 0) / 100.0
 	package = generate_court_evidence_package(**package_filters)
 
-	reports = [_preview_section(spec, filters) for spec in LEGAL_DOC_SECTIONS]
+	plan = _build_document_plan(from_date, to_date)
+	reports = [_preview_document_item(item, filters) for item in plan if item.get("kind") != "cover"]
 
 	return {
 		"ok": True,
@@ -524,7 +650,10 @@ def get_partner_legal_print_preview(company: str, from_date: str, to_date: str, 
 		],
 		"certificate": package.get("certificate"),
 		"reports": reports,
-		"document_count": len(LEGAL_DOC_SECTIONS) + 1,
+		"document_count": len(plan),
+		"yearly_files_per_year": len(YEARLY_REPORT_SPECS),
+		"years": [y for y, _, _ in _iter_years(from_date, to_date)],
+		"delivery": "zip",
 		"setup_url": f"/app/company-partner-legal-setup/{company}",
 	}
 
@@ -532,13 +661,14 @@ def get_partner_legal_print_preview(company: str, from_date: str, to_date: str, 
 @frappe.whitelist()
 def download_partner_legal_package(company: str, from_date: str, to_date: str, branch: str | None = None):
 	frappe.has_permission("Company Partner Legal Setup", "read", throw=True)
-	pdf_bytes = build_merged_partner_legal_pdf(company, from_date, to_date, branch=branch)
+	zip_bytes = build_partner_legal_zip(company, from_date, to_date, branch=branch)
 	safe_company = company.replace(" ", "-")
-	frappe.local.response.filename = f"حزمة-المستندات-القانونية-{safe_company}-{from_date}-{to_date}.pdf"
-	frappe.local.response.filecontent = pdf_bytes
-	frappe.local.response.type = "pdf"
+	frappe.local.response.filename = f"حزمة-المستندات-القانونية-{safe_company}-{from_date}-{to_date}.zip"
+	frappe.local.response.filecontent = zip_bytes
+	frappe.local.response.type = "zip"
 
 
-def smoke_test_partner_legal_pdf(company: str, from_date: str, to_date: str) -> dict:
-	pdf_bytes = build_merged_partner_legal_pdf(company, from_date, to_date)
-	return {"ok": True, "bytes": len(pdf_bytes), "documents": len(LEGAL_DOC_SECTIONS) + 1}
+def smoke_test_partner_legal_zip(company: str, from_date: str, to_date: str) -> dict:
+	zip_bytes = build_partner_legal_zip(company, from_date, to_date)
+	plan = _build_document_plan(from_date, to_date)
+	return {"ok": True, "bytes": len(zip_bytes), "files": len(plan), "years": len(list(_iter_years(from_date, to_date)))}
