@@ -49,8 +49,11 @@ WORKSPACE_SECTIONS: list[tuple[str, list[WorkspaceLink]]] = [
 		[
 			("Report", "General Ledger", "General Ledger"),
 			("Report", "Trial Balance", "Trial Balance"),
+			("Report", "Adjusted Trial Balance", "Adjusted TB"),
 			("Report", "Profit and Loss Statement", "P&L"),
 			("Report", "Balance Sheet", "Balance Sheet"),
+			("Report", "Statement of Changes in Equity", "Changes in Equity"),
+			("Report", "VAT Position", "VAT Position"),
 			("Report", "General Journal", "General Journal"),
 			("Report", "Income Statement", "Income Statement"),
 		],

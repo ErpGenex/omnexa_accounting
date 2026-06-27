@@ -175,14 +175,14 @@ class GLAccount(NestedSet):
 
 	def _validate_posting_type_consistency(self):
 		pt = (self.posting_type or "Posting").strip()
+		if cint(self.is_group) and pt != "Header":
+			self.posting_type = "Header"
+			pt = "Header"
 		if pt == "Header":
 			self.is_group = 1
 			self.allow_direct_posting = 0
 		elif pt in ("Posting", "Control Account"):
 			self.is_group = 0
-		if cint(self.is_group) and pt != "Header":
-			self.posting_type = "Header"
-			self.allow_direct_posting = 0
 
 	def _validate_financial_controls(self):
 		settings = get_coa_settings(self.company)
@@ -198,7 +198,7 @@ class GLAccount(NestedSet):
 
 	def _validate_pl_bucket(self):
 		b = (self.pl_bucket or "").strip()
-		account_type = _normalize_account_class(self.account_type)
+		account_type = _normalize_account_class(self.account_class or self.account_type)
 		if account_type == "Revenue":
 			if b not in _INCOME_BUCKETS:
 				frappe.throw(

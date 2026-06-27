@@ -477,11 +477,12 @@ class SalesInvoice(Document):
 		doc.branch = self.branch
 		doc.reference_doctype = self.doctype
 		doc.reference_name = self.name
-		# Legacy E-Document Submission links optional profiles; ETA config is on Branch.
-		if frappe.db.has_column("E-Document Submission", "tax_authority_profile"):
-			doc.tax_authority_profile = None
-		if frappe.db.has_column("E-Document Submission", "signing_profile"):
-			doc.signing_profile = None
+		if self.branch and frappe.db.has_column("E-Document Submission", "tax_authority_profile"):
+			doc.tax_authority_profile = frappe.db.get_value(
+				"Branch", self.branch, "tax_authority_profile"
+			)
+		if self.branch and frappe.db.has_column("E-Document Submission", "signing_profile"):
+			doc.signing_profile = frappe.db.get_value("Branch", self.branch, "signing_profile")
 		doc.payload_hash = h
 		doc.authority_operation = "submit"
 		doc.authority_status = DOC_STATUS_QUEUED

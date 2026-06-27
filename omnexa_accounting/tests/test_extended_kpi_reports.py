@@ -129,7 +129,7 @@ class TestExtendedKpiReports(FrappeTestCase):
 		out = cfs_struct_exec({"company": self.company, "from_date": fd, "to_date": td})
 		cols, data, *_ = out
 		self.assertTrue(cols)
-		self.assertEqual(len(data), 7)
+		self.assertEqual(len(data), 8)
 
 	def test_purchase_delivery_performance_runs(self):
 		out = pdp_exec({"company": self.company})

@@ -57,6 +57,8 @@ def apply_invoice_tax_rule_defaults(doc) -> bool:
 	"""Set header (and line) tax_rule when missing. Returns True if a rule was applied."""
 	if not doc.get("company"):
 		return False
+	if doc.meta.has_field("due_date") and doc.get("posting_date") and not doc.get("due_date"):
+		doc.due_date = doc.posting_date
 	if doc.meta.has_field("tax_category") and not doc.get("tax_category"):
 		cat = _default_sales_tax_category()
 		if cat and frappe.db.exists("Tax Category", cat):

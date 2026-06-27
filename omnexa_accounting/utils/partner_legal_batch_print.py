@@ -10,8 +10,9 @@ from typing import Any, Iterator
 import frappe
 from frappe import _
 from frappe.desk.query_report import generate_report_result, get_report_doc
-from frappe.utils import getdate
+from frappe.utils import cint, getdate
 from frappe.utils.pdf import get_file_data_from_writer, get_pdf
+from frappe.utils.xlsxutils import make_xlsx
 from pypdf import PdfWriter
 
 from omnexa_accounting.omnexa_accounting.doctype.company_partner_legal_setup.company_partner_legal_setup import (
@@ -323,7 +324,7 @@ def _render_cover_html(*, setup, filters: dict, package: dict, document_plan: li
 <div class="erpg-fin-print">
 	<div class="legal-doc-header">
 		<h1>حزمة المستندات القانونية للشركاء</h1>
-		<h2>ملف PDF منفصل لكل سنة ولكل نوع مستند — بدون أي تداخل</h2>
+	<h2>ملف PDF وملف Excel منفصلان لكل سنة ولكل نوع مستند — بدون أي تداخل</h2>
 	</div>
 	<div class="erpg-fin-print__meta-grid">
 		<div class="erpg-fin-print__meta-box"><div class="erpg-fin-print__meta-label">{AR_META['company']}</div>
@@ -491,6 +492,167 @@ def _year_scoped_filters(base: dict, item: dict) -> dict:
 	return filters
 
 
+def _xlsx_file_for_item(item: dict) -> str:
+	return item["file"].rsplit(".", 1)[0] + ".xlsx" if item["file"].endswith(".pdf") else f"{item['file']}.xlsx"
+
+
+def _rows_to_xlsx_bytes(
+	*,
+	title_ar: str,
+	columns: list[dict],
+	rows: list[dict],
+	company: str,
+	meta_rows: list[tuple[str, str]] | None = None,
+) -> bytes:
+	visible_columns = prepare_columns_for_arabic(
+		[c for c in columns if c.get("fieldname") and c.get("fieldname") != "_check"]
+	)
+	data: list[list] = [[title_ar]]
+	if meta_rows:
+		data.extend([[label, value] for label, value in meta_rows])
+		data.append([])
+	header = [AR_META["serial"]] + [str(col.get("label") or "") for col in visible_columns]
+	data.append(header)
+	fieldnames = [c.get("fieldname") for c in visible_columns]
+	row_num = 0
+	for raw in rows or []:
+		if isinstance(raw, (list, tuple)):
+			raw = {fieldnames[i]: raw[i] if i < len(raw) else None for i in range(len(fieldnames))}
+		if not isinstance(raw, dict):
+			continue
+		row = arabize_row(raw, company=company)
+		if row.get("year_header"):
+			data.append([row.get("account") or row.get("label") or ""])
+			continue
+		row_num += 1
+		values = [
+			format_cell_ar(row.get(col.get("fieldname")), col.get("fieldtype"), row, col.get("fieldname"), company=company)
+			for col in visible_columns
+		]
+		data.append([row_num, *values])
+	if len(data) <= (3 if meta_rows else 1):
+		data.append([AR_META["no_data"]])
+	return make_xlsx(data, title_ar[:31] or "تقرير").getvalue()
+
+
+def _cover_xlsx_bytes(*, setup, filters: dict, package: dict, document_plan: list[dict]) -> bytes:
+	cert = package.get("certificate") or {}
+	company_label = get_company_name_ar(setup.company)
+	period_from = format_date_ar(filters.get("from_date"))
+	period_to = format_date_ar(filters.get("to_date"))
+	data = [
+		["حزمة المستندات القانونية للشركاء"],
+		[AR_META["company"], company_label],
+		[AR_META["period"], f"{period_from} — {period_to}"],
+		["الشريك المدين", arabize_text(cert.get("debtor_partner"))],
+		["إجمالي المديونية المستحقة", format_money_ar(cert.get("final_amount_due"))],
+		[],
+		["الشركاء"],
+	]
+	for partner in setup.partners or []:
+		data.append(
+			[
+				frappe.as_unicode(partner.partner_name_ar or partner.partner_name),
+				f"{float(partner.ownership_percent or 0):.2f}٪",
+				"ممول" if partner.is_funding_partner else "",
+			]
+		)
+	data.extend([[], ["محتويات الحزمة"]])
+	for item in document_plan:
+		if item.get("kind") == "cover":
+			continue
+		data.append([item.get("file"), item.get("title_ar")])
+	return make_xlsx(data, "غلاف الحزمة").getvalue()
+
+
+def _final_summary_xlsx_bytes(*, setup, filters: dict, package: dict) -> bytes:
+	cert = package.get("certificate") or {}
+	liable = get_primary_liable_partner(setup)
+	liable_pct = float(liable.ownership_percent or 0) if liable else 0
+	debt_rows = package.get("partner_debt_statement") or []
+	loss_rows = package.get("partner_loss_allocation") or []
+	data = [
+		["التقرير النهائي عن المدة"],
+		[AR_META["company"], get_company_name_ar(setup.company)],
+		[AR_META["period"], f'{format_date_ar(filters.get("from_date"))} — {format_date_ar(filters.get("to_date"))}'],
+		["المديونية المستحقة", format_money_ar(cert.get("final_amount_due"))],
+		[],
+		["جدول المديونية السنوية"],
+		["السنة", "إجمالي المصروفات", f"حصة الشريك ({liable_pct:.0f}%)", "المسدد", "مديونية السنة", "المديونية المتراكمة"],
+	]
+	for row in debt_rows:
+		data.append(
+			[
+				row.get("year"),
+				format_money_ar(row.get("total_expenses")),
+				format_money_ar(row.get("secondary_share")),
+				format_money_ar(row.get("secondary_paid")),
+				format_money_ar(row.get("debt_year")),
+				format_money_ar(row.get("cumulative_debt")),
+			]
+		)
+	data.extend([[], ["جدول توزيع الخسائر"], ["السنة", "صافي النتيجة", "حصة الشريك المدين", "خسائر متراكمة"]])
+	for row in loss_rows:
+		data.append(
+			[
+				row.get("year"),
+				format_money_ar(row.get("net_result")),
+				format_money_ar(row.get("secondary_share")),
+				format_money_ar(row.get("cumulative_loss_share")),
+			]
+		)
+	return make_xlsx(data, "التقرير النهائي").getvalue()
+
+
+def _generate_document_xlsx(
+	*,
+	item: dict,
+	setup,
+	base_filters: dict,
+	package: dict,
+) -> bytes:
+	kind = item.get("kind")
+	company = setup.company
+	if kind == "cover":
+		return _cover_xlsx_bytes(
+			setup=setup,
+			filters=base_filters,
+			package=package,
+			document_plan=_build_document_plan(base_filters["from_date"], base_filters["to_date"]),
+		)
+	if kind == "final_summary":
+		return _final_summary_xlsx_bytes(setup=setup, filters=base_filters, package=package)
+	if kind == "yearly_report":
+		report_filters = _year_scoped_filters(base_filters, item)
+		columns, rows = _run_report(item["report"], report_filters)
+		rows = _normalize_rows(rows, columns)
+		rows = _filter_rows_for_single_year(rows, int(item["year"]))
+		return _rows_to_xlsx_bytes(
+			title_ar=item["title_ar"],
+			columns=columns,
+			rows=rows,
+			company=company,
+			meta_rows=[
+				(AR_META["company"], get_company_name_ar(company)),
+				(AR_META["period"], f'{format_date_ar(report_filters.get("from_date"))} — {format_date_ar(report_filters.get("to_date"))}'),
+			],
+		)
+	if kind == "report":
+		report_filters = _report_filters(base_filters, item)
+		columns, rows = _run_report(item["report"], report_filters)
+		return _rows_to_xlsx_bytes(
+			title_ar=item["title_ar"],
+			columns=columns,
+			rows=rows,
+			company=company,
+			meta_rows=[
+				(AR_META["company"], get_company_name_ar(company)),
+				(AR_META["period"], f'{format_date_ar(report_filters.get("from_date"))} — {format_date_ar(report_filters.get("to_date"))}'),
+			],
+		)
+	frappe.throw(_("Unsupported document kind: {0}").format(kind))
+
+
 def _generate_document_pdf(
 	*,
 	item: dict,
@@ -546,23 +708,54 @@ def _generate_document_pdf(
 	frappe.throw(_("Unsupported document kind: {0}").format(kind))
 
 
-def build_partner_legal_zip(company: str, from_date: str, to_date: str, branch: str | None = None) -> bytes:
+def _load_partner_legal_context(
+	company: str, from_date: str, to_date: str, branch: str | None = None
+) -> tuple[Any, dict, dict, list[dict]]:
 	if not frappe.db.exists("Company Partner Legal Setup", company):
 		frappe.throw(
 			_("Create a Company Partner Legal Setup for {0} first.").format(company),
 			title=_("Setup Required"),
 		)
-
 	setup = frappe.get_doc("Company Partner Legal Setup", company)
 	if branch:
 		setup.branch = branch
 	filters = build_report_filters_from_setup(setup, from_date, to_date)
-
 	package_filters = dict(filters)
 	package_filters["secondary_pct"] = float(filters.get("secondary_pct") or 0) / 100.0
 	package = generate_court_evidence_package(**package_filters)
-
 	plan = _build_document_plan(from_date, to_date)
+	return setup, filters, package, plan
+
+
+def _find_plan_item(plan: list[dict], file: str) -> dict | None:
+	file = (file or "").strip()
+	for item in plan:
+		if item.get("file") == file:
+			return item
+	return None
+
+
+def generate_partner_legal_document_pdf(
+	company: str, from_date: str, to_date: str, file: str, branch: str | None = None
+) -> tuple[bytes, str]:
+	setup, filters, package, plan = _load_partner_legal_context(company, from_date, to_date, branch=branch)
+	item = _find_plan_item(plan, file)
+	if not item:
+		frappe.throw(_("Document not found in package: {0}").format(file), title=_("Not Found"))
+	doc_index = plan.index(item) + 1
+	pdf_bytes = _generate_document_pdf(
+		item=item,
+		setup=setup,
+		base_filters=filters,
+		package=package,
+		doc_index=doc_index,
+	)
+	filename = item["file"].rsplit("/", 1)[-1]
+	return pdf_bytes, filename
+
+
+def build_partner_legal_zip(company: str, from_date: str, to_date: str, branch: str | None = None) -> bytes:
+	setup, filters, package, plan = _load_partner_legal_context(company, from_date, to_date, branch=branch)
 	buffer = io.BytesIO()
 	with zipfile.ZipFile(buffer, "w", compression=zipfile.ZIP_DEFLATED) as zf:
 		for idx, item in enumerate(plan, start=1):
@@ -574,6 +767,13 @@ def build_partner_legal_zip(company: str, from_date: str, to_date: str, branch: 
 				doc_index=idx,
 			)
 			zf.writestr(item["file"], pdf_bytes)
+			xlsx_bytes = _generate_document_xlsx(
+				item=item,
+				setup=setup,
+				base_filters=filters,
+				package=package,
+			)
+			zf.writestr(_xlsx_file_for_item(item), xlsx_bytes)
 	return buffer.getvalue()
 
 
@@ -630,7 +830,12 @@ def get_partner_legal_print_preview(company: str, from_date: str, to_date: str, 
 	package = generate_court_evidence_package(**package_filters)
 
 	plan = _build_document_plan(from_date, to_date)
-	reports = [_preview_document_item(item, filters) for item in plan if item.get("kind") != "cover"]
+	documents = []
+	for idx, item in enumerate(plan, start=1):
+		preview_item = _preview_document_item(item, filters)
+		preview_item["doc_index"] = idx
+		preview_item["file"] = item["file"]
+		documents.append(preview_item)
 
 	return {
 		"ok": True,
@@ -649,13 +854,39 @@ def get_partner_legal_print_preview(company: str, from_date: str, to_date: str, 
 			for row in setup.partners or []
 		],
 		"certificate": package.get("certificate"),
-		"reports": reports,
+		"documents": documents,
+		"reports": documents,
 		"document_count": len(plan),
+		"file_count": len(plan) * 2,
+		"formats": ["pdf", "xlsx"],
 		"yearly_files_per_year": len(YEARLY_REPORT_SPECS),
 		"years": [y for y, _, _ in _iter_years(from_date, to_date)],
 		"delivery": "zip",
 		"setup_url": f"/app/company-partner-legal-setup/{company}",
 	}
+
+
+@frappe.whitelist()
+def download_partner_legal_document(
+	company: str,
+	from_date: str,
+	to_date: str,
+	file: str,
+	branch: str | None = None,
+	inline: int = 0,
+):
+	"""Download or print (inline) a single PDF from the legal package."""
+	frappe.has_permission("Company Partner Legal Setup", "read", throw=True)
+	pdf_bytes, filename = generate_partner_legal_document_pdf(
+		company, from_date, to_date, file, branch=branch
+	)
+	frappe.local.response.filename = filename
+	frappe.local.response.filecontent = pdf_bytes
+	if cint(inline):
+		frappe.local.response.type = "pdf"
+	else:
+		frappe.local.response.type = "download"
+		frappe.local.response.content_type = "application/pdf"
 
 
 @frappe.whitelist()
@@ -665,10 +896,26 @@ def download_partner_legal_package(company: str, from_date: str, to_date: str, b
 	safe_company = company.replace(" ", "-")
 	frappe.local.response.filename = f"حزمة-المستندات-القانونية-{safe_company}-{from_date}-{to_date}.zip"
 	frappe.local.response.filecontent = zip_bytes
-	frappe.local.response.type = "zip"
+	frappe.local.response.type = "download"
+	frappe.local.response.content_type = "application/zip"
 
 
 def smoke_test_partner_legal_zip(company: str, from_date: str, to_date: str) -> dict:
 	zip_bytes = build_partner_legal_zip(company, from_date, to_date)
 	plan = _build_document_plan(from_date, to_date)
-	return {"ok": True, "bytes": len(zip_bytes), "files": len(plan), "years": len(list(_iter_years(from_date, to_date)))}
+	import zipfile
+	import io
+
+	zf = zipfile.ZipFile(io.BytesIO(zip_bytes))
+	names = zf.namelist()
+	pdf_count = len([n for n in names if n.endswith(".pdf")])
+	xlsx_count = len([n for n in names if n.endswith(".xlsx")])
+	return {
+		"ok": True,
+		"bytes": len(zip_bytes),
+		"files": len(names),
+		"pdf_files": pdf_count,
+		"xlsx_files": xlsx_count,
+		"plan_documents": len(plan),
+		"years": len(list(_iter_years(from_date, to_date))),
+	}

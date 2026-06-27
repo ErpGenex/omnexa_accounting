@@ -48,6 +48,7 @@ def _build_workflow_doc(doctype: str, workflow_name: str, locked_role: str):
 	wf.workflow_name = workflow_name
 	wf.document_type = doctype
 	wf.is_active = 1
+	wf.send_email_alert = 0
 	wf.workflow_state_field = "workflow_state"
 
 	for state, doc_status, allow_edit in (
@@ -104,6 +105,17 @@ def _repair_workflow_allow_edit(workflow_name: str, locked_role: str) -> None:
 		frappe.clear_cache(doctype=wf.document_type)
 
 
+def _deactivate_workflow_for_doctype(doctype: str, keep_name: str | None = None) -> None:
+	for row in frappe.get_all(
+		"Workflow",
+		filters={"document_type": doctype, "is_active": 1},
+		fields=["name", "workflow_name"],
+	):
+		if keep_name and row.workflow_name == keep_name:
+			continue
+		frappe.db.set_value("Workflow", row.name, "is_active", 0)
+
+
 def ensure_ledger_workflows() -> None:
 	"""Workflow State masters + one active workflow per Journal Entry / Payment Entry."""
 	if frappe.flags.in_install:
@@ -119,8 +131,15 @@ def ensure_ledger_workflows() -> None:
 	for doctype, workflow_name in WORKFLOW_BY_DOCTYPE.items():
 		if not frappe.db.exists("DocType", doctype):
 			continue
-		if frappe.db.exists("Workflow", {"workflow_name": workflow_name}):
+		_deactivate_workflow_for_doctype(doctype, keep_name=workflow_name)
+		if frappe.db.exists("Workflow", {"workflow_name": workflow_name, "document_type": doctype}):
+			frappe.db.set_value(
+				"Workflow",
+				{"workflow_name": workflow_name, "document_type": doctype},
+				{"is_active": 1, "send_email_alert": 0},
+			)
 			_repair_workflow_allow_edit(workflow_name, locked_role)
+			frappe.clear_cache(doctype=doctype)
 			continue
 		wf = _build_workflow_doc(doctype, workflow_name, locked_role)
 		wf.insert(ignore_permissions=True)

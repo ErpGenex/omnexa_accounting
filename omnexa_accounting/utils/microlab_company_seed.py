@@ -4,10 +4,12 @@
 """Seed Microlab company — minimal partner litigation accounting (2015–2026).
 
 Accounting model (per legal instructions):
-- Chart: capital (سيد 8000 / إلهام 2000), جاري سيد, مستحق من إلهام, four OPEX accounts only.
+- Chart: capital (سيد 8000 / إلهام 2000), جاري سيد, مستحق من إلهام, seven expense accounts.
+- Monthly: إيجار، إنترنت، كهرباء، صيانة، مياه (per spreadsheet / rent schedule by year).
+- One-time: مصروفات التأسيس (2015)، مصروفات تعديل السجل (2020).
 - Every expense: Dr Expense / Cr جاري سيد (paid by سيد هاشم حسن).
 - Year-end: Dr مستحق من إلهام / Cr جاري سيد for 20% of annual expenses (إلهام مصطفى محمد أحمد).
-- No assets, inventory, products, or software accounts.
+- Account names and journal entry text: Arabic only.
 """
 
 from __future__ import annotations
@@ -19,7 +21,7 @@ from decimal import ROUND_HALF_UP, Decimal
 
 import frappe
 from frappe import _
-from frappe.utils import add_months, get_first_day, getdate, today
+from frappe.utils import add_months, get_first_day, getdate, now_datetime, today
 
 COMPANY_ABBR = "MLAB"
 COMPANY_NAME = "Microlab Information Systems"
@@ -33,8 +35,31 @@ OWNERSHIP_ELHAM = Decimal("0.20")
 CAPITAL_SAYED = Decimal("8000")
 CAPITAL_ELHAM = Decimal("2000")
 FORMATION_AMOUNT = Decimal("14000")
-MODIFICATION_AMOUNT = Decimal("15000")
+MODIFICATION_AMOUNT = Decimal("10000")
 SEED_TAG = "MICROLAB-SEED"
+EXPENSE_EMPLOYEE_NAME = "سيد هاشم حسن"
+EXPENSE_EMPLOYEE_CODE = "MLAB-EXP-001"
+EXPENSE_DOCTYPE = "HR Expense Claim"
+SEED_LOGGER = "microlab_company_seed"
+
+# Monthly rates by year (spreadsheet); years without a row inherit the previous defined year.
+_YEARLY_RATES_TABLE: dict[int, dict[str, str]] = {
+	2015: {"internet": "180", "electricity": "100", "maintenance": "200", "water": "50"},
+	2019: {"internet": "240", "electricity": "120", "maintenance": "250", "water": "75"},
+	2020: {"internet": "240", "electricity": "120", "maintenance": "300", "water": "100"},
+	2021: {"internet": "240", "electricity": "150", "maintenance": "350", "water": "125"},
+	2022: {"internet": "240", "electricity": "170", "maintenance": "400", "water": "150"},
+	2023: {"internet": "240", "electricity": "200", "maintenance": "450", "water": "175"},
+	2024: {"internet": "319.2", "electricity": "300", "maintenance": "500", "water": "200"},
+	2026: {"internet": "450.3", "electricity": "500", "maintenance": "550", "water": "225"},
+}
+
+_MONTHLY_EXPENSE_SPECS: tuple[tuple[str, str, str], ...] = (
+	("internet", "5101", "مصروف الإنترنت"),
+	("electricity", "5102", "مصروف الكهرباء"),
+	("maintenance", "5103", "مصروف الصيانة"),
+	("water", "5104", "مصروف المياه"),
+)
 
 # Allowed Microlab leaf accounts only
 ACCOUNT_SPECS: list[dict] = [
@@ -85,8 +110,8 @@ ACCOUNT_SPECS: list[dict] = [
 	{"code": "51", "name_en": "Operating Expenses", "name_ar": "مصروفات تشغيلية", "type": "Expense", "group": 1, "parent": "5"},
 	{
 		"code": "5101",
-		"name_en": "Rent Expense",
-		"name_ar": "مصروف إيجار",
+		"name_en": "مصروف الإنترنت",
+		"name_ar": "مصروف الإنترنت",
 		"type": "Expense",
 		"group": 0,
 		"parent": "51",
@@ -96,8 +121,8 @@ ACCOUNT_SPECS: list[dict] = [
 	},
 	{
 		"code": "5102",
-		"name_en": "Electricity Expense",
-		"name_ar": "مصروف كهرباء",
+		"name_en": "مصروف الكهرباء",
+		"name_ar": "مصروف الكهرباء",
 		"type": "Expense",
 		"group": 0,
 		"parent": "51",
@@ -107,8 +132,8 @@ ACCOUNT_SPECS: list[dict] = [
 	},
 	{
 		"code": "5103",
-		"name_en": "Internet Expense",
-		"name_ar": "مصروف إنترنت",
+		"name_en": "مصروف الصيانة",
+		"name_ar": "مصروف الصيانة",
 		"type": "Expense",
 		"group": 0,
 		"parent": "51",
@@ -118,8 +143,41 @@ ACCOUNT_SPECS: list[dict] = [
 	},
 	{
 		"code": "5104",
-		"name_en": "Legal Fees Expense",
-		"name_ar": "مصروف أتعاب محاماة",
+		"name_en": "مصروف المياه",
+		"name_ar": "مصروف المياه",
+		"type": "Expense",
+		"group": 0,
+		"parent": "51",
+		"main": "Expense",
+		"sub": "OPEX",
+		"pl_bucket": "Operating Expense",
+	},
+	{
+		"code": "5107",
+		"name_en": "مصروف الإيجار",
+		"name_ar": "مصروف الإيجار",
+		"type": "Expense",
+		"group": 0,
+		"parent": "51",
+		"main": "Expense",
+		"sub": "OPEX",
+		"pl_bucket": "Operating Expense",
+	},
+	{
+		"code": "5105",
+		"name_en": "مصروفات التأسيس",
+		"name_ar": "مصروفات التأسيس",
+		"type": "Expense",
+		"group": 0,
+		"parent": "51",
+		"main": "Expense",
+		"sub": "OPEX",
+		"pl_bucket": "Operating Expense",
+	},
+	{
+		"code": "5106",
+		"name_en": "مصروفات تعديل السجل التجاري",
+		"name_ar": "مصروفات تعديل السجل التجاري",
 		"type": "Expense",
 		"group": 0,
 		"parent": "51",
@@ -130,15 +188,12 @@ ACCOUNT_SPECS: list[dict] = [
 ]
 
 ALLOWED_ACCOUNT_CODES = frozenset(spec["code"] for spec in ACCOUNT_SPECS)
-EXPENSE_CODES = frozenset({"5101", "5102", "5103", "5104"})
+EXPENSE_CODES = frozenset({"5101", "5102", "5103", "5104", "5105", "5106", "5107"})
 
 # Legacy codes to disable when re-seeding (assets / inventory / software / extra OPEX)
 LEGACY_CODES_TO_DISABLE = frozenset(
 	{
 		"1104",
-		"5105",
-		"5106",
-		"5107",
 		"5109",
 		"5111",
 		"3112",
@@ -154,6 +209,34 @@ LEGACY_CODES_TO_DISABLE = frozenset(
 
 def _d(value) -> Decimal:
 	return Decimal(str(value)).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+
+
+def _seed_logger():
+	"""إرجاع مسجل مخصص لبذرة ميكرولاب."""
+	return frappe.logger(SEED_LOGGER)
+
+
+def _log_info(message: str, payload: dict | None = None) -> None:
+	"""تسجيل رسالة معلومات بعد كل عملية إدخال أو خطوة مهمة."""
+	try:
+		_seed_logger().info({"message": message, "payload": payload or {}, "ts": str(now_datetime())})
+	except Exception:
+		pass
+
+
+def _log_failure(title: str, exc: Exception, payload: dict | None = None) -> None:
+	"""تسجيل الأخطاء في سجل النظام مع تفاصيل كافية للتتبع."""
+	frappe.log_error(
+		title=title,
+		message=frappe.as_json(
+			{
+				"error": str(exc),
+				"payload": payload or {},
+				"traceback": frappe.get_traceback(),
+			},
+			indent=2,
+		),
+	)
 
 
 def _submit(doc):
@@ -181,6 +264,151 @@ def _account_label_ar(company: str, branch: str | None, code: str) -> str:
 		if spec["code"] == code:
 			return spec.get("name_ar") or spec.get("name_en") or code
 	return frappe.db.get_value("GL Account", acc, "account_name") or code
+
+
+def _default_cost_center(company: str) -> str | None:
+	"""إرجاع مركز التكلفة الافتراضي للشركة إن وجد."""
+	if not frappe.db.exists("DocType", "Cost Center"):
+		return None
+	return frappe.db.get_value("Cost Center", {"company": company}, "name", order_by="creation asc") or None
+
+
+def _ensure_expense_employee(company: str, cost_center: str | None = None) -> str:
+	"""إنشاء موظف افتراضي لاستخدامه في سجلات المصروفات عند الحاجة."""
+	existing = frappe.db.get_value(
+		"Employee",
+		{"company": company, "employee_code": EXPENSE_EMPLOYEE_CODE},
+		"name",
+	)
+	if existing:
+		return existing
+
+	doc = frappe.get_doc(
+		{
+			"doctype": "Employee",
+			"employee_code": EXPENSE_EMPLOYEE_CODE,
+			"employee_name": EXPENSE_EMPLOYEE_NAME,
+			"company": company,
+			"department": "الإدارة",
+			"designation": "مسؤول مصروفات الشركة",
+			"date_of_joining": str(START_DATE),
+			"status": "Active",
+			"external_reference": f"{SEED_TAG}-EMPLOYEE",
+		}
+	)
+	if cost_center and doc.meta.has_field("hr_default_cost_center"):
+		doc.hr_default_cost_center = cost_center
+	doc.insert(ignore_permissions=True)
+	_log_info("تم إنشاء موظف المصروفات الافتراضي", {"employee": doc.name, "company": company})
+	return doc.name
+
+
+def _expense_claim_reference(kind: str, year: int, month: int | None = None) -> str:
+	"""مرجع فريد لمنع تكرار إنشاء سجلات المصروفات."""
+	if month is None:
+		return f"{SEED_TAG}-EXP-{kind}-{year:04d}"
+	return f"{SEED_TAG}-EXP-{kind}-{year:04d}-{month:02d}"
+
+
+def _expense_claim_exists(company: str, description: str) -> str | None:
+	"""التحقق من وجود سجل مصروف سابقاً باستخدام الوصف المرجعي."""
+	if not frappe.db.exists("DocType", EXPENSE_DOCTYPE):
+		return None
+	return frappe.db.get_value(EXPENSE_DOCTYPE, {"company": company, "description": description}, "name")
+
+
+def _insert_expense_claim(
+	*,
+	company: str,
+	branch: str,
+	employee: str,
+	expense_date: date,
+	amount: Decimal,
+	expense_type: str,
+	title_ar: str,
+	reference: str,
+	cost_center: str | None = None,
+) -> str | None:
+	"""إنشاء سجل مصروف مستقل باستخدام get_doc و insert مع منع التكرار."""
+	if not frappe.db.exists("DocType", EXPENSE_DOCTYPE):
+		return None
+
+	description = f"{title_ar} | {reference}"
+	existing = _expense_claim_exists(company, description)
+	if existing:
+		_log_info("تم تجاوز سجل مصروف مكرر", {"doctype": EXPENSE_DOCTYPE, "name": existing, "reference": reference})
+		return None
+
+	try:
+		doc = frappe.get_doc(
+			{
+				"doctype": EXPENSE_DOCTYPE,
+				"employee": employee,
+				"company": company,
+				"branch": branch,
+				"expense_date": str(expense_date),
+				"posting_date": str(expense_date),
+				"expense_type": expense_type,
+				"amount": float(amount),
+				"currency": "EGP",
+				"status": "Draft",
+				"description": description,
+			}
+		)
+		if cost_center and doc.meta.has_field("cost_center"):
+			doc.cost_center = cost_center
+		doc.insert(ignore_permissions=True)
+		_log_info(
+			"تم إدخال سجل مصروف",
+			{
+				"doctype": EXPENSE_DOCTYPE,
+				"name": doc.name,
+				"reference": reference,
+				"date": str(expense_date),
+				"amount": float(amount),
+			},
+		)
+		return doc.name
+	except Exception as exc:
+		_log_failure(
+			"Microlab Expense Claim Insert Failed",
+			exc,
+			{
+				"company": company,
+				"branch": branch,
+				"employee": employee,
+				"expense_date": str(expense_date),
+				"amount": str(amount),
+				"reference": reference,
+			},
+		)
+		raise frappe.ValidationError(f"تعذر إنشاء سجل المصروف {title_ar} بتاريخ {expense_date}: {exc}") from exc
+
+
+def _write_seed_log(company: str, branch: str | None, activity: str, summary: dict, status: str = "Success") -> str | None:
+	"""إنشاء سجل تشغيل للبذرة داخل Production Seed Log إن كان متاحاً."""
+	if not frappe.db.exists("DocType", "Production Seed Log"):
+		return None
+	try:
+		doc = frappe.get_doc(
+			{
+				"doctype": "Production Seed Log",
+				"operation": "Seed Demo Data",
+				"company": company,
+				"branch": branch,
+				"activity": activity,
+				"executed_by": frappe.session.user,
+				"executed_on": now_datetime(),
+				"dry_run": 0,
+				"status": status,
+				"summary_json": frappe.as_json(summary),
+			}
+		)
+		doc.insert(ignore_permissions=True)
+		return doc.name
+	except Exception as exc:
+		_log_failure("Microlab Seed Log Failed", exc, {"company": company, "branch": branch, "activity": activity})
+		return None
 
 
 def _ensure_company() -> tuple[str, str]:
@@ -239,21 +467,26 @@ def _ensure_company() -> tuple[str, str]:
 def _ensure_minimal_coa(company: str, branch: str) -> dict[str, str]:
 	from omnexa_accounting.utils.production_readiness import _ensure_account
 
-	parent_map: dict[str, str] = {}
-	for row in frappe.get_all(
-		"GL Account",
-		filters={"company": company, "branch": branch},
-		fields=["name", "account_number"],
-	):
-		if row.account_number:
-			parent_map[row.account_number] = row.name
+	prev_lang = getattr(frappe.local, "lang", None)
+	frappe.local.lang = "ar"
+	try:
+		parent_map: dict[str, str] = {}
+		for row in frappe.get_all(
+			"GL Account",
+			filters={"company": company, "branch": branch},
+			fields=["name", "account_number"],
+		):
+			if row.account_number:
+				parent_map[row.account_number] = row.name
 
-	accounts: dict[str, str] = {}
-	for spec in ACCOUNT_SPECS:
-		code = spec["code"]
-		accounts[code] = _ensure_account(spec, company, branch, parent_map)
-		parent_map[code] = accounts[code]
-	return accounts
+		accounts: dict[str, str] = {}
+		for spec in ACCOUNT_SPECS:
+			code = spec["code"]
+			accounts[code] = _ensure_account(spec, company, branch, parent_map)
+			parent_map[code] = accounts[code]
+		return accounts
+	finally:
+		frappe.local.lang = prev_lang
 
 
 def _disable_legacy_microlab_accounts(company: str, branch: str) -> int:
@@ -291,13 +524,14 @@ def _je_exists(company: str, reference: str) -> bool:
 
 
 class _JeLine:
-	__slots__ = ("account", "debit", "credit", "remark_ar")
+	__slots__ = ("account", "debit", "credit", "remark_ar", "cost_center")
 
-	def __init__(self, account: str, debit: Decimal, credit: Decimal, remark_ar: str):
+	def __init__(self, account: str, debit: Decimal, credit: Decimal, remark_ar: str, cost_center: str | None = None):
 		self.account = account
 		self.debit = debit
 		self.credit = credit
 		self.remark_ar = remark_ar
+		self.cost_center = cost_center
 
 
 def _create_je(
@@ -320,6 +554,8 @@ def _create_je(
 			"debit": float(line.debit),
 			"credit": float(line.credit),
 		}
+		if line.cost_center:
+			row["cost_center"] = line.cost_center
 		if line.remark_ar:
 			row["external_reference"] = line.remark_ar[:140]
 		accounts.append(row)
@@ -382,6 +618,7 @@ def _expense_je(
 	partner_sayed: str,
 	amount: Decimal,
 	title_ar: str,
+	cost_center: str | None,
 	year_expense_totals: dict[int, Decimal],
 ) -> bool:
 	if amount <= 0:
@@ -389,8 +626,8 @@ def _expense_je(
 	exp_label = _account_label_ar(company, branch, expense_code)
 	remarks = f"{title_ar} | {exp_label} | دفع: {PARTNER_FUNDED} | {reference}"
 	lines = [
-		_JeLine(expense_acc, amount, Decimal("0"), f"مدين — {exp_label}"),
-		_JeLine(partner_sayed, Decimal("0"), amount, f"دائن — جاري سيد — {PARTNER_FUNDED}"),
+		_JeLine(expense_acc, amount, Decimal("0"), f"مدين — {exp_label}", cost_center=cost_center),
+		_JeLine(partner_sayed, Decimal("0"), amount, f"دائن — جاري سيد — {PARTNER_FUNDED}", cost_center=cost_center),
 	]
 	created = _create_je(company, branch, posting_date, reference, remarks, lines)
 	if created:
@@ -398,7 +635,17 @@ def _expense_je(
 	return bool(created)
 
 
+def _rates_for_year(year: int) -> dict[str, Decimal]:
+	applicable = min(_YEARLY_RATES_TABLE)
+	for y in sorted(_YEARLY_RATES_TABLE):
+		if y <= year:
+			applicable = y
+	row = _YEARLY_RATES_TABLE[applicable]
+	return {key: _d(value) for key, value in row.items()}
+
+
 def _monthly_rent(year: int, month: int) -> Decimal:
+	"""إيجار شهري — يبدأ من 03/2015؛ زيادة 10% سنوياً حتى 2020، ثم 2000 (2021–2022)، 3000 (2023+)."""
 	if year < 2015 or (year == 2015 and month < 3):
 		return Decimal("0")
 	if year >= 2023:
@@ -408,25 +655,6 @@ def _monthly_rent(year: int, month: int) -> Decimal:
 	years_since_2015 = year - 2015
 	base = Decimal("1000")
 	return _d(base * (Decimal("1.1") ** years_since_2015))
-
-
-def _gradual_monthly(start: Decimal, end: Decimal, year: int, start_year: int = 2015, end_year: int = 2026) -> Decimal:
-	if year <= start_year:
-		return start
-	if year >= end_year:
-		return end
-	span = end_year - start_year
-	step = (end - start) / span
-	return _d(start + step * (year - start_year))
-
-
-def _electricity_amount(year: int, month: int) -> Decimal:
-	base = 100 + ((year * 12 + month) % 101)
-	return _d(min(200, max(100, base)))
-
-
-def _annual_legal_fee(year: int) -> Decimal:
-	return _d(2500 + (year - 2015) * 150)
 
 
 def _iter_months(start: date, end: date):
@@ -588,6 +816,91 @@ def get_microlab_legal_report(company: str | None = None) -> dict:
 
 
 @frappe.whitelist()
+def delete_microlab_company() -> dict:
+	"""Delete Microlab transactions and legal setup for a fresh re-seed."""
+	if frappe.session.user != "Guest":
+		frappe.only_for("System Manager")
+	if not frappe.db.exists("Company", COMPANY_ABBR):
+		return {"ok": True, "existed": False}
+
+	from omnexa_accounting.utils.production_readiness import run_reset_transactions_batched
+	reset = {}
+	try:
+		from omnexa_accounting.utils.production_readiness import wipe_company_all_data
+
+		reset = wipe_company_all_data(company=COMPANY_ABBR, confirm_text="DELETE ALL")
+		if frappe.db.exists("Company", COMPANY_ABBR):
+			frappe.delete_doc("Company", COMPANY_ABBR, force=1, ignore_permissions=True)
+		_log_info("تم حذف شركة ميكرولاب بالكامل", {"company": COMPANY_ABBR})
+	except Exception as exc:
+		_log_failure("Microlab Full Company Delete Failed", exc, {"company": COMPANY_ABBR})
+		reset = run_reset_transactions_batched(company=COMPANY_ABBR, limit=0, skip_log=True)
+	if frappe.db.exists("DocType", EXPENSE_DOCTYPE):
+		names = frappe.get_all(EXPENSE_DOCTYPE, filters={"company": COMPANY_ABBR}, pluck="name")
+		for name in names:
+			frappe.delete_doc(EXPENSE_DOCTYPE, name, force=1, ignore_permissions=True)
+	if frappe.db.exists("DocType", "Employee"):
+		employee = frappe.db.get_value("Employee", {"company": COMPANY_ABBR, "employee_code": EXPENSE_EMPLOYEE_CODE}, "name")
+		if employee:
+			frappe.delete_doc("Employee", employee, force=1, ignore_permissions=True)
+	if frappe.db.exists("Company Partner Legal Setup", COMPANY_ABBR):
+		frappe.delete_doc("Company Partner Legal Setup", COMPANY_ABBR, force=1, ignore_permissions=True)
+	frappe.db.commit()
+	return {"ok": True, "existed": True, "company": COMPANY_ABBR, "reset": reset}
+
+
+def _ensure_partner_legal_setup(company: str, branch: str) -> None:
+	sayed_current = frappe.db.get_value("GL Account", {"company": company, "account_number": "3111"}, "name")
+	elham_due = frappe.db.get_value("GL Account", {"company": company, "account_number": "1332"}, "name")
+	if not sayed_current or not elham_due:
+		return
+
+	if frappe.db.exists("Company Partner Legal Setup", company):
+		doc = frappe.get_doc("Company Partner Legal Setup", company)
+	else:
+		doc = frappe.new_doc("Company Partner Legal Setup")
+		doc.company = company
+
+	doc.branch = branch
+	doc.default_from_date = getdate(START_DATE)
+	doc.default_to_date = getdate(END_DATE)
+	doc.legal_case_reference = "قضية شركاء ميكرولاب"
+	doc.notes = "أُنشئ تلقائياً من بذرة ميكرولاب — الشريك الممول يدفع المصروفات والشريك المدين يستحق حصة الملكية."
+	doc.set("partners", [])
+	doc.append(
+		"partners",
+		{
+			"partner_name": PARTNER_FUNDED,
+			"partner_name_ar": PARTNER_FUNDED,
+			"ownership_percent": 80,
+			"is_funding_partner": 1,
+			"partner_current_account": sayed_current,
+		},
+	)
+	doc.append(
+		"partners",
+		{
+			"partner_name": PARTNER_SILENT,
+			"partner_name_ar": PARTNER_SILENT,
+			"ownership_percent": 20,
+			"is_funding_partner": 0,
+			"due_from_partner_account": elham_due,
+		},
+	)
+	doc.flags.ignore_permissions = True
+	doc.save()
+
+
+@frappe.whitelist()
+def reset_and_seed_microlab_company(*, enqueue: int = 0) -> dict:
+	"""Wipe Microlab seed data and recreate company accounting from scratch."""
+	if frappe.session.user != "Guest":
+		frappe.only_for("System Manager")
+	delete_microlab_company()
+	return seed_microlab_company(enqueue=enqueue)
+
+
+@frappe.whitelist()
 def seed_microlab_company(*, enqueue: int = 0) -> dict:
 	"""Create Microlab company and monthly expense history (2015–2026)."""
 	if frappe.session.user != "Guest":
@@ -614,180 +927,236 @@ def execute():
 
 
 def _seed_microlab_company() -> dict:
-	company, branch = _ensure_company()
-	accounts = _ensure_minimal_coa(company, branch)
-	disabled_legacy = _disable_legacy_microlab_accounts(company, branch)
-	_delete_microlab_product(company)
+	try:
+		company, branch = _ensure_company()
+		accounts = _ensure_minimal_coa(company, branch)
+		disabled_legacy = _disable_legacy_microlab_accounts(company, branch)
+		_delete_microlab_product(company)
 
-	capital_sayed = accounts["31011"]
-	capital_elham = accounts["31012"]
-	partner_sayed = accounts["3111"]
-	due_from_elham = accounts["1332"]
-	exp_rent = accounts["5101"]
-	exp_electric = accounts["5102"]
-	exp_internet = accounts["5103"]
-	exp_legal = accounts["5104"]
+		capital_sayed = accounts["31011"]
+		capital_elham = accounts["31012"]
+		partner_sayed = accounts["3111"]
+		due_from_elham = accounts["1332"]
+		exp_internet = accounts["5101"]
+		exp_electric = accounts["5102"]
+		exp_maintenance = accounts["5103"]
+		exp_water = accounts["5104"]
+		exp_rent = accounts["5107"]
+		exp_formation = accounts["5105"]
+		exp_modification = accounts["5106"]
+		expense_accounts = {
+			"5101": exp_internet,
+			"5102": exp_electric,
+			"5103": exp_maintenance,
+			"5104": exp_water,
+			"5107": exp_rent,
+			"5105": exp_formation,
+			"5106": exp_modification,
+		}
+		cost_center = _default_cost_center(company)
+		expense_employee = _ensure_expense_employee(company, cost_center=cost_center)
 
-	created = {"journal_entries": 0, "frozen_legacy_accounts": disabled_legacy}
-	year_expense_totals: dict[int, Decimal] = defaultdict(Decimal)
+		created = {"journal_entries": 0, "expense_claims": 0, "frozen_legacy_accounts": disabled_legacy}
+		year_expense_totals: dict[int, Decimal] = defaultdict(Decimal)
 
-	# —— Opening capital (سيد 8000 / إلهام 2000) funded via جاري سيد — 01-03-2015
-	if not _je_exists(company, f"{SEED_TAG}-CAPITAL"):
-		total_capital = CAPITAL_SAYED + CAPITAL_ELHAM
-		_create_je(
-			company,
-			branch,
-			START_DATE,
-			f"{SEED_TAG}-CAPITAL",
-			f"قيد رأس المال — {PARTNER_FUNDED} 80% / {PARTNER_SILENT} 20%",
-			[
-				_JeLine(partner_sayed, total_capital, Decimal("0"), "مدين — جاري سيد — تمويل رأس المال"),
-				_JeLine(capital_sayed, Decimal("0"), CAPITAL_SAYED, "دائن — رأس مال سيد"),
-				_JeLine(capital_elham, Decimal("0"), CAPITAL_ELHAM, "دائن — رأس مال إلهام"),
-			],
-		)
-		created["journal_entries"] += 1
+		# —— قيد رأس المال الافتتاحي — 01-03-2015
+		if not _je_exists(company, f"{SEED_TAG}-CAPITAL"):
+			total_capital = CAPITAL_SAYED + CAPITAL_ELHAM
+			_create_je(
+				company,
+				branch,
+				START_DATE,
+				f"{SEED_TAG}-CAPITAL",
+				f"قيد رأس المال — {PARTNER_FUNDED} 80% / {PARTNER_SILENT} 20%",
+				[
+					_JeLine(partner_sayed, total_capital, Decimal("0"), "مدين — جاري سيد — تمويل رأس المال"),
+					_JeLine(capital_sayed, Decimal("0"), CAPITAL_SAYED, "دائن — رأس مال سيد"),
+					_JeLine(capital_elham, Decimal("0"), CAPITAL_ELHAM, "دائن — رأس مال إلهام"),
+				],
+			)
+			created["journal_entries"] += 1
 
-	# —— Formation legal fees — 01-03-2015
-	if not _je_exists(company, f"{SEED_TAG}-FORMATION"):
-		if _expense_je(
+		# —— مصروفات التأسيس كسجل مستقل غير متكرر — 01-03-2015
+		formation_ref = _expense_claim_reference("FORMATION", 2015)
+		if _insert_expense_claim(
 			company=company,
 			branch=branch,
-			posting_date=START_DATE,
-			reference=f"{SEED_TAG}-FORMATION",
-			expense_acc=exp_legal,
-			expense_code="5104",
-			partner_sayed=partner_sayed,
+			employee=expense_employee,
+			expense_date=START_DATE,
 			amount=FORMATION_AMOUNT,
-			title_ar=f"أتعاب محاماة تأسيس الشركة — {COMPANY_NAME_AR}",
-			year_expense_totals=year_expense_totals,
+			expense_type="Other",
+			title_ar="مصروفات التأسيس",
+			reference=formation_ref,
+			cost_center=cost_center,
 		):
-			created["journal_entries"] += 1
+			created["expense_claims"] += 1
+		if not _je_exists(company, f"{SEED_TAG}-FORMATION"):
+			if _expense_je(
+				company=company,
+				branch=branch,
+				posting_date=START_DATE,
+				reference=f"{SEED_TAG}-FORMATION",
+				expense_acc=exp_formation,
+				expense_code="5105",
+				partner_sayed=partner_sayed,
+				amount=FORMATION_AMOUNT,
+				title_ar=f"مصروفات التأسيس — {COMPANY_NAME_AR}",
+				cost_center=cost_center,
+				year_expense_totals=year_expense_totals,
+			):
+				created["journal_entries"] += 1
 
-	# —— Company modification legal fees — 01-01-2020
-	if not _je_exists(company, f"{SEED_TAG}-MODIFICATION"):
-		if _expense_je(
+		# —— مصروفات تعديل السجل التجاري كسجل مستقل غير متكرر — 01-01-2020
+		modification_date = date(2020, 1, 1)
+		modification_ref = _expense_claim_reference("MODIFICATION", 2020)
+		if _insert_expense_claim(
 			company=company,
 			branch=branch,
-			posting_date=date(2020, 1, 1),
-			reference=f"{SEED_TAG}-MODIFICATION",
-			expense_acc=exp_legal,
-			expense_code="5104",
-			partner_sayed=partner_sayed,
+			employee=expense_employee,
+			expense_date=modification_date,
 			amount=MODIFICATION_AMOUNT,
-			title_ar="أتعاب محاماة تعديل بيانات الشركة لدى السجل التجاري",
-			year_expense_totals=year_expense_totals,
+			expense_type="Other",
+			title_ar="مصروفات تعديل السجل التجاري",
+			reference=modification_ref,
+			cost_center=cost_center,
 		):
-			created["journal_entries"] += 1
-
-	end = min(END_DATE, getdate(today()))
-
-	for year, month in _iter_months(START_DATE, end):
-		posting = date(year, month, calendar.monthrange(year, month)[1])
-
-		rent = _monthly_rent(year, month)
-		if rent > 0:
-			ref = f"{SEED_TAG}-RENT-{year:04d}-{month:02d}"
+			created["expense_claims"] += 1
+		if not _je_exists(company, f"{SEED_TAG}-MODIFICATION"):
 			if _expense_je(
 				company=company,
 				branch=branch,
-				posting_date=posting,
-				reference=ref,
-				expense_acc=exp_rent,
-				expense_code="5101",
+				posting_date=modification_date,
+				reference=f"{SEED_TAG}-MODIFICATION",
+				expense_acc=exp_modification,
+				expense_code="5106",
 				partner_sayed=partner_sayed,
-				amount=rent,
-				title_ar=f"إيجار المقر — {month:02d}/{year}",
+				amount=MODIFICATION_AMOUNT,
+				title_ar="مصروفات تعديل السجل التجاري",
+				cost_center=cost_center,
 				year_expense_totals=year_expense_totals,
 			):
 				created["journal_entries"] += 1
 
-		electric = _electricity_amount(year, month)
-		ref = f"{SEED_TAG}-ELEC-{year:04d}-{month:02d}"
-		if _expense_je(
-			company=company,
-			branch=branch,
-			posting_date=posting,
-			reference=ref,
-			expense_acc=exp_electric,
-			expense_code="5102",
-			partner_sayed=partner_sayed,
-			amount=electric,
-			title_ar=f"كهرباء — {month:02d}/{year}",
-			year_expense_totals=year_expense_totals,
-		):
-			created["journal_entries"] += 1
+		end = min(END_DATE, getdate(today()))
 
-		internet = _gradual_monthly(Decimal("250"), Decimal("525"), year)
-		ref = f"{SEED_TAG}-NET-{year:04d}-{month:02d}"
-		if _expense_je(
-			company=company,
-			branch=branch,
-			posting_date=posting,
-			reference=ref,
-			expense_acc=exp_internet,
-			expense_code="5103",
-			partner_sayed=partner_sayed,
-			amount=internet,
-			title_ar=f"إنترنت — {month:02d}/{year}",
-			year_expense_totals=year_expense_totals,
-		):
-			created["journal_entries"] += 1
+		for year, month in _iter_months(START_DATE, end):
+			posting = date(year, month, 1)
+			rates = _rates_for_year(year)
 
-		if month == 12:
-			legal = _annual_legal_fee(year)
-			ref = f"{SEED_TAG}-LEGAL-{year:04d}"
-			if _expense_je(
-				company=company,
-				branch=branch,
-				posting_date=posting,
-				reference=ref,
-				expense_acc=exp_legal,
-				expense_code="5104",
-				partner_sayed=partner_sayed,
-				amount=legal,
-				title_ar=f"أتعاب محاماة وامتثال سنوي — {year}",
-				year_expense_totals=year_expense_totals,
+			for rate_key, expense_code, label_ar in _MONTHLY_EXPENSE_SPECS:
+				amount = rates[rate_key]
+				ref = _expense_claim_reference(expense_code, year, month)
+				if _insert_expense_claim(
+					company=company,
+					branch=branch,
+					employee=expense_employee,
+					expense_date=posting,
+					amount=amount,
+					expense_type="Other",
+					title_ar=f"{label_ar} — {month:02d}/{year}",
+					reference=ref,
+					cost_center=cost_center,
+				):
+					created["expense_claims"] += 1
+				if _expense_je(
+					company=company,
+					branch=branch,
+					posting_date=posting,
+					reference=f"{SEED_TAG}-{expense_code}-{year:04d}-{month:02d}",
+					expense_acc=expense_accounts[expense_code],
+					expense_code=expense_code,
+					partner_sayed=partner_sayed,
+					amount=amount,
+					title_ar=f"{label_ar} — {month:02d}/{year}",
+					cost_center=cost_center,
+					year_expense_totals=year_expense_totals,
+				):
+					created["journal_entries"] += 1
+
+			# —— إيجار شهري — حساب 5107
+			rent_amount = _monthly_rent(year, month)
+			if rent_amount > 0:
+				rent_code = "5107"
+				rent_label = "مصروف الإيجار"
+				rent_ref = _expense_claim_reference(rent_code, year, month)
+				if _insert_expense_claim(
+					company=company,
+					branch=branch,
+					employee=expense_employee,
+					expense_date=posting,
+					amount=rent_amount,
+					expense_type="Other",
+					title_ar=f"{rent_label} — {month:02d}/{year}",
+					reference=rent_ref,
+					cost_center=cost_center,
+				):
+					created["expense_claims"] += 1
+				if _expense_je(
+					company=company,
+					branch=branch,
+					posting_date=posting,
+					reference=f"{SEED_TAG}-{rent_code}-{year:04d}-{month:02d}",
+					expense_acc=expense_accounts[rent_code],
+					expense_code=rent_code,
+					partner_sayed=partner_sayed,
+					amount=rent_amount,
+					title_ar=f"{rent_label} — {month:02d}/{year}",
+					cost_center=cost_center,
+					year_expense_totals=year_expense_totals,
+				):
+					created["journal_entries"] += 1
+
+		# —— إثبات حصة الشريك من إجمالي المصروفات السنوية
+		expense_cum = _cumulative_by_year(year_expense_totals)
+		for year in range(START_DATE.year, end.year + 1):
+			annual = year_expense_totals.get(year, Decimal("0"))
+			if _recognize_elham_expense_share(
+				company,
+				branch,
+				year,
+				due_from_elham=due_from_elham,
+				partner_current_sayed=partner_sayed,
+				annual_expenses=annual,
 			):
 				created["journal_entries"] += 1
 
-	# —— Year-end: 20% of annual expenses → مستحق من إلهام / جاري سيد
-	expense_cum = _cumulative_by_year(year_expense_totals)
-	for year in range(START_DATE.year, end.year + 1):
-		annual = year_expense_totals.get(year, Decimal("0"))
-		if _recognize_elham_expense_share(
-			company,
-			branch,
-			year,
-			due_from_elham=due_from_elham,
-			partner_current_sayed=partner_sayed,
-			annual_expenses=annual,
-		):
-			created["journal_entries"] += 1
-
-	frappe.db.commit()
-	legal_report = get_microlab_legal_report(company)
-	return {
-		"ok": True,
-		"company": company,
-		"company_name": COMPANY_NAME,
-		"company_name_ar": COMPANY_NAME_AR,
-		"branch": branch,
-		"accounts": {
-			"capital_sayed": "31011",
-			"capital_elham": "31012",
-			"sayed_current": "3111",
-			"due_from_elham": "1332",
-			"expenses": sorted(EXPENSE_CODES),
-		},
-		"period": {"from": str(START_DATE), "to": str(end)},
-		"created": created,
-		"year_expense_totals": {str(y): float(v) for y, v in sorted(year_expense_totals.items())},
-		"year_expense_cumulative": {str(y): float(v) for y, v in sorted(expense_cum.items())},
-		"legal_report": legal_report,
-		"report_links": get_microlab_report_links(company, branch),
-		"message": _("Microlab company seeded (minimal chart, litigation reports ready)."),
-	}
+		frappe.db.commit()
+		_ensure_partner_legal_setup(company, branch)
+		frappe.db.commit()
+		legal_report = get_microlab_legal_report(company)
+		summary = {
+			"ok": True,
+			"company": company,
+			"company_name": COMPANY_NAME,
+			"company_name_ar": COMPANY_NAME_AR,
+			"branch": branch,
+			"accounts": {
+				"capital_sayed": "31011",
+				"capital_elham": "31012",
+				"sayed_current": "3111",
+				"due_from_elham": "1332",
+				"expenses": sorted(EXPENSE_CODES),
+			},
+			"period": {"from": str(START_DATE), "to": str(end)},
+			"created": created,
+			"default_cost_center": cost_center,
+			"expense_employee": expense_employee,
+			"year_expense_totals": {str(y): float(v) for y, v in sorted(year_expense_totals.items())},
+			"year_expense_cumulative": {str(y): float(v) for y, v in sorted(expense_cum.items())},
+			"legal_report": legal_report,
+			"report_links": get_microlab_report_links(company, branch),
+			"message": _("Microlab company seeded (minimal chart, litigation reports ready)."),
+		}
+		summary["seed_log"] = _write_seed_log(company, branch, "Microlab monthly expense seed", summary, status="Success")
+		return summary
+	except Exception as exc:
+		try:
+			frappe.db.rollback()
+		except Exception:
+			pass
+		_log_failure("Microlab Seed Failed", exc, {"company": COMPANY_ABBR})
+		_write_seed_log(COMPANY_ABBR, None, "Microlab monthly expense seed", {"error": str(exc)}, status="Failed")
+		raise
 
 
 @frappe.whitelist()

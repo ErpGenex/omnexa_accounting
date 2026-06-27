@@ -1,0 +1,70 @@
+<!-- ERPGENEX print template — VAT Position -->
+<div class="erpg-fin-print" dir="rtl" lang="ar">
+	<div class="erpg-fin-print__banner">
+		<div class="erpg-fin-print__banner-icon">🧾</div>
+		<div class="erpg-fin-print__banner-body">
+			<div class="erpg-fin-print__banner-title">{{ __(title) }}</div>
+			<div class="erpg-fin-print__banner-sub">
+				{{ __("Real-Time VAT Position") }} — ERPGENEX
+			</div>
+		</div>
+	</div>
+
+	<div class="erpg-fin-print__meta-grid">
+		<div class="erpg-fin-print__meta-box">
+			<div class="erpg-fin-print__meta-label">{{ __("Company") }}</div>
+			<div class="erpg-fin-print__meta-value">{% if filters.company %}{{ filters.company }}{% else %}—{% endif %}</div>
+		</div>
+		<div class="erpg-fin-print__meta-box">
+			<div class="erpg-fin-print__meta-label">{{ __("Period") }}</div>
+			<div class="erpg-fin-print__meta-value">
+				{% if filters.from_date %}{{ __("From") }}: {{ filters.from_date }}{% endif %}
+				{% if filters.to_date %} · {{ __("To") }}: {{ filters.to_date }}{% endif %}
+			</div>
+		</div>
+		<div class="erpg-fin-print__meta-box">
+			<div class="erpg-fin-print__meta-label">{{ __("Branch") }}</div>
+			<div class="erpg-fin-print__meta-value">{% if filters.branch %}{{ filters.branch }}{% else %}{{ __("All Branches") }}{% endif %}</div>
+		</div>
+		<div class="erpg-fin-print__meta-box">
+			<div class="erpg-fin-print__meta-label">{{ __("Currency") }}</div>
+			<div class="erpg-fin-print__meta-value">EGP</div>
+		</div>
+	</div>
+
+	<table class="table table-bordered erpg-fin-print__table">
+		<thead>
+			<tr>
+				<th class="erpg-fin-print__th-num">#</th>
+				{% for col in columns %}
+				{% if col.name && col._id !== "_check" %}
+				<th class="{% if frappe.model.is_numeric_field(col.fieldtype) %}text-left{% endif %}">{{ __(col.name) }}</th>
+				{% endif %}
+				{% endfor %}
+			</tr>
+		</thead>
+		<tbody>
+			{% for row in data %}
+			<tr class="{% if row.bold == 1 %}erpg-fin-print__row-bold{% endif %}{% if row.is_total_row %} erpg-fin-print__row-total{% endif %}{% if row.year_header %} erpg-fin-print__row-year{% endif %}">
+				<td class="erpg-fin-print__td-num">{% if !row.year_header %}<span>{{ row._index + 1 }}</span>{% endif %}</td>
+				{% for col in columns %}
+				{% if col.name && col._id !== "_check" %}
+				{% var value = col.fieldname ? row[col.fieldname] : row[col.id] %}
+				<td class="{% if frappe.model.is_numeric_field(col.fieldtype) %}text-left{% endif %}">
+					{{
+						col.formatter
+							? col.formatter(row._index, col._index, value, col, row, true)
+							: col.format
+								? col.format(value, row, col, row)
+								: col.docfield
+									? frappe.format(value, col.docfield)
+									: value
+					}}
+				</td>
+				{% endif %}
+				{% endfor %}
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+</div>

@@ -330,7 +330,7 @@
 	"modified": "2026-05-07 12:00:00",
 	"modified_by": "Administrator",
 	"module": "omnexa_accounting",
-	"custom": 1,
+	"custom": 0,
 	"name": "GL Account",
 	"naming_rule": "Random",
 	"search_fields": "account_number,account_name,account_label,display_code,external_reference",

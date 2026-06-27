@@ -59,21 +59,21 @@ def _fallback_gl_for_role(company: str, role: str) -> str | None:
 	if role in ("rou_asset", "loan_receivable"):
 		return frappe.db.get_value(
 			"GL Account",
-			{"company": company, "root_type": "Asset", "is_group": 0},
+			{"company": company, "account_type": "Asset", "is_group": 0},
 			"name",
 			order_by="name asc",
 		)
 	if role == "lease_liability":
 		return frappe.db.get_value(
 			"GL Account",
-			{"company": company, "root_type": "Liability", "is_group": 0},
+			{"company": company, "account_type": "Liability", "is_group": 0},
 			"name",
 			order_by="name asc",
 		)
 	if role == "termination_pl":
 		return frappe.db.get_value(
 			"GL Account",
-			{"company": company, "root_type": "Expense", "is_group": 0},
+			{"company": company, "account_type": "Expense", "is_group": 0},
 			"name",
 			order_by="name asc",
 		)

@@ -14,6 +14,21 @@ class TestBudgetPurchaseRequest(FrappeTestCase):
 		self.company = frappe.db.get_value("Company", {}, "name", order_by="creation asc")
 		if not self.company:
 			self.skipTest("No company")
+		self.branch = self._ensure_branch()
+
+	def _ensure_branch(self):
+		existing = frappe.db.get_value(
+			"Branch", {"company": self.company, "status": "Active"}, "name", order_by="creation asc"
+		)
+		if existing:
+			return existing
+		doc = frappe.new_doc("Branch")
+		doc.company = self.company
+		doc.branch_name = "Test Branch"
+		doc.branch_code = f"TB{frappe.generate_hash(length=4)}"
+		doc.status = "Active"
+		doc.insert(ignore_permissions=True)
+		return doc.name
 
 	def _expense_gl(self):
 		num = f"8{random_string(6)}"
@@ -56,6 +71,7 @@ class TestBudgetPurchaseRequest(FrappeTestCase):
 	def test_po_accepts_submitted_purchase_request(self):
 		pr = frappe.new_doc("Purchase Request")
 		pr.company = self.company
+		pr.branch = self.branch
 		pr.required_by = today()
 		pr.append("items", {"item_code": f"IT-{random_string(4)}", "qty": 2})
 		pr.insert(ignore_permissions=True)
@@ -75,6 +91,7 @@ class TestBudgetPurchaseRequest(FrappeTestCase):
 	def test_po_rejects_draft_purchase_request(self):
 		pr = frappe.new_doc("Purchase Request")
 		pr.company = self.company
+		pr.branch = self.branch
 		pr.required_by = today()
 		pr.append("items", {"item_code": f"IT-{random_string(4)}", "qty": 1})
 		pr.insert(ignore_permissions=True)

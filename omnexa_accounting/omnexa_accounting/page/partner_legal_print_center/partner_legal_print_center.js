@@ -9,7 +9,7 @@ frappe.pages["partner-legal-print-center"].on_page_load = function (wrapper) {
 		<div class="partner-legal-print-center" dir="rtl">
 			<div class="alert alert-info mb-3">
 				أضف الشركاء ونسب الملكية لأي شركة، ثم حمّل حزمة ZIP —
-				<b>ملف PDF منفصل</b> لكل سنة (ميزانية، قائمة دخل، قيود يومية) بدون أي تداخل.
+				<b>ملف PDF وملف Excel</b> لكل سنة (ميزانية، قائمة دخل، قيود يومية) بدون أي تداخل.
 			</div>
 			<div class="row g-2 mb-3">
 				<div class="col-md-4">
@@ -33,7 +33,7 @@ frappe.pages["partner-legal-print-center"].on_page_load = function (wrapper) {
 			</div>
 			<div class="d-flex gap-2 flex-wrap mb-3">
 				<button class="btn btn-primary btn-sm" data-action="preview">معاينة الحزمة</button>
-				<button class="btn btn-success btn-sm" data-action="print-all">تحميل الحزمة (ZIP — ملف لكل سنة)</button>
+				<button class="btn btn-success btn-sm" data-action="print-all">تحميل الحزمة (ZIP — PDF + Excel)</button>
 				<button class="btn btn-outline-secondary btn-sm" data-action="open-setup">إعداد الشركاء القانوني</button>
 			</div>
 			<div data-section="summary" class="mb-3"></div>
@@ -48,10 +48,11 @@ frappe.pages["partner-legal-print-center"].on_page_load = function (wrapper) {
 								<th>المستند</th>
 								<th>الصفوف</th>
 								<th>الحالة</th>
+								<th>إجراءات</th>
 							</tr>
 						</thead>
 						<tbody data-section="reports">
-							<tr><td colspan="5" class="text-muted">اضغط «معاينة الحزمة» لعرض المستندات.</td></tr>
+							<tr><td colspan="6" class="text-muted">اضغط «معاينة الحزمة» لعرض المستندات.</td></tr>
 						</tbody>
 					</table>
 				</div>
@@ -61,7 +62,33 @@ frappe.pages["partner-legal-print-center"].on_page_load = function (wrapper) {
 
 	$(page.body).append($root);
 
+	let lastPreview = null;
+
 	const val = (k) => String($root.find(`[data-field="${k}"]`).val() || "").trim();
+
+	const buildDocUrl = (file, inline = false) => {
+		const qs = new URLSearchParams({
+			company: val("company"),
+			from_date: val("from_date"),
+			to_date: val("to_date"),
+			file,
+		});
+		const branch = val("branch");
+		if (branch) qs.set("branch", branch);
+		if (inline) qs.set("inline", "1");
+		return (
+			"/api/method/omnexa_accounting.utils.partner_legal_batch_print.download_partner_legal_document?" +
+			qs.toString()
+		);
+	};
+
+	const openDocument = (file, inline = false) => {
+		if (!val("company") || !val("from_date") || !val("to_date")) {
+			frappe.msgprint("الشركة وتاريخ البداية والنهاية مطلوبة.");
+			return;
+		}
+		window.open(buildDocUrl(file, inline), "_blank");
+	};
 
 	const loadCompanies = async () => {
 		const r = await frappe.call({
@@ -129,6 +156,7 @@ frappe.pages["partner-legal-print-center"].on_page_load = function (wrapper) {
 	};
 
 	const renderPreview = (data) => {
+		lastPreview = data;
 		if (!data.ok) {
 			frappe.msgprint({ message: data.error || "فشلت المعاينة", indicator: "red" });
 			return;
@@ -140,7 +168,8 @@ frappe.pages["partner-legal-print-center"].on_page_load = function (wrapper) {
 				&nbsp;|&nbsp; <b>الشريك المدين:</b> ${frappe.utils.escape_html(cert.debtor_partner || "—")}
 				&nbsp;|&nbsp; <b>الشريك الممول:</b> ${frappe.utils.escape_html(cert.funding_partner || "—")}
 				&nbsp;|&nbsp; <b>المديونية المستحقة:</b> ${format_currency(cert.final_amount_due || 0)}
-				&nbsp;|&nbsp; <b>عدد الملفات:</b> ${data.document_count || "—"}
+				&nbsp;|&nbsp; <b>عدد الملفات:</b> ${data.file_count || data.document_count || "—"}
+				&nbsp;|&nbsp; <b>الصيغ:</b> PDF + Excel
 				&nbsp;|&nbsp; <b>السنوات:</b> ${(data.years || []).join("، ") || "—"}
 				&nbsp;|&nbsp; <b>التسليم:</b> ZIP
 			</div>
@@ -150,16 +179,23 @@ frappe.pages["partner-legal-print-center"].on_page_load = function (wrapper) {
 				const status = r.ok
 					? `<span class="text-success">جاهز</span>`
 					: `<span class="text-danger">${frappe.utils.escape_html(r.error || "خطأ")}</span>`;
+				const actions = r.ok && r.file
+					? `<div class="d-flex gap-1 flex-wrap">
+						<button type="button" class="btn btn-outline-primary btn-xs py-0" data-action="download-doc" data-doc-index="${r.doc_index || ""}">تحميل</button>
+						<button type="button" class="btn btn-outline-secondary btn-xs py-0" data-action="print-doc" data-doc-index="${r.doc_index || ""}">طباعة</button>
+					</div>`
+					: `<span class="text-muted">—</span>`;
 				return `<tr>
 					<td>${r.year != null ? r.year : "—"}</td>
 					<td><code>${frappe.utils.escape_html(r.file || "")}</code></td>
 					<td>${frappe.utils.escape_html(r.title_ar || "")}</td>
 					<td>${r.row_count != null ? r.row_count : "—"}</td>
 					<td>${status}</td>
+					<td>${actions}</td>
 				</tr>`;
 			})
 			.join("");
-		$root.find('[data-section="reports"]').html(rows || `<tr><td colspan="5">لا توجد مستندات</td></tr>`);
+		$root.find('[data-section="reports"]').html(rows || `<tr><td colspan="6">لا توجد مستندات</td></tr>`);
 	};
 
 	const preview = async () => {
@@ -208,6 +244,19 @@ frappe.pages["partner-legal-print-center"].on_page_load = function (wrapper) {
 	$root.on("change", '[data-field="company"]', () => loadSetupDefaults());
 	$root.on("click", '[data-action="preview"]', () => preview());
 	$root.on("click", '[data-action="print-all"]', () => printAll());
+	$root.on("click", '[data-action="download-doc"]', function () {
+		const doc = _docFromButton($(this));
+		if (doc?.file) openDocument(doc.file, false);
+	});
+	$root.on("click", '[data-action="print-doc"]', function () {
+		const doc = _docFromButton($(this));
+		if (doc?.file) openDocument(doc.file, true);
+	});
+
+	const _docFromButton = ($btn) => {
+		const idx = cint($btn.data("doc-index")) - 1;
+		return (lastPreview?.reports || [])[idx];
+	};
 	$root.on("click", '[data-action="open-setup"]', () => {
 		const company = val("company");
 		if (!company) return frappe.msgprint("اختر الشركة أولاً.");

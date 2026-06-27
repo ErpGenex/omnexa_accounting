@@ -9,6 +9,13 @@ from frappe.utils import add_days, getdate, today
 class TestOmnexaAccounting(FrappeTestCase):
 	def setUp(self):
 		super().setUp()
+		from omnexa_core.tests.test_helpers import clear_privileged_view_context
+		from omnexa_accounting.utils.ledger_workflow import ensure_ledger_workflows
+
+		clear_privileged_view_context()
+		ensure_ledger_workflows()
+		self._company_cache: dict[str, str] = {}
+		self._abbr_suffix = frappe.generate_hash(length=8).upper()
 		self._ensure_geo()
 		self.company = self._create_company("OMNX-TEST")
 
@@ -22,21 +29,54 @@ class TestOmnexaAccounting(FrappeTestCase):
 				{"doctype": "Country", "country_name": "Egypt", "code": "EG"}
 			).insert(ignore_permissions=True)
 
-	def _create_company(self, abbr: str):
-		if frappe.db.exists("Company", {"abbr": abbr}):
-			return frappe.db.get_value("Company", {"abbr": abbr}, "name")
+	def _create_company(self, abbr: str, seed_tax: bool = True):
+		cache_key = f"{abbr}-{getattr(self, '_abbr_suffix', 'default')}"
+		if cache_key in getattr(self, "_company_cache", {}):
+			return self._company_cache[cache_key]
+		unique_abbr = f"{abbr[:6]}{self._abbr_suffix}"[:10]
+		existing = frappe.db.get_value("Company", {"abbr": unique_abbr}, "name")
+		if existing:
+			self._company_cache[cache_key] = existing
+			if seed_tax:
+				self._seed_company_basics(existing)
+			return existing
 		doc = frappe.get_doc(
 			{
 				"doctype": "Company",
-				"company_name": f"Test Co {abbr}",
-				"abbr": abbr,
+				"company_name": f"Test Co {unique_abbr}",
+				"abbr": unique_abbr,
 				"default_currency": "EGP",
 				"country": "Egypt",
 				"status": "Active",
 			}
 		)
 		doc.insert(ignore_permissions=True)
+		self._company_cache[cache_key] = doc.name
+		if seed_tax:
+			self._seed_company_basics(doc.name)
 		return doc.name
+
+	def _seed_company_basics(self, company: str) -> None:
+		"""Default tax rule so invoice/submit tests pass on fresh companies."""
+		from frappe.utils import add_years, today
+
+		if not frappe.db.exists("DocType", "Tax Rule"):
+			return
+		if frappe.db.exists("Tax Rule", {"company": company}):
+			return
+		tax_gl = self._gl(f"VT{frappe.generate_hash(length=4)}", "VAT Output", 0, company=company)
+		frappe.get_doc(
+			{
+				"doctype": "Tax Rule",
+				"title": f"Default VAT {company}",
+				"company": company,
+				"valid_from": today(),
+				"valid_to": add_years(today(), 5),
+				"tax_type": "standard",
+				"rate": 0,
+				"account_head": tax_gl,
+			}
+		).insert(ignore_permissions=True)
 
 	def _create_branch(self, company: str, code: str, name: str):
 		if frappe.db.exists("Branch", {"company": company, "branch_code": code}):
@@ -78,6 +118,40 @@ class TestOmnexaAccounting(FrappeTestCase):
 		doc.insert(ignore_permissions=True)
 		return doc.name
 
+	def _enable_eta_on_branch(self, company: str, suffix: str):
+		"""Branch-level ETA (production path) with minimal invoice credentials for enqueue tests."""
+		branch = self._create_branch(company, f"E{suffix[:4]}", f"ETA {suffix}")
+		tax = self._create_tax_authority_profile(company, suffix)
+		sign = self._create_signing_profile(company, suffix)
+		for field, value in {
+			"eta_einvoice_enabled": 1,
+			"tax_authority_profile": tax,
+			"signing_profile": sign,
+			"eta_invoice_rin": "123456789",
+			"eta_invoice_client_id": f"client-{suffix}",
+		}.items():
+			frappe.db.set_value("Branch", branch, field, value, update_modified=False)
+		branch_doc = frappe.get_doc("Branch", branch)
+		branch_doc.eta_invoice_client_secret = f"secret-{suffix}"
+		branch_doc.save(ignore_permissions=True)
+		return branch, tax, sign
+
+	def _sales_invoice_with_eta(self, company, customer, leaf, branch=None, **kwargs):
+		si = frappe.new_doc("Sales Invoice")
+		si.company = company
+		si.customer = customer
+		si.posting_date = today()
+		if branch:
+			si.branch = branch
+		if si.meta.has_field("eta_billing_type"):
+			si.eta_billing_type = "E-Invoice"
+		si.append(
+			"items",
+			{"item_code": "line", "qty": 1, "rate": kwargs.get("rate", 100), "income_account": leaf},
+		)
+		si.insert(ignore_permissions=True)
+		return si
+
 	def _deactivate_purchase_approval_rules(self):
 		for name in frappe.get_all(
 			"Purchase Approval Rule",
@@ -93,16 +167,22 @@ class TestOmnexaAccounting(FrappeTestCase):
 		d.account_name = name
 		d.is_group = is_group
 		d.parent_account = parent
+		if not is_group:
+			d.account_class = "Asset"
+			d.account_type = "Asset"
 		d.insert(ignore_permissions=True)
 		return d.name
 
 	def test_gl_duplicate_account_number(self):
-		self._gl("1000", "Cash", 0)
+		num = f"D{frappe.generate_hash(length=4)}"
+		self._gl(num, "Cash", 0)
 		d2 = frappe.new_doc("GL Account")
 		d2.company = self.company
-		d2.account_number = "1000"
+		d2.account_number = num
 		d2.account_name = "Dup"
 		d2.is_group = 0
+		d2.account_class = "Asset"
+		d2.account_type = "Asset"
 		with self.assertRaises(frappe.ValidationError):
 			d2.insert(ignore_permissions=True)
 
@@ -216,10 +296,13 @@ class TestOmnexaAccounting(FrappeTestCase):
 			frappe.set_user("Administrator")
 
 	def test_tax_rule_overlap(self):
-		head = self._gl("4000", "VAT", 0)
+		co = self._create_company(f"TAX-{frappe.generate_hash(length=6)}", seed_tax=False)
+		for tr_name in frappe.get_all("Tax Rule", filters={"company": co}, pluck="name"):
+			frappe.delete_doc("Tax Rule", tr_name, force=1, ignore_permissions=True)
+		head = self._gl("4000", "VAT", 0, company=co)
 		d1 = frappe.new_doc("Tax Rule")
 		d1.title = "TR1"
-		d1.company = self.company
+		d1.company = co
 		d1.valid_from = "2026-01-01"
 		d1.valid_to = "2026-12-31"
 		d1.tax_type = "standard"
@@ -228,7 +311,7 @@ class TestOmnexaAccounting(FrappeTestCase):
 		d1.insert(ignore_permissions=True)
 		d2 = frappe.new_doc("Tax Rule")
 		d2.title = "TR2"
-		d2.company = self.company
+		d2.company = co
 		d2.valid_from = "2026-06-01"
 		d2.valid_to = "2026-06-30"
 		d2.tax_type = "standard"
@@ -1267,32 +1350,13 @@ class TestOmnexaAccounting(FrappeTestCase):
 
 	def test_eta_enqueue_is_idempotent_for_same_invoice(self):
 		eta_company = self._create_company("OMNX-ETAI")
-		frappe.db.set_value("Company", eta_company, "eta_einvoice_enabled", 1, update_modified=False)
-		frappe.db.set_value(
-			"Company",
-			eta_company,
-			"company_tax_authority_profile",
-			self._create_tax_authority_profile(eta_company, "idem"),
-			update_modified=False,
-		)
-		frappe.db.set_value(
-			"Company",
-			eta_company,
-			"company_signing_profile",
-			self._create_signing_profile(eta_company, "idem"),
-			update_modified=False,
-		)
+		branch, _tax, _sign = self._enable_eta_on_branch(eta_company, "idem")
 		cust = frappe.new_doc("Customer")
 		cust.company = eta_company
 		cust.customer_name = "ETA Idempotent"
 		cust.insert(ignore_permissions=True)
 		leaf = self._gl("5304", "Revenue ETA IDEMP", 0, company=eta_company)
-		si = frappe.new_doc("Sales Invoice")
-		si.company = eta_company
-		si.customer = cust.name
-		si.posting_date = today()
-		si.append("items", {"item_code": "line", "qty": 1, "rate": 100, "income_account": leaf})
-		si.insert(ignore_permissions=True)
+		si = self._sales_invoice_with_eta(eta_company, cust.name, leaf, branch=branch)
 		si._enqueue_eta_submission()
 		si._enqueue_eta_submission()
 		count = frappe.db.count(
@@ -1307,32 +1371,13 @@ class TestOmnexaAccounting(FrappeTestCase):
 
 	def test_eta_enqueue_requeues_rejected_submission(self):
 		eta_company = self._create_company("OMNX-ETAR")
-		frappe.db.set_value("Company", eta_company, "eta_einvoice_enabled", 1, update_modified=False)
-		frappe.db.set_value(
-			"Company",
-			eta_company,
-			"company_tax_authority_profile",
-			self._create_tax_authority_profile(eta_company, "retry"),
-			update_modified=False,
-		)
-		frappe.db.set_value(
-			"Company",
-			eta_company,
-			"company_signing_profile",
-			self._create_signing_profile(eta_company, "retry"),
-			update_modified=False,
-		)
+		branch, _tax, _sign = self._enable_eta_on_branch(eta_company, "retry")
 		cust = frappe.new_doc("Customer")
 		cust.company = eta_company
 		cust.customer_name = "ETA Retry"
 		cust.insert(ignore_permissions=True)
 		leaf = self._gl("5305", "Revenue ETA RETRY", 0, company=eta_company)
-		si = frappe.new_doc("Sales Invoice")
-		si.company = eta_company
-		si.customer = cust.name
-		si.posting_date = today()
-		si.append("items", {"item_code": "line", "qty": 1, "rate": 100, "income_account": leaf})
-		si.insert(ignore_permissions=True)
+		si = self._sales_invoice_with_eta(eta_company, cust.name, leaf, branch=branch)
 		si._enqueue_eta_submission()
 		submission_name = frappe.db.get_value(
 			"E-Document Submission",
@@ -1356,32 +1401,11 @@ class TestOmnexaAccounting(FrappeTestCase):
 
 	def test_eta_uses_branch_specific_profiles_when_enabled(self):
 		eta_company = self._create_company("OMNX-ETAB")
-		company_tax = self._create_tax_authority_profile(eta_company, "co")
-		company_sign = self._create_signing_profile(eta_company, "co")
-		frappe.db.set_value("Company", eta_company, "eta_einvoice_enabled", 1, update_modified=False)
-		frappe.db.set_value("Company", eta_company, "company_tax_authority_profile", company_tax, update_modified=False)
-		frappe.db.set_value("Company", eta_company, "company_signing_profile", company_sign, update_modified=False)
-
-		branch = self._create_branch(eta_company, "ETA1", "ETA Branch")
-		# Tax Authority Profile is one-per-company (omnexa_einvoice); branch reuses company profiles to assert branch path.
-		branch_tax = company_tax
-		branch_sign = company_sign
-		frappe.db.set_value("Branch", branch, "eta_einvoice_enabled", 1, update_modified=False)
-		frappe.db.set_value("Branch", branch, "tax_authority_profile", branch_tax, update_modified=False)
-		frappe.db.set_value("Branch", branch, "signing_profile", branch_sign, update_modified=False)
+		branch, branch_tax, branch_sign = self._enable_eta_on_branch(eta_company, "co")
 
 		cust = frappe.get_doc({"doctype": "Customer", "company": eta_company, "customer_name": "Branch ETA"}).insert(ignore_permissions=True)
 		leaf = self._gl("5306", "Revenue ETA BR", 0, company=eta_company)
-		si = frappe.get_doc(
-			{
-				"doctype": "Sales Invoice",
-				"company": eta_company,
-				"branch": branch,
-				"customer": cust.name,
-				"posting_date": today(),
-				"items": [{"item_code": "line", "qty": 1, "rate": 100, "income_account": leaf}],
-			}
-		).insert(ignore_permissions=True)
+		si = self._sales_invoice_with_eta(eta_company, cust.name, leaf, branch=branch)
 		si._enqueue_eta_submission()
 		sub_name = frappe.db.get_value(
 			"E-Document Submission",
