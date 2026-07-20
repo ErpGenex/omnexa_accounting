@@ -21,15 +21,15 @@ def resolve_default_tax_rule(
 	base_filters = {
 		"company": company,
 		"valid_from": ["<=", posting_date],
-		"valid_to": [">=", posting_date],
-	}
+		"valid_to": [">=", posting_date]}
 	if tax_category:
 		base_filters["tax_category"] = tax_category
 
 	for tax_type in ("standard", "zero", "exempt", "out_of_scope"):
 		name = frappe.db.get_value(
 			"Tax Rule",
-			{**base_filters, "tax_type": tax_type},
+			{**base_filters, "tax_type": tax_type
+	},
 			"name",
 			order_by="rate desc, modified desc",
 		)

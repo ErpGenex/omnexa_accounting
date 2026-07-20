@@ -19,7 +19,8 @@ class FiscalYear(Document):
 		self._validate_period_freeze_permissions()
 
 	def _validate_no_overlap(self):
-		filters = {"company": self.company}
+		filters = {"company": self.company
+	}
 		if self.name:
 			filters["name"] = ["!=", self.name]
 		others = frappe.get_all(
@@ -61,7 +62,8 @@ class FiscalYear(Document):
 		if not self.is_new():
 			for row in frappe.get_all(
 				"Fiscal Year Period",
-				filters={"parent": self.name, "parenttype": "Fiscal Year"},
+				filters={"parent": self.name, "parenttype": "Fiscal Year"
+	},
 				fields=["name", "frozen"],
 			):
 				previous_frozen_by_row[row.name] = int(row.frozen or 0)

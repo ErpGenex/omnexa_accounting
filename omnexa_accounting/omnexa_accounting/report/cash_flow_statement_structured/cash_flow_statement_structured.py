@@ -27,7 +27,7 @@ def execute(filters=None):
 	params = {
 		"company": filters.company,
 		"from_date": filters.from_date,
-		"to_date": filters.to_date,
+		"to_date": filters.to_date
 	}
 
 	pe_conditions = [
@@ -76,7 +76,8 @@ def execute(filters=None):
 	bank_gl = set(
 		frappe.db.sql(
 			"""SELECT DISTINCT gl_account FROM `tabBank Account` WHERE company = %(company)s AND IFNULL(gl_account,'') != ''""",
-			{"company": filters.company},
+			{"company": filters.company
+	},
 			pluck=True,
 		)
 	)
@@ -84,7 +85,8 @@ def execute(filters=None):
 		r.name: (r.cash_flow_section or "").strip() or "Exclude"
 		for r in frappe.db.get_all(
 			"GL Account",
-			filters={"company": filters.company},
+			filters={"company": filters.company
+	},
 			fields=["name", "cash_flow_section"],
 		)
 	}
@@ -93,7 +95,8 @@ def execute(filters=None):
 		intercompany_accounts = set(
 			frappe.db.get_all(
 				"GL Account",
-				filters={"company": filters.company, "intercompany_account": 1},
+				filters={"company": filters.company, "intercompany_account": 1
+	},
 				pluck="name",
 			)
 		)
@@ -145,29 +148,42 @@ def execute(filters=None):
 		net_change -= flt(intercompany_adjustment)
 
 	columns = [
-		{"label": _("Section / Line"), "fieldname": "label", "fieldtype": "Data", "width": 360},
-		{"label": _("Amount"), "fieldname": "amount", "fieldtype": "Currency", "width": 140},
+		{"label": _("Section / Line"), "fieldname": "label", "fieldtype": "Data", "width": 360
+	},
+		{"label": _("Amount"), "fieldname": "amount", "fieldtype": "Currency", "width": 140
+	},
 	]
 
 	data = [
-		{"label": _("Operating — receipts from customers (Payment Entry)"), "amount": receipts},
-		{"label": _("Operating — payments to suppliers (Payment Entry, shown positive)"), "amount": payments},
-		{"label": _("Operating — net Payment Entry (receipts − payments)"), "amount": operating_pe},
-		{"label": _("Operating — Journal Entry via bank GL (classified)"), "amount": operating_je},
-		{"label": _("Investing — Journal Entry via bank GL (classified)"), "amount": investing},
-		{"label": _("Financing — Journal Entry via bank GL (classified)"), "amount": financing},
+		{"label": _("Operating — receipts from customers (Payment Entry)"), "amount": receipts
+	},
+		{"label": _("Operating — payments to suppliers (Payment Entry, shown positive)"), "amount": payments
+	},
+		{"label": _("Operating — net Payment Entry (receipts − payments)"), "amount": operating_pe
+	},
+		{"label": _("Operating — Journal Entry via bank GL (classified)"), "amount": operating_je
+	},
+		{"label": _("Investing — Journal Entry via bank GL (classified)"), "amount": investing
+	},
+		{"label": _("Financing — Journal Entry via bank GL (classified)"), "amount": financing
+	},
 		{
 			"label": _("Consolidation elimination — intercompany movement"),
-			"amount": flt(intercompany_adjustment) if consolidation_view else 0,
-		},
-		{"label": _("Net change in cash (indicative)"), "amount": net_change},
+			"amount": flt(intercompany_adjustment) if consolidation_view else 0
+	},
+		{"label": _("Net change in cash (indicative)"), "amount": net_change
+	},
 	]
 
 	report_summary = [
-		{"value": operating_pe + operating_je, "label": _("Operating total"), "datatype": "Currency"},
-		{"value": investing, "label": _("Investing"), "datatype": "Currency"},
-		{"value": financing, "label": _("Financing"), "datatype": "Currency"},
-		{"value": net_change, "label": _("Net"), "datatype": "Currency"},
+		{"value": operating_pe + operating_je, "label": _("Operating total"), "datatype": "Currency"
+	},
+		{"value": investing, "label": _("Investing"), "datatype": "Currency"
+	},
+		{"value": financing, "label": _("Financing"), "datatype": "Currency"
+	},
+		{"value": net_change, "label": _("Net"), "datatype": "Currency"
+	},
 	]
 
 	msg = _(
@@ -182,8 +198,10 @@ def execute(filters=None):
 def _empty():
 	return (
 		[
-			{"label": _("Section / Line"), "fieldname": "label", "fieldtype": "Data", "width": 360},
-			{"label": _("Amount"), "fieldname": "amount", "fieldtype": "Currency", "width": 140},
+			{"label": _("Section / Line"), "fieldname": "label", "fieldtype": "Data", "width": 360
+	},
+			{"label": _("Amount"), "fieldname": "amount", "fieldtype": "Currency", "width": 140
+	},
 		],
 		[],
 		None,

@@ -22,7 +22,7 @@ def execute(filters=None):
 	params: dict = {
 		"company": filters.company,
 		"from_date": filters.from_date,
-		"to_date": filters.to_date,
+		"to_date": filters.to_date
 	}
 
 	conditions = [
@@ -90,8 +90,10 @@ def execute(filters=None):
 	net_margin_pct = flt((net / total_income) * 100.0, 2) if total_income else None
 
 	columns = [
-		{"label": _("Metric"), "fieldname": "metric", "fieldtype": "Data", "width": 300},
-		{"label": _("Value"), "fieldname": "value", "fieldtype": "Float", "width": 160},
+		{"label": _("Metric"), "fieldname": "metric", "fieldtype": "Data", "width": 300
+	},
+		{"label": _("Value"), "fieldname": "value", "fieldtype": "Float", "width": 160
+	},
 	]
 
 	data = [
@@ -101,8 +103,7 @@ def execute(filters=None):
 		{"metric": _("Gross profit (Revenue − COGS)"), "value": flt(gross_profit, 2)},
 		{
 			"metric": _("Gross margin % (÷ Revenue bucket)"),
-			"value": flt(gross_margin_pct, 2) if gross_margin_pct is not None else None,
-		},
+			"value": flt(gross_margin_pct, 2) if gross_margin_pct is not None else None},
 		{"metric": _("Operating expense (bucket)"), "value": flt(operating_exp, 2)},
 		{"metric": _("Other expense (bucket)"), "value": flt(other_expense, 2)},
 		{"metric": _("Total income (all GL Income)"), "value": flt(total_income, 2)},
@@ -110,25 +111,28 @@ def execute(filters=None):
 		{"metric": _("Net (Income − Expense)"), "value": flt(net, 2)},
 		{
 			"metric": _("Net margin % (÷ total income)"),
-			"value": flt(net_margin_pct, 2) if net_margin_pct is not None else None,
-		},
+			"value": flt(net_margin_pct, 2) if net_margin_pct is not None else None},
 	]
 
 	report_summary = [
-		{"value": revenue_pl, "label": _("Revenue (bucket)"), "datatype": "Currency"},
-		{"value": cogs, "label": _("COGS"), "datatype": "Currency"},
-		{"value": gross_profit, "label": _("Gross profit"), "datatype": "Currency"},
+		{"value": revenue_pl, "label": _("Revenue (bucket)"), "datatype": "Currency"
+	},
+		{"value": cogs, "label": _("COGS"), "datatype": "Currency"
+	},
+		{"value": gross_profit, "label": _("Gross profit"), "datatype": "Currency"
+	},
 		{
 			"value": gross_margin_pct if gross_margin_pct is not None else 0.0,
 			"label": _("Gross margin %"),
-			"datatype": "Float",
-		},
-		{"value": net, "label": _("Net"), "datatype": "Currency"},
+			"datatype": "Float"
+	},
+		{"value": net, "label": _("Net"), "datatype": "Currency"
+	},
 		{
 			"value": net_margin_pct if net_margin_pct is not None else 0.0,
 			"label": _("Net margin %"),
-			"datatype": "Float",
-		},
+			"datatype": "Float"
+	},
 	]
 
 	message = _(
@@ -141,7 +145,9 @@ def execute(filters=None):
 
 def _empty_result():
 	columns = [
-		{"label": _("Metric"), "fieldname": "metric", "fieldtype": "Data", "width": 300},
-		{"label": _("Value"), "fieldname": "value", "fieldtype": "Float", "width": 160},
+		{"label": _("Metric"), "fieldname": "metric", "fieldtype": "Data", "width": 300
+	},
+		{"label": _("Value"), "fieldname": "value", "fieldtype": "Float", "width": 160
+	},
 	]
 	return columns, [], None, None, [], True

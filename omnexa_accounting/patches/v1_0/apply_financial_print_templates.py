@@ -40,4 +40,5 @@ def execute():
 			continue
 		html_path.write_text(template, encoding="utf-8")
 		written += 1
-	return {"written": written}
+	return {"written": written
+	}

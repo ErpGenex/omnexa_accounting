@@ -16,7 +16,8 @@ class TestSalesChain(FrappeTestCase):
 
 	def _ensure_uom(self):
 		if not frappe.db.exists("UOM", "Nos"):
-			frappe.get_doc({"doctype": "UOM", "uom_name": "Nos"}).insert(ignore_permissions=True)
+			frappe.get_doc({"doctype": "UOM", "uom_name": "Nos"
+	}).insert(ignore_permissions=True)
 
 	def _item(self, prefix: str):
 		self._ensure_uom()
@@ -69,7 +70,8 @@ class TestSalesChain(FrappeTestCase):
 		sq.customer = cust.name
 		sq.transaction_date = today()
 		sq.currency = cur
-		sq.append("items", {"item": it.name, "qty": 2, "rate": 5, "income_account": leaf})
+		sq.append("items", {"item": it.name, "qty": 2, "rate": 5, "income_account": leaf
+	})
 		sq.insert(ignore_permissions=True)
 		sq.submit()
 		so = frappe.new_doc("Sales Order")
@@ -78,7 +80,8 @@ class TestSalesChain(FrappeTestCase):
 		so.sales_quotation = sq.name
 		so.transaction_date = today()
 		so.currency = cur
-		so.append("items", {"item": it.name, "qty": 2, "rate": 5, "income_account": leaf})
+		so.append("items", {"item": it.name, "qty": 2, "rate": 5, "income_account": leaf
+	})
 		so.insert(ignore_permissions=True)
 		so.submit()
 		sq.reload()
@@ -90,7 +93,8 @@ class TestSalesChain(FrappeTestCase):
 		dn.sales_order = so.name
 		dn.warehouse = wh
 		dn.transaction_date = today()
-		dn.append("items", {"item": it.name, "qty": 2, "rate": 5})
+		dn.append("items", {"item": it.name, "qty": 2, "rate": 5
+	})
 		dn.insert(ignore_permissions=True)
 		dn.submit()
 		si = frappe.new_doc("Sales Invoice")
@@ -101,7 +105,8 @@ class TestSalesChain(FrappeTestCase):
 		si.sales_quotation = sq.name
 		si.sales_order = so.name
 		si.delivery_note = dn.name
-		si.append("items", {"item": it.name, "qty": 2, "rate": 5, "income_account": leaf})
+		si.append("items", {"item": it.name, "qty": 2, "rate": 5, "income_account": leaf
+	})
 		si.insert(ignore_permissions=True)
 		si.submit()
 
@@ -115,7 +120,8 @@ class TestSalesChain(FrappeTestCase):
 		so.customer = cust.name
 		so.transaction_date = today()
 		so.currency = cur
-		so.append("items", {"item": it.name, "qty": 1, "rate": 10, "income_account": leaf})
+		so.append("items", {"item": it.name, "qty": 1, "rate": 10, "income_account": leaf
+	})
 		so.insert(ignore_permissions=True)
 		so.submit()
 		wh = self._warehouse("AU")
@@ -125,7 +131,8 @@ class TestSalesChain(FrappeTestCase):
 		dn.sales_order = so.name
 		dn.warehouse = wh
 		dn.transaction_date = today()
-		dn.append("items", {"item": it.name, "qty": 1, "rate": 10})
+		dn.append("items", {"item": it.name, "qty": 1, "rate": 10
+	})
 		dn.insert(ignore_permissions=True)
 		dn.submit()
 		si = frappe.new_doc("Sales Invoice")
@@ -134,7 +141,8 @@ class TestSalesChain(FrappeTestCase):
 		si.posting_date = today()
 		si.currency = cur
 		si.delivery_note = dn.name
-		si.append("items", {"item": it.name, "qty": 1, "rate": 10, "income_account": leaf})
+		si.append("items", {"item": it.name, "qty": 1, "rate": 10, "income_account": leaf
+	})
 		si.insert(ignore_permissions=True)
 		self.assertEqual(si.sales_order, so.name)
 
@@ -148,7 +156,8 @@ class TestSalesChain(FrappeTestCase):
 		so.customer = cust.name
 		so.transaction_date = today()
 		so.currency = cur
-		so.append("items", {"item": it.name, "qty": 2, "rate": 1, "income_account": leaf})
+		so.append("items", {"item": it.name, "qty": 2, "rate": 1, "income_account": leaf
+	})
 		so.insert(ignore_permissions=True)
 		so.submit()
 		wh = self._warehouse("OV")
@@ -158,7 +167,8 @@ class TestSalesChain(FrappeTestCase):
 		dn1.sales_order = so.name
 		dn1.warehouse = wh
 		dn1.transaction_date = today()
-		dn1.append("items", {"item": it.name, "qty": 2, "rate": 1})
+		dn1.append("items", {"item": it.name, "qty": 2, "rate": 1
+	})
 		dn1.insert(ignore_permissions=True)
 		dn1.submit()
 		dn2 = frappe.new_doc("Delivery Note")
@@ -167,6 +177,7 @@ class TestSalesChain(FrappeTestCase):
 		dn2.sales_order = so.name
 		dn2.warehouse = wh
 		dn2.transaction_date = today()
-		dn2.append("items", {"item": it.name, "qty": 1, "rate": 1})
+		dn2.append("items", {"item": it.name, "qty": 1, "rate": 1
+	})
 		with self.assertRaises(ValidationError):
 			dn2.insert(ignore_permissions=True)

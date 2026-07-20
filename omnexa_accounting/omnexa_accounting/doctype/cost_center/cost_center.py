@@ -10,7 +10,8 @@ class CostCenter(Document):
 	def validate(self):
 		existing = frappe.db.get_value(
 			"Cost Center",
-			{"company": self.company, "cost_center_name": self.cost_center_name},
+			{"company": self.company, "cost_center_name": self.cost_center_name
+	},
 			"name",
 		)
 		if existing and (not self.name or existing != self.name):

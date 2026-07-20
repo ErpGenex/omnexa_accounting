@@ -34,20 +34,30 @@ def execute(filters=None):
 
 	columns = insert_account_name_ar_column(
 		[
-		{"label": _("Posting Date"), "fieldname": "posting_date", "fieldtype": "Date", "width": 100},
-		{"label": _("Account"), "fieldname": "account", "fieldtype": "Link", "options": "GL Account", "width": 170},
+		{"label": _("Posting Date"), "fieldname": "posting_date", "fieldtype": "Date", "width": 100
+	},
+		{"label": _("Account"), "fieldname": "account", "fieldtype": "Link", "options": "GL Account", "width": 170
+	},
 		],
 		after="account",
 	)
 	columns += [
-		{"label": _("Account Name"), "fieldname": "account_name", "fieldtype": "Data", "width": 200},
-		{"label": _("Voucher"), "fieldname": "voucher", "fieldtype": "Link", "options": "Journal Entry", "width": 130},
-		{"label": _("Remarks"), "fieldname": "remarks", "fieldtype": "Data", "width": 220},
-		{"label": _("Debit"), "fieldname": "debit", "fieldtype": "Currency", "width": 120},
-		{"label": _("Credit"), "fieldname": "credit", "fieldtype": "Currency", "width": 120},
-		{"label": _("Balance"), "fieldname": "balance", "fieldtype": "Currency", "width": 120},
-		{"label": _("Branch"), "fieldname": "branch", "fieldtype": "Link", "options": "Branch", "width": 120},
-		{"label": _("Reference"), "fieldname": "reference", "fieldtype": "Data", "width": 130},
+		{"label": _("Account Name"), "fieldname": "account_name", "fieldtype": "Data", "width": 200
+	},
+		{"label": _("Voucher"), "fieldname": "voucher", "fieldtype": "Link", "options": "Journal Entry", "width": 130
+	},
+		{"label": _("Remarks"), "fieldname": "remarks", "fieldtype": "Data", "width": 220
+	},
+		{"label": _("Debit"), "fieldname": "debit", "fieldtype": "Currency", "width": 120
+	},
+		{"label": _("Credit"), "fieldname": "credit", "fieldtype": "Currency", "width": 120
+	},
+		{"label": _("Balance"), "fieldname": "balance", "fieldtype": "Currency", "width": 120
+	},
+		{"label": _("Branch"), "fieldname": "branch", "fieldtype": "Link", "options": "Branch", "width": 120
+	},
+		{"label": _("Reference"), "fieldname": "reference", "fieldtype": "Data", "width": 130
+	},
 	]
 
 	rows = frappe.db.sql(

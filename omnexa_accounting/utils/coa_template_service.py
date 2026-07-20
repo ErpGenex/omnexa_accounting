@@ -14,8 +14,8 @@ from omnexa_accounting.utils.coa_seed_templates import ACTIVITY_EXTENSIONS, BASE
 
 _INDUSTRY_ALIASES = {
 	"Service": "Services",
-	"Projects": "Construction",
-}
+	"Projects": "Construction"
+	}
 
 
 CSV_COLUMNS = (
@@ -129,8 +129,8 @@ _MAIN_TYPE_ALIASES = {
 	"Expense": "Operating Expenses",
 	"Expenses": "Operating Expenses",
 	"Assets": "Current Assets",
-	"Liabilities": "Current Liabilities",
-}
+	"Liabilities": "Current Liabilities"
+	}
 
 _SUB_TYPE_ALIASES = {
 	"Receivables": "Trade Receivables",
@@ -165,8 +165,8 @@ _SUB_TYPE_ALIASES = {
 	"Non-Current Assets": "Header",
 	"Current Liabilities": "Header",
 	"Non-Current Liabilities": "Header",
-	"Equity": "Header",
-}
+	"Equity": "Header"
+	}
 
 
 def _clean_main_account_type(value: str | None) -> str:
@@ -227,8 +227,8 @@ def get_seed_rows(industry_tag: str = "All") -> list[dict]:
 				"pl_bucket": str(r.get("pl_bucket") or "").strip(),
 				"cash_flow_section": str(r.get("cash_flow_section") or "").strip(),
 				"working_capital_bucket": str(r.get("working_capital_bucket") or "").strip(),
-				"is_stock_valuation": 1 if int(r.get("is_stock_valuation") or 0) else 0,
-			}
+				"is_stock_valuation": 1 if int(r.get("is_stock_valuation") or 0) else 0
+	}
 		)
 	return out
 
@@ -244,8 +244,10 @@ def seed_coa_template(template_name: str, industry_tag: str = "All") -> dict:
 	industry_tag = (industry_tag or "All").strip() or "All"
 
 	rows = get_seed_rows(industry_tag=industry_tag)
-	if frappe.db.exists("COA Template", {"template_name": template_name}):
-		name = frappe.db.get_value("COA Template", {"template_name": template_name}, "name")
+	if frappe.db.exists("COA Template", {"template_name": template_name
+	}):
+		name = frappe.db.get_value("COA Template", {"template_name": template_name
+	}, "name")
 		doc = frappe.get_doc("COA Template", name)
 		doc.accounts = []
 	else:
@@ -270,11 +272,12 @@ def seed_coa_template(template_name: str, industry_tag: str = "All") -> dict:
 				"pl_bucket": r["pl_bucket"],
 				"cash_flow_section": r["cash_flow_section"],
 				"working_capital_bucket": r["working_capital_bucket"],
-				"is_stock_valuation": r["is_stock_valuation"],
-			},
+				"is_stock_valuation": r["is_stock_valuation"]
+	},
 		)
 	doc.save(ignore_permissions=True)
-	return {"ok": True, "template": doc.name, "template_name": doc.template_name, "industry_tag": doc.industry_tag, "lines": len(doc.accounts)}
+	return {"ok": True, "template": doc.name, "template_name": doc.template_name, "industry_tag": doc.industry_tag, "lines": len(doc.accounts)
+	}
 
 
 @frappe.whitelist()
@@ -301,8 +304,8 @@ def export_coa_template_csv(template: str) -> str:
 				"pl_bucket": (row.pl_bucket or "").strip(),
 				"cash_flow_section": (row.cash_flow_section or "").strip(),
 				"working_capital_bucket": (row.working_capital_bucket or "").strip(),
-				"is_stock_valuation": int(row.is_stock_valuation or 0),
-			}
+				"is_stock_valuation": int(row.is_stock_valuation or 0)
+	}
 		)
 	return buf.getvalue()
 
@@ -371,8 +374,8 @@ def import_coa_template_csv(
 			"template": doc.name,
 			"lines": len(lines),
 			"replaced": bool(int(replace or 0)),
-			"dry_run": True,
-		}
+			"dry_run": True
+	}
 
 	for r in lines:
 		doc.append(
@@ -390,8 +393,7 @@ def import_coa_template_csv(
 				"pl_bucket": r.get("pl_bucket"),
 				"cash_flow_section": r.get("cash_flow_section"),
 				"working_capital_bucket": r.get("working_capital_bucket"),
-				"is_stock_valuation": 1 if str(r.get("is_stock_valuation") or "").strip() in {"1", "true", "yes"} else 0,
-			},
+				"is_stock_valuation": 1 if str(r.get("is_stock_valuation") or "").strip() in {"1", "true", "yes"} else 0},
 		)
 	doc.save(ignore_permissions=True)
 	return {
@@ -399,7 +401,7 @@ def import_coa_template_csv(
 		"template": doc.name,
 		"lines": len(doc.accounts),
 		"replaced": bool(int(replace or 0)),
-		"dry_run": False,
+		"dry_run": False
 	}
 
 
@@ -442,8 +444,8 @@ def apply_coa_template_to_company(
 				"pl_bucket": (row.pl_bucket or "").strip(),
 				"cash_flow_section": (row.cash_flow_section or "").strip(),
 				"working_capital_bucket": (row.working_capital_bucket or "").strip(),
-				"is_stock_valuation": int(row.is_stock_valuation or 0),
-			}
+				"is_stock_valuation": int(row.is_stock_valuation or 0)
+	}
 		)
 
 	# Parent-first ordering (simple + stable): shortest account_number first, then lexicographic.
@@ -471,21 +473,24 @@ def apply_coa_template_to_company(
 		if not code:
 			return None
 		if branch:
-			filters = {"company": company, "branch": branch, "account_number": code}
+			filters = {"company": company, "branch": branch, "account_number": code
+	}
 			if require_group:
 				filters["is_group"] = 1
 			match = frappe.db.get_value("GL Account", filters, "name")
 			if match:
 				return match
 		# Prefer company-wide (empty branch) first.
-		filters = {"company": company, "branch": ["in", ("", None)], "account_number": code}
+		filters = {"company": company, "branch": ["in", ("", None)], "account_number": code
+	}
 		if require_group:
 			filters["is_group"] = 1
 		match = frappe.db.get_value("GL Account", filters, "name")
 		if match:
 			return match
 		# Fallback: any match in company.
-		filters = {"company": company, "account_number": code}
+		filters = {"company": company, "account_number": code
+	}
 		if require_group:
 			filters["is_group"] = 1
 		match = frappe.db.get_value("GL Account", filters, "name")
@@ -493,7 +498,8 @@ def apply_coa_template_to_company(
 			return match
 		if require_group:
 			# Last resort: promote any matching account to group.
-			return _ensure_parent_is_group(frappe.db.get_value("GL Account", {"company": company, "account_number": code}, "name"))
+			return _ensure_parent_is_group(frappe.db.get_value("GL Account", {"company": company, "account_number": code
+	}, "name"))
 		return frappe.db.get_value("GL Account", filters, "name")
 
 	overwrite_names = int(overwrite_names or 0)
@@ -566,6 +572,6 @@ def apply_coa_template_to_company(
 		"branch": branch,
 		"created": created,
 		"updated": updated,
-		"total": len(lines),
+		"total": len(lines)
 	}
 

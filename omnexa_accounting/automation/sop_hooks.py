@@ -17,8 +17,7 @@ def on_purchase_order_submit(doc, method=None):
 				"doctype": doc.doctype,
 				"name": doc.name,
 				"title": _("Purchase Order submitted"),
-				"supplier": getattr(doc, "supplier", None),
-			},
+				"supplier": getattr(doc, "supplier", None)},
 			user=doc.owner,
 		)
 	except Exception:

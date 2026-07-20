@@ -13,5 +13,6 @@ from omnexa_accounting.omnexa_accounting.report.stock_movement.stock_movement im
 
 def _columns():
 	# Explicit Currency column for print/audit parity with stock_movement.
-	_CURRENCY_HINT = {"fieldtype": "Currency", "fieldname": "stock_value"}
+	_CURRENCY_HINT = {"fieldtype": "Currency", "fieldname": "stock_value"
+	}
 	return _movement_columns()

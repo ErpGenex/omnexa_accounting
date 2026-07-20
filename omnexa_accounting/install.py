@@ -141,7 +141,8 @@ def ensure_journal_entry_entry_type_not_duplicate_custom_field():
 	"""`entry_type` is a core Journal Entry field; remove legacy Custom Field if present."""
 	try:
 		name = frappe.db.get_value(
-			"Custom Field", {"dt": "Journal Entry", "fieldname": "entry_type"}, "name"
+			"Custom Field", {"dt": "Journal Entry", "fieldname": "entry_type"
+	}, "name"
 		)
 		if name:
 			frappe.delete_doc("Custom Field", name, force=True)
@@ -166,7 +167,8 @@ def ensure_accounting_roles():
 def ensure_sales_order_delivery_terms_not_duplicate_custom_field():
 	"""Remove legacy Custom Field that shadows Sales Order.delivery_terms as Data."""
 	try:
-		name = frappe.db.get_value("Custom Field", {"dt": "Sales Order", "fieldname": "delivery_terms"}, "name")
+		name = frappe.db.get_value("Custom Field", {"dt": "Sales Order", "fieldname": "delivery_terms"
+	}, "name")
 		if not name:
 			return
 		fieldtype = frappe.db.get_value("Custom Field", name, "fieldtype")
@@ -212,7 +214,8 @@ def ensure_coa_settings_defaults():
 	try:
 		companies = frappe.get_all("Company", fields=["name"], limit_page_length=100000)
 		for c in companies:
-			if frappe.db.exists("CoA Settings", {"company": c.name}):
+			if frappe.db.exists("CoA Settings", {"company": c.name
+	}):
 				continue
 			doc = frappe.get_doc(
 				{
@@ -228,8 +231,8 @@ def ensure_coa_settings_defaults():
 					"expense_mask": "5xxx",
 					"require_group_reporting_tag_for_intercompany": 1,
 					"enforce_account_currency_match": 1,
-					"allow_direct_posting_default": 1,
-				}
+					"allow_direct_posting_default": 1
+	}
 			)
 			doc.insert(ignore_permissions=True)
 		frappe.db.commit()
@@ -252,8 +255,8 @@ def ensure_posting_link_fields():
 					"insert_after": "grand_total",
 					"read_only": 1,
 					"no_copy": 1,
-					"allow_on_submit": 1,
-				},
+					"allow_on_submit": 1
+	},
 			],
 			"Purchase Invoice": [
 				{
@@ -264,10 +267,9 @@ def ensure_posting_link_fields():
 					"insert_after": "grand_total",
 					"read_only": 1,
 					"no_copy": 1,
-					"allow_on_submit": 1,
-				},
-			],
-		}
+					"allow_on_submit": 1
+	},
+			]}
 		create_custom_fields(custom_fields, ignore_validate=True)
 	except Exception:
 		frappe.log_error(frappe.get_traceback(), "Omnexa Accounting: ensure posting link fields")
@@ -286,23 +288,23 @@ def ensure_pos_basics():
 						"label": "Point of Sale",
 						"fieldtype": "Section Break",
 						"insert_after": "customer",
-						"collapsible": 1,
-					},
+						"collapsible": 1
+	},
 					{
 						"fieldname": "is_pos",
 						"label": "Is POS",
 						"fieldtype": "Check",
 						"insert_after": "pos_section",
-						"default": "0",
-					},
+						"default": "0"
+	},
 					{
 						"fieldname": "pos_profile",
 						"label": "POS Profile",
 						"fieldtype": "Link",
 						"options": "POS Profile",
 						"insert_after": "is_pos",
-						"depends_on": "eval:doc.is_pos==1",
-					},
+						"depends_on": "eval:doc.is_pos==1"
+	},
 				]
 			},
 			ignore_validate=True,
@@ -325,109 +327,109 @@ def ensure_invoice_tax_shipping_stock_fields():
 						"label": "Tax and Shipping",
 						"fieldtype": "Section Break",
 						"insert_after": "conversion_rate",
-						"collapsible": 1,
-					},
+						"collapsible": 1
+	},
 					{
 						"fieldname": "tax_category",
 						"label": "Tax Category",
 						"fieldtype": "Link",
 						"options": "Tax Category",
-						"insert_after": "tax_shipping_section",
-					},
+						"insert_after": "tax_shipping_section"
+	},
 					{
 						"fieldname": "tax_rate",
 						"label": "Tax Rate (%)",
 						"fieldtype": "Percent",
 						"insert_after": "tax_category",
-						"default": "0",
-					},
+						"default": "0"
+	},
 					{
 						"fieldname": "tax_amount_manual",
 						"label": "Tax Amount",
 						"fieldtype": "Currency",
 						"insert_after": "tax_rate",
 						"read_only": 1,
-						"no_copy": 1,
-					},
+						"no_copy": 1
+	},
 					{
 						"fieldname": "shipment_reference",
 						"label": "Shipment Reference",
 						"fieldtype": "Data",
-						"insert_after": "tax_amount_manual",
-					},
+						"insert_after": "tax_amount_manual"
+	},
 					{
 						"fieldname": "project_reference",
 						"label": "Project Reference",
 						"fieldtype": "Data",
-						"insert_after": "project_contract",
-					},
+						"insert_after": "project_contract"
+	},
 					{
 						"fieldname": "project_task_reference",
 						"label": "Project Task Reference",
 						"fieldtype": "Data",
-						"insert_after": "pm_wbs_task",
-					},
+						"insert_after": "pm_wbs_task"
+	},
 					{
 						"fieldname": "shipping_cost",
 						"label": "Shipping Cost",
 						"fieldtype": "Currency",
 						"insert_after": "shipment_reference",
-						"default": "0",
-					},
+						"default": "0"
+	},
 					{
 						"fieldname": "tax_breakdown_summary",
 						"label": "Tax Breakdown",
 						"fieldtype": "Small Text",
 						"insert_after": "tax_amount_manual",
 						"read_only": 1,
-						"no_copy": 1,
-					},
+						"no_copy": 1
+	},
 					{
 						"fieldname": "payment_mode",
 						"label": "Payment Mode",
 						"fieldtype": "Select",
 						"options": "\nCash\nCredit\nInstallment",
 						"insert_after": "due_date",
-						"default": "Credit",
-					},
+						"default": "Credit"
+	},
 					{
 						"fieldname": "items_subtotal",
 						"label": "Items Subtotal",
 						"fieldtype": "Currency",
 						"insert_after": "items",
 						"read_only": 1,
-						"no_copy": 1,
-					},
+						"no_copy": 1
+	},
 					{
 						"fieldname": "total_items",
 						"label": "Total Items",
 						"fieldtype": "Int",
 						"insert_after": "items",
 						"read_only": 1,
-						"no_copy": 1,
-					},
+						"no_copy": 1
+	},
 					{
 						"fieldname": "total_qty",
 						"label": "Total Qty",
 						"fieldtype": "Float",
 						"insert_after": "total_items",
 						"read_only": 1,
-						"no_copy": 1,
-					},
+						"no_copy": 1
+	},
 					{
 						"fieldname": "update_stock",
 						"label": "Update Stock",
 						"fieldtype": "Check",
 						"insert_after": "items",
-						"default": "0",
-					},
+						"default": "0"
+	},
 					{
 						"fieldname": "set_warehouse",
 						"label": "Set Warehouse",
 						"fieldtype": "Link",
 						"options": "Warehouse",
-						"insert_after": "update_stock",
-					},
+						"insert_after": "update_stock"
+	},
 					{
 						"fieldname": "posting_stock_entry",
 						"label": "Posting Stock Entry",
@@ -436,8 +438,8 @@ def ensure_invoice_tax_shipping_stock_fields():
 						"insert_after": "posting_journal_entry",
 						"read_only": 1,
 						"no_copy": 1,
-						"allow_on_submit": 1,
-					},
+						"allow_on_submit": 1
+	},
 				],
 				"Purchase Invoice": [
 					{
@@ -445,109 +447,109 @@ def ensure_invoice_tax_shipping_stock_fields():
 						"label": "Tax and Shipping",
 						"fieldtype": "Section Break",
 						"insert_after": "conversion_rate",
-						"collapsible": 1,
-					},
+						"collapsible": 1
+	},
 					{
 						"fieldname": "tax_category",
 						"label": "Tax Category",
 						"fieldtype": "Link",
 						"options": "Tax Category",
-						"insert_after": "tax_shipping_section",
-					},
+						"insert_after": "tax_shipping_section"
+	},
 					{
 						"fieldname": "tax_rate",
 						"label": "Tax Rate (%)",
 						"fieldtype": "Percent",
 						"insert_after": "tax_category",
-						"default": "0",
-					},
+						"default": "0"
+	},
 					{
 						"fieldname": "tax_amount_manual",
 						"label": "Tax Amount",
 						"fieldtype": "Currency",
 						"insert_after": "tax_rate",
 						"read_only": 1,
-						"no_copy": 1,
-					},
+						"no_copy": 1
+	},
 					{
 						"fieldname": "shipment_reference",
 						"label": "Shipment Reference",
 						"fieldtype": "Data",
-						"insert_after": "tax_amount_manual",
-					},
+						"insert_after": "tax_amount_manual"
+	},
 					{
 						"fieldname": "project_reference",
 						"label": "Project Reference",
 						"fieldtype": "Data",
-						"insert_after": "project_contract",
-					},
+						"insert_after": "project_contract"
+	},
 					{
 						"fieldname": "project_task_reference",
 						"label": "Project Task Reference",
 						"fieldtype": "Data",
-						"insert_after": "pm_wbs_task",
-					},
+						"insert_after": "pm_wbs_task"
+	},
 					{
 						"fieldname": "shipping_cost",
 						"label": "Shipping Cost",
 						"fieldtype": "Currency",
 						"insert_after": "shipment_reference",
-						"default": "0",
-					},
+						"default": "0"
+	},
 					{
 						"fieldname": "tax_breakdown_summary",
 						"label": "Tax Breakdown",
 						"fieldtype": "Small Text",
 						"insert_after": "tax_amount_manual",
 						"read_only": 1,
-						"no_copy": 1,
-					},
+						"no_copy": 1
+	},
 					{
 						"fieldname": "payment_mode",
 						"label": "Payment Mode",
 						"fieldtype": "Select",
 						"options": "\nCash\nCredit\nInstallment",
 						"insert_after": "due_date",
-						"default": "Credit",
-					},
+						"default": "Credit"
+	},
 					{
 						"fieldname": "items_subtotal",
 						"label": "Items Subtotal",
 						"fieldtype": "Currency",
 						"insert_after": "items",
 						"read_only": 1,
-						"no_copy": 1,
-					},
+						"no_copy": 1
+	},
 					{
 						"fieldname": "total_items",
 						"label": "Total Items",
 						"fieldtype": "Int",
 						"insert_after": "items",
 						"read_only": 1,
-						"no_copy": 1,
-					},
+						"no_copy": 1
+	},
 					{
 						"fieldname": "total_qty",
 						"label": "Total Qty",
 						"fieldtype": "Float",
 						"insert_after": "total_items",
 						"read_only": 1,
-						"no_copy": 1,
-					},
+						"no_copy": 1
+	},
 					{
 						"fieldname": "update_stock",
 						"label": "Update Stock",
 						"fieldtype": "Check",
 						"insert_after": "items",
-						"default": "0",
-					},
+						"default": "0"
+	},
 					{
 						"fieldname": "set_warehouse",
 						"label": "Set Warehouse",
 						"fieldtype": "Link",
 						"options": "Warehouse",
-						"insert_after": "update_stock",
-					},
+						"insert_after": "update_stock"
+	},
 					{
 						"fieldname": "posting_stock_entry",
 						"label": "Posting Stock Entry",
@@ -556,10 +558,9 @@ def ensure_invoice_tax_shipping_stock_fields():
 						"insert_after": "posting_journal_entry",
 						"read_only": 1,
 						"no_copy": 1,
-						"allow_on_submit": 1,
-					},
-				],
-			},
+						"allow_on_submit": 1
+	},
+				]},
 			ignore_validate=True,
 		)
 	except Exception:
@@ -579,8 +580,8 @@ def ensure_shipment_fields():
 						"label": "Shipment Carrier",
 						"fieldtype": "Link",
 						"options": "Shipment Carrier",
-						"insert_after": "shipment_reference",
-					},
+						"insert_after": "shipment_reference"
+	},
 					{
 						"fieldname": "shipment_record",
 						"label": "Shipment",
@@ -589,8 +590,8 @@ def ensure_shipment_fields():
 						"insert_after": "shipment_carrier",
 						"read_only": 1,
 						"allow_on_submit": 1,
-						"no_copy": 1,
-					},
+						"no_copy": 1
+	},
 				],
 				"Purchase Invoice": [
 					{
@@ -598,8 +599,8 @@ def ensure_shipment_fields():
 						"label": "Shipment Carrier",
 						"fieldtype": "Link",
 						"options": "Shipment Carrier",
-						"insert_after": "shipment_reference",
-					},
+						"insert_after": "shipment_reference"
+	},
 					{
 						"fieldname": "shipment_record",
 						"label": "Shipment",
@@ -608,10 +609,9 @@ def ensure_shipment_fields():
 						"insert_after": "shipment_carrier",
 						"read_only": 1,
 						"allow_on_submit": 1,
-						"no_copy": 1,
-					},
-				],
-			},
+						"no_copy": 1
+	},
+				]},
 			ignore_validate=True,
 		)
 	except Exception:
@@ -630,8 +630,8 @@ def ensure_invoice_shipping_and_totals_layout():
 					"fieldname": "shipment_reference",
 					"property": "fieldtype",
 					"value": "Link",
-					"property_type": "Data",
-				},
+					"property_type": "Data"
+	},
 				ignore_validate=True,
 			)
 			frappe.make_property_setter(
@@ -641,8 +641,8 @@ def ensure_invoice_shipping_and_totals_layout():
 					"fieldname": "shipment_reference",
 					"property": "options",
 					"value": "Shipment",
-					"property_type": "Text",
-				},
+					"property_type": "Text"
+	},
 				ignore_validate=True,
 			)
 
@@ -659,8 +659,8 @@ def ensure_invoice_shipping_and_totals_layout():
 						"fieldname": fieldname,
 						"property": "insert_after",
 						"value": insert_after,
-						"property_type": "Data",
-					},
+						"property_type": "Data"
+	},
 					ignore_validate=True,
 				)
 		frappe.db.commit()
@@ -680,8 +680,8 @@ def ensure_invoice_collapsible_sections():
 						"fieldname": section,
 						"property": "collapsible",
 						"value": "1",
-						"property_type": "Check",
-					},
+						"property_type": "Check"
+	},
 					ignore_validate=True,
 				)
 		frappe.db.commit()
@@ -706,8 +706,8 @@ def ensure_invoice_project_link_field_types():
 						"fieldname": "project_reference",
 						"property": "fieldtype",
 						"value": "Link",
-						"property_type": "Data",
-					},
+						"property_type": "Data"
+	},
 					ignore_validate=True,
 				)
 				frappe.make_property_setter(
@@ -717,8 +717,8 @@ def ensure_invoice_project_link_field_types():
 						"fieldname": "project_reference",
 						"property": "options",
 						"value": project_dt,
-						"property_type": "Text",
-					},
+						"property_type": "Text"
+	},
 					ignore_validate=True,
 				)
 			if task_dt:
@@ -729,8 +729,8 @@ def ensure_invoice_project_link_field_types():
 						"fieldname": "project_task_reference",
 						"property": "fieldtype",
 						"value": "Link",
-						"property_type": "Data",
-					},
+						"property_type": "Data"
+	},
 					ignore_validate=True,
 				)
 				frappe.make_property_setter(
@@ -740,8 +740,8 @@ def ensure_invoice_project_link_field_types():
 						"fieldname": "project_task_reference",
 						"property": "options",
 						"value": task_dt,
-						"property_type": "Text",
-					},
+						"property_type": "Text"
+	},
 					ignore_validate=True,
 				)
 		frappe.db.commit()
@@ -766,8 +766,8 @@ def ensure_gl_account_balance_field_and_list_layout():
 						"insert_after": "account_number",
 						"read_only": 1,
 						"no_copy": 1,
-						"allow_on_submit": 1,
-					}
+						"allow_on_submit": 1
+	}
 				]
 			},
 			ignore_validate=True,
@@ -779,14 +779,18 @@ def ensure_gl_account_balance_field_and_list_layout():
 				"total_fields": "8",
 				"fields": frappe.as_json(
 					[
-						{"fieldname": "account_name", "label": "Account Name"},
-						{"fieldname": "account_number", "label": "Account Number"},
-						{"fieldname": "balance_snapshot", "label": "Balance"},
-						{"fieldname": "company", "label": "Company"},
-						{"fieldname": "branch", "label": "Branch"},
+						{"fieldname": "account_name", "label": "Account Name"
+	},
+						{"fieldname": "account_number", "label": "Account Number"
+	},
+						{"fieldname": "balance_snapshot", "label": "Balance"
+	},
+						{"fieldname": "company", "label": "Company"
+	},
+						{"fieldname": "branch", "label": "Branch"
+	},
 					]
-				),
-			},
+				)},
 			[],
 		)
 	except Exception:
@@ -806,15 +810,15 @@ def ensure_inventory_accounting_fields():
 						"label": "Inventory GL Account",
 						"fieldtype": "Link",
 						"options": "GL Account",
-						"insert_after": "company",
-					},
+						"insert_after": "company"
+	},
 					{
 						"fieldname": "stock_adjustment_gl_account",
 						"label": "Stock Adjustment GL Account",
 						"fieldtype": "Link",
 						"options": "GL Account",
-						"insert_after": "inventory_gl_account",
-					},
+						"insert_after": "inventory_gl_account"
+	},
 				]
 			},
 			ignore_validate=True,
@@ -858,8 +862,8 @@ def ensure_customer_balance_field_and_list_layout():
 						"in_list_view": 1,
 						"insert_after": "status",
 						"read_only": 1,
-						"no_copy": 1,
-					}
+						"no_copy": 1
+	}
 				]
 			},
 			ignore_validate=True,
@@ -871,13 +875,16 @@ def ensure_customer_balance_field_and_list_layout():
 				"total_fields": "8",
 				"fields": frappe.as_json(
 					[
-						{"fieldname": "customer_name", "label": "Customer Name"},
-						{"fieldname": "status", "label": "Status"},
-						{"fieldname": "company", "label": "Company"},
-						{"fieldname": "balance_snapshot", "label": "Balance"},
+						{"fieldname": "customer_name", "label": "Customer Name"
+	},
+						{"fieldname": "status", "label": "Status"
+	},
+						{"fieldname": "company", "label": "Company"
+	},
+						{"fieldname": "balance_snapshot", "label": "Balance"
+	},
 					]
-				),
-			},
+				)},
 			[],
 		)
 	except Exception:
@@ -900,8 +907,8 @@ def ensure_warehouse_stock_snapshot_fields_and_layout():
 						"in_list_view": 1,
 						"insert_after": "company",
 						"read_only": 1,
-						"no_copy": 1,
-					},
+						"no_copy": 1
+	},
 					{
 						"fieldname": "stock_value_snapshot",
 						"label": "Stock Value",
@@ -909,8 +916,8 @@ def ensure_warehouse_stock_snapshot_fields_and_layout():
 						"in_list_view": 1,
 						"insert_after": "stock_qty_snapshot",
 						"read_only": 1,
-						"no_copy": 1,
-					},
+						"no_copy": 1
+	},
 				]
 			},
 			ignore_validate=True,
@@ -922,13 +929,16 @@ def ensure_warehouse_stock_snapshot_fields_and_layout():
 				"total_fields": "8",
 				"fields": frappe.as_json(
 					[
-						{"fieldname": "warehouse_name", "label": "Warehouse Name"},
-						{"fieldname": "company", "label": "Company"},
-						{"fieldname": "stock_qty_snapshot", "label": "Stock Qty"},
-						{"fieldname": "stock_value_snapshot", "label": "Stock Value"},
+						{"fieldname": "warehouse_name", "label": "Warehouse Name"
+	},
+						{"fieldname": "company", "label": "Company"
+	},
+						{"fieldname": "stock_qty_snapshot", "label": "Stock Qty"
+	},
+						{"fieldname": "stock_value_snapshot", "label": "Stock Value"
+	},
 					]
-				),
-			},
+				)},
 			[],
 		)
 	except Exception:

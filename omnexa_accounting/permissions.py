@@ -53,7 +53,8 @@ def bank_reconciliation_query_conditions(user=None):
 def get_logged_in_company_branch():
 	company = get_default_company()
 	branch = get_default_branch(company) if company else None
-	return {"company": company, "branch": branch}
+	return {"company": company, "branch": branch
+	}
 
 
 @frappe.whitelist()
@@ -78,8 +79,9 @@ def delivery_terms_query(doctype, txt, searchfield, start, page_len, filters):
 		""",
 		{
 			"txt": txt or "",
-			"like_txt": f"%{txt or ''}%",
+			"like_txt": f"%{txt or ''
+	}%",
 			"start": start,
-			"page_len": page_len,
-		},
+			"page_len": page_len
+	},
 	)

@@ -20,7 +20,7 @@ def execute(filters=None):
 	params = {
 		"company": filters.company,
 		"from_date": filters.from_date,
-		"to_date": filters.to_date,
+		"to_date": filters.to_date
 	}
 
 	conditions = [
@@ -35,10 +35,14 @@ def execute(filters=None):
 		if not allowed:
 			return (
 				[
-					{"label": _("Item"), "fieldname": "item", "fieldtype": "Link", "options": "Item", "width": 200},
-					{"label": _("Item Code"), "fieldname": "item_code", "fieldtype": "Data", "width": 140},
-					{"label": _("Qty"), "fieldname": "qty", "fieldtype": "Float", "width": 100},
-					{"label": _("Amount"), "fieldname": "amount", "fieldtype": "Currency", "width": 140},
+					{"label": _("Item"), "fieldname": "item", "fieldtype": "Link", "options": "Item", "width": 200
+	},
+					{"label": _("Item Code"), "fieldname": "item_code", "fieldtype": "Data", "width": 140
+	},
+					{"label": _("Qty"), "fieldname": "qty", "fieldtype": "Float", "width": 100
+	},
+					{"label": _("Amount"), "fieldname": "amount", "fieldtype": "Currency", "width": 140
+	},
 				],
 				[],
 			)
@@ -73,10 +77,14 @@ def execute(filters=None):
 		row["amount"] = flt(row.get("amount"), 2)
 
 	columns = [
-		{"label": _("Item"), "fieldname": "item", "fieldtype": "Link", "options": "Item", "width": 200},
-		{"label": _("Item Code"), "fieldname": "item_code", "fieldtype": "Data", "width": 140},
-		{"label": _("Qty"), "fieldname": "qty", "fieldtype": "Float", "width": 100},
-		{"label": _("Amount"), "fieldname": "amount", "fieldtype": "Currency", "width": 140},
+		{"label": _("Item"), "fieldname": "item", "fieldtype": "Link", "options": "Item", "width": 200
+	},
+		{"label": _("Item Code"), "fieldname": "item_code", "fieldtype": "Data", "width": 140
+	},
+		{"label": _("Qty"), "fieldname": "qty", "fieldtype": "Float", "width": 100
+	},
+		{"label": _("Amount"), "fieldname": "amount", "fieldtype": "Currency", "width": 140
+	},
 	]
 
 	chart = auto_chart_for_columns(data, columns)

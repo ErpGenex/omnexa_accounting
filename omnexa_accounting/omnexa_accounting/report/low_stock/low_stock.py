@@ -18,7 +18,8 @@ def execute(filters=None):
 		below = 0.0
 
 	conditions = ["i.company = %(company)s", "IFNULL(i.is_stock_item, 0) = 1", "IFNULL(i.disabled, 0) = 0"]
-	params = {"company": filters.company, "below_qty": below}
+	params = {"company": filters.company, "below_qty": below
+	}
 
 	if filters.get("item"):
 		conditions.append("i.name = %(item)s")
@@ -45,16 +46,20 @@ def execute(filters=None):
 	)
 
 	columns = [
-		{"label": _("Item"), "fieldname": "item", "fieldtype": "Link", "options": "Item", "width": 160},
-		{"label": _("Item Code"), "fieldname": "item_code", "fieldtype": "Data", "width": 130},
-		{"label": _("Item Name"), "fieldname": "item_name", "fieldtype": "Data", "width": 220},
-		{"label": _("Stock UOM"), "fieldname": "stock_uom", "fieldtype": "Link", "options": "UOM", "width": 100},
+		{"label": _("Item"), "fieldname": "item", "fieldtype": "Link", "options": "Item", "width": 160
+	},
+		{"label": _("Item Code"), "fieldname": "item_code", "fieldtype": "Data", "width": 130
+	},
+		{"label": _("Item Name"), "fieldname": "item_name", "fieldtype": "Data", "width": 220
+	},
+		{"label": _("Stock UOM"), "fieldname": "stock_uom", "fieldtype": "Link", "options": "UOM", "width": 100
+	},
 		{
 			"label": _("Current Stock Qty"),
 			"fieldname": "current_stock_qty",
 			"fieldtype": "Float",
-			"width": 130,
-		},
+			"width": 130
+	},
 	]
 	chart = auto_chart_for_columns(data, columns)
 	return columns, data, None, chart

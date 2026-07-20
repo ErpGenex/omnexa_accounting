@@ -8,8 +8,10 @@ class TestSapParityCo(FrappeTestCase):
 	def test_co_allocation_shares(self):
 		out = preview_co_allocation(
 			[
-				{"cost_center": "CC-A", "amount": 600},
-				{"cost_center": "CC-B", "amount": 400},
+				{"cost_center": "CC-A", "amount": 600
+	},
+				{"cost_center": "CC-B", "amount": 400
+	},
 			]
 		)
 		self.assertEqual(out["total_amount"], 1000)

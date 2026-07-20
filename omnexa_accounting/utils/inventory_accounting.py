@@ -84,7 +84,8 @@ def _posting_reference(doc) -> str:
 
 
 def _find_posting_je(doc) -> str | None:
-	filters = {"company": doc.company, "reference": _posting_reference(doc)}
+	filters = {"company": doc.company, "reference": _posting_reference(doc)
+	}
 	if doc.meta.has_field("branch") and doc.branch and frappe.get_meta("Journal Entry").has_field("branch"):
 		filters["branch"] = doc.branch
 	return frappe.db.get_value("Journal Entry", filters, "name")
@@ -103,7 +104,8 @@ def _append_line(
 	credit = flt(credit)
 	if debit == 0 and credit == 0:
 		return
-	row = {"account": account, "debit": debit, "credit": credit}
+	row = {"account": account, "debit": debit, "credit": credit
+	}
 	if cost_center:
 		row["cost_center"] = cost_center
 	lines.append(row)

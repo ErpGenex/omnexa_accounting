@@ -20,7 +20,7 @@ def execute(filters=None):
 	params = {
 		"company": filters.company,
 		"from_date": filters.from_date,
-		"to_date": filters.to_date,
+		"to_date": filters.to_date
 	}
 
 	conditions = [
@@ -40,10 +40,12 @@ def execute(filters=None):
 						"fieldname": "customer",
 						"fieldtype": "Link",
 						"options": "Customer",
-						"width": 220,
-					},
-					{"label": _("Qty"), "fieldname": "qty", "fieldtype": "Float", "width": 100},
-					{"label": _("Amount"), "fieldname": "amount", "fieldtype": "Currency", "width": 140},
+						"width": 220
+	},
+					{"label": _("Qty"), "fieldname": "qty", "fieldtype": "Float", "width": 100
+	},
+					{"label": _("Amount"), "fieldname": "amount", "fieldtype": "Currency", "width": 140
+	},
 				],
 				[],
 			)
@@ -86,10 +88,12 @@ def execute(filters=None):
 			"fieldname": "customer",
 			"fieldtype": "Link",
 			"options": "Customer",
-			"width": 220,
-		},
-		{"label": _("Qty"), "fieldname": "qty", "fieldtype": "Float", "width": 100},
-		{"label": _("Amount"), "fieldname": "amount", "fieldtype": "Currency", "width": 140},
+			"width": 220
+	},
+		{"label": _("Qty"), "fieldname": "qty", "fieldtype": "Float", "width": 100
+	},
+		{"label": _("Amount"), "fieldname": "amount", "fieldtype": "Currency", "width": 140
+	},
 	]
 
 	chart = auto_chart_for_columns(data, columns)

@@ -20,7 +20,7 @@ def execute(filters=None):
 	params = {
 		"company": filters.company,
 		"from_date": filters.from_date,
-		"to_date": filters.to_date,
+		"to_date": filters.to_date
 	}
 	conditions = [
 		"si.company = %(company)s",
@@ -64,9 +64,14 @@ def execute(filters=None):
 	return columns, rows, None, chart
 def _cols():
 	return [
-		{"label": _("Period"), "fieldname": "period", "fieldtype": "Data", "width": 100},
-		{"label": _("Invoices"), "fieldname": "invoice_count", "fieldtype": "Int", "width": 90},
-		{"label": _("Net sales (base)"), "fieldname": "net_sales", "fieldtype": "Currency", "width": 140},
-		{"label": _("Net before tax (base)"), "fieldname": "net_before_tax", "fieldtype": "Currency", "width": 150},
-		{"label": _("Avg invoice (base)"), "fieldname": "avg_invoice_value", "fieldtype": "Currency", "width": 140},
+		{"label": _("Period"), "fieldname": "period", "fieldtype": "Data", "width": 100
+	},
+		{"label": _("Invoices"), "fieldname": "invoice_count", "fieldtype": "Int", "width": 90
+	},
+		{"label": _("Net sales (base)"), "fieldname": "net_sales", "fieldtype": "Currency", "width": 140
+	},
+		{"label": _("Net before tax (base)"), "fieldname": "net_before_tax", "fieldtype": "Currency", "width": 150
+	},
+		{"label": _("Avg invoice (base)"), "fieldname": "avg_invoice_value", "fieldtype": "Currency", "width": 140
+	},
 	]

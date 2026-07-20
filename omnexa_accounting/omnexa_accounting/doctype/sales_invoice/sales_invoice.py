@@ -411,7 +411,8 @@ class SalesInvoice(Document):
 			"docstatus = 1",
 			"is_return = 0",
 		]
-		params = {"company": self.company, "customer": self.customer}
+		params = {"company": self.company, "customer": self.customer
+	}
 		if self.name:
 			conditions.append("name != %(current_name)s")
 			params["current_name"] = self.name
@@ -447,8 +448,8 @@ class SalesInvoice(Document):
 			{
 				"reference_doctype": self.doctype,
 				"reference_name": self.name,
-				"authority_operation": "submit",
-			},
+				"authority_operation": "submit"
+	},
 			"name",
 		)
 		if existing:
@@ -458,8 +459,7 @@ class SalesInvoice(Document):
 				DOC_STATUS_QUEUED,
 				DOC_STATUS_SENT,
 				DOC_STATUS_SUBMITTED,
-				DOC_STATUS_ACCEPTED,
-			}:
+				DOC_STATUS_ACCEPTED}:
 				return
 			# Retry-safe path: rejected submissions are re-queued in place.
 			if existing_doc.authority_status == DOC_STATUS_REJECTED:
@@ -492,9 +492,11 @@ class SalesInvoice(Document):
 	def _resolve_einvoice_scope(self):
 		"""ETA settings live on Branch only (Egypt ETA tab)."""
 		if not self.branch:
-			return {"enabled": False}
+			return {"enabled": False
+	}
 		if not frappe.db.get_value("Branch", self.branch, "eta_einvoice_enabled"):
-			return {"enabled": False}
+			return {"enabled": False
+	}
 		try:
 			from omnexa_einvoice.branch_eta import branch_eta_is_configured
 
@@ -505,13 +507,15 @@ class SalesInvoice(Document):
 				)
 		except ImportError:
 			pass
-		return {"enabled": True, "branch": self.branch}
+		return {"enabled": True, "branch": self.branch
+	}
 
 
 @frappe.whitelist()
 def get_form_defaults() -> dict:
 	"""Defaults for new Sales Invoice form (tax category, due days)."""
-	out = {"tax_category": None, "due_days": get_default_sales_invoice_due_days()}
+	out = {"tax_category": None, "due_days": get_default_sales_invoice_due_days()
+	}
 	try:
 		from omnexa_core.omnexa_core.doctype.omnexa_sales_settings.omnexa_sales_settings import (
 			get_sales_settings,

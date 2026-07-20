@@ -14,12 +14,18 @@ def execute(filters=None):
 		conditions.append("name = %(item)s")
 
 	columns = [
-		{"label": _("Item"), "fieldname": "item", "fieldtype": "Link", "options": "Item", "width": 160},
-		{"label": _("Item Code"), "fieldname": "item_code", "fieldtype": "Data", "width": 130},
-		{"label": _("Item Name"), "fieldname": "item_name", "fieldtype": "Data", "width": 220},
-		{"label": _("Stock UOM"), "fieldname": "stock_uom", "fieldtype": "Link", "options": "UOM", "width": 110},
-		{"label": _("Current Stock Qty"), "fieldname": "current_stock_qty", "fieldtype": "Float", "width": 130},
-		{"label": _("Last Reconciliation"), "fieldname": "last_stock_reconciliation_date", "fieldtype": "Date", "width": 130},
+		{"label": _("Item"), "fieldname": "item", "fieldtype": "Link", "options": "Item", "width": 160
+	},
+		{"label": _("Item Code"), "fieldname": "item_code", "fieldtype": "Data", "width": 130
+	},
+		{"label": _("Item Name"), "fieldname": "item_name", "fieldtype": "Data", "width": 220
+	},
+		{"label": _("Stock UOM"), "fieldname": "stock_uom", "fieldtype": "Link", "options": "UOM", "width": 110
+	},
+		{"label": _("Current Stock Qty"), "fieldname": "current_stock_qty", "fieldtype": "Float", "width": 130
+	},
+		{"label": _("Last Reconciliation"), "fieldname": "last_stock_reconciliation_date", "fieldtype": "Date", "width": 130
+	},
 	]
 
 	data = frappe.db.sql(

@@ -33,16 +33,17 @@ def _make_backup_file(company: str, branch: str | None, gl_rows: list[dict]) -> 
 		"branch": branch,
 		"doctype": "GL Account",
 		"rows": gl_rows,
-		"created_at": now_datetime().isoformat(),
+		"created_at": now_datetime().isoformat()
 	}
 	content = json.dumps(payload, ensure_ascii=False, indent=2)
 	file_doc = frappe.get_doc(
 		{
 			"doctype": "File",
-			"file_name": f"coa-backup-{company}{('-' + branch) if branch else ''}-{frappe.utils.now_datetime().strftime('%Y%m%d-%H%M%S')}.json",
+			"file_name": f"coa-backup-{company}{('-' + branch) if branch else ''}-{frappe.utils.now_datetime().strftime('%Y%m%d-%H%M%S')
+	}.json",
 			"content": content,
-			"is_private": 1,
-		}
+			"is_private": 1
+	}
 	)
 	file_doc.insert(ignore_permissions=True)
 	return file_doc.name
@@ -71,8 +72,8 @@ def _write_audit_log(
 			"blocked_reason": blocked_reason or "",
 			"backup_file": backup_file,
 			"gl_accounts_before": int(gl_before or 0),
-			"gl_accounts_deleted": int(gl_deleted or 0),
-		}
+			"gl_accounts_deleted": int(gl_deleted or 0)
+	}
 	)
 	log.insert(ignore_permissions=True)
 	return log.name
@@ -133,7 +134,8 @@ def reset_coa(
 
 	# Hard-stops: Journals and GL entries (skipped during full company wipe after ledger purge).
 	if not cint(skip_ledger_checks):
-		if _doctype_has_rows("Journal Entry", {"company": company}):
+		if _doctype_has_rows("Journal Entry", {"company": company
+	}):
 			_write_audit_log(
 				company=company,
 				branch=branch,
@@ -143,7 +145,8 @@ def reset_coa(
 			)
 			frappe.throw(_("Reset blocked: Journal Entries exist."), title=_("Reset COA"))
 
-		if _doctype_has_rows("GL Entry", {"company": company}):
+		if _doctype_has_rows("GL Entry", {"company": company
+	}):
 			_write_audit_log(
 				company=company,
 				branch=branch,
@@ -163,7 +166,8 @@ def reset_coa(
 		)
 		frappe.throw(_("GL Account doctype is not installed."), title=_("Reset COA"))
 
-	filters = {"company": company}
+	filters = {"company": company
+	}
 	if branch:
 		filters["branch"] = branch
 
@@ -231,6 +235,6 @@ def reset_coa(
 		"backup_file": backup_file,
 		"audit_log": log_name,
 		"gl_accounts_before": gl_before,
-		"gl_accounts_deleted": gl_deleted,
+		"gl_accounts_deleted": gl_deleted
 	}
 

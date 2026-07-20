@@ -34,16 +34,22 @@ def execute(filters=None):
 		   AND (last_movement_date IS NULL OR last_movement_date < DATE_SUB(CURDATE(), INTERVAL %(days)s DAY))
 		ORDER BY i.current_stock_qty DESC, i.item_code
 		""",
-		{"company": filters.company, "days": days},
+		{"company": filters.company, "days": days
+	},
 		as_dict=True,
 	)
 
 	columns = [
-		{"label": _("Item"), "fieldname": "item", "fieldtype": "Link", "options": "Item", "width": 150},
-		{"label": _("Item Code"), "fieldname": "item_code", "fieldtype": "Data", "width": 130},
-		{"label": _("Item Name"), "fieldname": "item_name", "fieldtype": "Data", "width": 220},
-		{"label": _("Current Qty"), "fieldname": "current_stock_qty", "fieldtype": "Float", "width": 110},
-		{"label": _("Last Movement Date"), "fieldname": "last_movement_date", "fieldtype": "Date", "width": 130},
+		{"label": _("Item"), "fieldname": "item", "fieldtype": "Link", "options": "Item", "width": 150
+	},
+		{"label": _("Item Code"), "fieldname": "item_code", "fieldtype": "Data", "width": 130
+	},
+		{"label": _("Item Name"), "fieldname": "item_name", "fieldtype": "Data", "width": 220
+	},
+		{"label": _("Current Qty"), "fieldname": "current_stock_qty", "fieldtype": "Float", "width": 110
+	},
+		{"label": _("Last Movement Date"), "fieldname": "last_movement_date", "fieldtype": "Date", "width": 130
+	},
 	]
 	chart = auto_chart_for_columns(data, columns)
 	return columns, data, None, chart

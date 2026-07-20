@@ -24,7 +24,8 @@ class TestDemoWorkspaceSeed(FrappeTestCase):
 
 	def test_seed_skips_when_default_marked(self):
 		old = frappe.local.conf.get("omnexa_feature_flags")
-		frappe.local.conf["omnexa_feature_flags"] = {"demo_workspace_seed": True}
+		frappe.local.conf["omnexa_feature_flags"] = {"demo_workspace_seed": True
+	}
 		prev = frappe.db.get_default(DEFAULT_KEY_SEEDED)
 		try:
 			frappe.db.set_default(DEFAULT_KEY_SEEDED, "1")

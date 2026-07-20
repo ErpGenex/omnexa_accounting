@@ -23,7 +23,7 @@ def account_name_ar_column(*, width: int = 200) -> dict:
 		"label": _("Account Name (Arabic)"),
 		"fieldname": "account_name_ar",
 		"fieldtype": "Data",
-		"width": width,
+		"width": width
 	}
 
 

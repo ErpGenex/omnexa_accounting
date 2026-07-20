@@ -22,11 +22,13 @@ class TestOmnexaAccounting(FrappeTestCase):
 	def _ensure_geo(self):
 		if not frappe.db.exists("Currency", "EGP"):
 			frappe.get_doc(
-				{"doctype": "Currency", "currency_name": "EGP", "symbol": "E£", "enabled": 1}
+				{"doctype": "Currency", "currency_name": "EGP", "symbol": "E£", "enabled": 1
+	}
 			).insert(ignore_permissions=True)
 		if not frappe.db.exists("Country", "Egypt"):
 			frappe.get_doc(
-				{"doctype": "Country", "country_name": "Egypt", "code": "EG"}
+				{"doctype": "Country", "country_name": "Egypt", "code": "EG"
+	}
 			).insert(ignore_permissions=True)
 
 	def _create_company(self, abbr: str, seed_tax: bool = True):
@@ -34,7 +36,8 @@ class TestOmnexaAccounting(FrappeTestCase):
 		if cache_key in getattr(self, "_company_cache", {}):
 			return self._company_cache[cache_key]
 		unique_abbr = f"{abbr[:6]}{self._abbr_suffix}"[:10]
-		existing = frappe.db.get_value("Company", {"abbr": unique_abbr}, "name")
+		existing = frappe.db.get_value("Company", {"abbr": unique_abbr
+	}, "name")
 		if existing:
 			self._company_cache[cache_key] = existing
 			if seed_tax:
@@ -43,12 +46,13 @@ class TestOmnexaAccounting(FrappeTestCase):
 		doc = frappe.get_doc(
 			{
 				"doctype": "Company",
-				"company_name": f"Test Co {unique_abbr}",
+				"company_name": f"Test Co {unique_abbr
+	}",
 				"abbr": unique_abbr,
 				"default_currency": "EGP",
 				"country": "Egypt",
-				"status": "Active",
-			}
+				"status": "Active"
+	}
 		)
 		doc.insert(ignore_permissions=True)
 		self._company_cache[cache_key] = doc.name
@@ -62,33 +66,37 @@ class TestOmnexaAccounting(FrappeTestCase):
 
 		if not frappe.db.exists("DocType", "Tax Rule"):
 			return
-		if frappe.db.exists("Tax Rule", {"company": company}):
+		if frappe.db.exists("Tax Rule", {"company": company
+	}):
 			return
 		tax_gl = self._gl(f"VT{frappe.generate_hash(length=4)}", "VAT Output", 0, company=company)
 		frappe.get_doc(
 			{
 				"doctype": "Tax Rule",
-				"title": f"Default VAT {company}",
+				"title": f"Default VAT {company
+	}",
 				"company": company,
 				"valid_from": today(),
 				"valid_to": add_years(today(), 5),
 				"tax_type": "standard",
 				"rate": 0,
-				"account_head": tax_gl,
-			}
+				"account_head": tax_gl
+	}
 		).insert(ignore_permissions=True)
 
 	def _create_branch(self, company: str, code: str, name: str):
-		if frappe.db.exists("Branch", {"company": company, "branch_code": code}):
-			return frappe.db.get_value("Branch", {"company": company, "branch_code": code}, "name")
+		if frappe.db.exists("Branch", {"company": company, "branch_code": code
+	}):
+			return frappe.db.get_value("Branch", {"company": company, "branch_code": code
+	}, "name")
 		doc = frappe.get_doc(
 			{
 				"doctype": "Branch",
 				"company": company,
 				"branch_name": name,
 				"branch_code": code,
-				"status": "Active",
-			}
+				"status": "Active"
+	}
 		)
 		doc.insert(ignore_permissions=True)
 		return doc.name
@@ -100,8 +108,8 @@ class TestOmnexaAccounting(FrappeTestCase):
 				"company": company,
 				"country_code": "EG",
 				"adapter_id": "EGY_ETA",
-				"api_base_url": f"https://eta.example/{suffix}",
-			}
+				"api_base_url": f"https://eta.example/{suffix}"
+	}
 		)
 		doc.insert(ignore_permissions=True)
 		return doc.name
@@ -111,9 +119,10 @@ class TestOmnexaAccounting(FrappeTestCase):
 			{
 				"doctype": "Signing Profile",
 				"company": company,
-				"profile_name": f"Sign {suffix}",
-				"certificate_vault_ref": f"vault://eta/{suffix}",
-			}
+				"profile_name": f"Sign {suffix
+	}",
+				"certificate_vault_ref": f"vault://eta/{suffix}"
+	}
 		)
 		doc.insert(ignore_permissions=True)
 		return doc.name
@@ -128,8 +137,8 @@ class TestOmnexaAccounting(FrappeTestCase):
 			"tax_authority_profile": tax,
 			"signing_profile": sign,
 			"eta_invoice_rin": "123456789",
-			"eta_invoice_client_id": f"client-{suffix}",
-		}.items():
+			"eta_invoice_client_id": f"client-{suffix}"
+	}.items():
 			frappe.db.set_value("Branch", branch, field, value, update_modified=False)
 		branch_doc = frappe.get_doc("Branch", branch)
 		branch_doc.eta_invoice_client_secret = f"secret-{suffix}"
@@ -147,7 +156,8 @@ class TestOmnexaAccounting(FrappeTestCase):
 			si.eta_billing_type = "E-Invoice"
 		si.append(
 			"items",
-			{"item_code": "line", "qty": 1, "rate": kwargs.get("rate", 100), "income_account": leaf},
+			{"item_code": "line", "qty": 1, "rate": kwargs.get("rate", 100), "income_account": leaf
+	},
 		)
 		si.insert(ignore_permissions=True)
 		return si
@@ -155,7 +165,8 @@ class TestOmnexaAccounting(FrappeTestCase):
 	def _deactivate_purchase_approval_rules(self):
 		for name in frappe.get_all(
 			"Purchase Approval Rule",
-			filters={"company": self.company, "is_active": 1},
+			filters={"company": self.company, "is_active": 1
+	},
 			pluck="name",
 		):
 			frappe.db.set_value("Purchase Approval Rule", name, "is_active", 0, update_modified=False)
@@ -191,8 +202,10 @@ class TestOmnexaAccounting(FrappeTestCase):
 		je = frappe.new_doc("Journal Entry")
 		je.company = self.company
 		je.posting_date = today()
-		je.append("accounts", {"account": leaf, "debit": 100, "credit": 0})
-		je.append("accounts", {"account": leaf, "debit": 0, "credit": 50})
+		je.append("accounts", {"account": leaf, "debit": 100, "credit": 0
+	})
+		je.append("accounts", {"account": leaf, "debit": 0, "credit": 50
+	})
 		je.insert(ignore_permissions=True)
 		with self.assertRaises(frappe.ValidationError):
 			je.submit()
@@ -210,16 +223,18 @@ class TestOmnexaAccounting(FrappeTestCase):
 				"period_name": "P1",
 				"period_start_date": fy.year_start_date,
 				"period_end_date": fy.year_end_date,
-				"frozen": 1,
-			},
+				"frozen": 1
+	},
 		)
 		fy.insert(ignore_permissions=True)
 		leaf = self._gl("3000", "Suspense", 0, company=frz_co)
 		je = frappe.new_doc("Journal Entry")
 		je.company = frz_co
 		je.posting_date = today()
-		je.append("accounts", {"account": leaf, "debit": 10, "credit": 0})
-		je.append("accounts", {"account": leaf, "debit": 0, "credit": 10})
+		je.append("accounts", {"account": leaf, "debit": 10, "credit": 0
+	})
+		je.append("accounts", {"account": leaf, "debit": 0, "credit": 10
+	})
 		je.insert(ignore_permissions=True)
 		with self.assertRaises(frappe.ValidationError):
 			je.submit()
@@ -248,8 +263,8 @@ class TestOmnexaAccounting(FrappeTestCase):
 					"period_name": "P1",
 					"period_start_date": fy.year_start_date,
 					"period_end_date": fy.year_end_date,
-					"frozen": 1,
-				},
+					"frozen": 1
+	},
 			)
 			with self.assertRaises(frappe.ValidationError):
 				fy.insert(ignore_permissions=True)
@@ -266,12 +281,14 @@ class TestOmnexaAccounting(FrappeTestCase):
 			u.first_name = "Period Manager"
 			u.enabled = 1
 			u.new_password = "test123"
-			u.append("roles", {"role": role_name})
+			u.append("roles", {"role": role_name
+	})
 			u.insert(ignore_permissions=True)
 		else:
 			u = frappe.get_doc("User", user_email)
 			if not any((d.role == role_name) for d in u.roles):
-				u.append("roles", {"role": role_name})
+				u.append("roles", {"role": role_name
+	})
 				u.save(ignore_permissions=True)
 
 		frappe.set_user(user_email)
@@ -287,8 +304,8 @@ class TestOmnexaAccounting(FrappeTestCase):
 					"period_name": "P1",
 					"period_start_date": fy.year_start_date,
 					"period_end_date": fy.year_end_date,
-					"frozen": 1,
-				},
+					"frozen": 1
+	},
 			)
 			fy.insert(ignore_permissions=True)
 			self.assertTrue(frappe.db.exists("Fiscal Year", fy.name))
@@ -297,7 +314,8 @@ class TestOmnexaAccounting(FrappeTestCase):
 
 	def test_tax_rule_overlap(self):
 		co = self._create_company(f"TAX-{frappe.generate_hash(length=6)}", seed_tax=False)
-		for tr_name in frappe.get_all("Tax Rule", filters={"company": co}, pluck="name"):
+		for tr_name in frappe.get_all("Tax Rule", filters={"company": co
+	}, pluck="name"):
 			frappe.delete_doc("Tax Rule", tr_name, force=1, ignore_permissions=True)
 		head = self._gl("4000", "VAT", 0, company=co)
 		d1 = frappe.new_doc("Tax Rule")
@@ -330,7 +348,8 @@ class TestOmnexaAccounting(FrappeTestCase):
 		si.company = self.company
 		si.customer = cust.name
 		si.posting_date = today()
-		si.append("items", {"item_code": "line", "qty": 1, "rate": 200, "income_account": leaf})
+		si.append("items", {"item_code": "line", "qty": 1, "rate": 200, "income_account": leaf
+	})
 		si.insert(ignore_permissions=True)
 		si.submit()
 		pe = frappe.new_doc("Payment Entry")
@@ -344,8 +363,8 @@ class TestOmnexaAccounting(FrappeTestCase):
 			{
 				"reference_doctype": "Sales Invoice",
 				"reference_name": si.name,
-				"allocated_amount": 100,
-			},
+				"allocated_amount": 100
+	},
 		)
 		with self.assertRaises(frappe.ValidationError):
 			pe.insert(ignore_permissions=True)
@@ -360,7 +379,8 @@ class TestOmnexaAccounting(FrappeTestCase):
 		si.company = self.company
 		si.customer = cust.name
 		si.posting_date = today()
-		si.append("items", {"item_code": "line", "qty": 1, "rate": 200, "income_account": leaf})
+		si.append("items", {"item_code": "line", "qty": 1, "rate": 200, "income_account": leaf
+	})
 		si.insert(ignore_permissions=True)
 		si.submit()
 		pe = frappe.new_doc("Payment Entry")
@@ -374,16 +394,16 @@ class TestOmnexaAccounting(FrappeTestCase):
 			{
 				"reference_doctype": "Sales Invoice",
 				"reference_name": si.name,
-				"allocated_amount": 100,
-			},
+				"allocated_amount": 100
+	},
 		)
 		pe.append(
 			"references",
 			{
 				"reference_doctype": "Sales Invoice",
 				"reference_name": si.name,
-				"allocated_amount": 100,
-			},
+				"allocated_amount": 100
+	},
 		)
 		with self.assertRaises(frappe.ValidationError):
 			pe.insert(ignore_permissions=True)
@@ -398,7 +418,8 @@ class TestOmnexaAccounting(FrappeTestCase):
 		si.company = self.company
 		si.customer = cust.name
 		si.posting_date = today()
-		si.append("items", {"item_code": "line", "qty": 1, "rate": 100, "income_account": leaf})
+		si.append("items", {"item_code": "line", "qty": 1, "rate": 100, "income_account": leaf
+	})
 		si.insert(ignore_permissions=True)
 		si.submit()
 		pe = frappe.new_doc("Payment Entry")
@@ -412,8 +433,8 @@ class TestOmnexaAccounting(FrappeTestCase):
 			{
 				"reference_doctype": "Sales Invoice",
 				"reference_name": si.name,
-				"allocated_amount": 0,
-			},
+				"allocated_amount": 0
+	},
 		)
 		with self.assertRaises(frappe.ValidationError):
 			pe.insert(ignore_permissions=True)
@@ -428,7 +449,8 @@ class TestOmnexaAccounting(FrappeTestCase):
 		si.company = self.company
 		si.customer = cust.name
 		si.posting_date = today()
-		si.append("items", {"item_code": "line", "qty": 1, "rate": 100, "income_account": leaf})
+		si.append("items", {"item_code": "line", "qty": 1, "rate": 100, "income_account": leaf
+	})
 		si.insert(ignore_permissions=True)
 		si.submit()
 		pe1 = frappe.new_doc("Payment Entry")
@@ -442,8 +464,8 @@ class TestOmnexaAccounting(FrappeTestCase):
 			{
 				"reference_doctype": "Sales Invoice",
 				"reference_name": si.name,
-				"allocated_amount": 60,
-			},
+				"allocated_amount": 60
+	},
 		)
 		pe1.insert(ignore_permissions=True)
 		pe1.submit()
@@ -458,8 +480,8 @@ class TestOmnexaAccounting(FrappeTestCase):
 			{
 				"reference_doctype": "Sales Invoice",
 				"reference_name": si.name,
-				"allocated_amount": 50,
-			},
+				"allocated_amount": 50
+	},
 		)
 		with self.assertRaises(frappe.ValidationError):
 			pe2.insert(ignore_permissions=True)
@@ -557,7 +579,8 @@ class TestOmnexaAccounting(FrappeTestCase):
 		si.company = self.company
 		si.customer = cust.name
 		si.posting_date = today()
-		si.append("items", {"item_code": "line", "qty": 1, "rate": 100, "income_account": leaf})
+		si.append("items", {"item_code": "line", "qty": 1, "rate": 100, "income_account": leaf
+	})
 		si.insert(ignore_permissions=True)
 		si.submit()
 		si.reload()
@@ -573,8 +596,8 @@ class TestOmnexaAccounting(FrappeTestCase):
 			{
 				"reference_doctype": "Sales Invoice",
 				"reference_name": si.name,
-				"allocated_amount": 40,
-			},
+				"allocated_amount": 40
+	},
 		)
 		pe.insert(ignore_permissions=True)
 		pe.submit()
@@ -594,7 +617,8 @@ class TestOmnexaAccounting(FrappeTestCase):
 		pi.company = self.company
 		pi.supplier = supp.name
 		pi.posting_date = today()
-		pi.append("items", {"item_code": "line", "qty": 1, "rate": 100, "expense_account": exp})
+		pi.append("items", {"item_code": "line", "qty": 1, "rate": 100, "expense_account": exp
+	})
 		pi.insert(ignore_permissions=True)
 		pi.submit()
 		pi.reload()
@@ -610,8 +634,8 @@ class TestOmnexaAccounting(FrappeTestCase):
 			{
 				"reference_doctype": "Purchase Invoice",
 				"reference_name": pi.name,
-				"allocated_amount": 30,
-			},
+				"allocated_amount": 30
+	},
 		)
 		pe.insert(ignore_permissions=True)
 		pe.submit()
@@ -631,9 +655,12 @@ class TestOmnexaAccounting(FrappeTestCase):
 		si.company = self.company
 		si.customer = cust.name
 		si.posting_date = today()
-		si.append("items", {"item_code": "line", "qty": 1, "rate": 100, "income_account": leaf})
-		si.append("payment_schedule", {"due_date": add_days(getdate(today()), 10), "payment_amount": 40})
-		si.append("payment_schedule", {"due_date": add_days(getdate(today()), 20), "payment_amount": 60})
+		si.append("items", {"item_code": "line", "qty": 1, "rate": 100, "income_account": leaf
+	})
+		si.append("payment_schedule", {"due_date": add_days(getdate(today()), 10), "payment_amount": 40
+	})
+		si.append("payment_schedule", {"due_date": add_days(getdate(today()), 20), "payment_amount": 60
+	})
 		si.insert(ignore_permissions=True)
 		self.assertEqual(getdate(si.due_date), add_days(getdate(today()), 20))
 
@@ -647,8 +674,10 @@ class TestOmnexaAccounting(FrappeTestCase):
 		si.company = self.company
 		si.customer = cust.name
 		si.posting_date = today()
-		si.append("items", {"item_code": "line", "qty": 1, "rate": 100, "income_account": leaf})
-		si.append("payment_schedule", {"due_date": add_days(getdate(today()), 5), "payment_amount": 30})
+		si.append("items", {"item_code": "line", "qty": 1, "rate": 100, "income_account": leaf
+	})
+		si.append("payment_schedule", {"due_date": add_days(getdate(today()), 5), "payment_amount": 30
+	})
 		with self.assertRaises(frappe.ValidationError):
 			si.insert(ignore_permissions=True)
 
@@ -662,8 +691,10 @@ class TestOmnexaAccounting(FrappeTestCase):
 		pi.company = self.company
 		pi.supplier = supp.name
 		pi.posting_date = today()
-		pi.append("items", {"item_code": "line", "qty": 1, "rate": 100, "expense_account": exp})
-		pi.append("payment_schedule", {"due_date": add_days(getdate(today()), -1), "payment_amount": 100})
+		pi.append("items", {"item_code": "line", "qty": 1, "rate": 100, "expense_account": exp
+	})
+		pi.append("payment_schedule", {"due_date": add_days(getdate(today()), -1), "payment_amount": 100
+	})
 		with self.assertRaises(frappe.ValidationError):
 			pi.insert(ignore_permissions=True)
 
@@ -694,7 +725,8 @@ class TestOmnexaAccounting(FrappeTestCase):
 		pi.company = self.company
 		pi.supplier = supp.name
 		pi.posting_date = today()
-		pi.append("items", {"item_code": "x", "qty": 1, "rate": 100, "expense_account": exp})
+		pi.append("items", {"item_code": "x", "qty": 1, "rate": 100, "expense_account": exp
+	})
 		pi.insert(ignore_permissions=True)
 		user_email = "approverless@example.com"
 		if not frappe.db.exists("User", user_email):
@@ -721,7 +753,8 @@ class TestOmnexaAccounting(FrappeTestCase):
 			r.insert(ignore_permissions=True)
 		admin = frappe.get_doc("User", "Administrator")
 		if not any((d.role == role_name) for d in admin.roles):
-			admin.append("roles", {"role": role_name})
+			admin.append("roles", {"role": role_name
+	})
 			admin.save(ignore_permissions=True)
 		rule = frappe.new_doc("Purchase Approval Rule")
 		rule.rule_name = "Rule Allow"
@@ -741,7 +774,8 @@ class TestOmnexaAccounting(FrappeTestCase):
 		pi.company = self.company
 		pi.supplier = supp.name
 		pi.posting_date = today()
-		pi.append("items", {"item_code": "x", "qty": 1, "rate": 100, "expense_account": exp})
+		pi.append("items", {"item_code": "x", "qty": 1, "rate": 100, "expense_account": exp
+	})
 		pi.insert(ignore_permissions=True)
 		pi.submit()
 		self.assertEqual(pi.docstatus, 1)
@@ -757,7 +791,8 @@ class TestOmnexaAccounting(FrappeTestCase):
 			r.insert(ignore_permissions=True)
 		admin = frappe.get_doc("User", "Administrator")
 		if not any((d.role == role_name) for d in admin.roles):
-			admin.append("roles", {"role": role_name})
+			admin.append("roles", {"role": role_name
+	})
 			admin.save(ignore_permissions=True)
 		rule = frappe.new_doc("Purchase Approval Rule")
 		rule.rule_name = "Rule 3WM"
@@ -777,7 +812,8 @@ class TestOmnexaAccounting(FrappeTestCase):
 		pi.company = self.company
 		pi.supplier = supp.name
 		pi.posting_date = today()
-		pi.append("items", {"item_code": "x", "qty": 1, "rate": 100, "expense_account": exp})
+		pi.append("items", {"item_code": "x", "qty": 1, "rate": 100, "expense_account": exp
+	})
 		pi.insert(ignore_permissions=True)
 		matched_rule = pi._get_matching_approval_rule()
 		self.assertIsNotNone(matched_rule)
@@ -791,7 +827,8 @@ class TestOmnexaAccounting(FrappeTestCase):
 		po.company = self.company
 		po.supplier = supp.name
 		po.posting_date = today()
-		po.append("items", {"item_code": "x", "qty": 1, "rate": 100})
+		po.append("items", {"item_code": "x", "qty": 1, "rate": 100
+	})
 		po.insert(ignore_permissions=True)
 		po.submit()
 		grn = frappe.new_doc("Purchase Receipt")
@@ -799,7 +836,8 @@ class TestOmnexaAccounting(FrappeTestCase):
 		grn.supplier = supp.name
 		grn.posting_date = today()
 		grn.purchase_order = po.name
-		grn.append("items", {"item_code": "x", "qty": 1, "rate": 100})
+		grn.append("items", {"item_code": "x", "qty": 1, "rate": 100
+	})
 		grn.insert(ignore_permissions=True)
 		grn.submit()
 		pi.po_reference = po.name
@@ -818,7 +856,8 @@ class TestOmnexaAccounting(FrappeTestCase):
 			r.insert(ignore_permissions=True)
 		admin = frappe.get_doc("User", "Administrator")
 		if not any((d.role == role_name) for d in admin.roles):
-			admin.append("roles", {"role": role_name})
+			admin.append("roles", {"role": role_name
+	})
 			admin.save(ignore_permissions=True)
 		rule = frappe.new_doc("Purchase Approval Rule")
 		rule.rule_name = "Rule 3WM Qty"
@@ -838,7 +877,8 @@ class TestOmnexaAccounting(FrappeTestCase):
 		po.company = self.company
 		po.supplier = supp.name
 		po.posting_date = today()
-		po.append("items", {"item_code": "x", "qty": 2, "rate": 100})
+		po.append("items", {"item_code": "x", "qty": 2, "rate": 100
+	})
 		po.insert(ignore_permissions=True)
 		po.submit()
 		grn = frappe.new_doc("Purchase Receipt")
@@ -846,7 +886,8 @@ class TestOmnexaAccounting(FrappeTestCase):
 		grn.supplier = supp.name
 		grn.posting_date = today()
 		grn.purchase_order = po.name
-		grn.append("items", {"item_code": "x", "qty": 1, "rate": 100})
+		grn.append("items", {"item_code": "x", "qty": 1, "rate": 100
+	})
 		grn.insert(ignore_permissions=True)
 		grn.submit()
 		pi = frappe.new_doc("Purchase Invoice")
@@ -855,7 +896,8 @@ class TestOmnexaAccounting(FrappeTestCase):
 		pi.posting_date = today()
 		pi.po_reference = po.name
 		pi.goods_receipt_reference = grn.name
-		pi.append("items", {"item_code": "x", "qty": 2, "rate": 100, "expense_account": exp})
+		pi.append("items", {"item_code": "x", "qty": 2, "rate": 100, "expense_account": exp
+	})
 		pi.insert(ignore_permissions=True)
 		with self.assertRaises(frappe.ValidationError):
 			pi.submit()
@@ -870,15 +912,18 @@ class TestOmnexaAccounting(FrappeTestCase):
 		pi.company = self.company
 		pi.supplier = supp.name
 		pi.posting_date = today()
-		pi.append("items", {"item_code": "A", "qty": 1, "rate": 100, "expense_account": exp})
-		pi.append("items", {"item_code": "B", "qty": 1, "rate": 300, "expense_account": exp})
+		pi.append("items", {"item_code": "A", "qty": 1, "rate": 100, "expense_account": exp
+	})
+		pi.append("items", {"item_code": "B", "qty": 1, "rate": 300, "expense_account": exp
+	})
 		pi.insert(ignore_permissions=True)
 		pi.submit()
 		lcv = frappe.new_doc("Landed Cost Voucher")
 		lcv.company = self.company
 		lcv.purchase_invoice = pi.name
 		lcv.posting_date = today()
-		lcv.append("charges", {"description": "Freight", "amount": 80})
+		lcv.append("charges", {"description": "Freight", "amount": 80
+	})
 		lcv.insert(ignore_permissions=True)
 		lcv.submit()
 		pi.reload()
@@ -898,21 +943,24 @@ class TestOmnexaAccounting(FrappeTestCase):
 		pi.company = self.company
 		pi.supplier = supp.name
 		pi.posting_date = today()
-		pi.append("items", {"item_code": "A", "qty": 1, "rate": 100, "expense_account": exp})
+		pi.append("items", {"item_code": "A", "qty": 1, "rate": 100, "expense_account": exp
+	})
 		pi.insert(ignore_permissions=True)
 		pi.submit()
 		lcv1 = frappe.new_doc("Landed Cost Voucher")
 		lcv1.company = self.company
 		lcv1.purchase_invoice = pi.name
 		lcv1.posting_date = today()
-		lcv1.append("charges", {"description": "Freight", "amount": 10})
+		lcv1.append("charges", {"description": "Freight", "amount": 10
+	})
 		lcv1.insert(ignore_permissions=True)
 		lcv1.submit()
 		lcv2 = frappe.new_doc("Landed Cost Voucher")
 		lcv2.company = self.company
 		lcv2.purchase_invoice = pi.name
 		lcv2.posting_date = today()
-		lcv2.append("charges", {"description": "Insurance", "amount": 5})
+		lcv2.append("charges", {"description": "Insurance", "amount": 5
+	})
 		with self.assertRaises(frappe.ValidationError):
 			lcv2.insert(ignore_permissions=True)
 
@@ -929,7 +977,8 @@ class TestOmnexaAccounting(FrappeTestCase):
 		sr.company = self.company
 		sr.reconciliation_date = today()
 		sr.cadence = "Weekly"
-		sr.append("items", {"item": it.name, "counted_qty": 8})
+		sr.append("items", {"item": it.name, "counted_qty": 8
+	})
 		sr.insert(ignore_permissions=True)
 		self.assertEqual(sr.items[0].system_qty, 10.0)
 		self.assertEqual(sr.items[0].variance_qty, -2.0)
@@ -948,7 +997,8 @@ class TestOmnexaAccounting(FrappeTestCase):
 		sr.company = self.company
 		sr.reconciliation_date = today()
 		sr.cadence = "Monthly"
-		sr.append("items", {"item": it.name, "counted_qty": 12})
+		sr.append("items", {"item": it.name, "counted_qty": 12
+	})
 		sr.insert(ignore_permissions=True)
 		sr.submit()
 		it.reload()
@@ -1044,7 +1094,8 @@ class TestOmnexaAccounting(FrappeTestCase):
 		project.customer = cust.name
 		project.default_income_account = leaf
 		project.default_billing_rate = 200
-		project.append("tasks", {"task_title": "Design", "estimated_hours": 8, "is_billable": 1})
+		project.append("tasks", {"task_title": "Design", "estimated_hours": 8, "is_billable": 1
+	})
 		project.insert(ignore_permissions=True)
 		ts = frappe.new_doc("Timesheet Entry")
 		ts.company = self.company
@@ -1146,7 +1197,8 @@ class TestOmnexaAccounting(FrappeTestCase):
 		si.company = self.company
 		si.customer = c.name
 		si.posting_date = today()
-		si.append("items", {"item_code": "line", "qty": 1, "rate": 1, "income_account": leaf})
+		si.append("items", {"item_code": "line", "qty": 1, "rate": 1, "income_account": leaf
+	})
 		with self.assertRaises(frappe.ValidationError):
 			si.insert(ignore_permissions=True)
 
@@ -1163,7 +1215,8 @@ class TestOmnexaAccounting(FrappeTestCase):
 		si.branch = other_branch
 		si.customer = cust.name
 		si.posting_date = today()
-		si.append("items", {"item_code": "line", "qty": 1, "rate": 1, "income_account": leaf})
+		si.append("items", {"item_code": "line", "qty": 1, "rate": 1, "income_account": leaf
+	})
 		with self.assertRaises(frappe.ValidationError):
 			si.insert(ignore_permissions=True)
 
@@ -1180,7 +1233,8 @@ class TestOmnexaAccounting(FrappeTestCase):
 		pi.branch = other_branch
 		pi.supplier = supp.name
 		pi.posting_date = today()
-		pi.append("items", {"item_code": "line", "qty": 1, "rate": 1, "expense_account": exp})
+		pi.append("items", {"item_code": "line", "qty": 1, "rate": 1, "expense_account": exp
+	})
 		with self.assertRaises(frappe.ValidationError):
 			pi.insert(ignore_permissions=True)
 
@@ -1210,20 +1264,24 @@ class TestOmnexaAccounting(FrappeTestCase):
 		je.company = self.company
 		je.branch = other_branch
 		je.posting_date = today()
-		je.append("accounts", {"account": a1, "debit": 10, "credit": 0})
-		je.append("accounts", {"account": a2, "debit": 0, "credit": 10})
+		je.append("accounts", {"account": a1, "debit": 10, "credit": 0
+	})
+		je.append("accounts", {"account": a2, "debit": 0, "credit": 10
+	})
 		with self.assertRaises(frappe.ValidationError):
 			je.insert(ignore_permissions=True)
 
 	def _ensure_usd(self):
 		if not frappe.db.exists("Currency", "USD"):
 			frappe.get_doc(
-				{"doctype": "Currency", "currency_name": "USD", "symbol": "$", "enabled": 1}
+				{"doctype": "Currency", "currency_name": "USD", "symbol": "$", "enabled": 1
+	}
 			).insert(ignore_permissions=True)
 
 	def _ensure_uom(self, name="Nos"):
 		if not frappe.db.exists("UOM", name):
-			frappe.get_doc({"doctype": "UOM", "uom_name": name}).insert(ignore_permissions=True)
+			frappe.get_doc({"doctype": "UOM", "uom_name": name
+	}).insert(ignore_permissions=True)
 		return name
 
 	def test_sales_invoice_multi_currency_from_exchange_rate(self):
@@ -1235,8 +1293,8 @@ class TestOmnexaAccounting(FrappeTestCase):
 				"exchange_date": today(),
 				"from_currency": "USD",
 				"to_currency": "EGP",
-				"exchange_rate": 50.0,
-			}
+				"exchange_rate": 50.0
+	}
 		).insert(ignore_permissions=True)
 		cust = frappe.new_doc("Customer")
 		cust.company = self.company
@@ -1249,7 +1307,8 @@ class TestOmnexaAccounting(FrappeTestCase):
 		si.posting_date = today()
 		si.currency = "USD"
 		si.conversion_rate = 1.0
-		si.append("items", {"item_code": "line", "qty": 2, "rate": 10, "income_account": leaf})
+		si.append("items", {"item_code": "line", "qty": 2, "rate": 10, "income_account": leaf
+	})
 		si.insert(ignore_permissions=True)
 		self.assertEqual(si.conversion_rate, 50.0)
 		self.assertEqual(si.grand_total, 20)
@@ -1268,7 +1327,8 @@ class TestOmnexaAccounting(FrappeTestCase):
 		si.posting_date = today()
 		si.currency = "USD"
 		si.conversion_rate = 1.0
-		si.append("items", {"item_code": "line", "qty": 1, "rate": 1, "income_account": leaf})
+		si.append("items", {"item_code": "line", "qty": 1, "rate": 1, "income_account": leaf
+	})
 		with self.assertRaises(frappe.ValidationError):
 			si.insert(ignore_permissions=True)
 
@@ -1283,7 +1343,8 @@ class TestOmnexaAccounting(FrappeTestCase):
 		si.company = self.company
 		si.customer = cust.name
 		si.posting_date = today()
-		si.append("items", {"item_code": "line", "qty": 1, "rate": 100, "income_account": leaf})
+		si.append("items", {"item_code": "line", "qty": 1, "rate": 100, "income_account": leaf
+	})
 		si.insert(ignore_permissions=True)
 		with self.assertRaises(frappe.ValidationError):
 			si.submit()
@@ -1300,7 +1361,8 @@ class TestOmnexaAccounting(FrappeTestCase):
 		si.customer = cust.name
 		si.posting_date = today()
 		si.credit_limit_override_approved = 1
-		si.append("items", {"item_code": "line", "qty": 1, "rate": 100, "income_account": leaf})
+		si.append("items", {"item_code": "line", "qty": 1, "rate": 100, "income_account": leaf
+	})
 		si.insert(ignore_permissions=True)
 		with self.assertRaises(frappe.ValidationError):
 			si.submit()
@@ -1318,7 +1380,8 @@ class TestOmnexaAccounting(FrappeTestCase):
 		si.posting_date = today()
 		si.credit_limit_override_approved = 1
 		si.credit_limit_override_reason = "Approved for strategic account launch."
-		si.append("items", {"item_code": "line", "qty": 1, "rate": 100, "income_account": leaf})
+		si.append("items", {"item_code": "line", "qty": 1, "rate": 100, "income_account": leaf
+	})
 		si.insert(ignore_permissions=True)
 		si.submit()
 		self.assertEqual(si.docstatus, 1)
@@ -1335,7 +1398,8 @@ class TestOmnexaAccounting(FrappeTestCase):
 		first.company = self.company
 		first.customer = cust.name
 		first.posting_date = today()
-		first.append("items", {"item_code": "line", "qty": 1, "rate": 100, "income_account": leaf})
+		first.append("items", {"item_code": "line", "qty": 1, "rate": 100, "income_account": leaf
+	})
 		first.insert(ignore_permissions=True)
 		first.submit()
 
@@ -1343,7 +1407,8 @@ class TestOmnexaAccounting(FrappeTestCase):
 		second.company = self.company
 		second.customer = cust.name
 		second.posting_date = today()
-		second.append("items", {"item_code": "line", "qty": 1, "rate": 80, "income_account": leaf})
+		second.append("items", {"item_code": "line", "qty": 1, "rate": 80, "income_account": leaf
+	})
 		second.insert(ignore_permissions=True)
 		with self.assertRaises(frappe.ValidationError):
 			second.submit()
@@ -1364,8 +1429,8 @@ class TestOmnexaAccounting(FrappeTestCase):
 			{
 				"reference_doctype": "Sales Invoice",
 				"reference_name": si.name,
-				"authority_operation": "submit",
-			},
+				"authority_operation": "submit"
+	},
 		)
 		self.assertEqual(count, 1)
 
@@ -1384,8 +1449,8 @@ class TestOmnexaAccounting(FrappeTestCase):
 			{
 				"reference_doctype": "Sales Invoice",
 				"reference_name": si.name,
-				"authority_operation": "submit",
-			},
+				"authority_operation": "submit"
+	},
 			"name",
 		)
 		submission = frappe.get_doc("E-Document Submission", submission_name)
@@ -1403,7 +1468,8 @@ class TestOmnexaAccounting(FrappeTestCase):
 		eta_company = self._create_company("OMNX-ETAB")
 		branch, branch_tax, branch_sign = self._enable_eta_on_branch(eta_company, "co")
 
-		cust = frappe.get_doc({"doctype": "Customer", "company": eta_company, "customer_name": "Branch ETA"}).insert(ignore_permissions=True)
+		cust = frappe.get_doc({"doctype": "Customer", "company": eta_company, "customer_name": "Branch ETA"
+	}).insert(ignore_permissions=True)
 		leaf = self._gl("5306", "Revenue ETA BR", 0, company=eta_company)
 		si = self._sales_invoice_with_eta(eta_company, cust.name, leaf, branch=branch)
 		si._enqueue_eta_submission()
@@ -1412,8 +1478,8 @@ class TestOmnexaAccounting(FrappeTestCase):
 			{
 				"reference_doctype": "Sales Invoice",
 				"reference_name": si.name,
-				"authority_operation": "submit",
-			},
+				"authority_operation": "submit"
+	},
 			"name",
 		)
 		sub = frappe.get_doc("E-Document Submission", sub_name)
@@ -1442,8 +1508,8 @@ class TestOmnexaAccounting(FrappeTestCase):
 				"qty": 1,
 				"rate": 1,
 				"income_account": leaf,
-				"cost_center": cc.name,
-			},
+				"cost_center": cc.name
+	},
 		)
 		with self.assertRaises(frappe.ValidationError):
 			si.insert(ignore_permissions=True)
@@ -1515,7 +1581,8 @@ class TestOmnexaAccounting(FrappeTestCase):
 		si.company = self.company
 		si.customer = c2.name
 		si.posting_date = today()
-		si.append("items", {"item_code": "x", "qty": 1, "rate": 10, "income_account": leaf})
+		si.append("items", {"item_code": "x", "qty": 1, "rate": 10, "income_account": leaf
+	})
 		si.insert(ignore_permissions=True)
 		si.submit()
 		pe = frappe.new_doc("Payment Entry")
@@ -1526,7 +1593,8 @@ class TestOmnexaAccounting(FrappeTestCase):
 		pe.paid_amount = 10
 		pe.append(
 			"references",
-			{"reference_doctype": "Sales Invoice", "reference_name": si.name, "allocated_amount": 10},
+			{"reference_doctype": "Sales Invoice", "reference_name": si.name, "allocated_amount": 10
+	},
 		)
 		with self.assertRaises(frappe.ValidationError):
 			pe.insert(ignore_permissions=True)
@@ -1541,7 +1609,8 @@ class TestOmnexaAccounting(FrappeTestCase):
 		orig.company = self.company
 		orig.customer = cust.name
 		orig.posting_date = today()
-		orig.append("items", {"item_code": "a", "qty": 1, "rate": 50, "income_account": leaf})
+		orig.append("items", {"item_code": "a", "qty": 1, "rate": 50, "income_account": leaf
+	})
 		orig.insert(ignore_permissions=True)
 		orig.submit()
 		cn = frappe.new_doc("Sales Invoice")
@@ -1550,7 +1619,8 @@ class TestOmnexaAccounting(FrappeTestCase):
 		cn.posting_date = today()
 		cn.is_return = 1
 		cn.return_against = orig.name
-		cn.append("items", {"item_code": "a", "qty": 1, "rate": 10, "income_account": leaf})
+		cn.append("items", {"item_code": "a", "qty": 1, "rate": 10, "income_account": leaf
+	})
 		cn.insert(ignore_permissions=True)
 		cn.submit()
 
@@ -1565,7 +1635,8 @@ class TestOmnexaAccounting(FrappeTestCase):
 		orig.company = self.company
 		orig.customer = cust.name
 		orig.posting_date = today()
-		orig.append("items", {"item_code": "a", "qty": 1, "rate": 5, "income_account": leaf})
+		orig.append("items", {"item_code": "a", "qty": 1, "rate": 5, "income_account": leaf
+	})
 		orig.insert(ignore_permissions=True)
 		orig.submit()
 		cn = frappe.new_doc("Sales Invoice")
@@ -1574,7 +1645,8 @@ class TestOmnexaAccounting(FrappeTestCase):
 		cn.posting_date = today()
 		cn.is_return = 1
 		cn.return_against = orig.name
-		cn.append("items", {"item_code": "a", "qty": 1, "rate": 100, "income_account": leaf})
+		cn.append("items", {"item_code": "a", "qty": 1, "rate": 100, "income_account": leaf
+	})
 		cn.insert(ignore_permissions=True)
 		cn.submit()
 
@@ -1630,8 +1702,8 @@ class TestOmnexaAccounting(FrappeTestCase):
 				"item_code": it.item_code,
 				"qty": 1,
 				"rate": 1,
-				"income_account": leaf,
-			},
+				"income_account": leaf
+	},
 		)
 		with self.assertRaises(frappe.ValidationError):
 			si.insert(ignore_permissions=True)
@@ -1655,7 +1727,8 @@ class TestOmnexaAccounting(FrappeTestCase):
 		si.posting_date = today()
 		si.append(
 			"items",
-			{"item": it.name, "item_code": "", "qty": 1, "rate": 2, "income_account": leaf},
+			{"item": it.name, "item_code": "", "qty": 1, "rate": 2, "income_account": leaf
+	},
 		)
 		si.insert(ignore_permissions=True)
 		self.assertEqual(si.items[0].item_code, "SKU-AUTO")
@@ -1680,7 +1753,8 @@ class TestOmnexaAccounting(FrappeTestCase):
 		si.posting_date = today()
 		si.append(
 			"items",
-			{"item": it.name, "item_code": "RAW-1", "qty": 1, "rate": 1, "income_account": leaf},
+			{"item": it.name, "item_code": "RAW-1", "qty": 1, "rate": 1, "income_account": leaf
+	},
 		)
 		with self.assertRaises(frappe.ValidationError):
 			si.insert(ignore_permissions=True)
@@ -1695,7 +1769,8 @@ class TestOmnexaAccounting(FrappeTestCase):
 		orig.company = self.company
 		orig.supplier = supp.name
 		orig.posting_date = today()
-		orig.append("items", {"item_code": "x", "qty": 1, "rate": 40, "expense_account": exp})
+		orig.append("items", {"item_code": "x", "qty": 1, "rate": 40, "expense_account": exp
+	})
 		orig.insert(ignore_permissions=True)
 		orig.submit()
 		dn = frappe.new_doc("Purchase Invoice")
@@ -1704,7 +1779,8 @@ class TestOmnexaAccounting(FrappeTestCase):
 		dn.posting_date = today()
 		dn.is_return = 1
 		dn.return_against = orig.name
-		dn.append("items", {"item_code": "x", "qty": 1, "rate": 5, "expense_account": exp})
+		dn.append("items", {"item_code": "x", "qty": 1, "rate": 5, "expense_account": exp
+	})
 		dn.insert(ignore_permissions=True)
 		dn.submit()
 
@@ -1721,8 +1797,8 @@ class TestOmnexaAccounting(FrappeTestCase):
 				"period_name": "P1",
 				"period_start_date": fy.year_start_date,
 				"period_end_date": fy.year_end_date,
-				"frozen": 1,
-			},
+				"frozen": 1
+	},
 		)
 		fy.insert(ignore_permissions=True)
 		a1 = self._gl("7100", "Opening Dr", 0, company=frz_co)
@@ -1731,16 +1807,20 @@ class TestOmnexaAccounting(FrappeTestCase):
 		je.company = frz_co
 		je.posting_date = today()
 		je.is_opening = 1
-		je.append("accounts", {"account": a1, "debit": 100, "credit": 0})
-		je.append("accounts", {"account": a2, "debit": 0, "credit": 100})
+		je.append("accounts", {"account": a1, "debit": 100, "credit": 0
+	})
+		je.append("accounts", {"account": a2, "debit": 0, "credit": 100
+	})
 		je.insert(ignore_permissions=True)
 		je.submit()
 		je2 = frappe.new_doc("Journal Entry")
 		je2.company = frz_co
 		je2.posting_date = today()
 		je2.is_opening = 0
-		je2.append("accounts", {"account": a1, "debit": 10, "credit": 0})
-		je2.append("accounts", {"account": a2, "debit": 0, "credit": 10})
+		je2.append("accounts", {"account": a1, "debit": 10, "credit": 0
+	})
+		je2.append("accounts", {"account": a2, "debit": 0, "credit": 10
+	})
 		je2.insert(ignore_permissions=True)
 		with self.assertRaises(frappe.ValidationError):
 			je2.submit()
@@ -1756,7 +1836,8 @@ class TestOmnexaAccounting(FrappeTestCase):
 		si.customer = cust.name
 		si.posting_date = today()
 		si.due_date = add_days(getdate(today()), -3)
-		si.append("items", {"item_code": "x", "qty": 1, "rate": 1, "income_account": leaf})
+		si.append("items", {"item_code": "x", "qty": 1, "rate": 1, "income_account": leaf
+	})
 		with self.assertRaises(frappe.ValidationError):
 			si.insert(ignore_permissions=True)
 
@@ -1813,7 +1894,8 @@ class TestOmnexaAccounting(FrappeTestCase):
 		si.company = self.company
 		si.customer = cust.name
 		si.posting_date = today()
-		si.append("items", {"item_code": "x", "qty": 1, "rate": 1, "income_account": leaf})
+		si.append("items", {"item_code": "x", "qty": 1, "rate": 1, "income_account": leaf
+	})
 		si.insert(ignore_permissions=True)
 		self.assertEqual(getdate(si.due_date), add_days(getdate(si.posting_date), 14))
 
@@ -1828,7 +1910,8 @@ class TestOmnexaAccounting(FrappeTestCase):
 		si.company = self.company
 		si.customer = cust.name
 		si.posting_date = today()
-		si.append("items", {"item_code": "x", "qty": 1, "rate": 1, "income_account": leaf})
+		si.append("items", {"item_code": "x", "qty": 1, "rate": 1, "income_account": leaf
+	})
 		si.insert(ignore_permissions=True)
 		self.assertEqual(getdate(si.due_date), add_days(getdate(si.posting_date), 7))
 
@@ -1842,7 +1925,8 @@ class TestOmnexaAccounting(FrappeTestCase):
 		si.company = self.company
 		si.customer = cust.name
 		si.posting_date = today()
-		si.append("items", {"item_code": "x", "qty": 1, "rate": 1, "income_account": leaf})
+		si.append("items", {"item_code": "x", "qty": 1, "rate": 1, "income_account": leaf
+	})
 		si.insert(ignore_permissions=True)
 		from omnexa_accounting.utils.party import get_default_sales_invoice_due_days
 
@@ -1861,7 +1945,8 @@ class TestOmnexaAccounting(FrappeTestCase):
 		si.company = self.company
 		si.customer = cust.name
 		si.posting_date = today()
-		si.append("items", {"item_code": "x", "qty": 1, "rate": 1, "income_account": leaf})
+		si.append("items", {"item_code": "x", "qty": 1, "rate": 1, "income_account": leaf
+	})
 		si.insert(ignore_permissions=True)
 		self.assertEqual(getdate(si.due_date), add_days(getdate(si.posting_date), 3))
 
@@ -1876,7 +1961,8 @@ class TestOmnexaAccounting(FrappeTestCase):
 		pi.company = self.company
 		pi.supplier = supp.name
 		pi.posting_date = today()
-		pi.append("items", {"item_code": "x", "qty": 1, "rate": 1, "expense_account": exp})
+		pi.append("items", {"item_code": "x", "qty": 1, "rate": 1, "expense_account": exp
+	})
 		pi.insert(ignore_permissions=True)
 		self.assertEqual(getdate(pi.due_date), add_days(getdate(pi.posting_date), 10))
 
@@ -1891,7 +1977,8 @@ class TestOmnexaAccounting(FrappeTestCase):
 		si.company = self.company
 		si.customer = cust.name
 		si.posting_date = today()
-		si.append("items", {"item_code": "x", "qty": 1, "rate": 1, "income_account": leaf})
+		si.append("items", {"item_code": "x", "qty": 1, "rate": 1, "income_account": leaf
+	})
 		si.insert(ignore_permissions=True)
 		si.submit()
 		self.assertEqual(si.docstatus, 1)
@@ -1909,7 +1996,8 @@ class TestOmnexaAccounting(FrappeTestCase):
 		pi.company = self.company
 		pi.supplier = supp.name
 		pi.posting_date = today()
-		pi.append("items", {"item_code": "x", "qty": 1, "rate": 1, "expense_account": exp})
+		pi.append("items", {"item_code": "x", "qty": 1, "rate": 1, "expense_account": exp
+	})
 		pi.insert(ignore_permissions=True)
 		pi.submit()
 		self.assertEqual(pi.docstatus, 1)
@@ -1941,8 +2029,10 @@ class TestOmnexaAccounting(FrappeTestCase):
 		je = frappe.new_doc("Journal Entry")
 		je.company = self.company
 		je.posting_date = today()
-		je.append("accounts", {"account": leaf, "debit": 5, "credit": 0})
-		je.append("accounts", {"account": leaf2, "debit": 0, "credit": 5})
+		je.append("accounts", {"account": leaf, "debit": 5, "credit": 0
+	})
+		je.append("accounts", {"account": leaf2, "debit": 0, "credit": 5
+	})
 		je.insert(ignore_permissions=True)
 		je.submit()
 		self.assertEqual(je.docstatus, 1)
@@ -1960,7 +2050,8 @@ class TestOmnexaAccounting(FrappeTestCase):
 		si.company = self.company
 		si.customer = cust.name
 		si.posting_date = today()
-		si.append("items", {"item_code": "x", "qty": 1, "rate": 3, "income_account": leaf})
+		si.append("items", {"item_code": "x", "qty": 1, "rate": 3, "income_account": leaf
+	})
 		si.insert(ignore_permissions=True)
 		si.submit()
 		amended = frappe.copy_doc(frappe.get_doc("Sales Invoice", si.name))
@@ -1981,7 +2072,8 @@ class TestOmnexaAccounting(FrappeTestCase):
 		si.company = self.company
 		si.customer = cust.name
 		si.posting_date = today()
-		si.append("items", {"item_code": "x", "qty": 1, "rate": 4, "income_account": leaf})
+		si.append("items", {"item_code": "x", "qty": 1, "rate": 4, "income_account": leaf
+	})
 		si.insert(ignore_permissions=True)
 		si.submit()
 		si.cancel()
@@ -2007,7 +2099,8 @@ class TestOmnexaAccounting(FrappeTestCase):
 		si.company = self.company
 		si.customer = cust.name
 		si.posting_date = today()
-		si.append("items", {"item_code": "x", "qty": 1, "rate": 11, "income_account": leaf})
+		si.append("items", {"item_code": "x", "qty": 1, "rate": 11, "income_account": leaf
+	})
 		si.insert(ignore_permissions=True)
 		si.submit()
 		pe = frappe.new_doc("Payment Entry")
@@ -2021,8 +2114,8 @@ class TestOmnexaAccounting(FrappeTestCase):
 			{
 				"reference_doctype": "Sales Invoice",
 				"reference_name": si.name,
-				"allocated_amount": si.grand_total,
-			},
+				"allocated_amount": si.grand_total
+	},
 		)
 		pe.insert(ignore_permissions=True)
 		pe.submit()
@@ -2044,7 +2137,8 @@ class TestOmnexaAccounting(FrappeTestCase):
 		pi.company = self.company
 		pi.supplier = supp.name
 		pi.posting_date = today()
-		pi.append("items", {"item_code": "x", "qty": 1, "rate": 8, "expense_account": exp})
+		pi.append("items", {"item_code": "x", "qty": 1, "rate": 8, "expense_account": exp
+	})
 		pi.insert(ignore_permissions=True)
 		pi.submit()
 		pi.cancel()
@@ -2066,8 +2160,10 @@ class TestOmnexaAccounting(FrappeTestCase):
 		je = frappe.new_doc("Journal Entry")
 		je.company = self.company
 		je.posting_date = today()
-		je.append("accounts", {"account": a1, "debit": 20, "credit": 0})
-		je.append("accounts", {"account": a2, "debit": 0, "credit": 20})
+		je.append("accounts", {"account": a1, "debit": 20, "credit": 0
+	})
+		je.append("accounts", {"account": a2, "debit": 0, "credit": 20
+	})
 		je.insert(ignore_permissions=True)
 		je.submit()
 		je.cancel()
@@ -2119,7 +2215,8 @@ class TestOmnexaAccounting(FrappeTestCase):
 		si.company = self.company
 		si.customer = cust.name
 		si.posting_date = today()
-		si.append("items", {"item_code": "x", "qty": 1, "rate": 15, "income_account": leaf})
+		si.append("items", {"item_code": "x", "qty": 1, "rate": 15, "income_account": leaf
+	})
 		si.insert(ignore_permissions=True)
 		si.submit()
 		pe = frappe.new_doc("Payment Entry")
@@ -2133,8 +2230,8 @@ class TestOmnexaAccounting(FrappeTestCase):
 			{
 				"reference_doctype": "Sales Invoice",
 				"reference_name": si.name,
-				"allocated_amount": 15,
-			},
+				"allocated_amount": 15
+	},
 		)
 		pe.insert(ignore_permissions=True)
 		pe.submit()
@@ -2170,7 +2267,8 @@ class TestOmnexaAccounting(FrappeTestCase):
 		original.company = self.company
 		original.customer = cust.name
 		original.posting_date = today()
-		original.append("items", {"item_code": "x", "qty": 1, "rate": 5, "income_account": leaf})
+		original.append("items", {"item_code": "x", "qty": 1, "rate": 5, "income_account": leaf
+	})
 		original.insert(ignore_permissions=True)
 		original.submit()
 		original.cancel()
@@ -2204,7 +2302,8 @@ class TestOmnexaAccounting(FrappeTestCase):
 		si.company = self.company
 		si.customer = cust.name
 		si.posting_date = today()
-		si.append("items", {"item_code": "x", "qty": 1, "rate": 20, "income_account": leaf})
+		si.append("items", {"item_code": "x", "qty": 1, "rate": 20, "income_account": leaf
+	})
 		si.insert(ignore_permissions=True)
 		si.submit()
 		pe = frappe.new_doc("Payment Entry")
@@ -2218,8 +2317,8 @@ class TestOmnexaAccounting(FrappeTestCase):
 			{
 				"reference_doctype": "Sales Invoice",
 				"reference_name": si.name,
-				"allocated_amount": 20,
-			},
+				"allocated_amount": 20
+	},
 		)
 		pe.insert(ignore_permissions=True)
 		pe.submit()

@@ -16,7 +16,8 @@ class Employee(Document):
 	def validate(self):
 		existing = frappe.db.get_value(
 			"Employee",
-			{"company": self.company, "employee_code": self.employee_code},
+			{"company": self.company, "employee_code": self.employee_code
+	},
 			"name",
 		)
 		if existing and (not self.name or existing != self.name):

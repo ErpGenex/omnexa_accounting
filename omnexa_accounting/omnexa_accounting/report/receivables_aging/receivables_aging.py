@@ -14,7 +14,8 @@ def execute(filters=None):
 		frappe.throw(_("Company is required."), title=_("Filters"))
 	as_of = getdate(filters.get("as_of_date") or frappe.utils.today())
 
-	params = {"company": filters.company, "as_of": as_of}
+	params = {"company": filters.company, "as_of": as_of
+	}
 
 	data = frappe.db.sql(
 		"""
@@ -51,9 +52,12 @@ def execute(filters=None):
 		row["outstanding"] = flt(row.get("outstanding"), 2)
 
 	columns = [
-		{"label": _("Customer"), "fieldname": "customer", "fieldtype": "Link", "options": "Customer", "width": 200},
-		{"label": _("Aging bucket"), "fieldname": "aging_bucket", "fieldtype": "Data", "width": 120},
-		{"label": _("Outstanding"), "fieldname": "outstanding", "fieldtype": "Currency", "width": 140},
+		{"label": _("Customer"), "fieldname": "customer", "fieldtype": "Link", "options": "Customer", "width": 200
+	},
+		{"label": _("Aging bucket"), "fieldname": "aging_bucket", "fieldtype": "Data", "width": 120
+	},
+		{"label": _("Outstanding"), "fieldname": "outstanding", "fieldtype": "Currency", "width": 140
+	},
 	]
 
 	message = _("Aging days from due date, or posting date if due date is empty. Open invoices only.")

@@ -72,8 +72,8 @@ def _group_by_year(rows, from_date=None, to_date=None):
 						"debit": year_debit,
 						"credit": year_credit,
 						"bold": 1,
-						"is_total_row": 1,
-					}
+						"is_total_row": 1
+	}
 				)
 			current_year = year
 			year_debit = 0.0
@@ -87,8 +87,8 @@ def _group_by_year(rows, from_date=None, to_date=None):
 					).format(from_date or "", to_date or ""),
 					"bold": 1,
 					"year_header": 1,
-					"page_break_before": 1 if grouped else 0,
-				}
+					"page_break_before": 1 if grouped else 0
+	}
 			)
 		row["fiscal_year"] = str(year)
 		year_debit += float(row.get("debit") or 0)
@@ -102,23 +102,34 @@ def _group_by_year(rows, from_date=None, to_date=None):
 				"debit": year_debit,
 				"credit": year_credit,
 				"bold": 1,
-				"is_total_row": 1,
-			}
+				"is_total_row": 1
+	}
 		)
 	return grouped
 
 
 def columns():
 	return [
-		{"label": _("Year"), "fieldname": "fiscal_year", "fieldtype": "Data", "width": 70},
-		{"label": _("Posting Date"), "fieldname": "posting_date", "fieldtype": "Date", "width": 100},
-		{"label": _("Voucher"), "fieldname": "voucher", "fieldtype": "Link", "options": "Journal Entry", "width": 130},
-		{"label": _("Reference"), "fieldname": "reference", "fieldtype": "Data", "width": 130},
-		{"label": _("Branch"), "fieldname": "branch", "fieldtype": "Link", "options": "Branch", "width": 120},
-		{"label": _("Account"), "fieldname": "account", "fieldtype": "Link", "options": "GL Account", "width": 170},
-		{"label": _("Party Type"), "fieldname": "party_type", "fieldtype": "Data", "width": 100},
-		{"label": _("Party"), "fieldname": "party", "fieldtype": "Data", "width": 130},
-		{"label": _("Debit"), "fieldname": "debit", "fieldtype": "Currency", "width": 120},
-		{"label": _("Credit"), "fieldname": "credit", "fieldtype": "Currency", "width": 120},
-		{"label": _("Remarks"), "fieldname": "remarks", "fieldtype": "Data", "width": 220},
+		{"label": _("Year"), "fieldname": "fiscal_year", "fieldtype": "Data", "width": 70
+	},
+		{"label": _("Posting Date"), "fieldname": "posting_date", "fieldtype": "Date", "width": 100
+	},
+		{"label": _("Voucher"), "fieldname": "voucher", "fieldtype": "Link", "options": "Journal Entry", "width": 130
+	},
+		{"label": _("Reference"), "fieldname": "reference", "fieldtype": "Data", "width": 130
+	},
+		{"label": _("Branch"), "fieldname": "branch", "fieldtype": "Link", "options": "Branch", "width": 120
+	},
+		{"label": _("Account"), "fieldname": "account", "fieldtype": "Link", "options": "GL Account", "width": 170
+	},
+		{"label": _("Party Type"), "fieldname": "party_type", "fieldtype": "Data", "width": 100
+	},
+		{"label": _("Party"), "fieldname": "party", "fieldtype": "Data", "width": 130
+	},
+		{"label": _("Debit"), "fieldname": "debit", "fieldtype": "Currency", "width": 120
+	},
+		{"label": _("Credit"), "fieldname": "credit", "fieldtype": "Currency", "width": 120
+	},
+		{"label": _("Remarks"), "fieldname": "remarks", "fieldtype": "Data", "width": 220
+	},
 	]

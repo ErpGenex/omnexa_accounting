@@ -24,11 +24,16 @@ def execute(filters=None):
 
 	columns = insert_account_name_ar_column(
 		[
-			{"label": _("Year"), "fieldname": "fiscal_year", "fieldtype": "Data", "width": 70},
-			{"label": _("Section"), "fieldname": "section", "fieldtype": "Data", "width": 140},
-			{"label": _("Account"), "fieldname": "account", "fieldtype": "Data", "width": 180},
-			{"label": _("Account Name"), "fieldname": "account_name", "fieldtype": "Data", "width": 220},
-			{"label": _("Balance"), "fieldname": "balance", "fieldtype": "Currency", "width": 140},
+			{"label": _("Year"), "fieldname": "fiscal_year", "fieldtype": "Data", "width": 70
+	},
+			{"label": _("Section"), "fieldname": "section", "fieldtype": "Data", "width": 140
+	},
+			{"label": _("Account"), "fieldname": "account", "fieldtype": "Data", "width": 180
+	},
+			{"label": _("Account Name"), "fieldname": "account_name", "fieldtype": "Data", "width": 220
+	},
+			{"label": _("Balance"), "fieldname": "balance", "fieldtype": "Currency", "width": 140
+	},
 		]
 	)
 
@@ -50,8 +55,8 @@ def execute(filters=None):
 				"account_name": _("As at {0}").format(year_filters.to_date),
 				"bold": 1,
 				"year_header": 1,
-				"page_break_before": 1 if data else 0,
-			}
+				"page_break_before": 1 if data else 0
+	}
 		)
 		for row in assets + liabilities + equity:
 			row["fiscal_year"] = str(year)
@@ -64,24 +69,24 @@ def execute(filters=None):
 					"account_name": _("Total Assets"),
 					"balance": asset_total,
 					"bold": 1,
-					"is_total_row": 1,
-				},
+					"is_total_row": 1
+	},
 				{
 					"fiscal_year": str(year),
 					"section": _("Liabilities"),
 					"account_name": _("Total Liabilities"),
 					"balance": liability_total,
 					"bold": 1,
-					"is_total_row": 1,
-				},
+					"is_total_row": 1
+	},
 				{
 					"fiscal_year": str(year),
 					"section": _("Equity"),
 					"account_name": _("Total Equity"),
 					"balance": equity_total,
 					"bold": 1,
-					"is_total_row": 1,
-				},
+					"is_total_row": 1
+	},
 			]
 		)
 		chart_assets, chart_liabilities, chart_equity = asset_total, liability_total, equity_total
@@ -155,8 +160,8 @@ def _rows_for_type(filters, account_type, section_label, consolidation_view=Fals
 				"account": account_display,
 				"account_name": account_name,
 				"account_name_ar": row.account_name_ar,
-				"balance": balance,
-			}
+				"balance": balance
+	}
 		)
 	if consolidation_view:
 		data = [
@@ -164,8 +169,8 @@ def _rows_for_type(filters, account_type, section_label, consolidation_view=Fals
 				"section": _(section_label),
 				"account": k,
 				"account_name": _("Consolidated Group"),
-				"balance": v,
-			}
+				"balance": v
+	}
 			for k, v in sorted(aggregate.items())
 		]
 	return data

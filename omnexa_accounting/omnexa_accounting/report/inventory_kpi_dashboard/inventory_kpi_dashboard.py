@@ -13,7 +13,8 @@ def execute(filters=None):
 
 	items = frappe.get_all(
 		"Item",
-		filters={"company": company, "is_stock_item": 1, "disabled": 0},
+		filters={"company": company, "is_stock_item": 1, "disabled": 0
+	},
 		fields=["name", "item_code", "item_name", "current_stock_qty", "reorder_level", "safety_stock"],
 		limit_page_length=5000,
 	)
@@ -42,27 +43,36 @@ def execute(filters=None):
 			dead_stock += 1
 
 	columns = [
-		{"label": _("KPI"), "fieldname": "kpi", "fieldtype": "Data", "width": 220},
-		{"label": _("Value"), "fieldname": "value", "fieldtype": "Float", "width": 180},
+		{"label": _("KPI"), "fieldname": "kpi", "fieldtype": "Data", "width": 220
+	},
+		{"label": _("Value"), "fieldname": "value", "fieldtype": "Float", "width": 180
+	},
 	]
 	data = [
-		{"kpi": "Total Stock Items", "value": total_items},
-		{"kpi": "Total On-hand Qty", "value": total_qty},
-		{"kpi": "Low Stock Items", "value": low_stock},
-		{"kpi": "Potential Dead Stock Items", "value": dead_stock},
+		{"kpi": "Total Stock Items", "value": total_items
+	},
+		{"kpi": "Total On-hand Qty", "value": total_qty
+	},
+		{"kpi": "Low Stock Items", "value": low_stock
+	},
+		{"kpi": "Potential Dead Stock Items", "value": dead_stock
+	},
 	]
 
 	chart = {
 		"data": {
 			"labels": [d["kpi"] for d in data],
-			"datasets": [{"name": "Inventory KPIs", "values": [d["value"] for d in data]}],
-		},
-		"type": "bar",
+			"datasets": [{"name": "Inventory KPIs", "values": [d["value"] for d in data]}]
+	},
+		"type": "bar"
 	}
 	report_summary = [
-		{"label": "Total Items", "value": total_items, "indicator": "Blue"},
-		{"label": "Low Stock", "value": low_stock, "indicator": "Orange" if low_stock else "Green"},
-		{"label": "Dead Stock", "value": dead_stock, "indicator": "Red" if dead_stock else "Green"},
+		{"label": "Total Items", "value": total_items, "indicator": "Blue"
+	},
+		{"label": "Low Stock", "value": low_stock, "indicator": "Orange" if low_stock else "Green"
+	},
+		{"label": "Dead Stock", "value": dead_stock, "indicator": "Red" if dead_stock else "Green"
+	},
 	]
 	return columns, data, None, chart, report_summary
 

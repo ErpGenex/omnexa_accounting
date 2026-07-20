@@ -36,7 +36,8 @@ def post_sales_invoice_stock(sales_invoice) -> str | None:
 		qty = flt(row.qty)
 		if qty <= 0:
 			continue
-		items.append({"item": row.item, "item_code": row.item_code, "s_warehouse": warehouse, "qty": qty, "rate": row.rate})
+		items.append({"item": row.item, "item_code": row.item_code, "s_warehouse": warehouse, "qty": qty, "rate": row.rate
+	})
 	if not items:
 		return None
 
@@ -77,7 +78,8 @@ def post_purchase_invoice_stock(purchase_invoice) -> str | None:
 		qty = flt(row.qty)
 		if qty <= 0:
 			continue
-		items.append({"item": row.item, "item_code": row.item_code, "t_warehouse": warehouse, "qty": qty, "rate": row.rate})
+		items.append({"item": row.item, "item_code": row.item_code, "t_warehouse": warehouse, "qty": qty, "rate": row.rate
+	})
 	if not items:
 		return None
 

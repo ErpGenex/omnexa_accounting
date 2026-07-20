@@ -25,7 +25,8 @@ def execute(filters=None):
 		  AND IFNULL(is_stock_item,0)=1
 		  AND IFNULL(disabled,0)=0
 		""",
-		{"company": filters.company},
+		{"company": filters.company
+	},
 		as_dict=True,
 	)
 	# Derive proxy value from latest known item rate in stock entries.
@@ -60,14 +61,22 @@ def execute(filters=None):
 			r["abc_class"] = "C"
 
 	columns = [
-		{"label": _("Item"), "fieldname": "item", "fieldtype": "Link", "options": "Item", "width": 150},
-		{"label": _("Item Code"), "fieldname": "item_code", "fieldtype": "Data", "width": 130},
-		{"label": _("Item Name"), "fieldname": "item_name", "fieldtype": "Data", "width": 220},
-		{"label": _("Current Qty"), "fieldname": "current_stock_qty", "fieldtype": "Float", "width": 110},
-		{"label": _("Last Rate"), "fieldname": "last_rate", "fieldtype": "Currency", "width": 100},
-		{"label": _("Stock Value"), "fieldname": "stock_value", "fieldtype": "Currency", "width": 120},
-		{"label": _("Cumulative %"), "fieldname": "cumulative_pct", "fieldtype": "Percent", "width": 110},
-		{"label": _("ABC Class"), "fieldname": "abc_class", "fieldtype": "Data", "width": 80},
+		{"label": _("Item"), "fieldname": "item", "fieldtype": "Link", "options": "Item", "width": 150
+	},
+		{"label": _("Item Code"), "fieldname": "item_code", "fieldtype": "Data", "width": 130
+	},
+		{"label": _("Item Name"), "fieldname": "item_name", "fieldtype": "Data", "width": 220
+	},
+		{"label": _("Current Qty"), "fieldname": "current_stock_qty", "fieldtype": "Float", "width": 110
+	},
+		{"label": _("Last Rate"), "fieldname": "last_rate", "fieldtype": "Currency", "width": 100
+	},
+		{"label": _("Stock Value"), "fieldname": "stock_value", "fieldtype": "Currency", "width": 120
+	},
+		{"label": _("Cumulative %"), "fieldname": "cumulative_pct", "fieldtype": "Percent", "width": 110
+	},
+		{"label": _("ABC Class"), "fieldname": "abc_class", "fieldtype": "Data", "width": 80
+	},
 	]
 	chart = auto_chart_for_columns(rows, columns)
 	return columns, rows, None, chart

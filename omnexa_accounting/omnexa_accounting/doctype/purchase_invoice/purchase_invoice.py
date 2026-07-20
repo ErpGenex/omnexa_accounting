@@ -277,7 +277,8 @@ class PurchaseInvoice(Document):
 	def _get_matching_approval_rule(self):
 		rules = frappe.get_all(
 			"Purchase Approval Rule",
-			filters={"company": self.company, "is_active": 1},
+			filters={"company": self.company, "is_active": 1
+	},
 			fields=["name", "approver_role", "min_amount", "max_amount", "require_three_way_match"],
 			order_by="min_amount asc",
 		)

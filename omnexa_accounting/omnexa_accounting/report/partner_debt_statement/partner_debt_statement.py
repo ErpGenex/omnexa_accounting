@@ -42,17 +42,22 @@ def execute(filters=None):
 		r["elham_debt"] = r.pop("debt_year")
 
 	columns = [
-		{"label": _("Year"), "fieldname": "year", "fieldtype": "Int", "width": 90},
-		{"label": _("Total Expenses"), "fieldname": "total_expenses", "fieldtype": "Currency", "width": 140},
+		{"label": _("Year"), "fieldname": "year", "fieldtype": "Int", "width": 90
+	},
+		{"label": _("Total Expenses"), "fieldname": "total_expenses", "fieldtype": "Currency", "width": 140
+	},
 		{
 			"label": _("{0} Share").format(labels["secondary_partner_name"]),
 			"fieldname": "elham_share",
 			"fieldtype": "Currency",
-			"width": 170,
-		},
-		{"label": _("{0} Paid").format(labels["secondary_partner_name"]), "fieldname": "elham_paid", "fieldtype": "Currency", "width": 140},
-		{"label": _("{0} Debt (year)").format(labels["secondary_partner_name"]), "fieldname": "elham_debt", "fieldtype": "Currency", "width": 170},
-		{"label": _("Cumulative Debt"), "fieldname": "cumulative_debt", "fieldtype": "Currency", "width": 140},
+			"width": 170
+	},
+		{"label": _("{0} Paid").format(labels["secondary_partner_name"]), "fieldname": "elham_paid", "fieldtype": "Currency", "width": 140
+	},
+		{"label": _("{0} Debt (year)").format(labels["secondary_partner_name"]), "fieldname": "elham_debt", "fieldtype": "Currency", "width": 170
+	},
+		{"label": _("Cumulative Debt"), "fieldname": "cumulative_debt", "fieldtype": "Currency", "width": 140
+	},
 	]
 
 	if compare_year:
@@ -68,18 +73,23 @@ def execute(filters=None):
 			r["pct_change"] = (flt(r["diff"]) / base * 100.0) if base else None
 		columns.extend(
 			[
-				{"label": _("Compare Year"), "fieldname": "compare_year", "fieldtype": "Int", "width": 110},
-				{"label": _("Compare Cumulative"), "fieldname": "compare_debt", "fieldtype": "Currency", "width": 150},
-				{"label": _("Difference"), "fieldname": "diff", "fieldtype": "Currency", "width": 130},
-				{"label": _("Change %"), "fieldname": "pct_change", "fieldtype": "Percent", "width": 110},
+				{"label": _("Compare Year"), "fieldname": "compare_year", "fieldtype": "Int", "width": 110
+	},
+				{"label": _("Compare Cumulative"), "fieldname": "compare_debt", "fieldtype": "Currency", "width": 150
+	},
+				{"label": _("Difference"), "fieldname": "diff", "fieldtype": "Currency", "width": 130
+	},
+				{"label": _("Change %"), "fieldname": "pct_change", "fieldtype": "Percent", "width": 110
+	},
 			]
 		)
 
 	chart = {
-		"data": {"labels": [str(r["year"]) for r in rows], "datasets": [{"name": _("Cumulative Debt"), "values": [r["cumulative_debt"] for r in rows]}]},
+		"data": {"labels": [str(r["year"]) for r in rows], "datasets": [{"name": _("Cumulative Debt"), "values": [r["cumulative_debt"] for r in rows]}]
+	},
 		"type": "line",
 		"title": _("Partner Debt — Cumulative"),
-		"height": 260,
+		"height": 260
 	}
 	return columns, rows, None, chart
 

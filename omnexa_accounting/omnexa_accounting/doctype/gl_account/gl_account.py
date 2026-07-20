@@ -40,7 +40,8 @@ def _next_number_from_mask(mask: str, company: str) -> str:
 	length = len(mask)
 	rows = frappe.get_all(
 		"GL Account",
-		filters={"company": company},
+		filters={"company": company
+	},
 		fields=["account_number"],
 		limit_page_length=200000,
 	)
@@ -74,7 +75,8 @@ class GLAccount(NestedSet):
 		self._validate_working_capital_bucket()
 		self._validate_stock_valuation_flag()
 		self._validate_frozen_guardrails()
-		filters = {"company": self.company, "account_number": self.account_number}
+		filters = {"company": self.company, "account_number": self.account_number
+	}
 		if self.name:
 			filters["name"] = ["!=", self.name]
 		if frappe.get_all("GL Account", filters=filters, limit=1):
@@ -300,4 +302,5 @@ def create_gl_account(payload: dict):
 		frappe.throw(_("payload must be a JSON object"))
 	doc = frappe.get_doc({"doctype": "GL Account", **payload})
 	doc.insert(ignore_permissions=True)
-	return {"ok": True, "name": doc.name, "account_number": doc.account_number}
+	return {"ok": True, "name": doc.name, "account_number": doc.account_number
+	}

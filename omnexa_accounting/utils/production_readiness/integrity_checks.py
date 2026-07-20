@@ -19,7 +19,8 @@ def run_production_integrity_checks(company: str | None = None) -> dict:
 	checks = []
 	for comp in companies:
 		checks.extend(_checks_for_company(comp))
-	return {"ok": all(c["ok"] for c in checks), "checks": checks}
+	return {"ok": all(c["ok"] for c in checks), "checks": checks
+	}
 
 
 def _checks_for_company(company: str) -> list[dict]:
@@ -38,8 +39,8 @@ def _checks_for_company(company: str) -> list[dict]:
 			"company": company,
 			"name": "company_gl_defaults",
 			"ok": not missing_defaults,
-			"details": missing_defaults or "all mapped",
-		}
+			"details": missing_defaults or "all mapped"
+	}
 	)
 
 	vat = resolve_vat_accounts(company)
@@ -48,17 +49,18 @@ def _checks_for_company(company: str) -> list[dict]:
 			"company": company,
 			"name": "vat_accounts_resolved",
 			"ok": bool(vat.get("input_vat_gl") and vat.get("output_vat_gl")),
-			"details": vat,
-		}
+			"details": vat
+	}
 	)
 
-	je_open = frappe.db.count("Journal Entry", {"company": company, "docstatus": 0})
+	je_open = frappe.db.count("Journal Entry", {"company": company, "docstatus": 0
+	})
 	out.append(
 		{
 			"company": company,
 			"name": "no_draft_journal_entries",
 			"ok": je_open == 0,
-			"details": f"draft_journal_entries={je_open}",
-		}
+			"details": f"draft_journal_entries={je_open}"
+	}
 	)
 	return out

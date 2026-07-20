@@ -59,7 +59,8 @@ def get_primary_liable_partner(doc: CompanyPartnerLegalSetup | frappe._dict) -> 
 def get_setup_for_company(company: str) -> dict:
 	"""Return partner legal setup + resolved report filter defaults."""
 	if not frappe.db.exists("Company Partner Legal Setup", company):
-		return {"found": False, "company": company}
+		return {"found": False, "company": company
+	}
 	doc = frappe.get_doc("Company Partner Legal Setup", company)
 	funder = get_funding_partner(doc)
 	liable = get_primary_liable_partner(doc)
@@ -77,11 +78,11 @@ def get_setup_for_company(company: str) -> dict:
 				"ownership_percent": flt(row.ownership_percent),
 				"is_funding_partner": row.is_funding_partner,
 				"partner_current_account": row.partner_current_account,
-				"due_from_partner_account": row.due_from_partner_account,
-			}
+				"due_from_partner_account": row.due_from_partner_account
+	}
 			for row in doc.partners or []
 		],
 		"funding_partner": funder.partner_name if funder else None,
 		"liable_partner": liable.partner_name if liable else None,
-		"liable_ownership_percent": flt(liable.ownership_percent) if liable else 0,
+		"liable_ownership_percent": flt(liable.ownership_percent) if liable else 0
 	}

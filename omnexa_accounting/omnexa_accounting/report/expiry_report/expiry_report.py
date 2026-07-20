@@ -12,7 +12,8 @@ def execute(filters=None):
 	if not filters.get("company"):
 		frappe.throw(_("Company is required."), title=_("Filters"))
 
-	params = {"company": filters.company}
+	params = {"company": filters.company
+	}
 	date_filter_se = ""
 	date_filter_pr = ""
 	if filters.get("from_date"):
@@ -67,19 +68,26 @@ def execute(filters=None):
 	)
 
 	columns = [
-		{"label": _("Batch No."), "fieldname": "batch_no", "fieldtype": "Data", "width": 140},
-		{"label": _("Item Code"), "fieldname": "item_code", "fieldtype": "Data", "width": 140},
-		{"label": _("Item"), "fieldname": "item", "fieldtype": "Link", "options": "Item", "width": 160},
-		{"label": _("Company"), "fieldname": "company", "fieldtype": "Link", "options": "Company", "width": 140},
-		{"label": _("Posting Date"), "fieldname": "posting_date", "fieldtype": "Date", "width": 110},
-		{"label": _("Voucher"), "fieldname": "voucher_no", "fieldtype": "Data", "width": 160},
-		{"label": _("Source"), "fieldname": "source", "fieldtype": "Data", "width": 130},
+		{"label": _("Batch No."), "fieldname": "batch_no", "fieldtype": "Data", "width": 140
+	},
+		{"label": _("Item Code"), "fieldname": "item_code", "fieldtype": "Data", "width": 140
+	},
+		{"label": _("Item"), "fieldname": "item", "fieldtype": "Link", "options": "Item", "width": 160
+	},
+		{"label": _("Company"), "fieldname": "company", "fieldtype": "Link", "options": "Company", "width": 140
+	},
+		{"label": _("Posting Date"), "fieldname": "posting_date", "fieldtype": "Date", "width": 110
+	},
+		{"label": _("Voucher"), "fieldname": "voucher_no", "fieldtype": "Data", "width": 160
+	},
+		{"label": _("Source"), "fieldname": "source", "fieldtype": "Data", "width": 130
+	},
 		{
 			"label": _("Expiry Date"),
 			"fieldname": "expiry_date",
 			"fieldtype": "Date",
-			"width": 110,
-		},
+			"width": 110
+	},
 	]
 	chart = auto_chart_for_columns(rows, columns)
 	return columns, rows, None, chart

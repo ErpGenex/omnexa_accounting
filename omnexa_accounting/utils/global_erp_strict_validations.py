@@ -12,8 +12,8 @@ def _company_chain_flags(company: str | None) -> dict:
 			"strict": False,
 			"require_sales_order": False,
 			"require_delivery_note_stock": False,
-			"require_goods_receipt_stock": False,
-		}
+			"require_goods_receipt_stock": False
+	}
 	row = frappe.db.get_value(
 		"Company",
 		company,
@@ -29,8 +29,8 @@ def _company_chain_flags(company: str | None) -> dict:
 			"strict": False,
 			"require_sales_order": False,
 			"require_delivery_note_stock": False,
-			"require_goods_receipt_stock": False,
-		}
+			"require_goods_receipt_stock": False
+	}
 	return {
 		"strict": True,
 		"require_sales_order": bool(row.global_erp_require_sales_order_on_sales_invoice),
@@ -38,7 +38,7 @@ def _company_chain_flags(company: str | None) -> dict:
 			row.global_erp_require_delivery_note_on_stock_invoice
 		),
 		# Purchase side: still required when strict (no separate switch yet)
-		"require_goods_receipt_stock": True,
+		"require_goods_receipt_stock": True
 	}
 
 

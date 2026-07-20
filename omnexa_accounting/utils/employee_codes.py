@@ -46,7 +46,8 @@ def assign_employee_code_if_missing(doc) -> None:
 		candidate = f"{CODE_PREFIX}{n:06d}"
 		exists = frappe.db.get_value(
 			"Employee",
-			{"company": company, "employee_code": candidate},
+			{"company": company, "employee_code": candidate
+	},
 			"name",
 		)
 		if not exists or exists == doc.get("name"):
@@ -58,7 +59,8 @@ def assign_employee_code_if_missing(doc) -> None:
 
 def backfill_missing_employee_codes(limit: int = 10000) -> dict:
 	if not frappe.db.exists("DocType", "Employee"):
-		return {"ok": False, "skipped": True}
+		return {"ok": False, "skipped": True
+	}
 	updated = 0
 	while updated < limit:
 		rows = frappe.db.sql(
@@ -82,7 +84,8 @@ def backfill_missing_employee_codes(limit: int = 10000) -> dict:
 				candidate = f"{CODE_PREFIX}{n:06d}"
 				exists = frappe.db.get_value(
 					"Employee",
-					{"company": company, "employee_code": candidate},
+					{"company": company, "employee_code": candidate
+	},
 					"name",
 				)
 				if not exists or exists == name:
@@ -100,4 +103,5 @@ def backfill_missing_employee_codes(limit: int = 10000) -> dict:
 		WHERE employee_code IS NULL OR employee_code = ''
 		"""
 	)[0][0]
-	return {"ok": True, "updated": updated, "remaining_without_code": int(remaining or 0)}
+	return {"ok": True, "updated": updated, "remaining_without_code": int(remaining or 0)
+	}

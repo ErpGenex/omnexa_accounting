@@ -10,10 +10,12 @@ def get_invoice_posting_journal_entry(doctype: str, docname: str, company: str, 
 	"""Return the auto-posting Journal Entry name for an invoice, if found."""
 	if not (doctype and docname and company):
 		return None
-	if not frappe.db.exists("Journal Entry", {"company": company}):
+	if not frappe.db.exists("Journal Entry", {"company": company
+	}):
 		return None
 	ref = f"{doctype}:{docname}"
-	filters = {"company": company, "reference": ref}
+	filters = {"company": company, "reference": ref
+	}
 	if branch and frappe.get_meta("Journal Entry").has_field("branch"):
 		filters["branch"] = branch
 	return frappe.db.get_value("Journal Entry", filters, "name")
@@ -32,7 +34,8 @@ def get_gl_account_balance(
 		frappe.throw(_("Company and Account are required."), title=_("Filters"))
 
 	conditions = ["je.company=%(company)s", "je.docstatus=1", "jea.account=%(account)s"]
-	params = {"company": company, "account": account}
+	params = {"company": company, "account": account
+	}
 
 	if branch and frappe.get_meta("Journal Entry").has_field("branch"):
 		conditions.append("je.branch=%(branch)s")
@@ -59,5 +62,6 @@ def get_gl_account_balance(
 	r = row[0] if row else {}
 	debit = float(r.get("debit") or 0)
 	credit = float(r.get("credit") or 0)
-	return {"ok": True, "debit": debit, "credit": credit, "balance": debit - credit}
+	return {"ok": True, "debit": debit, "credit": credit, "balance": debit - credit
+	}
 

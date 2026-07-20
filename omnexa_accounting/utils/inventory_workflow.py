@@ -14,8 +14,8 @@ ACTION_CANCEL = "Cancel"
 
 WORKFLOW_BY_DOCTYPE = {
 	"Stock Entry": "Omnexa Chain - Stock Entry",
-	"Stock Reconciliation": "Omnexa Chain - Stock Reconciliation",
-}
+	"Stock Reconciliation": "Omnexa Chain - Stock Reconciliation"
+	}
 
 
 def _ensure_workflow_state(workflow_state_name: str) -> None:
@@ -60,8 +60,8 @@ def _build_workflow_doc(doctype: str, workflow_name: str, locked_role: str):
 			{
 				"state": state,
 				"doc_status": doc_status,
-				"allow_edit": allow_edit,
-			},
+				"allow_edit": allow_edit
+	},
 		)
 
 	for role in roles:
@@ -72,8 +72,8 @@ def _build_workflow_doc(doctype: str, workflow_name: str, locked_role: str):
 				"action": ACTION_SUBMIT,
 				"next_state": STATE_SUBMITTED,
 				"allowed": role,
-				"allow_self_approval": 1,
-			},
+				"allow_self_approval": 1
+	},
 		)
 		wf.append(
 			"transitions",
@@ -82,15 +82,16 @@ def _build_workflow_doc(doctype: str, workflow_name: str, locked_role: str):
 				"action": ACTION_CANCEL,
 				"next_state": STATE_CANCELLED,
 				"allowed": role,
-				"allow_self_approval": 1,
-			},
+				"allow_self_approval": 1
+	},
 		)
 
 	return wf
 
 
 def _repair_workflow_allow_edit(workflow_name: str, locked_role: str) -> None:
-	name = frappe.db.get_value("Workflow", {"workflow_name": workflow_name}, "name")
+	name = frappe.db.get_value("Workflow", {"workflow_name": workflow_name
+	}, "name")
 	if not name:
 		return
 	wf = frappe.get_doc("Workflow", name)
@@ -119,7 +120,8 @@ def ensure_inventory_workflows() -> None:
 	for doctype, workflow_name in WORKFLOW_BY_DOCTYPE.items():
 		if not frappe.db.exists("DocType", doctype):
 			continue
-		if frappe.db.exists("Workflow", {"workflow_name": workflow_name}):
+		if frappe.db.exists("Workflow", {"workflow_name": workflow_name
+	}):
 			_repair_workflow_allow_edit(workflow_name, locked_role)
 			continue
 		wf = _build_workflow_doc(doctype, workflow_name, locked_role)

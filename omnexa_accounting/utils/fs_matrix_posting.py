@@ -21,8 +21,7 @@ ROLE_COMPANY_FIELDS: dict[str, tuple[str, ...]] = {
 	"lease_liability": ("default_trade_payable_gl",),
 	"rou_asset": ("default_inventory_gl",),
 	"termination_pl": ("default_opex_gl", "default_cogs_gl"),
-	"cash_account_role": ("default_cash_gl", "default_bank_gl"),
-}
+	"cash_account_role": ("default_cash_gl", "default_bank_gl")}
 
 
 def is_fs_live_posting_enabled() -> bool:
@@ -52,28 +51,32 @@ def _fallback_gl_for_role(company: str, role: str) -> str | None:
 	if role in ("bank", "cash_account_role"):
 		return frappe.db.get_value(
 			"GL Account",
-			{"company": company, "account_type": "Bank", "is_group": 0},
+			{"company": company, "account_type": "Bank", "is_group": 0
+	},
 			"name",
 			order_by="name asc",
 		)
 	if role in ("rou_asset", "loan_receivable"):
 		return frappe.db.get_value(
 			"GL Account",
-			{"company": company, "account_type": "Asset", "is_group": 0},
+			{"company": company, "account_type": "Asset", "is_group": 0
+	},
 			"name",
 			order_by="name asc",
 		)
 	if role == "lease_liability":
 		return frappe.db.get_value(
 			"GL Account",
-			{"company": company, "account_type": "Liability", "is_group": 0},
+			{"company": company, "account_type": "Liability", "is_group": 0
+	},
 			"name",
 			order_by="name asc",
 		)
 	if role == "termination_pl":
 		return frappe.db.get_value(
 			"GL Account",
-			{"company": company, "account_type": "Expense", "is_group": 0},
+			{"company": company, "account_type": "Expense", "is_group": 0
+	},
 			"name",
 			order_by="name asc",
 		)
@@ -93,7 +96,8 @@ def matrix_lines_to_je_lines(company: str, matrix_lines: list[dict]) -> list[dic
 		credit = flt(row.get("credit"))
 		if debit <= 0 and credit <= 0:
 			continue
-		je_lines.append({"account": account, "debit": debit, "credit": credit})
+		je_lines.append({"account": account, "debit": debit, "credit": credit
+	})
 	if missing:
 		frappe.throw(
 			_("Missing GL mapping for roles: {0}. Set Company defaults or omnexa_fs_gl_role_accounts in site_config.").format(
@@ -121,7 +125,8 @@ def post_fs_matrix_gl(
 	remarks: str | None = None,
 ) -> dict:
 	"""Create Journal Entry from FS matrix preview lines when feature flag is ON."""
-	preview = {"scenario": scenario, "lines": matrix_lines, "live_posting_enabled": is_fs_live_posting_enabled()}
+	preview = {"scenario": scenario, "lines": matrix_lines, "live_posting_enabled": is_fs_live_posting_enabled()
+	}
 	if not is_fs_live_posting_enabled():
 		return {"posted": False, "reason": "feature_flag_off", **preview}
 

@@ -59,8 +59,8 @@ def execute():
 			"posting_type": posting_type,
 			"allow_direct_posting": 0 if posting_type == "Header" else 1,
 			"cash_flow_section": cash_flow_section,
-			"working_capital_bucket": wc,
-		}
+			"working_capital_bucket": wc
+	}
 		frappe.db.set_value("GL Account", row.name, values, update_modified=False)
 		updated += 1
 
@@ -68,6 +68,6 @@ def execute():
 		{
 			"doctype": "Error Log",
 			"method": "omnexa_accounting.patches.v1_0.enhance_gl_account_ifrs_schema",
-			"error": f"GL Account IFRS migration completed. Updated rows: {updated}",
-		}
+			"error": f"GL Account IFRS migration completed. Updated rows: {updated}"
+	}
 	).insert(ignore_permissions=True)

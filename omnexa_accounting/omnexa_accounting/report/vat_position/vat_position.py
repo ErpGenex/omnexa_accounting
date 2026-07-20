@@ -21,13 +21,20 @@ def execute(filters=None):
 	output_acc = resolved.get("output_vat_gl")
 
 	columns = [
-		{"label": _("VAT Side"), "fieldname": "vat_side", "fieldtype": "Data", "width": 160},
-		{"label": _("Account"), "fieldname": "account", "fieldtype": "Link", "options": "GL Account", "width": 180},
-		{"label": _("Account Name"), "fieldname": "account_name", "fieldtype": "Data", "width": 220},
-		{"label": _("Resolution"), "fieldname": "resolution", "fieldtype": "Data", "width": 180},
-		{"label": _("Opening Balance"), "fieldname": "opening_balance", "fieldtype": "Currency", "width": 140},
-		{"label": _("Period Movement"), "fieldname": "period_movement", "fieldtype": "Currency", "width": 140},
-		{"label": _("Closing Balance"), "fieldname": "closing_balance", "fieldtype": "Currency", "width": 140},
+		{"label": _("VAT Side"), "fieldname": "vat_side", "fieldtype": "Data", "width": 160
+	},
+		{"label": _("Account"), "fieldname": "account", "fieldtype": "Link", "options": "GL Account", "width": 180
+	},
+		{"label": _("Account Name"), "fieldname": "account_name", "fieldtype": "Data", "width": 220
+	},
+		{"label": _("Resolution"), "fieldname": "resolution", "fieldtype": "Data", "width": 180
+	},
+		{"label": _("Opening Balance"), "fieldname": "opening_balance", "fieldtype": "Currency", "width": 140
+	},
+		{"label": _("Period Movement"), "fieldname": "period_movement", "fieldtype": "Currency", "width": 140
+	},
+		{"label": _("Closing Balance"), "fieldname": "closing_balance", "fieldtype": "Currency", "width": 140
+	},
 	]
 	data = _build_rows(filters, input_acc, output_acc, resolved)
 	msg = _("Accounts resolved via Company defaults → CoA account_number → name patterns. Sources shown per row.")
@@ -40,8 +47,8 @@ def _build_rows(filters, input_acc, output_acc, resolved):
 			"vat_side": _("VAT Position"),
 			"account_name": _("Input / Output VAT Position"),
 			"bold": 1,
-			"year_header": 1,
-		}
+			"year_header": 1
+	}
 	]
 	input_open, input_mov, input_close = _calc_account_balance(filters, input_acc)
 	output_open, output_mov, output_close = _calc_account_balance(filters, output_acc)
@@ -54,8 +61,8 @@ def _build_rows(filters, input_acc, output_acc, resolved):
 			"resolution": resolved.get("input_source"),
 			"opening_balance": input_open,
 			"period_movement": input_mov,
-			"closing_balance": input_close,
-		}
+			"closing_balance": input_close
+	}
 	)
 	rows.append(
 		{
@@ -65,8 +72,8 @@ def _build_rows(filters, input_acc, output_acc, resolved):
 			"resolution": resolved.get("output_source"),
 			"opening_balance": output_open,
 			"period_movement": output_mov,
-			"closing_balance": output_close,
-		}
+			"closing_balance": output_close
+	}
 	)
 
 	net_open = output_open - input_open
@@ -80,8 +87,8 @@ def _build_rows(filters, input_acc, output_acc, resolved):
 			"period_movement": net_mov,
 			"closing_balance": net_close,
 			"bold": 1,
-			"is_total_row": 1,
-		}
+			"is_total_row": 1
+	}
 	)
 	return rows
 

@@ -51,12 +51,20 @@ def execute(filters=None):
 
 def _columns():
 	return [
-		{"label": _("Voucher"), "fieldname": "voucher", "fieldtype": "Link", "options": "Stock Entry", "width": 140},
-		{"label": _("Posting Date"), "fieldname": "posting_date", "fieldtype": "Date", "width": 100},
-		{"label": _("Purpose"), "fieldname": "purpose", "fieldtype": "Data", "width": 130},
-		{"label": _("From Warehouse"), "fieldname": "from_warehouse", "fieldtype": "Link", "options": "Warehouse", "width": 140},
-		{"label": _("To Warehouse"), "fieldname": "to_warehouse", "fieldtype": "Link", "options": "Warehouse", "width": 140},
-		{"label": _("Total Qty"), "fieldname": "total_qty", "fieldtype": "Float", "width": 90},
-		{"label": _("Branch"), "fieldname": "branch", "fieldtype": "Link", "options": "Branch", "width": 120},
-		{"label": _("DocStatus"), "fieldname": "docstatus", "fieldtype": "Int", "width": 80},
+		{"label": _("Voucher"), "fieldname": "voucher", "fieldtype": "Link", "options": "Stock Entry", "width": 140
+	},
+		{"label": _("Posting Date"), "fieldname": "posting_date", "fieldtype": "Date", "width": 100
+	},
+		{"label": _("Purpose"), "fieldname": "purpose", "fieldtype": "Data", "width": 130
+	},
+		{"label": _("From Warehouse"), "fieldname": "from_warehouse", "fieldtype": "Link", "options": "Warehouse", "width": 140
+	},
+		{"label": _("To Warehouse"), "fieldname": "to_warehouse", "fieldtype": "Link", "options": "Warehouse", "width": 140
+	},
+		{"label": _("Total Qty"), "fieldname": "total_qty", "fieldtype": "Float", "width": 90
+	},
+		{"label": _("Branch"), "fieldname": "branch", "fieldtype": "Link", "options": "Branch", "width": 120
+	},
+		{"label": _("DocStatus"), "fieldname": "docstatus", "fieldtype": "Int", "width": 80
+	},
 	]

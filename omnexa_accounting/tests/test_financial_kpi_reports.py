@@ -22,7 +22,8 @@ class TestFinancialKpiReports(FrappeTestCase):
 
 	def test_receivables_and_dso_runs(self):
 		out = execute_receivables_dso(
-			{"company": self.company, "as_of_date": today(), "period_days": 90}
+			{"company": self.company, "as_of_date": today(), "period_days": 90
+	}
 		)
 		columns, data, *_rest = out
 		self.assertTrue(columns)
@@ -31,7 +32,8 @@ class TestFinancialKpiReports(FrappeTestCase):
 	def test_financial_kpi_summary_runs(self):
 		td = today()
 		fd = add_months(td, -1)
-		out = execute_financial_kpi({"company": self.company, "from_date": fd, "to_date": td})
+		out = execute_financial_kpi({"company": self.company, "from_date": fd, "to_date": td
+	})
 		columns, data, *_rest = out
 		self.assertTrue(columns)
 		self.assertEqual(len(data), 11)

@@ -133,8 +133,8 @@ def intercompany_matrix_by_pair(
 				"debit": flt(row.debit),
 				"credit": flt(row.credit),
 				"net_balance": net,
-				"elimination_amount": -net,
-			}
+				"elimination_amount": -net
+	}
 		)
 	return out
 
@@ -160,8 +160,7 @@ def append_elimination_matrix_rows(
 				"account": m["group_code"],
 				"account_name": _("IC net / elimination"),
 				"account_name_ar": None,
-				amount_field: flt(m["elimination_amount"]),
-			}
+				amount_field: flt(m["elimination_amount"])}
 		)
 
 
@@ -202,8 +201,7 @@ def build_consolidated_statement_rows(
 				"account": account,
 				"account_name": row.get("account_name"),
 				"account_name_ar": row.get("account_name_ar"),
-				amount_field: 0.0,
-			},
+				amount_field: 0.0},
 		)
 		entry[amount_field] = flt(entry[amount_field]) + flt(row.get(amount_field) or row.get("amount"))
 
@@ -226,8 +224,7 @@ def build_consolidated_statement_rows(
 				"account": grp,
 				"account_name": _("Intercompany offset"),
 				"account_name_ar": None,
-				amount_field: -flt(net),
-			}
+				amount_field: -flt(net)}
 		)
 
 	if show_elimination_detail:

@@ -27,20 +27,31 @@ def execute(filters=None):
 
 	columns = insert_account_name_ar_column(
 		[
-			{"label": _("Account"), "fieldname": "account", "fieldtype": "Link", "options": "GL Account", "width": 180},
-			{"label": _("Account Name"), "fieldname": "account_name", "fieldtype": "Data", "width": 180},
-			{"label": _("Account Type"), "fieldname": "account_type", "fieldtype": "Data", "width": 100},
+			{"label": _("Account"), "fieldname": "account", "fieldtype": "Link", "options": "GL Account", "width": 180
+	},
+			{"label": _("Account Name"), "fieldname": "account_name", "fieldtype": "Data", "width": 180
+	},
+			{"label": _("Account Type"), "fieldname": "account_type", "fieldtype": "Data", "width": 100
+	},
 		]
 	)
 	columns += [
-		{"label": _("Opening Dr"), "fieldname": "opening_debit", "fieldtype": "Currency", "width": 110},
-		{"label": _("Opening Cr"), "fieldname": "opening_credit", "fieldtype": "Currency", "width": 110},
-		{"label": _("Book Period Dr"), "fieldname": "book_period_debit", "fieldtype": "Currency", "width": 110},
-		{"label": _("Book Period Cr"), "fieldname": "book_period_credit", "fieldtype": "Currency", "width": 110},
-		{"label": _("Adjustment Dr"), "fieldname": "adjustment_debit", "fieldtype": "Currency", "width": 110},
-		{"label": _("Adjustment Cr"), "fieldname": "adjustment_credit", "fieldtype": "Currency", "width": 110},
-		{"label": _("Adjusted Closing Dr"), "fieldname": "closing_debit", "fieldtype": "Currency", "width": 120},
-		{"label": _("Adjusted Closing Cr"), "fieldname": "closing_credit", "fieldtype": "Currency", "width": 120},
+		{"label": _("Opening Dr"), "fieldname": "opening_debit", "fieldtype": "Currency", "width": 110
+	},
+		{"label": _("Opening Cr"), "fieldname": "opening_credit", "fieldtype": "Currency", "width": 110
+	},
+		{"label": _("Book Period Dr"), "fieldname": "book_period_debit", "fieldtype": "Currency", "width": 110
+	},
+		{"label": _("Book Period Cr"), "fieldname": "book_period_credit", "fieldtype": "Currency", "width": 110
+	},
+		{"label": _("Adjustment Dr"), "fieldname": "adjustment_debit", "fieldtype": "Currency", "width": 110
+	},
+		{"label": _("Adjustment Cr"), "fieldname": "adjustment_credit", "fieldtype": "Currency", "width": 110
+	},
+		{"label": _("Adjusted Closing Dr"), "fieldname": "closing_debit", "fieldtype": "Currency", "width": 120
+	},
+		{"label": _("Adjusted Closing Cr"), "fieldname": "closing_credit", "fieldtype": "Currency", "width": 120
+	},
 	]
 
 	data = _build_rows(filters)
@@ -104,7 +115,7 @@ def _build_rows(filters):
 			{
 				**row,
 				"closing_debit": closing_balance if closing_balance > 0 else 0,
-				"closing_credit": abs(closing_balance) if closing_balance < 0 else 0,
-			}
+				"closing_credit": abs(closing_balance) if closing_balance < 0 else 0
+	}
 		)
 	return data

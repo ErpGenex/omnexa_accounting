@@ -166,8 +166,8 @@ class PaymentEntry(Document):
 		]
 		params = {
 			"reference_doctype": reference_doctype,
-			"reference_name": reference_name,
-		}
+			"reference_name": reference_name
+	}
 		if exclude_current and self.name:
 			conditions.append("pe.name != %(parent_name)s")
 			params["parent_name"] = self.name

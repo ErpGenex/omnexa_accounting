@@ -44,15 +44,22 @@ SEED_LOGGER = "microlab_company_seed"
 
 # Monthly rates by year (spreadsheet); years without a row inherit the previous defined year.
 _YEARLY_RATES_TABLE: dict[int, dict[str, str]] = {
-	2015: {"internet": "180", "electricity": "100", "maintenance": "200", "water": "50"},
-	2019: {"internet": "240", "electricity": "120", "maintenance": "250", "water": "75"},
-	2020: {"internet": "240", "electricity": "120", "maintenance": "300", "water": "100"},
-	2021: {"internet": "240", "electricity": "150", "maintenance": "350", "water": "125"},
-	2022: {"internet": "240", "electricity": "170", "maintenance": "400", "water": "150"},
-	2023: {"internet": "240", "electricity": "200", "maintenance": "450", "water": "175"},
-	2024: {"internet": "319.2", "electricity": "300", "maintenance": "500", "water": "200"},
-	2026: {"internet": "450.3", "electricity": "500", "maintenance": "550", "water": "225"},
-}
+	2015: {"internet": "180", "electricity": "100", "maintenance": "200", "water": "50"
+	},
+	2019: {"internet": "240", "electricity": "120", "maintenance": "250", "water": "75"
+	},
+	2020: {"internet": "240", "electricity": "120", "maintenance": "300", "water": "100"
+	},
+	2021: {"internet": "240", "electricity": "150", "maintenance": "350", "water": "125"
+	},
+	2022: {"internet": "240", "electricity": "170", "maintenance": "400", "water": "150"
+	},
+	2023: {"internet": "240", "electricity": "200", "maintenance": "450", "water": "175"
+	},
+	2024: {"internet": "319.2", "electricity": "300", "maintenance": "500", "water": "200"
+	},
+	2026: {"internet": "450.3", "electricity": "500", "maintenance": "550", "water": "225"}
+	}
 
 _MONTHLY_EXPENSE_SPECS: tuple[tuple[str, str, str], ...] = (
 	("internet", "5101", "مصروف الإنترنت"),
@@ -63,51 +70,60 @@ _MONTHLY_EXPENSE_SPECS: tuple[tuple[str, str, str], ...] = (
 
 # Allowed Microlab leaf accounts only
 ACCOUNT_SPECS: list[dict] = [
-	{"code": "1", "name_en": "Assets", "name_ar": "الأصول", "type": "Asset", "group": 1, "parent": ""},
-	{"code": "13", "name_en": "Other Receivables", "name_ar": "مدينون آخرون", "type": "Asset", "group": 1, "parent": "1"},
+	{"code": "1", "name_en": "Assets", "name_ar": "الأصول", "type": "Asset", "group": 1, "parent": ""
+	},
+	{"code": "13", "name_en": "Other Receivables", "name_ar": "مدينون آخرون", "type": "Asset", "group": 1, "parent": "1"
+	},
 	{
 		"code": "1332",
-		"name_en": f"Due From Partner — {PARTNER_SILENT}",
+		"name_en": f"Due From Partner — {PARTNER_SILENT
+	}",
 		"name_ar": "مستحق من إلهام",
 		"type": "Asset",
 		"group": 0,
 		"parent": "13",
 		"main": "Assets",
-		"sub": "Other Receivables",
+		"sub": "Other Receivables"
 	},
-	{"code": "3", "name_en": "Equity", "name_ar": "حقوق الملكية", "type": "Equity", "group": 1, "parent": ""},
+	{"code": "3", "name_en": "Equity", "name_ar": "حقوق الملكية", "type": "Equity", "group": 1, "parent": ""
+	},
 	{
 		"code": "31011",
-		"name_en": f"Partner Capital — {PARTNER_FUNDED}",
+		"name_en": f"Partner Capital — {PARTNER_FUNDED
+	}",
 		"name_ar": "رأس مال سيد",
 		"type": "Equity",
 		"group": 0,
 		"parent": "3",
 		"main": "Equity",
-		"sub": "Capital",
+		"sub": "Capital"
 	},
 	{
 		"code": "31012",
-		"name_en": f"Partner Capital — {PARTNER_SILENT}",
+		"name_en": f"Partner Capital — {PARTNER_SILENT
+	}",
 		"name_ar": "رأس مال إلهام",
 		"type": "Equity",
 		"group": 0,
 		"parent": "3",
 		"main": "Equity",
-		"sub": "Capital",
+		"sub": "Capital"
 	},
 	{
 		"code": "3111",
-		"name_en": f"Partner Current — {PARTNER_FUNDED}",
+		"name_en": f"Partner Current — {PARTNER_FUNDED
+	}",
 		"name_ar": "جاري سيد",
 		"type": "Equity",
 		"group": 0,
 		"parent": "3",
 		"main": "Equity",
-		"sub": "Partner Current",
+		"sub": "Partner Current"
 	},
-	{"code": "5", "name_en": "Expenses", "name_ar": "المصروفات", "type": "Expense", "group": 1, "parent": ""},
-	{"code": "51", "name_en": "Operating Expenses", "name_ar": "مصروفات تشغيلية", "type": "Expense", "group": 1, "parent": "5"},
+	{"code": "5", "name_en": "Expenses", "name_ar": "المصروفات", "type": "Expense", "group": 1, "parent": ""
+	},
+	{"code": "51", "name_en": "Operating Expenses", "name_ar": "مصروفات تشغيلية", "type": "Expense", "group": 1, "parent": "5"
+	},
 	{
 		"code": "5101",
 		"name_en": "مصروف الإنترنت",
@@ -117,7 +133,7 @@ ACCOUNT_SPECS: list[dict] = [
 		"parent": "51",
 		"main": "Expense",
 		"sub": "OPEX",
-		"pl_bucket": "Operating Expense",
+		"pl_bucket": "Operating Expense"
 	},
 	{
 		"code": "5102",
@@ -128,7 +144,7 @@ ACCOUNT_SPECS: list[dict] = [
 		"parent": "51",
 		"main": "Expense",
 		"sub": "OPEX",
-		"pl_bucket": "Operating Expense",
+		"pl_bucket": "Operating Expense"
 	},
 	{
 		"code": "5103",
@@ -139,7 +155,7 @@ ACCOUNT_SPECS: list[dict] = [
 		"parent": "51",
 		"main": "Expense",
 		"sub": "OPEX",
-		"pl_bucket": "Operating Expense",
+		"pl_bucket": "Operating Expense"
 	},
 	{
 		"code": "5104",
@@ -150,7 +166,7 @@ ACCOUNT_SPECS: list[dict] = [
 		"parent": "51",
 		"main": "Expense",
 		"sub": "OPEX",
-		"pl_bucket": "Operating Expense",
+		"pl_bucket": "Operating Expense"
 	},
 	{
 		"code": "5107",
@@ -161,7 +177,7 @@ ACCOUNT_SPECS: list[dict] = [
 		"parent": "51",
 		"main": "Expense",
 		"sub": "OPEX",
-		"pl_bucket": "Operating Expense",
+		"pl_bucket": "Operating Expense"
 	},
 	{
 		"code": "5105",
@@ -172,7 +188,7 @@ ACCOUNT_SPECS: list[dict] = [
 		"parent": "51",
 		"main": "Expense",
 		"sub": "OPEX",
-		"pl_bucket": "Operating Expense",
+		"pl_bucket": "Operating Expense"
 	},
 	{
 		"code": "5106",
@@ -183,7 +199,7 @@ ACCOUNT_SPECS: list[dict] = [
 		"parent": "51",
 		"main": "Expense",
 		"sub": "OPEX",
-		"pl_bucket": "Operating Expense",
+		"pl_bucket": "Operating Expense"
 	},
 ]
 
@@ -219,7 +235,9 @@ def _seed_logger():
 def _log_info(message: str, payload: dict | None = None) -> None:
 	"""تسجيل رسالة معلومات بعد كل عملية إدخال أو خطوة مهمة."""
 	try:
-		_seed_logger().info({"message": message, "payload": payload or {}, "ts": str(now_datetime())})
+		_seed_logger().info({"message": message, "payload": payload or {
+	}, "ts": str(now_datetime())
+	})
 	except Exception:
 		pass
 
@@ -231,9 +249,10 @@ def _log_failure(title: str, exc: Exception, payload: dict | None = None) -> Non
 		message=frappe.as_json(
 			{
 				"error": str(exc),
-				"payload": payload or {},
-				"traceback": frappe.get_traceback(),
-			},
+				"payload": payload or {
+	},
+				"traceback": frappe.get_traceback()
+	},
 			indent=2,
 		),
 	)
@@ -245,7 +264,8 @@ def _submit(doc):
 
 
 def _account(company: str, branch: str | None, code: str) -> str:
-	filters = {"company": company, "account_number": code}
+	filters = {"company": company, "account_number": code
+	}
 	if branch:
 		filters["branch"] = branch
 	name = frappe.db.get_value("GL Account", filters, "name")
@@ -270,14 +290,16 @@ def _default_cost_center(company: str) -> str | None:
 	"""إرجاع مركز التكلفة الافتراضي للشركة إن وجد."""
 	if not frappe.db.exists("DocType", "Cost Center"):
 		return None
-	return frappe.db.get_value("Cost Center", {"company": company}, "name", order_by="creation asc") or None
+	return frappe.db.get_value("Cost Center", {"company": company
+	}, "name", order_by="creation asc") or None
 
 
 def _ensure_expense_employee(company: str, cost_center: str | None = None) -> str:
 	"""إنشاء موظف افتراضي لاستخدامه في سجلات المصروفات عند الحاجة."""
 	existing = frappe.db.get_value(
 		"Employee",
-		{"company": company, "employee_code": EXPENSE_EMPLOYEE_CODE},
+		{"company": company, "employee_code": EXPENSE_EMPLOYEE_CODE
+	},
 		"name",
 	)
 	if existing:
@@ -293,13 +315,14 @@ def _ensure_expense_employee(company: str, cost_center: str | None = None) -> st
 			"designation": "مسؤول مصروفات الشركة",
 			"date_of_joining": str(START_DATE),
 			"status": "Active",
-			"external_reference": f"{SEED_TAG}-EMPLOYEE",
-		}
+			"external_reference": f"{SEED_TAG}-EMPLOYEE"
+	}
 	)
 	if cost_center and doc.meta.has_field("hr_default_cost_center"):
 		doc.hr_default_cost_center = cost_center
 	doc.insert(ignore_permissions=True)
-	_log_info("تم إنشاء موظف المصروفات الافتراضي", {"employee": doc.name, "company": company})
+	_log_info("تم إنشاء موظف المصروفات الافتراضي", {"employee": doc.name, "company": company
+	})
 	return doc.name
 
 
@@ -314,7 +337,8 @@ def _expense_claim_exists(company: str, description: str) -> str | None:
 	"""التحقق من وجود سجل مصروف سابقاً باستخدام الوصف المرجعي."""
 	if not frappe.db.exists("DocType", EXPENSE_DOCTYPE):
 		return None
-	return frappe.db.get_value(EXPENSE_DOCTYPE, {"company": company, "description": description}, "name")
+	return frappe.db.get_value(EXPENSE_DOCTYPE, {"company": company, "description": description
+	}, "name")
 
 
 def _insert_expense_claim(
@@ -336,7 +360,8 @@ def _insert_expense_claim(
 	description = f"{title_ar} | {reference}"
 	existing = _expense_claim_exists(company, description)
 	if existing:
-		_log_info("تم تجاوز سجل مصروف مكرر", {"doctype": EXPENSE_DOCTYPE, "name": existing, "reference": reference})
+		_log_info("تم تجاوز سجل مصروف مكرر", {"doctype": EXPENSE_DOCTYPE, "name": existing, "reference": reference
+	})
 		return None
 
 	try:
@@ -352,8 +377,8 @@ def _insert_expense_claim(
 				"amount": float(amount),
 				"currency": "EGP",
 				"status": "Draft",
-				"description": description,
-			}
+				"description": description
+	}
 		)
 		if cost_center and doc.meta.has_field("cost_center"):
 			doc.cost_center = cost_center
@@ -365,8 +390,8 @@ def _insert_expense_claim(
 				"name": doc.name,
 				"reference": reference,
 				"date": str(expense_date),
-				"amount": float(amount),
-			},
+				"amount": float(amount)
+	},
 		)
 		return doc.name
 	except Exception as exc:
@@ -379,8 +404,8 @@ def _insert_expense_claim(
 				"employee": employee,
 				"expense_date": str(expense_date),
 				"amount": str(amount),
-				"reference": reference,
-			},
+				"reference": reference
+	},
 		)
 		raise frappe.ValidationError(f"تعذر إنشاء سجل المصروف {title_ar} بتاريخ {expense_date}: {exc}") from exc
 
@@ -401,13 +426,14 @@ def _write_seed_log(company: str, branch: str | None, activity: str, summary: di
 				"executed_on": now_datetime(),
 				"dry_run": 0,
 				"status": status,
-				"summary_json": frappe.as_json(summary),
-			}
+				"summary_json": frappe.as_json(summary)
+	}
 		)
 		doc.insert(ignore_permissions=True)
 		return doc.name
 	except Exception as exc:
-		_log_failure("Microlab Seed Log Failed", exc, {"company": company, "branch": branch, "activity": activity})
+		_log_failure("Microlab Seed Log Failed", exc, {"company": company, "branch": branch, "activity": activity
+	})
 		return None
 
 
@@ -440,24 +466,26 @@ def _ensure_company() -> tuple[str, str]:
 				"industry_sector": "Services",
 				"business_activity": "Services",
 				"status": "Active",
-				"enable_branches": 1,
-			}
+				"enable_branches": 1
+	}
 		)
 		if doc.meta.has_field("company_name_ar"):
 			doc.company_name_ar = COMPANY_NAME_AR
 		doc.insert(ignore_permissions=True)
 		company = doc.name
 
-	branch = frappe.db.get_value("Branch", {"company": company}, "name", order_by="creation asc")
+	branch = frappe.db.get_value("Branch", {"company": company
+	}, "name", order_by="creation asc")
 	if not branch:
 		branch = frappe.db.get_value("Branch", {"company": company, "branch_name": ["like", "%Head%"]}, "name")
 	if not branch:
 		branch_doc = frappe.get_doc(
 			{
 				"doctype": "Branch",
-				"branch_name": f"{COMPANY_ABBR} Head Office",
-				"company": company,
-			}
+				"branch_name": f"{COMPANY_ABBR
+	} Head Office",
+				"company": company
+	}
 		)
 		branch_doc.insert(ignore_permissions=True)
 		branch = branch_doc.name
@@ -473,7 +501,8 @@ def _ensure_minimal_coa(company: str, branch: str) -> dict[str, str]:
 		parent_map: dict[str, str] = {}
 		for row in frappe.get_all(
 			"GL Account",
-			filters={"company": company, "branch": branch},
+			filters={"company": company, "branch": branch
+	},
 			fields=["name", "account_number"],
 		):
 			if row.account_number:
@@ -496,7 +525,8 @@ def _disable_legacy_microlab_accounts(company: str, branch: str) -> int:
 	frozen = 0
 	rows = frappe.get_all(
 		"GL Account",
-		filters={"company": company, "branch": branch, "is_group": 0},
+		filters={"company": company, "branch": branch, "is_group": 0
+	},
 		fields=["name", "account_number", "is_frozen"],
 	)
 	for row in rows:
@@ -514,13 +544,15 @@ def _delete_microlab_product(company: str) -> None:
 	if not frappe.db.exists("DocType", "Item"):
 		return
 	for code in ("ERP-POS-MICROLAB",):
-		name = frappe.db.get_value("Item", {"company": company, "item_code": code}, "name")
+		name = frappe.db.get_value("Item", {"company": company, "item_code": code
+	}, "name")
 		if name:
 			frappe.delete_doc("Item", name, force=1, ignore_permissions=True)
 
 
 def _je_exists(company: str, reference: str) -> bool:
-	return bool(frappe.db.exists("Journal Entry", {"company": company, "reference": reference}))
+	return bool(frappe.db.exists("Journal Entry", {"company": company, "reference": reference
+	}))
 
 
 class _JeLine:
@@ -543,7 +575,8 @@ def _create_je(
 	lines: list[_JeLine],
 ) -> str | None:
 	if _je_exists(company, reference):
-		return frappe.db.get_value("Journal Entry", {"company": company, "reference": reference}, "name")
+		return frappe.db.get_value("Journal Entry", {"company": company, "reference": reference
+	}, "name")
 
 	accounts = []
 	for line in lines:
@@ -552,8 +585,8 @@ def _create_je(
 		row = {
 			"account": line.account,
 			"debit": float(line.debit),
-			"credit": float(line.credit),
-		}
+			"credit": float(line.credit)
+	}
 		if line.cost_center:
 			row["cost_center"] = line.cost_center
 		if line.remark_ar:
@@ -571,8 +604,8 @@ def _create_je(
 			"posting_date": posting_date,
 			"reference": reference,
 			"remarks": remarks,
-			"accounts": accounts,
-		}
+			"accounts": accounts
+	}
 	)
 	je.flags.ignore_branch_access = True
 	je.insert(ignore_permissions=True)
@@ -687,68 +720,63 @@ def get_microlab_report_links(company: str | None = None, branch: str | None = N
 	"""Standard + partner litigation report routes for Microlab."""
 	company = company or COMPANY_ABBR
 	if not branch:
-		branch = frappe.db.get_value("Branch", {"company": company}, "name")
+		branch = frappe.db.get_value("Branch", {"company": company
+	}, "name")
 	sayed_acc = frappe.db.get_value(
-		"GL Account", {"company": company, "account_number": "3111", "branch": branch}, "name"
+		"GL Account", {"company": company, "account_number": "3111", "branch": branch
+	}, "name"
 	)
 	elham_due = frappe.db.get_value(
-		"GL Account", {"company": company, "account_number": "1332", "branch": branch}, "name"
+		"GL Account", {"company": company, "account_number": "1332", "branch": branch
+	}, "name"
 	)
 	common = {
 		"company": company,
 		"from_date": str(START_DATE),
-		"to_date": str(END_DATE),
+		"to_date": str(END_DATE)
 	}
 	partner_filters = {
 		**common,
 		"branch": branch or "",
 		"primary_partner_name": PARTNER_FUNDED,
 		"secondary_partner_name": PARTNER_SILENT,
-		"secondary_pct": "20",
+		"secondary_pct": "20"
 	}
 	return {
 		"general_journal": {
 			"title_ar": "اليومية العامة",
-			"url": _report_url("General Journal", **common),
-		},
+			"url": _report_url("General Journal", **common)},
 		"general_ledger": {
 			"title_ar": "الأستاذ العام",
-			"url": _report_url("General Ledger", **common),
-		},
+			"url": _report_url("General Ledger", **common)},
 		"trial_balance": {
 			"title_ar": "ميزان المراجعة",
-			"url": _report_url("Trial Balance", **common),
-		},
+			"url": _report_url("Trial Balance", **common)},
 		"income_statement": {
 			"title_ar": "قائمة الدخل",
-			"url": _report_url("Profit and Loss Statement", **common),
-		},
+			"url": _report_url("Profit and Loss Statement", **common)},
 		"balance_sheet": {
 			"title_ar": "الميزانية العمومية",
-			"url": _report_url("Balance Sheet", **{**common, "as_on_date": str(END_DATE)}),
-		},
+			"url": _report_url("Balance Sheet", **{**common, "as_on_date": str(END_DATE)})
+	},
 		"sayed_current_statement": {
 			"title_ar": "كشف جاري سيد",
 			"url": _report_url(
 				"General Ledger",
 				**common,
 				account=sayed_acc or "",
-			),
-		},
+			)},
 		"elham_debt_statement": {
 			"title_ar": "كشف مديونية إلهام",
-			"url": _report_url("Partner Debt Statement", **partner_filters),
-		},
+			"url": _report_url("Partner Debt Statement", **partner_filters)},
 		"legal_claim_statement": {
 			"title_ar": "تقرير قانوني — إثبات مديونية الشريك",
-			"url": _report_url("Legal Claim Statement", **partner_filters),
-		},
+			"url": _report_url("Legal Claim Statement", **partner_filters)},
 		"partner_recovery_report": {
 			"title_ar": "تقرير استرداد مساهمات الشريك",
-			"url": _report_url("Partner Recovery Report", **partner_filters),
-		},
+			"url": _report_url("Partner Recovery Report", **partner_filters)},
 		"account_elham_due": elham_due,
-		"account_sayed_current": sayed_acc,
+		"account_sayed_current": sayed_acc
 	}
 
 
@@ -757,9 +785,11 @@ def get_microlab_legal_report(company: str | None = None) -> dict:
 	"""Litigation-ready package: expenses by year, Elham 20%, cumulative debt 2015–2026."""
 	company = company or COMPANY_ABBR
 	if not frappe.db.exists("Company", company):
-		return {"error": "Company not found"}
+		return {"error": "Company not found"
+	}
 
-	branch = frappe.db.get_value("Branch", {"company": company}, "name")
+	branch = frappe.db.get_value("Branch", {"company": company
+	}, "name")
 	from omnexa_accounting.utils.partner_legal_reporting import (
 		generate_court_evidence_package,
 		partner_debt_rows,
@@ -799,7 +829,8 @@ def get_microlab_legal_report(company: str | None = None) -> dict:
 		"partner_funded": PARTNER_FUNDED,
 		"partner_silent": PARTNER_SILENT,
 		"ownership_silent_pct": 20,
-		"period": {"from": str(START_DATE), "to": str(END_DATE)},
+		"period": {"from": str(START_DATE), "to": str(END_DATE)
+	},
 		"total_expenses_paid_by_sayed": total_expenses,
 		"total_elham_share_20pct": total_elham_share,
 		"cumulative_debt_elham": cumulative,
@@ -811,7 +842,7 @@ def get_microlab_legal_report(company: str | None = None) -> dict:
 			f"الرصيد المستحق على الشريك إلهام (تراكمي) حتى {END_DATE.year}: {cumulative:,.2f} جنيه مصري."
 		),
 		"report_links": get_microlab_report_links(company, branch),
-		"court_package": package,
+		"court_package": package
 	}
 
 
@@ -821,7 +852,8 @@ def delete_microlab_company() -> dict:
 	if frappe.session.user != "Guest":
 		frappe.only_for("System Manager")
 	if not frappe.db.exists("Company", COMPANY_ABBR):
-		return {"ok": True, "existed": False}
+		return {"ok": True, "existed": False
+	}
 
 	from omnexa_accounting.utils.production_readiness import run_reset_transactions_batched
 	reset = {}
@@ -831,27 +863,34 @@ def delete_microlab_company() -> dict:
 		reset = wipe_company_all_data(company=COMPANY_ABBR, confirm_text="DELETE ALL")
 		if frappe.db.exists("Company", COMPANY_ABBR):
 			frappe.delete_doc("Company", COMPANY_ABBR, force=1, ignore_permissions=True)
-		_log_info("تم حذف شركة ميكرولاب بالكامل", {"company": COMPANY_ABBR})
+		_log_info("تم حذف شركة ميكرولاب بالكامل", {"company": COMPANY_ABBR
+	})
 	except Exception as exc:
-		_log_failure("Microlab Full Company Delete Failed", exc, {"company": COMPANY_ABBR})
+		_log_failure("Microlab Full Company Delete Failed", exc, {"company": COMPANY_ABBR
+	})
 		reset = run_reset_transactions_batched(company=COMPANY_ABBR, limit=0, skip_log=True)
 	if frappe.db.exists("DocType", EXPENSE_DOCTYPE):
-		names = frappe.get_all(EXPENSE_DOCTYPE, filters={"company": COMPANY_ABBR}, pluck="name")
+		names = frappe.get_all(EXPENSE_DOCTYPE, filters={"company": COMPANY_ABBR
+	}, pluck="name")
 		for name in names:
 			frappe.delete_doc(EXPENSE_DOCTYPE, name, force=1, ignore_permissions=True)
 	if frappe.db.exists("DocType", "Employee"):
-		employee = frappe.db.get_value("Employee", {"company": COMPANY_ABBR, "employee_code": EXPENSE_EMPLOYEE_CODE}, "name")
+		employee = frappe.db.get_value("Employee", {"company": COMPANY_ABBR, "employee_code": EXPENSE_EMPLOYEE_CODE
+	}, "name")
 		if employee:
 			frappe.delete_doc("Employee", employee, force=1, ignore_permissions=True)
 	if frappe.db.exists("Company Partner Legal Setup", COMPANY_ABBR):
 		frappe.delete_doc("Company Partner Legal Setup", COMPANY_ABBR, force=1, ignore_permissions=True)
 	frappe.db.commit()
-	return {"ok": True, "existed": True, "company": COMPANY_ABBR, "reset": reset}
+	return {"ok": True, "existed": True, "company": COMPANY_ABBR, "reset": reset
+	}
 
 
 def _ensure_partner_legal_setup(company: str, branch: str) -> None:
-	sayed_current = frappe.db.get_value("GL Account", {"company": company, "account_number": "3111"}, "name")
-	elham_due = frappe.db.get_value("GL Account", {"company": company, "account_number": "1332"}, "name")
+	sayed_current = frappe.db.get_value("GL Account", {"company": company, "account_number": "3111"
+	}, "name")
+	elham_due = frappe.db.get_value("GL Account", {"company": company, "account_number": "1332"
+	}, "name")
 	if not sayed_current or not elham_due:
 		return
 
@@ -874,8 +913,8 @@ def _ensure_partner_legal_setup(company: str, branch: str) -> None:
 			"partner_name_ar": PARTNER_FUNDED,
 			"ownership_percent": 80,
 			"is_funding_partner": 1,
-			"partner_current_account": sayed_current,
-		},
+			"partner_current_account": sayed_current
+	},
 	)
 	doc.append(
 		"partners",
@@ -884,8 +923,8 @@ def _ensure_partner_legal_setup(company: str, branch: str) -> None:
 			"partner_name_ar": PARTNER_SILENT,
 			"ownership_percent": 20,
 			"is_funding_partner": 0,
-			"due_from_partner_account": elham_due,
-		},
+			"due_from_partner_account": elham_due
+	},
 	)
 	doc.flags.ignore_permissions = True
 	doc.save()
@@ -916,8 +955,8 @@ def seed_microlab_company(*, enqueue: int = 0) -> dict:
 			"ok": True,
 			"queued": True,
 			"job_id": job_id,
-			"message": _("Microlab seed started in background (job {0}).").format(job_id),
-		}
+			"message": _("Microlab seed started in background (job {0}).").format(job_id)
+	}
 	return _seed_microlab_company()
 
 
@@ -951,12 +990,13 @@ def _seed_microlab_company() -> dict:
 			"5104": exp_water,
 			"5107": exp_rent,
 			"5105": exp_formation,
-			"5106": exp_modification,
-		}
+			"5106": exp_modification
+	}
 		cost_center = _default_cost_center(company)
 		expense_employee = _ensure_expense_employee(company, cost_center=cost_center)
 
-		created = {"journal_entries": 0, "expense_claims": 0, "frozen_legacy_accounts": disabled_legacy}
+		created = {"journal_entries": 0, "expense_claims": 0, "frozen_legacy_accounts": disabled_legacy
+	}
 		year_expense_totals: dict[int, Decimal] = defaultdict(Decimal)
 
 		# —— قيد رأس المال الافتتاحي — 01-03-2015
@@ -1135,9 +1175,10 @@ def _seed_microlab_company() -> dict:
 				"capital_elham": "31012",
 				"sayed_current": "3111",
 				"due_from_elham": "1332",
-				"expenses": sorted(EXPENSE_CODES),
-			},
-			"period": {"from": str(START_DATE), "to": str(end)},
+				"expenses": sorted(EXPENSE_CODES)
+	},
+			"period": {"from": str(START_DATE), "to": str(end)
+	},
 			"created": created,
 			"default_cost_center": cost_center,
 			"expense_employee": expense_employee,
@@ -1145,8 +1186,7 @@ def _seed_microlab_company() -> dict:
 			"year_expense_cumulative": {str(y): float(v) for y, v in sorted(expense_cum.items())},
 			"legal_report": legal_report,
 			"report_links": get_microlab_report_links(company, branch),
-			"message": _("Microlab company seeded (minimal chart, litigation reports ready)."),
-		}
+			"message": _("Microlab company seeded (minimal chart, litigation reports ready).")}
 		summary["seed_log"] = _write_seed_log(company, branch, "Microlab monthly expense seed", summary, status="Success")
 		return summary
 	except Exception as exc:
@@ -1154,8 +1194,10 @@ def _seed_microlab_company() -> dict:
 			frappe.db.rollback()
 		except Exception:
 			pass
-		_log_failure("Microlab Seed Failed", exc, {"company": COMPANY_ABBR})
-		_write_seed_log(COMPANY_ABBR, None, "Microlab monthly expense seed", {"error": str(exc)}, status="Failed")
+		_log_failure("Microlab Seed Failed", exc, {"company": COMPANY_ABBR
+	})
+		_write_seed_log(COMPANY_ABBR, None, "Microlab monthly expense seed", {"error": str(exc)
+	}, status="Failed")
 		raise
 
 

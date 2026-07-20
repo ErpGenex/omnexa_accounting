@@ -32,8 +32,8 @@ class StockReconciliation(Document):
 				row.item,
 				{
 					"current_stock_qty": flt(row.counted_qty),
-					"last_stock_reconciliation_date": self.reconciliation_date,
-				},
+					"last_stock_reconciliation_date": self.reconciliation_date
+	},
 				update_modified=False,
 			)
 

@@ -15,7 +15,8 @@ def execute(filters=None):
 	if not filters.get("company"):
 		frappe.throw(_("Company is required."), title=_("Filters"))
 
-	params = {"company": filters.company}
+	params = {"company": filters.company
+	}
 	conditions = ["i.is_stock_item = 1", "(i.company = %(company)s OR IFNULL(i.company, '') = '')"]
 	if filters.get("item"):
 		conditions.append("i.name = %(item)s")
@@ -71,13 +72,20 @@ def execute(filters=None):
 		row["inventory_value"] = flt(row.get("inventory_value"), 2)
 
 	columns = [
-		{"label": _("Item"), "fieldname": "item", "fieldtype": "Link", "options": "Item", "width": 160},
-		{"label": _("Item Code"), "fieldname": "item_code", "fieldtype": "Data", "width": 130},
-		{"label": _("Item Name"), "fieldname": "item_name", "fieldtype": "Data", "width": 200},
-		{"label": _("UOM"), "fieldname": "stock_uom", "fieldtype": "Link", "options": "UOM", "width": 90},
-		{"label": _("Qty"), "fieldname": "qty", "fieldtype": "Float", "width": 100},
-		{"label": _("Unit cost (last PI rate)"), "fieldname": "unit_cost", "fieldtype": "Currency", "width": 140},
-		{"label": _("Inventory value"), "fieldname": "inventory_value", "fieldtype": "Currency", "width": 140},
+		{"label": _("Item"), "fieldname": "item", "fieldtype": "Link", "options": "Item", "width": 160
+	},
+		{"label": _("Item Code"), "fieldname": "item_code", "fieldtype": "Data", "width": 130
+	},
+		{"label": _("Item Name"), "fieldname": "item_name", "fieldtype": "Data", "width": 200
+	},
+		{"label": _("UOM"), "fieldname": "stock_uom", "fieldtype": "Link", "options": "UOM", "width": 90
+	},
+		{"label": _("Qty"), "fieldname": "qty", "fieldtype": "Float", "width": 100
+	},
+		{"label": _("Unit cost (last PI rate)"), "fieldname": "unit_cost", "fieldtype": "Currency", "width": 140
+	},
+		{"label": _("Inventory value"), "fieldname": "inventory_value", "fieldtype": "Currency", "width": 140
+	},
 	]
 
 	msg = _("Valuation uses latest submitted Purchase Invoice line rate for the item in this company — not a full cost-layer / GL stock valuation.")

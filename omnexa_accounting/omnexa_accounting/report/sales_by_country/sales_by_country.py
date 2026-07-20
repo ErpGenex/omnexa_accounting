@@ -20,7 +20,7 @@ def execute(filters=None):
 	params = {
 		"company": filters.company,
 		"from_date": filters.from_date,
-		"to_date": filters.to_date,
+		"to_date": filters.to_date
 	}
 
 	conditions = [
@@ -35,9 +35,12 @@ def execute(filters=None):
 		if not allowed:
 			return (
 				[
-					{"label": _("Country"), "fieldname": "country", "fieldtype": "Data", "width": 200},
-					{"label": _("Qty"), "fieldname": "qty", "fieldtype": "Float", "width": 100},
-					{"label": _("Amount"), "fieldname": "amount", "fieldtype": "Currency", "width": 140},
+					{"label": _("Country"), "fieldname": "country", "fieldtype": "Data", "width": 200
+	},
+					{"label": _("Qty"), "fieldname": "qty", "fieldtype": "Float", "width": 100
+	},
+					{"label": _("Amount"), "fieldname": "amount", "fieldtype": "Currency", "width": 140
+	},
 				],
 				[],
 			)
@@ -49,7 +52,8 @@ def execute(filters=None):
 		params["branch"] = filters.branch
 
 	where_sql = " AND ".join(conditions)
-	sql_params = {**params, "unknown": _("Unknown")}
+	sql_params = {**params, "unknown": _("Unknown")
+	}
 
 	data = frappe.db.sql(
 		f"""
@@ -73,9 +77,12 @@ def execute(filters=None):
 		row["amount"] = flt(row.get("amount"), 2)
 
 	columns = [
-		{"label": _("Country"), "fieldname": "country", "fieldtype": "Data", "width": 200},
-		{"label": _("Qty"), "fieldname": "qty", "fieldtype": "Float", "width": 100},
-		{"label": _("Amount"), "fieldname": "amount", "fieldtype": "Currency", "width": 140},
+		{"label": _("Country"), "fieldname": "country", "fieldtype": "Data", "width": 200
+	},
+		{"label": _("Qty"), "fieldname": "qty", "fieldtype": "Float", "width": 100
+	},
+		{"label": _("Amount"), "fieldname": "amount", "fieldtype": "Currency", "width": 140
+	},
 	]
 
 	chart = auto_chart_for_columns(data, columns)

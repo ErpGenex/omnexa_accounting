@@ -39,13 +39,20 @@ def execute(filters=None):
 		r["posted_movements"] = flt(r.get("posted_movements"))
 
 	columns = [
-		{"label": _("Bank Account"), "fieldname": "bank_account", "fieldtype": "Link", "options": "Bank Account", "width": 180},
-		{"label": _("Account Title"), "fieldname": "account_title", "fieldtype": "Data", "width": 180},
-		{"label": _("Company"), "fieldname": "company", "fieldtype": "Link", "options": "Company", "width": 140},
-		{"label": _("Bank Name"), "fieldname": "bank_name", "fieldtype": "Data", "width": 150},
-		{"label": _("Account Number"), "fieldname": "account_number", "fieldtype": "Data", "width": 140},
-		{"label": _("Currency"), "fieldname": "currency", "fieldtype": "Link", "options": "Currency", "width": 90},
-		{"label": _("Posted Movements"), "fieldname": "posted_movements", "fieldtype": "Currency", "width": 130},
+		{"label": _("Bank Account"), "fieldname": "bank_account", "fieldtype": "Link", "options": "Bank Account", "width": 180
+	},
+		{"label": _("Account Title"), "fieldname": "account_title", "fieldtype": "Data", "width": 180
+	},
+		{"label": _("Company"), "fieldname": "company", "fieldtype": "Link", "options": "Company", "width": 140
+	},
+		{"label": _("Bank Name"), "fieldname": "bank_name", "fieldtype": "Data", "width": 150
+	},
+		{"label": _("Account Number"), "fieldname": "account_number", "fieldtype": "Data", "width": 140
+	},
+		{"label": _("Currency"), "fieldname": "currency", "fieldtype": "Link", "options": "Currency", "width": 90
+	},
+		{"label": _("Posted Movements"), "fieldname": "posted_movements", "fieldtype": "Currency", "width": 130
+	},
 	]
 	chart = auto_chart_for_columns(data, columns)
 	return columns, data, None, chart

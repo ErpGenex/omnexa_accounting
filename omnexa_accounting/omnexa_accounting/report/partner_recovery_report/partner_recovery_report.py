@@ -29,7 +29,7 @@ def execute(filters=None):
 		"company": filters.company,
 		"from_date": filters.from_date,
 		"to_date": filters.to_date,
-		"primary_current": primary_current,
+		"primary_current": primary_current
 	}
 	conds = ["je.company=%(company)s", "je.docstatus=1", "je.posting_date BETWEEN %(from_date)s AND %(to_date)s"]
 	if filters.get("branch") and frappe.get_meta("Journal Entry").has_field("branch"):
@@ -70,27 +70,32 @@ def execute(filters=None):
 		row["cumulative_secondary_recovery"] = float(cum)
 
 	columns = [
-		{"label": _("Date"), "fieldname": "posting_date", "fieldtype": "Date", "width": 100},
-		{"label": _("Journal Entry"), "fieldname": "journal_entry", "fieldtype": "Link", "options": "Journal Entry", "width": 140},
-		{"label": _("Reference"), "fieldname": "reference", "fieldtype": "Data", "width": 140},
-		{"label": _("Expense Type"), "fieldname": "expense_type", "fieldtype": "Data", "width": 180},
-		{"label": _("Paid by {0}").format(labels["primary_partner_name"]), "fieldname": "amount_paid_by_primary", "fieldtype": "Currency", "width": 170},
-		{"label": _("{0} Share").format(labels["secondary_partner_name"]), "fieldname": "secondary_share", "fieldtype": "Currency", "width": 150},
+		{"label": _("Date"), "fieldname": "posting_date", "fieldtype": "Date", "width": 100
+	},
+		{"label": _("Journal Entry"), "fieldname": "journal_entry", "fieldtype": "Link", "options": "Journal Entry", "width": 140
+	},
+		{"label": _("Reference"), "fieldname": "reference", "fieldtype": "Data", "width": 140
+	},
+		{"label": _("Expense Type"), "fieldname": "expense_type", "fieldtype": "Data", "width": 180
+	},
+		{"label": _("Paid by {0}").format(labels["primary_partner_name"]), "fieldname": "amount_paid_by_primary", "fieldtype": "Currency", "width": 170
+	},
+		{"label": _("{0} Share").format(labels["secondary_partner_name"]), "fieldname": "secondary_share", "fieldtype": "Currency", "width": 150
+	},
 		{
 			"label": _("Cumulative Recovery for {0}").format(labels["secondary_partner_name"]),
 			"fieldname": "cumulative_secondary_recovery",
 			"fieldtype": "Currency",
-			"width": 150,
-		},
+			"width": 150
+	},
 	]
 	chart = {
 		"data": {
 			"labels": [str(r.get("posting_date")) for r in data[:24]],
-			"datasets": [{"name": _("Secondary Share"), "values": [flt(r.get("secondary_share")) for r in data[:24]]}],
-		},
+			"datasets": [{"name": _("Secondary Share"), "values": [flt(r.get("secondary_share")) for r in data[:24]]}]
+	},
 		"type": "line",
 		"title": _("Partner Recovery Trend"),
-		"height": 260,
+		"height": 260
 	}
 	return columns, data, None, chart
-

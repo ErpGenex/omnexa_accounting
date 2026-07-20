@@ -34,9 +34,12 @@ def execute(filters=None):
 		as_dict=True,
 	)
 	columns = [
-		{"label": _("Reference DocType"), "fieldname": "reference_doctype", "fieldtype": "Data", "width": 200},
-		{"label": _("Status"), "fieldname": "status", "fieldtype": "Data", "width": 100},
-		{"label": _("Actions"), "fieldname": "action_count", "fieldtype": "Int", "width": 120},
+		{"label": _("Reference DocType"), "fieldname": "reference_doctype", "fieldtype": "Data", "width": 200
+	},
+		{"label": _("Status"), "fieldname": "status", "fieldtype": "Data", "width": 100
+	},
+		{"label": _("Actions"), "fieldname": "action_count", "fieldtype": "Int", "width": 120
+	},
 	]
 	chart = auto_chart_for_columns(rows, columns)
 	return columns, rows, None, chart

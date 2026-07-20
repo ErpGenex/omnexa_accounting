@@ -31,7 +31,8 @@ def execute(filters=None):
 		GROUP BY i.name, i.item_code, i.item_name, i.current_stock_qty
 		ORDER BY aging_days DESC, i.item_code
 		""",
-		{"company": filters.company},
+		{"company": filters.company
+	},
 		as_dict=True,
 	)
 	for r in data:
@@ -49,14 +50,22 @@ def execute(filters=None):
 			r["aging_bucket"] = "90+"
 
 	columns = [
-		{"label": _("Item"), "fieldname": "item", "fieldtype": "Link", "options": "Item", "width": 150},
-		{"label": _("Item Code"), "fieldname": "item_code", "fieldtype": "Data", "width": 130},
-		{"label": _("Item Name"), "fieldname": "item_name", "fieldtype": "Data", "width": 220},
-		{"label": _("Current Qty"), "fieldname": "current_stock_qty", "fieldtype": "Float", "width": 110},
-		{"label": _("Stock Value"), "fieldname": "stock_value", "fieldtype": "Currency", "width": 110},
-		{"label": _("Last Movement Date"), "fieldname": "last_movement_date", "fieldtype": "Date", "width": 130},
-		{"label": _("Aging Days"), "fieldname": "aging_days", "fieldtype": "Int", "width": 100},
-		{"label": _("Aging Bucket"), "fieldname": "aging_bucket", "fieldtype": "Data", "width": 100},
+		{"label": _("Item"), "fieldname": "item", "fieldtype": "Link", "options": "Item", "width": 150
+	},
+		{"label": _("Item Code"), "fieldname": "item_code", "fieldtype": "Data", "width": 130
+	},
+		{"label": _("Item Name"), "fieldname": "item_name", "fieldtype": "Data", "width": 220
+	},
+		{"label": _("Current Qty"), "fieldname": "current_stock_qty", "fieldtype": "Float", "width": 110
+	},
+		{"label": _("Stock Value"), "fieldname": "stock_value", "fieldtype": "Currency", "width": 110
+	},
+		{"label": _("Last Movement Date"), "fieldname": "last_movement_date", "fieldtype": "Date", "width": 130
+	},
+		{"label": _("Aging Days"), "fieldname": "aging_days", "fieldtype": "Int", "width": 100
+	},
+		{"label": _("Aging Bucket"), "fieldname": "aging_bucket", "fieldtype": "Data", "width": 100
+	},
 	]
 	chart = auto_chart_for_columns(data, columns)
 	return columns, data, None, chart

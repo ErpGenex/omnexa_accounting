@@ -19,9 +19,12 @@ def execute():
 		return
 
 	company = COMPANY_ABBR
-	branch = frappe.db.get_value("Branch", {"company": company}, "name")
-	sayed_current = frappe.db.get_value("GL Account", {"company": company, "account_number": "3111"}, "name")
-	elham_due = frappe.db.get_value("GL Account", {"company": company, "account_number": "1332"}, "name")
+	branch = frappe.db.get_value("Branch", {"company": company
+	}, "name")
+	sayed_current = frappe.db.get_value("GL Account", {"company": company, "account_number": "3111"
+	}, "name")
+	elham_due = frappe.db.get_value("GL Account", {"company": company, "account_number": "1332"
+	}, "name")
 
 	if frappe.db.exists("Company Partner Legal Setup", company):
 		doc = frappe.get_doc("Company Partner Legal Setup", company)
@@ -42,8 +45,8 @@ def execute():
 			"partner_name_ar": "سيد هاشم حسن",
 			"ownership_percent": 80,
 			"is_funding_partner": 1,
-			"partner_current_account": sayed_current,
-		},
+			"partner_current_account": sayed_current
+	},
 	)
 	doc.append(
 		"partners",
@@ -52,8 +55,8 @@ def execute():
 			"partner_name_ar": "إلهام مصطفى محمد أحمد",
 			"ownership_percent": 20,
 			"is_funding_partner": 0,
-			"due_from_partner_account": elham_due,
-		},
+			"due_from_partner_account": elham_due
+	},
 	)
 	doc.flags.ignore_permissions = True
 	doc.save()

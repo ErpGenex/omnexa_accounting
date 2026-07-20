@@ -16,7 +16,8 @@ def get_or_create_web_guest_customer(company: str) -> str:
 	"""One synthetic customer per company for anonymous web checkout."""
 	name = frappe.db.get_value(
 		"Customer",
-		{"company": company, "customer_name": WEB_GUEST_CUSTOMER_NAME},
+		{"company": company, "customer_name": WEB_GUEST_CUSTOMER_NAME
+	},
 		"name",
 	)
 	if name:
@@ -26,8 +27,8 @@ def get_or_create_web_guest_customer(company: str) -> str:
 			"doctype": "Customer",
 			"company": company,
 			"customer_name": WEB_GUEST_CUSTOMER_NAME,
-			"status": "Active",
-		}
+			"status": "Active"
+	}
 	)
 	doc.insert(ignore_permissions=True)
 	return doc.name

@@ -34,12 +34,18 @@ def execute(filters=None):
 
 	columns = insert_account_name_ar_column(
 		[
-			{"label": _("Company"), "fieldname": "company", "fieldtype": "Link", "options": "Company", "width": 130},
-			{"label": _("Statement"), "fieldname": "statement", "fieldtype": "Data", "width": 120},
-			{"label": _("Section"), "fieldname": "section", "fieldtype": "Data", "width": 120},
-			{"label": _("Account"), "fieldname": "account", "fieldtype": "Data", "width": 150},
-			{"label": _("Account Name"), "fieldname": "account_name", "fieldtype": "Data", "width": 200},
-			{"label": _("Amount"), "fieldname": "amount", "fieldtype": "Currency", "width": 140},
+			{"label": _("Company"), "fieldname": "company", "fieldtype": "Link", "options": "Company", "width": 130
+	},
+			{"label": _("Statement"), "fieldname": "statement", "fieldtype": "Data", "width": 120
+	},
+			{"label": _("Section"), "fieldname": "section", "fieldtype": "Data", "width": 120
+	},
+			{"label": _("Account"), "fieldname": "account", "fieldtype": "Data", "width": 150
+	},
+			{"label": _("Account Name"), "fieldname": "account_name", "fieldtype": "Data", "width": 200
+	},
+			{"label": _("Amount"), "fieldname": "amount", "fieldtype": "Currency", "width": 140
+	},
 		]
 	)
 
@@ -56,8 +62,8 @@ def execute(filters=None):
 					"account": row.get("account"),
 					"account_name": row.get("account_name"),
 					"account_name_ar": row.get("account_name_ar"),
-					"amount": flt(row.get("balance")),
-				}
+					"amount": flt(row.get("balance"))
+	}
 			)
 
 		is_filters = frappe._dict(company=co, from_date=filters.from_date, to_date=filters.to_date)
@@ -71,8 +77,8 @@ def execute(filters=None):
 					"account": row.get("account"),
 					"account_name": row.get("account_name"),
 					"account_name_ar": row.get("account_name_ar"),
-					"amount": flt(row.get("amount")),
-				}
+					"amount": flt(row.get("amount"))
+	}
 			)
 
 	msg_parts = []

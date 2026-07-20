@@ -58,40 +58,40 @@ def execute(filters=None):
 			"line_no": 1,
 			"component": _("Opening Balance"),
 			"amount": 0.0,
-			"notes": _("Opening balance for selected period."),
-		},
+			"notes": _("Opening balance for selected period.")
+	},
 		{
 			"line_no": 2,
 			"component": _("Capital Contribution Deficiency"),
 			"amount": float(capital_deficiency),
-			"notes": _("{0} unpaid ownership share of funding.").format(labels["secondary_partner_name"]),
-		},
+			"notes": _("{0} unpaid ownership share of funding.").format(labels["secondary_partner_name"])
+	},
 		{
 			"line_no": 3,
 			"component": _("Expense Contribution Deficiency"),
 			"amount": float(expense_deficiency),
-			"notes": _("{0} unpaid expense share across funded expenses.").format(labels["secondary_partner_name"]),
-		},
+			"notes": _("{0} unpaid expense share across funded expenses.").format(labels["secondary_partner_name"])
+	},
 		{
 			"line_no": 4,
 			"component": _("Loss Allocation"),
 			"amount": float(loss_secondary),
-			"notes": _("{0} share of cumulative losses.").format(labels["secondary_partner_name"]),
-		},
+			"notes": _("{0} share of cumulative losses.").format(labels["secondary_partner_name"])
+	},
 		{
 			"line_no": 5,
 			"component": _("Settlements / Payments"),
 			"amount": -float(secondary_paid),
-			"notes": _("Credits posted as settlement (Due From Partner account) for {0}.").format(labels["secondary_partner_name"]),
-		},
+			"notes": _("Credits posted as settlement (Due From Partner account) for {0}.").format(labels["secondary_partner_name"])
+	},
 		{
 			"line_no": 6,
 			"component": _("Final Amount Due"),
 			"amount": float(final_amount_due),
 			"notes": _("Partner Debt Certificate amount."),
 			"bold": 1,
-			"is_total_row": 1,
-		},
+			"is_total_row": 1
+	},
 	]
 
 	compare_year = filters.get("compare_year")
@@ -115,18 +115,26 @@ def execute(filters=None):
 				r["pct_change"] = (flt(r["difference"]) / base * 100.0) if base else None
 
 	columns = [
-		{"label": _("Line"), "fieldname": "line_no", "fieldtype": "Int", "width": 70},
-		{"label": _("Component"), "fieldname": "component", "fieldtype": "Data", "width": 260},
-		{"label": _("Amount"), "fieldname": "amount", "fieldtype": "Currency", "width": 160},
-		{"label": _("Notes"), "fieldname": "notes", "fieldtype": "Data", "width": 300},
+		{"label": _("Line"), "fieldname": "line_no", "fieldtype": "Int", "width": 70
+	},
+		{"label": _("Component"), "fieldname": "component", "fieldtype": "Data", "width": 260
+	},
+		{"label": _("Amount"), "fieldname": "amount", "fieldtype": "Currency", "width": 160
+	},
+		{"label": _("Notes"), "fieldname": "notes", "fieldtype": "Data", "width": 300
+	},
 	]
 	if compare_year:
 		columns.extend(
 			[
-				{"label": _("Compare Year"), "fieldname": "compare_year", "fieldtype": "Int", "width": 110},
-				{"label": _("Compare Amount"), "fieldname": "compare_amount", "fieldtype": "Currency", "width": 150},
-				{"label": _("Difference"), "fieldname": "difference", "fieldtype": "Currency", "width": 130},
-				{"label": _("Change %"), "fieldname": "pct_change", "fieldtype": "Percent", "width": 110},
+				{"label": _("Compare Year"), "fieldname": "compare_year", "fieldtype": "Int", "width": 110
+	},
+				{"label": _("Compare Amount"), "fieldname": "compare_amount", "fieldtype": "Currency", "width": 150
+	},
+				{"label": _("Difference"), "fieldname": "difference", "fieldtype": "Currency", "width": 130
+	},
+				{"label": _("Change %"), "fieldname": "pct_change", "fieldtype": "Percent", "width": 110
+	},
 			]
 		)
 
@@ -135,10 +143,11 @@ def execute(filters=None):
 		"Prepared for legal, arbitration, audit, and liquidation purposes."
 	)
 	chart = {
-		"data": {"labels": [r["component"] for r in rows], "datasets": [{"name": _("Amount"), "values": [flt(r["amount"]) for r in rows]}]},
+		"data": {"labels": [r["component"] for r in rows], "datasets": [{"name": _("Amount"), "values": [flt(r["amount"]) for r in rows]}]
+	},
 		"type": "bar",
 		"title": _("Legal Claim Statement"),
-		"height": 260,
+		"height": 260
 	}
 	return columns, rows, message, chart
 

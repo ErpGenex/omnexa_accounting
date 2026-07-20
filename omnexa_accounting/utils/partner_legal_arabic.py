@@ -108,8 +108,8 @@ AR_EXACT: dict[str, str] = {
 	"Liquidation cost": "تكلفة التصفية",
 	"Partner debt (due)": "مديونية الشريك (مستحق)",
 	"Net liquidation value": "صافي قيمة التصفية",
-	"Share after debt adjustment": "الحصة بعد تسوية المديونية",
-}
+	"Share after debt adjustment": "الحصة بعد تسوية المديونية"
+	}
 
 AR_PHRASE_PATTERNS: list[tuple[str, str]] = [
 	(r"^As at (.+)$", r"كما في \1"),
@@ -138,8 +138,8 @@ AR_WORD_REPLACEMENTS = {
 	"Cumulative ": "المتراكم ",
 	"Recovery ": "استرداد ",
 	"Compare ": "مقارنة ",
-	"Change ": "تغيير ",
-}
+	"Change ": "تغيير "
+	}
 
 
 def format_date_ar(value: Any) -> str:
@@ -212,7 +212,8 @@ def _account_maps(company: str) -> tuple[dict[str, str], dict[str, str]]:
 	fields = ["name", "account_number", "account_name"]
 	if frappe.db.has_column("GL Account", "account_name_ar"):
 		fields.append("account_name_ar")
-	for row in frappe.get_all("GL Account", filters={"company": company}, fields=fields, limit_page_length=0):
+	for row in frappe.get_all("GL Account", filters={"company": company
+	}, fields=fields, limit_page_length=0):
 		label = _pick_account_label(row)
 		by_id[row["name"]] = label
 		if row.get("account_number"):
@@ -360,7 +361,8 @@ def format_cell_ar(
 	if ft == "Currency":
 		return format_money_ar(value)
 	if ft == "Percent":
-		return f"{float(value or 0):.2f}٪"
+		return f"{float(value or 0):.2f
+	}٪"
 	if ft == "Float":
 		return f"{float(value or 0):,.2f}".replace(",", "٬").replace(".", "٫")
 	if ft == "Int":

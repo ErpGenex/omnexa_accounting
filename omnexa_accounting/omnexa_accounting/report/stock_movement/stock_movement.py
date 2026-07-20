@@ -62,8 +62,8 @@ def execute(filters=None):
 				"in_qty": in_qty,
 				"out_qty": out_qty,
 				"net_qty": in_qty - out_qty,
-				"stock_value": 0,
-			}
+				"stock_value": 0
+	}
 		)
 	columns = _columns()
 	chart = auto_chart_for_columns(data, columns)
@@ -72,16 +72,28 @@ def execute(filters=None):
 
 def _columns():
 	return [
-		{"label": _("Posting Date"), "fieldname": "posting_date", "fieldtype": "Date", "width": 100},
-		{"label": _("Voucher"), "fieldname": "voucher", "fieldtype": "Link", "options": "Stock Entry", "width": 130},
-		{"label": _("Purpose"), "fieldname": "purpose", "fieldtype": "Data", "width": 130},
-		{"label": _("Item"), "fieldname": "item", "fieldtype": "Link", "options": "Item", "width": 130},
-		{"label": _("Item Code"), "fieldname": "item_code", "fieldtype": "Data", "width": 120},
-		{"label": _("Source Warehouse"), "fieldname": "s_warehouse", "fieldtype": "Link", "options": "Warehouse", "width": 140},
-		{"label": _("Target Warehouse"), "fieldname": "t_warehouse", "fieldtype": "Link", "options": "Warehouse", "width": 140},
-		{"label": _("In Qty"), "fieldname": "in_qty", "fieldtype": "Float", "width": 90},
-		{"label": _("Out Qty"), "fieldname": "out_qty", "fieldtype": "Float", "width": 90},
-		{"label": _("Net Qty"), "fieldname": "net_qty", "fieldtype": "Float", "width": 90},
-		{"label": _("Value"), "fieldname": "stock_value", "fieldtype": "Currency", "width": 100},
-		{"label": _("Branch"), "fieldname": "branch", "fieldtype": "Link", "options": "Branch", "width": 120},
+		{"label": _("Posting Date"), "fieldname": "posting_date", "fieldtype": "Date", "width": 100
+	},
+		{"label": _("Voucher"), "fieldname": "voucher", "fieldtype": "Link", "options": "Stock Entry", "width": 130
+	},
+		{"label": _("Purpose"), "fieldname": "purpose", "fieldtype": "Data", "width": 130
+	},
+		{"label": _("Item"), "fieldname": "item", "fieldtype": "Link", "options": "Item", "width": 130
+	},
+		{"label": _("Item Code"), "fieldname": "item_code", "fieldtype": "Data", "width": 120
+	},
+		{"label": _("Source Warehouse"), "fieldname": "s_warehouse", "fieldtype": "Link", "options": "Warehouse", "width": 140
+	},
+		{"label": _("Target Warehouse"), "fieldname": "t_warehouse", "fieldtype": "Link", "options": "Warehouse", "width": 140
+	},
+		{"label": _("In Qty"), "fieldname": "in_qty", "fieldtype": "Float", "width": 90
+	},
+		{"label": _("Out Qty"), "fieldname": "out_qty", "fieldtype": "Float", "width": 90
+	},
+		{"label": _("Net Qty"), "fieldname": "net_qty", "fieldtype": "Float", "width": 90
+	},
+		{"label": _("Value"), "fieldname": "stock_value", "fieldtype": "Currency", "width": 100
+	},
+		{"label": _("Branch"), "fieldname": "branch", "fieldtype": "Link", "options": "Branch", "width": 120
+	},
 	]

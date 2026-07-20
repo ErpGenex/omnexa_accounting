@@ -16,13 +16,15 @@ def d(v: Any) -> Decimal:
 
 
 def get_account_by_number(company: str, account_number: str, branch: str | None = None) -> str | None:
-	filters = {"company": company, "account_number": account_number}
+	filters = {"company": company, "account_number": account_number
+	}
 	if branch:
 		filters["branch"] = branch
 	name = frappe.db.get_value("GL Account", filters, "name")
 	if name:
 		return name
-	return frappe.db.get_value("GL Account", {"company": company, "account_number": account_number}, "name")
+	return frappe.db.get_value("GL Account", {"company": company, "account_number": account_number
+	}, "name")
 
 
 def resolve_partner_accounts(company: str, filters: dict, branch: str | None = None) -> dict[str, str]:
@@ -38,14 +40,14 @@ def resolve_partner_accounts(company: str, filters: dict, branch: str | None = N
 		"secondary_due": secondary_due or "",
 		"retained_primary": retained_primary or "",
 		"retained_secondary": retained_secondary or "",
-		"current_year_result": current_year_result or "",
+		"current_year_result": current_year_result or ""
 	}
 
 
 def resolve_partner_labels(filters: dict) -> dict[str, str]:
 	return {
 		"primary_partner_name": (filters.get("primary_partner_name") or _("Primary Partner")).strip(),
-		"secondary_partner_name": (filters.get("secondary_partner_name") or _("Secondary Partner")).strip(),
+		"secondary_partner_name": (filters.get("secondary_partner_name") or _("Secondary Partner")).strip()
 	}
 
 
@@ -74,10 +76,12 @@ def yearly_expenses_funded_by_primary(
 	for y in years:
 		params = {
 			"company": company,
-			"from_date": f"{y}-01-01",
-			"to_date": f"{y}-12-31",
-			"primary_current": primary_current_account,
-		}
+			"from_date": f"{y
+	}-01-01",
+			"to_date": f"{y
+	}-12-31",
+			"primary_current": primary_current_account
+	}
 		conds = ["je.company=%(company)s", "je.docstatus=1", "je.posting_date BETWEEN %(from_date)s AND %(to_date)s"]
 		if branch and frappe.get_meta("Journal Entry").has_field("branch"):
 			conds.append("je.branch=%(branch)s")
@@ -116,7 +120,10 @@ def yearly_secondary_settlements(
 		return {y: Decimal("0") for y in years}
 	out: dict[int, Decimal] = {}
 	for y in years:
-		params = {"company": company, "from_date": f"{y}-01-01", "to_date": f"{y}-12-31", "acc": secondary_due_account}
+		params = {"company": company, "from_date": f"{y
+	}-01-01", "to_date": f"{y
+	}-12-31", "acc": secondary_due_account
+	}
 		conds = ["je.company=%(company)s", "je.docstatus=1", "je.posting_date BETWEEN %(from_date)s AND %(to_date)s"]
 		if branch and frappe.get_meta("Journal Entry").has_field("branch"):
 			conds.append("je.branch=%(branch)s")
@@ -138,7 +145,9 @@ def yearly_secondary_settlements(
 def yearly_net_results(company: str, branch: str | None, years: list[int]) -> dict[int, Decimal]:
 	out: dict[int, Decimal] = {}
 	for y in years:
-		params = {"company": company, "from_date": f"{y}-01-01", "to_date": f"{y}-12-31"}
+		params = {"company": company, "from_date": f"{y
+	}-01-01", "to_date": f"{y}-12-31"
+	}
 		conds = ["je.company=%(company)s", "je.docstatus=1", "je.posting_date BETWEEN %(from_date)s AND %(to_date)s"]
 		if branch and frappe.get_meta("Journal Entry").has_field("branch"):
 			conds.append("je.branch=%(branch)s")
@@ -205,8 +214,8 @@ def partner_debt_rows(
 				"secondary_share": float(share),
 				"secondary_paid": float(paid_y),
 				"debt_year": float(debt),
-				"cumulative_debt": float(cum),
-			}
+				"cumulative_debt": float(cum)
+	}
 		)
 	return rows
 
@@ -245,8 +254,8 @@ def generate_court_evidence_package(**filters) -> dict:
 				"year": y,
 				"net_result": float(net),
 				"secondary_share": float(secondary_share),
-				"cumulative_loss_share": float(loss_cum),
-			}
+				"cumulative_loss_share": float(loss_cum)
+	}
 		)
 	final_debt = debt_rows[-1]["cumulative_debt"] if debt_rows else 0.0
 	return {
@@ -264,14 +273,13 @@ def generate_court_evidence_package(**filters) -> dict:
 			"title_en": "Partner Debt Certificate",
 			"debtor_partner": labels["secondary_partner_name"],
 			"funding_partner": labels["primary_partner_name"],
-			"final_amount_due": float(final_debt),
-		},
+			"final_amount_due": float(final_debt)
+	},
 		"report_routes": {
 			"partner_debt_statement": "/app/query-report/Partner Debt Statement",
 			"partner_loss_allocation_report": "/app/query-report/Partner Loss Allocation Report",
 			"partner_recovery_report": "/app/query-report/Partner Recovery Report",
 			"legal_claim_statement": "/app/query-report/Legal Claim Statement",
-			"liquidation_historical_report": "/app/query-report/Liquidation Historical Report",
-		},
+			"liquidation_historical_report": "/app/query-report/Liquidation Historical Report"}
 	}
 

@@ -29,8 +29,10 @@ def execute(filters=None):
 		as_dict=True,
 	)
 	columns = [
-		{"label": _("User"), "fieldname": "user", "fieldtype": "Link", "options": "User", "width": 200},
-		{"label": _("Permission rows"), "fieldname": "permission_rows", "fieldtype": "Int", "width": 140},
+		{"label": _("User"), "fieldname": "user", "fieldtype": "Link", "options": "User", "width": 200
+	},
+		{"label": _("Permission rows"), "fieldname": "permission_rows", "fieldtype": "Int", "width": 140
+	},
 	]
 	chart = auto_chart_for_columns(rows, columns)
 	return columns, rows, None, chart

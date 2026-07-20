@@ -29,19 +29,29 @@ def execute(filters=None):
 
 	columns = insert_account_name_ar_column(
 		[
-		{"label": _("Company"), "fieldname": "company", "fieldtype": "Link", "options": "Company", "width": 140},
-		{"label": _("Account"), "fieldname": "account", "fieldtype": "Link", "options": "GL Account", "width": 170},
-		{"label": _("Account Name"), "fieldname": "account_name", "fieldtype": "Data", "width": 180},
-		{"label": _("Account Type"), "fieldname": "account_type", "fieldtype": "Data", "width": 100},
+		{"label": _("Company"), "fieldname": "company", "fieldtype": "Link", "options": "Company", "width": 140
+	},
+		{"label": _("Account"), "fieldname": "account", "fieldtype": "Link", "options": "GL Account", "width": 170
+	},
+		{"label": _("Account Name"), "fieldname": "account_name", "fieldtype": "Data", "width": 180
+	},
+		{"label": _("Account Type"), "fieldname": "account_type", "fieldtype": "Data", "width": 100
+	},
 		]
 	)
 	columns += [
-		{"label": _("Opening Dr"), "fieldname": "opening_debit", "fieldtype": "Currency", "width": 110},
-		{"label": _("Opening Cr"), "fieldname": "opening_credit", "fieldtype": "Currency", "width": 110},
-		{"label": _("Period Dr"), "fieldname": "period_debit", "fieldtype": "Currency", "width": 110},
-		{"label": _("Period Cr"), "fieldname": "period_credit", "fieldtype": "Currency", "width": 110},
-		{"label": _("Closing Dr"), "fieldname": "closing_debit", "fieldtype": "Currency", "width": 110},
-		{"label": _("Closing Cr"), "fieldname": "closing_credit", "fieldtype": "Currency", "width": 110},
+		{"label": _("Opening Dr"), "fieldname": "opening_debit", "fieldtype": "Currency", "width": 110
+	},
+		{"label": _("Opening Cr"), "fieldname": "opening_credit", "fieldtype": "Currency", "width": 110
+	},
+		{"label": _("Period Dr"), "fieldname": "period_debit", "fieldtype": "Currency", "width": 110
+	},
+		{"label": _("Period Cr"), "fieldname": "period_credit", "fieldtype": "Currency", "width": 110
+	},
+		{"label": _("Closing Dr"), "fieldname": "closing_debit", "fieldtype": "Currency", "width": 110
+	},
+		{"label": _("Closing Cr"), "fieldname": "closing_credit", "fieldtype": "Currency", "width": 110
+	},
 	]
 
 	data = []

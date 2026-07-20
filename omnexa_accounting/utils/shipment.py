@@ -21,7 +21,8 @@ def create_shipment_from_invoice(doctype: str, docname: str, carrier=None):
 
 	inv = frappe.get_doc(doctype, docname)
 	if getattr(inv, "shipment_record", None) and frappe.db.exists("Shipment", inv.shipment_record):
-		return {"shipment": inv.shipment_record, "already_exists": True}
+		return {"shipment": inv.shipment_record, "already_exists": True
+	}
 
 	carrier_name = carrier or getattr(inv, "shipment_carrier", None)
 	if not carrier_name:
@@ -44,7 +45,8 @@ def create_shipment_from_invoice(doctype: str, docname: str, carrier=None):
 	if inv.meta.has_field("shipment_reference") and not getattr(inv, "shipment_reference", None):
 		inv.db_set("shipment_reference", shipment.name, update_modified=False)
 
-	return {"shipment": shipment.name, "already_exists": False}
+	return {"shipment": shipment.name, "already_exists": False
+	}
 
 
 @frappe.whitelist()
@@ -63,5 +65,6 @@ def update_shipment_tracking(shipment: str, tracking_number: str):
 		if inv.meta.has_field("shipment_record"):
 			inv.db_set("shipment_record", doc.name, update_modified=False)
 
-	return {"ok": True, "tracking_url": doc.tracking_url}
+	return {"ok": True, "tracking_url": doc.tracking_url
+	}
 

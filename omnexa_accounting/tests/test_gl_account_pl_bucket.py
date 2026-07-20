@@ -22,13 +22,14 @@ class TestGLAccountPLBucket(FrappeTestCase):
 			{
 				"doctype": "GL Account",
 				"company": self.company,
-				"account_number": f"T{random_string(6)}",
+				"account_number": f"T{random_string(6)
+	}",
 				"account_name": "Test Asset PL",
 				"is_group": 0,
 				"account_class": "Asset",
 				"account_type": "Asset",
-				"pl_bucket": "COGS",
-			}
+				"pl_bucket": "COGS"
+	}
 		)
 		with self.assertRaises(ValidationError):
 			doc.insert(ignore_permissions=True)

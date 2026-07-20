@@ -18,7 +18,8 @@ class TestBudgetPurchaseRequest(FrappeTestCase):
 
 	def _ensure_branch(self):
 		existing = frappe.db.get_value(
-			"Branch", {"company": self.company, "status": "Active"}, "name", order_by="creation asc"
+			"Branch", {"company": self.company, "status": "Active"
+	}, "name", order_by="creation asc"
 		)
 		if existing:
 			return existing
@@ -57,13 +58,15 @@ class TestBudgetPurchaseRequest(FrappeTestCase):
 		bud.company = self.company
 		bud.from_date = add_months(today(), -1)
 		bud.to_date = today()
-		bud.append("budget_lines", {"gl_account": acc, "budget_amount": 1000})
+		bud.append("budget_lines", {"gl_account": acc, "budget_amount": 1000
+	})
 		bud.insert(ignore_permissions=True)
 		bud.submit()
 		self.addCleanup(
 			lambda: self._cancel_and_delete("Budget", bud.name),
 		)
-		out = bva_exec({"budget": bud.name})
+		out = bva_exec({"budget": bud.name
+	})
 		self.assertTrue(out[0])
 		self.assertEqual(len(out[1]), 1)
 		self.assertEqual(out[1][0]["gl_account"], acc)
@@ -73,7 +76,9 @@ class TestBudgetPurchaseRequest(FrappeTestCase):
 		pr.company = self.company
 		pr.branch = self.branch
 		pr.required_by = today()
-		pr.append("items", {"item_code": f"IT-{random_string(4)}", "qty": 2})
+		pr.append("items", {"item_code": f"IT-{random_string(4)
+	}", "qty": 2
+	})
 		pr.insert(ignore_permissions=True)
 		pr.submit()
 		self.addCleanup(lambda: self._cancel_and_delete("Purchase Request", pr.name))
@@ -83,7 +88,8 @@ class TestBudgetPurchaseRequest(FrappeTestCase):
 		po.supplier = self._supplier()
 		po.posting_date = today()
 		po.purchase_request = pr.name
-		po.append("items", {"item_code": "LINE-1", "qty": 1, "rate": 10})
+		po.append("items", {"item_code": "LINE-1", "qty": 1, "rate": 10
+	})
 		po.insert(ignore_permissions=True)
 		po.submit()
 		self.addCleanup(lambda: self._cancel_and_delete("Purchase Order", po.name))
@@ -93,7 +99,9 @@ class TestBudgetPurchaseRequest(FrappeTestCase):
 		pr.company = self.company
 		pr.branch = self.branch
 		pr.required_by = today()
-		pr.append("items", {"item_code": f"IT-{random_string(4)}", "qty": 1})
+		pr.append("items", {"item_code": f"IT-{random_string(4)
+	}", "qty": 1
+	})
 		pr.insert(ignore_permissions=True)
 		self.addCleanup(lambda: frappe.delete_doc("Purchase Request", pr.name, force=1, ignore_permissions=True))
 
@@ -102,7 +110,8 @@ class TestBudgetPurchaseRequest(FrappeTestCase):
 		po.supplier = self._supplier()
 		po.posting_date = today()
 		po.purchase_request = pr.name
-		po.append("items", {"item_code": "LINE-1", "qty": 1, "rate": 10})
+		po.append("items", {"item_code": "LINE-1", "qty": 1, "rate": 10
+	})
 		with self.assertRaises(frappe.ValidationError):
 			po.insert(ignore_permissions=True)
 

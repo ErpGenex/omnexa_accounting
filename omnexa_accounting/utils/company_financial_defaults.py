@@ -29,8 +29,8 @@ COMPANY_GL_CODE_BY_FIELD: dict[str, str] = {
 	"default_service_revenue_gl": "4102",
 	"default_cogs_gl": "5101",
 	"default_opex_gl": "5102",
-	"default_finance_cost_gl": "5109",
-}
+	"default_finance_cost_gl": "5109"
+	}
 
 
 def _gl_exists() -> bool:
@@ -43,14 +43,16 @@ def get_company_gl_by_account_number(company: str, account_number: str, branch: 
 	if branch:
 		match = frappe.db.get_value(
 			"GL Account",
-			{"company": company, "account_number": account_number, "branch": branch},
+			{"company": company, "account_number": account_number, "branch": branch
+	},
 			"name",
 		)
 		if match:
 			return match
 	rows = frappe.get_all(
 		"GL Account",
-		filters={"company": company, "account_number": account_number, "branch": branch},
+		filters={"company": company, "account_number": account_number, "branch": branch
+	},
 		pluck="name",
 		limit=1,
 	)
@@ -58,7 +60,8 @@ def get_company_gl_by_account_number(company: str, account_number: str, branch: 
 		return rows[0]
 	rows = frappe.get_all(
 		"GL Account",
-		filters={"company": company, "account_number": account_number},
+		filters={"company": company, "account_number": account_number
+	},
 		fields=["name", "branch"],
 	)
 	for r in rows:
@@ -95,7 +98,8 @@ def apply_company_default_gl_from_coa(
 				frappe.db.set_value("Company", company, fieldname, gl, update_modified=False)
 	if updated and touch_modified:
 		doc.save(ignore_permissions=True)
-	return {"ok": True, "company": company, "updated_fields": updated, "branch_filter": branch}
+	return {"ok": True, "company": company, "updated_fields": updated, "branch_filter": branch
+	}
 
 
 def sync_global_defaults_from_company(company_name: str, currency: str | None = None) -> None:
@@ -156,8 +160,8 @@ BRANCH_TO_COMPANY_DEFAULT_MAP: dict[str, str] = {
 	"branch_default_petty_cash_gl": "default_petty_cash_gl",
 	"branch_default_bank_gl": "default_bank_operating_gl",
 	"branch_default_receivable_gl": "default_receivable_gl",
-	"branch_default_trade_payable_gl": "default_trade_payable_gl",
-}
+	"branch_default_trade_payable_gl": "default_trade_payable_gl"
+	}
 
 
 def apply_branch_default_gl_from_company(company: str, branch: str, overwrite: int | bool = 0) -> dict:
@@ -184,7 +188,8 @@ def apply_branch_default_gl_from_company(company: str, branch: str, overwrite: i
 			updated.append(branch_field)
 	if updated:
 		branch_doc.save(ignore_permissions=True)
-	return {"ok": True, "company": company, "branch": branch, "updated_fields": updated}
+	return {"ok": True, "company": company, "branch": branch, "updated_fields": updated
+	}
 
 
 def run_company_financial_validations(doc, method=None):

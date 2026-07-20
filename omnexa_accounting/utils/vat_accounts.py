@@ -37,7 +37,7 @@ def resolve_vat_accounts(company: str, branch: str | None = None) -> dict:
 		"input_vat_gl": input_acc,
 		"output_vat_gl": output_acc,
 		"input_source": input_src,
-		"output_source": output_src,
+		"output_source": output_src
 	}
 
 
@@ -74,7 +74,8 @@ def _resolve_side(
 
 
 def _find_by_name_hints(company: str, branch: str | None, hints: tuple[str, ...]) -> str | None:
-	filters = {"company": company, "is_group": 0}
+	filters = {"company": company, "is_group": 0
+	}
 	if branch:
 		filters["branch"] = branch
 	rows = frappe.get_all(

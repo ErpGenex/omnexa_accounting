@@ -28,13 +28,20 @@ def execute(filters=None):
 		conditions.append("je.branch in %(allowed_branches)s")
 
 	columns = [
-		{"label": _("Posting Date"), "fieldname": "posting_date", "fieldtype": "Date", "width": 100},
-		{"label": _("Party"), "fieldname": "party", "fieldtype": "Data", "width": 150},
-		{"label": _("Account"), "fieldname": "account", "fieldtype": "Link", "options": "GL Account", "width": 170},
-		{"label": _("Voucher"), "fieldname": "voucher", "fieldtype": "Link", "options": "Journal Entry", "width": 130},
-		{"label": _("Debit"), "fieldname": "debit", "fieldtype": "Currency", "width": 120},
-		{"label": _("Credit"), "fieldname": "credit", "fieldtype": "Currency", "width": 120},
-		{"label": _("Balance"), "fieldname": "balance", "fieldtype": "Currency", "width": 120},
+		{"label": _("Posting Date"), "fieldname": "posting_date", "fieldtype": "Date", "width": 100
+	},
+		{"label": _("Party"), "fieldname": "party", "fieldtype": "Data", "width": 150
+	},
+		{"label": _("Account"), "fieldname": "account", "fieldtype": "Link", "options": "GL Account", "width": 170
+	},
+		{"label": _("Voucher"), "fieldname": "voucher", "fieldtype": "Link", "options": "Journal Entry", "width": 130
+	},
+		{"label": _("Debit"), "fieldname": "debit", "fieldtype": "Currency", "width": 120
+	},
+		{"label": _("Credit"), "fieldname": "credit", "fieldtype": "Currency", "width": 120
+	},
+		{"label": _("Balance"), "fieldname": "balance", "fieldtype": "Currency", "width": 120
+	},
 	]
 	rows = frappe.db.sql(
 		f"""

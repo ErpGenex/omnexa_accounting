@@ -13,12 +13,18 @@ def execute(filters=None):
 		frappe.throw(_("From Date and To Date are required."), title=_("Filters"))
 
 	columns = [
-		{"label": _("Section"), "fieldname": "section", "fieldtype": "Data", "width": 220},
-		{"label": _("Account"), "fieldname": "account", "fieldtype": "Link", "options": "GL Account", "width": 180},
-		{"label": _("Account Name"), "fieldname": "account_name", "fieldtype": "Data", "width": 220},
-		{"label": _("Opening Balance"), "fieldname": "opening_balance", "fieldtype": "Currency", "width": 140},
-		{"label": _("Movements in Period"), "fieldname": "period_movement", "fieldtype": "Currency", "width": 160},
-		{"label": _("Closing Balance"), "fieldname": "closing_balance", "fieldtype": "Currency", "width": 140},
+		{"label": _("Section"), "fieldname": "section", "fieldtype": "Data", "width": 220
+	},
+		{"label": _("Account"), "fieldname": "account", "fieldtype": "Link", "options": "GL Account", "width": 180
+	},
+		{"label": _("Account Name"), "fieldname": "account_name", "fieldtype": "Data", "width": 220
+	},
+		{"label": _("Opening Balance"), "fieldname": "opening_balance", "fieldtype": "Currency", "width": 140
+	},
+		{"label": _("Movements in Period"), "fieldname": "period_movement", "fieldtype": "Currency", "width": 160
+	},
+		{"label": _("Closing Balance"), "fieldname": "closing_balance", "fieldtype": "Currency", "width": 140
+	},
 	]
 	data = _build_rows(filters)
 	return columns, data
@@ -60,8 +66,8 @@ def _build_rows(filters):
 			"section": _("Opening Equity"),
 			"account_name": _("Statement of Changes in Equity"),
 			"bold": 1,
-			"year_header": 1,
-		}
+			"year_header": 1
+	}
 	]
 	total_opening = total_movement = total_closing = 0.0
 
@@ -79,8 +85,8 @@ def _build_rows(filters):
 				"account_name": row.account_name,
 				"opening_balance": opening,
 				"period_movement": movement,
-				"closing_balance": closing,
-			}
+				"closing_balance": closing
+	}
 		)
 
 	data.extend(
@@ -90,22 +96,22 @@ def _build_rows(filters):
 				"account_name": _("Total Opening Equity"),
 				"opening_balance": total_opening,
 				"bold": 1,
-				"is_total_row": 1,
-			},
+				"is_total_row": 1
+	},
 			{
 				"section": _("Total Equity"),
 				"account_name": _("Total Movements in Period"),
 				"period_movement": total_movement,
 				"bold": 1,
-				"is_total_row": 1,
-			},
+				"is_total_row": 1
+	},
 			{
 				"section": _("Total Equity"),
 				"account_name": _("Total Closing Equity"),
 				"closing_balance": total_closing,
 				"bold": 1,
-				"is_total_row": 1,
-			},
+				"is_total_row": 1
+	},
 		]
 	)
 	return data

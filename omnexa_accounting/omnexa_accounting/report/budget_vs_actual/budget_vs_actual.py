@@ -61,8 +61,8 @@ def execute(filters=None):
 				"period_month": row.period_month or None,
 				"budget_amount": budget_amt,
 				"actual_amount": actual,
-				"variance": variance,
-			}
+				"variance": variance
+	}
 		)
 
 	msg = _(
@@ -89,7 +89,7 @@ def _line_actual(
 		"company": company,
 		"from_date": from_date,
 		"to_date": to_date,
-		"account": gl_account,
+		"account": gl_account
 	}
 	conditions = [
 		"je.company = %(company)s",
@@ -145,12 +145,20 @@ def _line_actual(
 
 def _cols():
 	return [
-		{"label": _("GL Account"), "fieldname": "gl_account", "fieldtype": "Link", "options": "GL Account", "width": 150},
-		{"label": _("Account Name"), "fieldname": "account_name", "fieldtype": "Data", "width": 180},
-		{"label": _("Type"), "fieldname": "account_type", "fieldtype": "Data", "width": 90},
-		{"label": _("Line Cost Center"), "fieldname": "line_cost_center", "fieldtype": "Data", "width": 120},
-		{"label": _("For Month"), "fieldname": "period_month", "fieldtype": "Date", "width": 100},
-		{"label": _("Budget"), "fieldname": "budget_amount", "fieldtype": "Currency", "width": 110},
-		{"label": _("Actual"), "fieldname": "actual_amount", "fieldtype": "Currency", "width": 110},
-		{"label": _("Variance"), "fieldname": "variance", "fieldtype": "Currency", "width": 110},
+		{"label": _("GL Account"), "fieldname": "gl_account", "fieldtype": "Link", "options": "GL Account", "width": 150
+	},
+		{"label": _("Account Name"), "fieldname": "account_name", "fieldtype": "Data", "width": 180
+	},
+		{"label": _("Type"), "fieldname": "account_type", "fieldtype": "Data", "width": 90
+	},
+		{"label": _("Line Cost Center"), "fieldname": "line_cost_center", "fieldtype": "Data", "width": 120
+	},
+		{"label": _("For Month"), "fieldname": "period_month", "fieldtype": "Date", "width": 100
+	},
+		{"label": _("Budget"), "fieldname": "budget_amount", "fieldtype": "Currency", "width": 110
+	},
+		{"label": _("Actual"), "fieldname": "actual_amount", "fieldtype": "Currency", "width": 110
+	},
+		{"label": _("Variance"), "fieldname": "variance", "fieldtype": "Currency", "width": 110
+	},
 	]

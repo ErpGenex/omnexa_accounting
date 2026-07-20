@@ -48,31 +48,36 @@ def execute(filters=None):
 			"ownership_pct": float(primary_pct * 100),
 			"required_funding": float(required_primary),
 			"actual_funding": float(actual_primary),
-			"difference": float(actual_primary - required_primary),
-		},
+			"difference": float(actual_primary - required_primary)
+	},
 		{
 			"partner": labels["secondary_partner_name"],
 			"ownership_pct": float(secondary_pct * 100),
 			"required_funding": float(required_secondary),
 			"actual_funding": float(actual_secondary),
-			"difference": float(actual_secondary - required_secondary),
-		},
+			"difference": float(actual_secondary - required_secondary)
+	},
 	]
 	columns = [
-		{"label": _("Partner"), "fieldname": "partner", "fieldtype": "Data", "width": 180},
-		{"label": _("Ownership %"), "fieldname": "ownership_pct", "fieldtype": "Percent", "width": 120},
-		{"label": _("Required Funding"), "fieldname": "required_funding", "fieldtype": "Currency", "width": 160},
-		{"label": _("Actual Funding"), "fieldname": "actual_funding", "fieldtype": "Currency", "width": 160},
-		{"label": _("Difference"), "fieldname": "difference", "fieldtype": "Currency", "width": 140},
+		{"label": _("Partner"), "fieldname": "partner", "fieldtype": "Data", "width": 180
+	},
+		{"label": _("Ownership %"), "fieldname": "ownership_pct", "fieldtype": "Percent", "width": 120
+	},
+		{"label": _("Required Funding"), "fieldname": "required_funding", "fieldtype": "Currency", "width": 160
+	},
+		{"label": _("Actual Funding"), "fieldname": "actual_funding", "fieldtype": "Currency", "width": 160
+	},
+		{"label": _("Difference"), "fieldname": "difference", "fieldtype": "Currency", "width": 140
+	},
 	]
 	chart = {
 		"data": {
 			"labels": [r["partner"] for r in out],
-			"datasets": [{"name": _("Difference"), "values": [r["difference"] for r in out]}],
-		},
+			"datasets": [{"name": _("Difference"), "values": [r["difference"] for r in out]}]
+	},
 		"type": "bar",
 		"title": _("Partner Contribution Gap"),
-		"height": 240,
+		"height": 240
 	}
 	return columns, out, None, chart
 

@@ -74,8 +74,8 @@ class LandedCostVoucher(Document):
 				row.name,
 				{
 					"landed_cost_amount": flt(share),
-					"landed_rate": flt(landed_rate),
-				},
+					"landed_rate": flt(landed_rate)
+	},
 				update_modified=False,
 			)
 
@@ -87,7 +87,7 @@ class LandedCostVoucher(Document):
 				row.name,
 				{
 					"landed_cost_amount": 0,
-					"landed_rate": flt(row.rate),
-				},
+					"landed_rate": flt(row.rate)
+	},
 				update_modified=False,
 			)

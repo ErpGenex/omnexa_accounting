@@ -25,14 +25,16 @@ def execute(filters=None):
 			AND IFNULL(inventory_control_account, '') != ''
 			AND (company = %(company)s OR IFNULL(company, '') = '')
 		""",
-		{"company": filters.company},
+		{"company": filters.company
+	},
 		as_dict=True,
 	)
 	if not items:
 		return _cols(), [], _("No items with Inventory Control GL set."), None, None, False
 
 	accounts = list({i.inventory_control_account for i in items})
-	params = {"company": filters.company, "as_of": filters.as_of_date, "accounts": tuple(accounts)}
+	params = {"company": filters.company, "as_of": filters.as_of_date, "accounts": tuple(accounts)
+	}
 	balances = dict(
 		frappe.db.sql(
 			"""
@@ -69,8 +71,7 @@ def execute(filters=None):
 					"item_code": it.item_code,
 					"item_name": it.item_name or "",
 					"qty": qty,
-					"allocated_value": flt(val, 2),
-				}
+					"allocated_value": flt(val, 2)}
 			)
 
 	data.sort(key=lambda r: (r["gl_account"], r["item_code"] or ""))
@@ -84,10 +85,16 @@ def execute(filters=None):
 	return columns, data, msg, chart, None, False
 def _cols():
 	return [
-		{"label": _("Control GL"), "fieldname": "gl_account", "fieldtype": "Link", "options": "GL Account", "width": 160},
-		{"label": _("Item"), "fieldname": "item", "fieldtype": "Link", "options": "Item", "width": 160},
-		{"label": _("Item Code"), "fieldname": "item_code", "fieldtype": "Data", "width": 130},
-		{"label": _("Item Name"), "fieldname": "item_name", "fieldtype": "Data", "width": 200},
-		{"label": _("Qty"), "fieldname": "qty", "fieldtype": "Float", "width": 90},
-		{"label": _("Allocated GL value"), "fieldname": "allocated_value", "fieldtype": "Currency", "width": 150},
+		{"label": _("Control GL"), "fieldname": "gl_account", "fieldtype": "Link", "options": "GL Account", "width": 160
+	},
+		{"label": _("Item"), "fieldname": "item", "fieldtype": "Link", "options": "Item", "width": 160
+	},
+		{"label": _("Item Code"), "fieldname": "item_code", "fieldtype": "Data", "width": 130
+	},
+		{"label": _("Item Name"), "fieldname": "item_name", "fieldtype": "Data", "width": 200
+	},
+		{"label": _("Qty"), "fieldname": "qty", "fieldtype": "Float", "width": 90
+	},
+		{"label": _("Allocated GL value"), "fieldname": "allocated_value", "fieldtype": "Currency", "width": 150
+	},
 	]

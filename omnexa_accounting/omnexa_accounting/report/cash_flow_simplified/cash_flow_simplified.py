@@ -22,7 +22,7 @@ def execute(filters=None):
 	params = {
 		"company": filters.company,
 		"from_date": filters.from_date,
-		"to_date": filters.to_date,
+		"to_date": filters.to_date
 	}
 
 	pe_conditions = [
@@ -85,22 +85,32 @@ def execute(filters=None):
 	indicative_total = flt(pe_net + bank_je_net)
 
 	columns = [
-		{"label": _("Section"), "fieldname": "section", "fieldtype": "Data", "width": 320},
-		{"label": _("Amount"), "fieldname": "amount", "fieldtype": "Currency", "width": 160},
+		{"label": _("Section"), "fieldname": "section", "fieldtype": "Data", "width": 320
+	},
+		{"label": _("Amount"), "fieldname": "amount", "fieldtype": "Currency", "width": 160
+	},
 	]
 
 	data = [
-		{"section": _("Receipts from customers (Payment Entry)"), "amount": receipts},
-		{"section": _("Payments to suppliers (Payment Entry)"), "amount": payments},
-		{"section": _("Net from Payment Entry (receipts − payments)"), "amount": pe_net},
-		{"section": _("Bank / cash GL — Journal Entry (net debit − credit)"), "amount": bank_je_net},
-		{"section": _("Indicative total (PE net + bank JE net)"), "amount": indicative_total},
+		{"section": _("Receipts from customers (Payment Entry)"), "amount": receipts
+	},
+		{"section": _("Payments to suppliers (Payment Entry)"), "amount": payments
+	},
+		{"section": _("Net from Payment Entry (receipts − payments)"), "amount": pe_net
+	},
+		{"section": _("Bank / cash GL — Journal Entry (net debit − credit)"), "amount": bank_je_net
+	},
+		{"section": _("Indicative total (PE net + bank JE net)"), "amount": indicative_total
+	},
 	]
 
 	report_summary = [
-		{"value": receipts, "label": _("Receipts"), "datatype": "Currency"},
-		{"value": payments, "label": _("Payments"), "datatype": "Currency"},
-		{"value": indicative_total, "label": _("Indicative total"), "datatype": "Currency"},
+		{"value": receipts, "label": _("Receipts"), "datatype": "Currency"
+	},
+		{"value": payments, "label": _("Payments"), "datatype": "Currency"
+	},
+		{"value": indicative_total, "label": _("Indicative total"), "datatype": "Currency"
+	},
 	]
 
 	msg = _(
@@ -113,7 +123,9 @@ def execute(filters=None):
 
 def _empty():
 	columns = [
-		{"label": _("Section"), "fieldname": "section", "fieldtype": "Data", "width": 320},
-		{"label": _("Amount"), "fieldname": "amount", "fieldtype": "Currency", "width": 160},
+		{"label": _("Section"), "fieldname": "section", "fieldtype": "Data", "width": 320
+	},
+		{"label": _("Amount"), "fieldname": "amount", "fieldtype": "Currency", "width": 160
+	},
 	]
 	return columns, [], None, None, [], True

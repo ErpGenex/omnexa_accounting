@@ -15,7 +15,8 @@ def execute(filters=None):
 	if not filters.get("company"):
 		frappe.throw(_("Company is required."), title=_("Filters"))
 
-	params = {"company": filters.company}
+	params = {"company": filters.company
+	}
 	conditions = [
 		"po.docstatus = 1",
 		"po.company = %(company)s",
@@ -66,13 +67,20 @@ def execute(filters=None):
 			row["on_time"] = _("No receipt")
 
 	columns = [
-		{"label": _("Purchase Order"), "fieldname": "purchase_order", "fieldtype": "Link", "options": "Purchase Order", "width": 150},
-		{"label": _("Supplier"), "fieldname": "supplier", "fieldtype": "Link", "options": "Supplier", "width": 160},
-		{"label": _("PO Date"), "fieldname": "po_date", "fieldtype": "Date", "width": 110},
-		{"label": _("Expected Delivery"), "fieldname": "expected_delivery_date", "fieldtype": "Date", "width": 130},
-		{"label": _("First Receipt Date"), "fieldname": "first_receipt_date", "fieldtype": "Date", "width": 130},
-		{"label": _("Delay (days vs expected)"), "fieldname": "delay_days_vs_expected", "fieldtype": "Int", "width": 130},
-		{"label": _("On time"), "fieldname": "on_time", "fieldtype": "Data", "width": 100},
+		{"label": _("Purchase Order"), "fieldname": "purchase_order", "fieldtype": "Link", "options": "Purchase Order", "width": 150
+	},
+		{"label": _("Supplier"), "fieldname": "supplier", "fieldtype": "Link", "options": "Supplier", "width": 160
+	},
+		{"label": _("PO Date"), "fieldname": "po_date", "fieldtype": "Date", "width": 110
+	},
+		{"label": _("Expected Delivery"), "fieldname": "expected_delivery_date", "fieldtype": "Date", "width": 130
+	},
+		{"label": _("First Receipt Date"), "fieldname": "first_receipt_date", "fieldtype": "Date", "width": 130
+	},
+		{"label": _("Delay (days vs expected)"), "fieldname": "delay_days_vs_expected", "fieldtype": "Int", "width": 130
+	},
+		{"label": _("On time"), "fieldname": "on_time", "fieldtype": "Data", "width": 100
+	},
 	]
 
 	msg = _("Only Purchase Orders with Expected Delivery Date set are included.")

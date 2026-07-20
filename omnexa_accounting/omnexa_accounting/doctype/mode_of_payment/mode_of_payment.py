@@ -10,7 +10,8 @@ class ModeofPayment(Document):
 	def validate(self):
 		existing = frappe.db.get_value(
 			"Mode of Payment",
-			{"company": self.company, "mode_name": self.mode_name},
+			{"company": self.company, "mode_name": self.mode_name
+	},
 			"name",
 		)
 		if existing and (not self.name or existing != self.name):

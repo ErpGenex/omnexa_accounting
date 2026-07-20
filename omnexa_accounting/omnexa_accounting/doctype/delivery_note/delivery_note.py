@@ -104,7 +104,8 @@ class DeliveryNote(Document):
 			ordered[_sales_chain_line_key(getattr(r, "item", None), getattr(r, "item_code", None))] += flt(r.qty)
 
 		conds = ["dn.sales_order = %(so)s", "dn.docstatus = 1"]
-		params = {"so": self.sales_order}
+		params = {"so": self.sales_order
+	}
 		if getattr(self, "name", None):
 			conds.append("dn.name != %(cur)s")
 			params["cur"] = self.name

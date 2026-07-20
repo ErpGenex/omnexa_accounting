@@ -18,15 +18,24 @@ def execute(filters=None):
 	) or []
 
 	columns = [
-		{"label": _("Payment Entry"), "fieldname": "name", "fieldtype": "Link", "options": "Payment Entry", "width": 170},
-		{"label": _("Posting Date"), "fieldname": "posting_date", "fieldtype": "Date", "width": 110},
-		{"label": _("Party Type"), "fieldname": "party_type", "fieldtype": "Data", "width": 100},
-		{"label": _("Party"), "fieldname": "party", "fieldtype": "Dynamic Link", "options": "party_type", "width": 180},
-		{"label": _("Paid Amount"), "fieldname": "paid_amount", "fieldtype": "Currency", "width": 120},
-		{"label": _("Mode of Payment"), "fieldname": "mode_of_payment", "fieldtype": "Link", "options": "Mode of Payment", "width": 130},
-		{"label": _("Remittance Ref"), "fieldname": "remittance_reference", "fieldtype": "Data", "width": 140},
-		{"label": _("Remittance Date"), "fieldname": "remittance_date", "fieldtype": "Date", "width": 120},
-		{"label": _("Bank Ref"), "fieldname": "remittance_bank_reference", "fieldtype": "Data", "width": 150},
+		{"label": _("Payment Entry"), "fieldname": "name", "fieldtype": "Link", "options": "Payment Entry", "width": 170
+	},
+		{"label": _("Posting Date"), "fieldname": "posting_date", "fieldtype": "Date", "width": 110
+	},
+		{"label": _("Party Type"), "fieldname": "party_type", "fieldtype": "Data", "width": 100
+	},
+		{"label": _("Party"), "fieldname": "party", "fieldtype": "Dynamic Link", "options": "party_type", "width": 180
+	},
+		{"label": _("Paid Amount"), "fieldname": "paid_amount", "fieldtype": "Currency", "width": 120
+	},
+		{"label": _("Mode of Payment"), "fieldname": "mode_of_payment", "fieldtype": "Link", "options": "Mode of Payment", "width": 130
+	},
+		{"label": _("Remittance Ref"), "fieldname": "remittance_reference", "fieldtype": "Data", "width": 140
+	},
+		{"label": _("Remittance Date"), "fieldname": "remittance_date", "fieldtype": "Date", "width": 120
+	},
+		{"label": _("Bank Ref"), "fieldname": "remittance_bank_reference", "fieldtype": "Data", "width": 150
+	},
 	]
 	return columns, rows
 

@@ -20,7 +20,7 @@ def execute(filters=None):
 	params = {
 		"company": filters.company,
 		"from_date": filters.from_date,
-		"to_date": filters.to_date,
+		"to_date": filters.to_date
 	}
 	conditions = [
 		"si.company = %(company)s",
@@ -58,6 +58,8 @@ def execute(filters=None):
 	return columns, rows, None, chart
 def _cols():
 	return [
-		{"label": _("Period"), "fieldname": "period", "fieldtype": "Data", "width": 120},
-		{"label": _("Revenue (base)"), "fieldname": "revenue", "fieldtype": "Currency", "width": 160},
+		{"label": _("Period"), "fieldname": "period", "fieldtype": "Data", "width": 120
+	},
+		{"label": _("Revenue (base)"), "fieldname": "revenue", "fieldtype": "Currency", "width": 160
+	},
 	]

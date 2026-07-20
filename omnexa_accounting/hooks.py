@@ -16,7 +16,7 @@ add_to_apps_screen = [
 		"logo": "/assets/omnexa_accounting/logo.png",
 		"title": "FinTruth",
 		"route": "/app/acct-executive-dashboard",
-		"has_permission": "omnexa_core.omnexa_core.finance_demo.finance_app_permission.has_app_permission",
+		"has_permission": "omnexa_core.omnexa_core.finance_demo.finance_app_permission.has_app_permission"
 	}
 ]
 
@@ -67,17 +67,17 @@ doctype_js = {
 	"Payment Entry": "public/js/payment_entry.js",
 	"Stock Entry": "public/js/stock_entry.js",
 	"COA Template": "public/js/coa_template.js",
-	"CoA Settings": "public/js/coa_settings.js",
-}
+	"CoA Settings": "public/js/coa_settings.js"
+	}
 doctype_list_js = {
 	"GL Account": "public/js/gl_account_list.js",
 	"Customer": "public/js/customer_list.js",
 	"Warehouse": "public/js/warehouse_list.js",
-	"Sales Invoice": "public/js/sales_invoice_list.js",
-}
+	"Sales Invoice": "public/js/sales_invoice_list.js"
+	}
 doctype_tree_js = {
-	"GL Account": "public/js/gl_account_tree.js",
-}
+	"GL Account": "public/js/gl_account_tree.js"
+	}
 # doctype_calendar_js = {"doctype" : "public/js/doctype_calendar.js"}
 
 # Svg Icons
@@ -159,8 +159,8 @@ permission_query_conditions = {
 	"Purchase Invoice": "omnexa_accounting.permissions.purchase_invoice_query_conditions",
 	"Payment Entry": "omnexa_accounting.permissions.payment_entry_query_conditions",
 	"Journal Entry": "omnexa_accounting.permissions.journal_entry_query_conditions",
-	"Bank Reconciliation": "omnexa_accounting.permissions.bank_reconciliation_query_conditions",
-}
+	"Bank Reconciliation": "omnexa_accounting.permissions.bank_reconciliation_query_conditions"
+	}
 #
 # has_permission = {
 # 	"Event": "frappe.desk.doctype.event.event.has_permission",
@@ -171,8 +171,8 @@ permission_query_conditions = {
 # Override standard doctype classes
 
 override_doctype_class = {
-	"GL Account": "omnexa_accounting.omnexa_accounting.doctype.gl_account.gl_account.GLAccount",
-}
+	"GL Account": "omnexa_accounting.omnexa_accounting.doctype.gl_account.gl_account.GLAccount"
+	}
 
 # Document Events
 # ---------------
@@ -188,25 +188,24 @@ override_doctype_class = {
 doc_events = {
 	"Company": {
 		"validate": "omnexa_accounting.utils.company_financial_defaults.run_company_financial_validations",
-		"on_update": "omnexa_accounting.utils.company_financial_defaults.on_company_update_sync_globals",
+		"on_update": "omnexa_accounting.utils.company_financial_defaults.on_company_update_sync_globals"
 	},
 	"Branch": {
-		"validate": "omnexa_accounting.utils.company_financial_defaults.run_branch_financial_validations",
+		"validate": "omnexa_accounting.utils.company_financial_defaults.run_branch_financial_validations"
 	},
 	"Sales Order": {
 		"before_validate": "omnexa_accounting.permissions.populate_company_branch_from_user_context",
-		"validate": "omnexa_accounting.permissions.enforce_branch_access_for_doc",
+		"validate": "omnexa_accounting.permissions.enforce_branch_access_for_doc"
 	},
 	"Purchase Order": {
-		"on_submit": "omnexa_accounting.automation.sop_hooks.on_purchase_order_submit",
+		"on_submit": "omnexa_accounting.automation.sop_hooks.on_purchase_order_submit"
 	},
 	"Sales Quotation": {
 		"before_validate": "omnexa_accounting.permissions.populate_company_branch_from_user_context",
 		"validate": [
 			"omnexa_accounting.permissions.enforce_branch_access_for_doc",
 			"omnexa_accounting.utils.global_erp_strict_validations.validate_sales_quotation",
-		],
-	},
+		]},
 	"Sales Invoice": {
 		"before_validate": "omnexa_accounting.permissions.populate_company_branch_from_user_context",
 		"validate": [
@@ -214,52 +213,51 @@ doc_events = {
 			"omnexa_accounting.utils.global_erp_strict_validations.validate_sales_invoice",
 		],
 		"on_submit": "omnexa_accounting.utils.customer_balances.on_sales_invoice_submit",
-		"on_cancel": "omnexa_accounting.utils.customer_balances.on_sales_invoice_cancel",
+		"on_cancel": "omnexa_accounting.utils.customer_balances.on_sales_invoice_cancel"
 	},
 	"Purchase Invoice": {
 		"before_validate": "omnexa_accounting.permissions.populate_company_branch_from_user_context",
 		"validate": [
 			"omnexa_accounting.permissions.enforce_branch_access_for_doc",
 			"omnexa_accounting.utils.global_erp_strict_validations.validate_purchase_invoice",
-		],
-	},
+		]},
 	"Item": {
-		"before_validate": "omnexa_accounting.utils.enterprise_hooks.ensure_item_code",
+		"before_validate": "omnexa_accounting.utils.enterprise_hooks.ensure_item_code"
 	},
 	"Customer": {
 		"before_validate": "omnexa_accounting.utils.enterprise_hooks.ensure_customer_code",
-		"validate": "omnexa_accounting.utils.party_gl_accounts.ensure_customer_receivable_account",
+		"validate": "omnexa_accounting.utils.party_gl_accounts.ensure_customer_receivable_account"
 	},
 	"Supplier": {
 		"before_validate": "omnexa_accounting.utils.enterprise_hooks.ensure_supplier_code",
-		"validate": "omnexa_accounting.utils.party_gl_accounts.ensure_supplier_payable_account",
+		"validate": "omnexa_accounting.utils.party_gl_accounts.ensure_supplier_payable_account"
 	},
 	"Employee": {
-		"before_validate": "omnexa_accounting.utils.enterprise_hooks.ensure_employee_code",
+		"before_validate": "omnexa_accounting.utils.enterprise_hooks.ensure_employee_code"
 	},
 	"Purchase Receipt": {
 		"before_validate": "omnexa_accounting.permissions.populate_company_branch_from_user_context",
-		"validate": "omnexa_accounting.permissions.enforce_branch_access_for_doc",
+		"validate": "omnexa_accounting.permissions.enforce_branch_access_for_doc"
 	},
 	"Delivery Note": {
 		"before_validate": "omnexa_accounting.permissions.populate_company_branch_from_user_context",
-		"validate": "omnexa_accounting.permissions.enforce_branch_access_for_doc",
+		"validate": "omnexa_accounting.permissions.enforce_branch_access_for_doc"
 	},
 	"Payment Entry": {
 		"before_validate": "omnexa_accounting.permissions.populate_company_branch_from_user_context",
 		"validate": "omnexa_accounting.permissions.enforce_branch_access_for_doc",
 		"on_submit": "omnexa_accounting.utils.customer_balances.on_payment_entry_submit",
-		"on_cancel": "omnexa_accounting.utils.customer_balances.on_payment_entry_cancel",
+		"on_cancel": "omnexa_accounting.utils.customer_balances.on_payment_entry_cancel"
 	},
 	"Journal Entry": {
 		"before_validate": "omnexa_accounting.permissions.populate_company_branch_from_user_context",
 		"validate": "omnexa_accounting.permissions.enforce_branch_access_for_doc",
 		"on_submit": "omnexa_accounting.utils.gl_account_balances.on_journal_entry_submit",
-		"on_cancel": "omnexa_accounting.utils.gl_account_balances.on_journal_entry_cancel",
+		"on_cancel": "omnexa_accounting.utils.gl_account_balances.on_journal_entry_cancel"
 	},
 	"Bank Reconciliation": {
 		"before_validate": "omnexa_accounting.permissions.populate_company_branch_from_user_context",
-		"validate": "omnexa_accounting.permissions.enforce_branch_access_for_doc",
+		"validate": "omnexa_accounting.permissions.enforce_branch_access_for_doc"
 	},
 	"Pipeline Lead": {
 		"before_validate": "omnexa_accounting.permissions.populate_company_branch_from_user_context"
@@ -349,22 +347,22 @@ ignore_links_on_delete = [
 
 # user_data_fields = [
 # 	{
-# 		"doctype": "{doctype_1}",
-# 		"filter_by": "{filter_by}",
-# 		"redact_fields": ["{field_1}", "{field_2}"],
+# 		"doctype": "{}",
+# 		"filter_by": "{}",
+# 		"redact_fields": ["{}", "{}"],
 # 		"partial": 1,
 # 	},
 # 	{
-# 		"doctype": "{doctype_2}",
-# 		"filter_by": "{filter_by}",
+# 		"doctype": "{}",
+# 		"filter_by": "{}",
 # 		"partial": 1,
 # 	},
 # 	{
-# 		"doctype": "{doctype_3}",
+# 		"doctype": "{}",
 # 		"strict": False,
 # 	},
 # 	{
-# 		"doctype": "{doctype_4}"
+# 		"doctype": "{}"
 # 	}
 # ]
 

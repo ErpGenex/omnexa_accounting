@@ -25,5 +25,5 @@ def preview_co_allocation(lines: list[dict[str, Any]]) -> dict[str, Any]:
 		"cost_centers": by_cc,
 		"shares": shares,
 		"line_count": len(lines or []),
-		"sap_module": "CO-PA",
+		"sap_module": "CO-PA"
 	}

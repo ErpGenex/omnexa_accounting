@@ -11,8 +11,8 @@ DEFAULT_MASKS = {
 	"Liability": "2xxx",
 	"Equity": "3xxx",
 	"Revenue": "4xxx",
-	"Expense": "5xxx",
-}
+	"Expense": "5xxx"
+	}
 
 
 def get_coa_settings(company: str | None) -> frappe._dict:
@@ -20,7 +20,8 @@ def get_coa_settings(company: str | None) -> frappe._dict:
 		return frappe._dict()
 	row = frappe.db.get_value(
 		"CoA Settings",
-		{"company": company},
+		{"company": company
+	},
 		[
 			"name",
 			"company",
@@ -51,8 +52,8 @@ def get_company_masks(company: str | None) -> dict:
 				"Liability": (settings.liability_mask or out["Liability"]).strip(),
 				"Equity": (settings.equity_mask or out["Equity"]).strip(),
 				"Revenue": (settings.revenue_mask or out["Revenue"]).strip(),
-				"Expense": (settings.expense_mask or out["Expense"]).strip(),
-			}
+				"Expense": (settings.expense_mask or out["Expense"]).strip()
+	}
 		)
 	return out
 

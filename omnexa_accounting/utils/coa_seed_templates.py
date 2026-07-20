@@ -19,7 +19,7 @@ BASE_COA_TEMPLATE: list[dict] = [
 		"type": "Asset",
 		"group": 1,
 		"main": "Assets",
-		"sub": "Header",
+		"sub": "Header"
 	},
 	{
 		"code": "11",
@@ -29,7 +29,7 @@ BASE_COA_TEMPLATE: list[dict] = [
 		"group": 1,
 		"parent": "1",
 		"main": "Assets",
-		"sub": "Current Assets",
+		"sub": "Current Assets"
 	},
 	{
 		"code": "1101",
@@ -41,7 +41,7 @@ BASE_COA_TEMPLATE: list[dict] = [
 		"main": "Assets",
 		"sub": "Cash",
 		"cash_flow_section": "Operating Activities",
-		"working_capital_bucket": "Exclude",
+		"working_capital_bucket": "Exclude"
 	},
 	{
 		"code": "1102",
@@ -53,7 +53,7 @@ BASE_COA_TEMPLATE: list[dict] = [
 		"main": "Assets",
 		"sub": "Bank",
 		"cash_flow_section": "Operating Activities",
-		"working_capital_bucket": "Exclude",
+		"working_capital_bucket": "Exclude"
 	},
 	{
 		"code": "1103",
@@ -65,7 +65,7 @@ BASE_COA_TEMPLATE: list[dict] = [
 		"main": "Assets",
 		"sub": "Receivables",
 		"cash_flow_section": "Operating Activities",
-		"working_capital_bucket": "Trade Receivables",
+		"working_capital_bucket": "Trade Receivables"
 	},
 	{
 		"code": "1104",
@@ -78,7 +78,7 @@ BASE_COA_TEMPLATE: list[dict] = [
 		"sub": "Inventory",
 		"is_stock_valuation": 1,
 		"cash_flow_section": "Operating Activities",
-		"working_capital_bucket": "Inventory",
+		"working_capital_bucket": "Inventory"
 	},
 	{
 		"code": "1105",
@@ -90,7 +90,7 @@ BASE_COA_TEMPLATE: list[dict] = [
 		"main": "Assets",
 		"sub": "Prepayments",
 		"cash_flow_section": "Operating Activities",
-		"working_capital_bucket": "Other Working Capital",
+		"working_capital_bucket": "Other Working Capital"
 	},
 	{
 		"code": "1106",
@@ -102,7 +102,7 @@ BASE_COA_TEMPLATE: list[dict] = [
 		"main": "Assets",
 		"sub": "Tax",
 		"cash_flow_section": "Operating Activities",
-		"working_capital_bucket": "Other Working Capital",
+		"working_capital_bucket": "Other Working Capital"
 	},
 	{
 		"code": "1107",
@@ -114,7 +114,7 @@ BASE_COA_TEMPLATE: list[dict] = [
 		"main": "Assets",
 		"sub": "Receivables",
 		"cash_flow_section": "Operating Activities",
-		"working_capital_bucket": "Other Working Capital",
+		"working_capital_bucket": "Other Working Capital"
 	},
 	{
 		"code": "1110",
@@ -126,7 +126,7 @@ BASE_COA_TEMPLATE: list[dict] = [
 		"main": "Assets",
 		"sub": "Trade Receivables",
 		"cash_flow_section": "Operating Activities",
-		"working_capital_bucket": "Trade Receivables",
+		"working_capital_bucket": "Trade Receivables"
 	},
 	{
 		"code": "1111",
@@ -138,7 +138,7 @@ BASE_COA_TEMPLATE: list[dict] = [
 		"main": "Assets",
 		"sub": "Trade Receivables",
 		"cash_flow_section": "Operating Activities",
-		"working_capital_bucket": "Trade Receivables",
+		"working_capital_bucket": "Trade Receivables"
 	},
 	{
 		"code": "1112",
@@ -150,7 +150,7 @@ BASE_COA_TEMPLATE: list[dict] = [
 		"main": "Assets",
 		"sub": "Inventory",
 		"cash_flow_section": "Operating Activities",
-		"working_capital_bucket": "Inventory",
+		"working_capital_bucket": "Inventory"
 	},
 	{
 		"code": "1113",
@@ -162,7 +162,7 @@ BASE_COA_TEMPLATE: list[dict] = [
 		"main": "Assets",
 		"sub": "Prepayments",
 		"cash_flow_section": "Operating Activities",
-		"working_capital_bucket": "Other Working Capital",
+		"working_capital_bucket": "Other Working Capital"
 	},
 	{
 		"code": "1114",
@@ -174,7 +174,7 @@ BASE_COA_TEMPLATE: list[dict] = [
 		"main": "Assets",
 		"sub": "Prepayments",
 		"cash_flow_section": "Operating Activities",
-		"working_capital_bucket": "Other Working Capital",
+		"working_capital_bucket": "Other Working Capital"
 	},
 	{
 		"code": "12",
@@ -184,7 +184,7 @@ BASE_COA_TEMPLATE: list[dict] = [
 		"group": 1,
 		"parent": "1",
 		"main": "Assets",
-		"sub": "Non-Current Assets",
+		"sub": "Non-Current Assets"
 	},
 	{
 		"code": "1201",
@@ -196,7 +196,7 @@ BASE_COA_TEMPLATE: list[dict] = [
 		"main": "Assets",
 		"sub": "PPE",
 		"cash_flow_section": "Investing Activities",
-		"working_capital_bucket": "Exclude",
+		"working_capital_bucket": "Exclude"
 	},
 	{
 		"code": "1202",
@@ -208,7 +208,7 @@ BASE_COA_TEMPLATE: list[dict] = [
 		"main": "Assets",
 		"sub": "Intangibles",
 		"cash_flow_section": "Investing Activities",
-		"working_capital_bucket": "Exclude",
+		"working_capital_bucket": "Exclude"
 	},
 	{
 		"code": "1203",
@@ -220,7 +220,7 @@ BASE_COA_TEMPLATE: list[dict] = [
 		"main": "Assets",
 		"sub": "Investments",
 		"cash_flow_section": "Investing Activities",
-		"working_capital_bucket": "Exclude",
+		"working_capital_bucket": "Exclude"
 	},
 	{
 		"code": "1204",
@@ -232,7 +232,7 @@ BASE_COA_TEMPLATE: list[dict] = [
 		"main": "Assets",
 		"sub": "ROU Assets",
 		"cash_flow_section": "Investing Activities",
-		"working_capital_bucket": "Exclude",
+		"working_capital_bucket": "Exclude"
 	},
 	# Liabilities
 	{
@@ -242,7 +242,7 @@ BASE_COA_TEMPLATE: list[dict] = [
 		"type": "Liability",
 		"group": 1,
 		"main": "Liabilities",
-		"sub": "Header",
+		"sub": "Header"
 	},
 	{
 		"code": "21",
@@ -252,7 +252,7 @@ BASE_COA_TEMPLATE: list[dict] = [
 		"group": 1,
 		"parent": "2",
 		"main": "Liabilities",
-		"sub": "Current Liabilities",
+		"sub": "Current Liabilities"
 	},
 	{
 		"code": "2101",
@@ -264,7 +264,7 @@ BASE_COA_TEMPLATE: list[dict] = [
 		"main": "Liabilities",
 		"sub": "Payables",
 		"cash_flow_section": "Operating Activities",
-		"working_capital_bucket": "Trade Payables",
+		"working_capital_bucket": "Trade Payables"
 	},
 	{
 		"code": "2102",
@@ -276,7 +276,7 @@ BASE_COA_TEMPLATE: list[dict] = [
 		"main": "Liabilities",
 		"sub": "Accruals",
 		"cash_flow_section": "Operating Activities",
-		"working_capital_bucket": "Other Working Capital",
+		"working_capital_bucket": "Other Working Capital"
 	},
 	{
 		"code": "2103",
@@ -288,7 +288,7 @@ BASE_COA_TEMPLATE: list[dict] = [
 		"main": "Liabilities",
 		"sub": "Tax",
 		"cash_flow_section": "Operating Activities",
-		"working_capital_bucket": "Other Working Capital",
+		"working_capital_bucket": "Other Working Capital"
 	},
 	{
 		"code": "2104",
@@ -300,7 +300,7 @@ BASE_COA_TEMPLATE: list[dict] = [
 		"main": "Liabilities",
 		"sub": "Payroll",
 		"cash_flow_section": "Operating Activities",
-		"working_capital_bucket": "Other Working Capital",
+		"working_capital_bucket": "Other Working Capital"
 	},
 	{
 		"code": "2105",
@@ -312,7 +312,7 @@ BASE_COA_TEMPLATE: list[dict] = [
 		"main": "Liabilities",
 		"sub": "Deferred Revenue",
 		"cash_flow_section": "Operating Activities",
-		"working_capital_bucket": "Other Working Capital",
+		"working_capital_bucket": "Other Working Capital"
 	},
 	{
 		"code": "2106",
@@ -324,7 +324,7 @@ BASE_COA_TEMPLATE: list[dict] = [
 		"main": "Liabilities",
 		"sub": "Leases",
 		"cash_flow_section": "Financing Activities",
-		"working_capital_bucket": "Exclude",
+		"working_capital_bucket": "Exclude"
 	},
 	{
 		"code": "2107",
@@ -336,7 +336,7 @@ BASE_COA_TEMPLATE: list[dict] = [
 		"main": "Liabilities",
 		"sub": "Trade Payables",
 		"cash_flow_section": "Operating Activities",
-		"working_capital_bucket": "Trade Payables",
+		"working_capital_bucket": "Trade Payables"
 	},
 	{
 		"code": "2108",
@@ -348,7 +348,7 @@ BASE_COA_TEMPLATE: list[dict] = [
 		"main": "Liabilities",
 		"sub": "Deferred Revenue",
 		"cash_flow_section": "Operating Activities",
-		"working_capital_bucket": "Other Working Capital",
+		"working_capital_bucket": "Other Working Capital"
 	},
 	{
 		"code": "2109",
@@ -360,7 +360,7 @@ BASE_COA_TEMPLATE: list[dict] = [
 		"main": "Liabilities",
 		"sub": "Accruals",
 		"cash_flow_section": "Operating Activities",
-		"working_capital_bucket": "Trade Payables",
+		"working_capital_bucket": "Trade Payables"
 	},
 	{
 		"code": "22",
@@ -370,7 +370,7 @@ BASE_COA_TEMPLATE: list[dict] = [
 		"group": 1,
 		"parent": "2",
 		"main": "Liabilities",
-		"sub": "Non-Current Liabilities",
+		"sub": "Non-Current Liabilities"
 	},
 	{
 		"code": "2201",
@@ -382,7 +382,7 @@ BASE_COA_TEMPLATE: list[dict] = [
 		"main": "Liabilities",
 		"sub": "Borrowings",
 		"cash_flow_section": "Financing Activities",
-		"working_capital_bucket": "Exclude",
+		"working_capital_bucket": "Exclude"
 	},
 	{
 		"code": "2202",
@@ -394,7 +394,7 @@ BASE_COA_TEMPLATE: list[dict] = [
 		"main": "Liabilities",
 		"sub": "Leases",
 		"cash_flow_section": "Financing Activities",
-		"working_capital_bucket": "Exclude",
+		"working_capital_bucket": "Exclude"
 	},
 	# Equity
 	{
@@ -404,7 +404,7 @@ BASE_COA_TEMPLATE: list[dict] = [
 		"type": "Equity",
 		"group": 1,
 		"main": "Equity",
-		"sub": "Header",
+		"sub": "Header"
 	},
 	{
 		"code": "3101",
@@ -416,7 +416,7 @@ BASE_COA_TEMPLATE: list[dict] = [
 		"main": "Equity",
 		"sub": "Capital",
 		"cash_flow_section": "Financing Activities",
-		"working_capital_bucket": "Exclude",
+		"working_capital_bucket": "Exclude"
 	},
 	{
 		"code": "3102",
@@ -428,7 +428,7 @@ BASE_COA_TEMPLATE: list[dict] = [
 		"main": "Equity",
 		"sub": "Retained Earnings",
 		"cash_flow_section": "Financing Activities",
-		"working_capital_bucket": "Exclude",
+		"working_capital_bucket": "Exclude"
 	},
 	{
 		"code": "3103",
@@ -440,7 +440,7 @@ BASE_COA_TEMPLATE: list[dict] = [
 		"main": "Equity",
 		"sub": "P&L Reserve",
 		"cash_flow_section": "Exclude",
-		"working_capital_bucket": "Exclude",
+		"working_capital_bucket": "Exclude"
 	},
 	# Income
 	{
@@ -450,7 +450,7 @@ BASE_COA_TEMPLATE: list[dict] = [
 		"type": "Income",
 		"group": 1,
 		"main": "Income",
-		"sub": "Header",
+		"sub": "Header"
 	},
 	{
 		"code": "4101",
@@ -461,7 +461,7 @@ BASE_COA_TEMPLATE: list[dict] = [
 		"parent": "4",
 		"main": "Income",
 		"sub": "Revenue",
-		"pl_bucket": "Revenue",
+		"pl_bucket": "Revenue"
 	},
 	{
 		"code": "4102",
@@ -472,7 +472,7 @@ BASE_COA_TEMPLATE: list[dict] = [
 		"parent": "4",
 		"main": "Income",
 		"sub": "Revenue",
-		"pl_bucket": "Revenue",
+		"pl_bucket": "Revenue"
 	},
 	{
 		"code": "4109",
@@ -483,7 +483,7 @@ BASE_COA_TEMPLATE: list[dict] = [
 		"parent": "4",
 		"main": "Income",
 		"sub": "Other Income",
-		"pl_bucket": "Other Income",
+		"pl_bucket": "Other Income"
 	},
 	{
 		"code": "4114",
@@ -494,7 +494,7 @@ BASE_COA_TEMPLATE: list[dict] = [
 		"parent": "4",
 		"main": "Income",
 		"sub": "Revenue",
-		"pl_bucket": "Revenue",
+		"pl_bucket": "Revenue"
 	},
 	{
 		"code": "4115",
@@ -505,7 +505,7 @@ BASE_COA_TEMPLATE: list[dict] = [
 		"parent": "4",
 		"main": "Income",
 		"sub": "Revenue",
-		"pl_bucket": "Revenue",
+		"pl_bucket": "Revenue"
 	},
 	{
 		"code": "4116",
@@ -516,7 +516,7 @@ BASE_COA_TEMPLATE: list[dict] = [
 		"parent": "4",
 		"main": "Income",
 		"sub": "Other Income",
-		"pl_bucket": "Other Income",
+		"pl_bucket": "Other Income"
 	},
 	# Expenses
 	{
@@ -526,7 +526,7 @@ BASE_COA_TEMPLATE: list[dict] = [
 		"type": "Expense",
 		"group": 1,
 		"main": "Expense",
-		"sub": "Header",
+		"sub": "Header"
 	},
 	{
 		"code": "5101",
@@ -537,7 +537,7 @@ BASE_COA_TEMPLATE: list[dict] = [
 		"parent": "5",
 		"main": "Expense",
 		"sub": "COGS",
-		"pl_bucket": "COGS",
+		"pl_bucket": "COGS"
 	},
 	{
 		"code": "5102",
@@ -548,7 +548,7 @@ BASE_COA_TEMPLATE: list[dict] = [
 		"parent": "5",
 		"main": "Expense",
 		"sub": "OPEX",
-		"pl_bucket": "Operating Expense",
+		"pl_bucket": "Operating Expense"
 	},
 	{
 		"code": "5103",
@@ -559,7 +559,7 @@ BASE_COA_TEMPLATE: list[dict] = [
 		"parent": "5",
 		"main": "Expense",
 		"sub": "Payroll",
-		"pl_bucket": "Operating Expense",
+		"pl_bucket": "Operating Expense"
 	},
 	{
 		"code": "5104",
@@ -570,7 +570,7 @@ BASE_COA_TEMPLATE: list[dict] = [
 		"parent": "5",
 		"main": "Expense",
 		"sub": "OPEX",
-		"pl_bucket": "Operating Expense",
+		"pl_bucket": "Operating Expense"
 	},
 	{
 		"code": "5105",
@@ -581,7 +581,7 @@ BASE_COA_TEMPLATE: list[dict] = [
 		"parent": "5",
 		"main": "Expense",
 		"sub": "OPEX",
-		"pl_bucket": "Operating Expense",
+		"pl_bucket": "Operating Expense"
 	},
 	{
 		"code": "5106",
@@ -592,7 +592,7 @@ BASE_COA_TEMPLATE: list[dict] = [
 		"parent": "5",
 		"main": "Expense",
 		"sub": "OPEX",
-		"pl_bucket": "Operating Expense",
+		"pl_bucket": "Operating Expense"
 	},
 	{
 		"code": "5107",
@@ -603,7 +603,7 @@ BASE_COA_TEMPLATE: list[dict] = [
 		"parent": "5",
 		"main": "Expense",
 		"sub": "OPEX",
-		"pl_bucket": "Operating Expense",
+		"pl_bucket": "Operating Expense"
 	},
 	{
 		"code": "5108",
@@ -614,7 +614,7 @@ BASE_COA_TEMPLATE: list[dict] = [
 		"parent": "5",
 		"main": "Expense",
 		"sub": "D&A",
-		"pl_bucket": "Operating Expense",
+		"pl_bucket": "Operating Expense"
 	},
 	{
 		"code": "5110",
@@ -625,7 +625,7 @@ BASE_COA_TEMPLATE: list[dict] = [
 		"parent": "5",
 		"main": "Expense",
 		"sub": "D&A",
-		"pl_bucket": "Operating Expense",
+		"pl_bucket": "Operating Expense"
 	},
 	{
 		"code": "5113",
@@ -636,7 +636,7 @@ BASE_COA_TEMPLATE: list[dict] = [
 		"parent": "5",
 		"main": "Expense",
 		"sub": "Direct Materials",
-		"pl_bucket": "COGS",
+		"pl_bucket": "COGS"
 	},
 	{
 		"code": "5114",
@@ -647,7 +647,7 @@ BASE_COA_TEMPLATE: list[dict] = [
 		"parent": "5",
 		"main": "Expense",
 		"sub": "Direct Labor",
-		"pl_bucket": "COGS",
+		"pl_bucket": "COGS"
 	},
 	{
 		"code": "5115",
@@ -658,7 +658,7 @@ BASE_COA_TEMPLATE: list[dict] = [
 		"parent": "5",
 		"main": "Expense",
 		"sub": "COGS",
-		"pl_bucket": "COGS",
+		"pl_bucket": "COGS"
 	},
 	{
 		"code": "5116",
@@ -669,7 +669,7 @@ BASE_COA_TEMPLATE: list[dict] = [
 		"parent": "5",
 		"main": "Expense",
 		"sub": "Manufacturing Overhead",
-		"pl_bucket": "Operating Expense",
+		"pl_bucket": "Operating Expense"
 	},
 	{
 		"code": "5117",
@@ -680,7 +680,7 @@ BASE_COA_TEMPLATE: list[dict] = [
 		"parent": "5",
 		"main": "Expense",
 		"sub": "General & Administrative",
-		"pl_bucket": "Operating Expense",
+		"pl_bucket": "Operating Expense"
 	},
 	{
 		"code": "5109",
@@ -691,7 +691,7 @@ BASE_COA_TEMPLATE: list[dict] = [
 		"parent": "5",
 		"main": "Expense",
 		"sub": "Finance",
-		"pl_bucket": "Other Expense",
+		"pl_bucket": "Other Expense"
 	},
 ]
 
@@ -712,8 +712,8 @@ ACTIVITY_EXTENSIONS: dict[str, list[dict]] = {
 				"parent": "4",
 				"main": "Income",
 				"sub": "Revenue",
-				"pl_bucket": "Revenue",
-			},
+				"pl_bucket": "Revenue"
+	},
 			{
 				"code": "5111",
 				"name_en": "Repairs & Maintenance",
@@ -723,8 +723,8 @@ ACTIVITY_EXTENSIONS: dict[str, list[dict]] = {
 				"parent": "5",
 				"main": "Expense",
 				"sub": "OPEX",
-				"pl_bucket": "Operating Expense",
-			},
+				"pl_bucket": "Operating Expense"
+	},
 		]
 	),
 	"Construction": _ext(
@@ -738,8 +738,8 @@ ACTIVITY_EXTENSIONS: dict[str, list[dict]] = {
 				"parent": "4",
 				"main": "Income",
 				"sub": "Contract Revenue",
-				"pl_bucket": "Revenue",
-			},
+				"pl_bucket": "Revenue"
+	},
 			{
 				"code": "4112",
 				"name_en": "Retention Receivable – Customers",
@@ -749,8 +749,8 @@ ACTIVITY_EXTENSIONS: dict[str, list[dict]] = {
 				"parent": "11",
 				"main": "Assets",
 				"sub": "Receivables",
-				"working_capital_bucket": "Trade Receivables",
-			},
+				"working_capital_bucket": "Trade Receivables"
+	},
 			{
 				"code": "4113",
 				"name_en": "Contract Assets (Unbilled Revenue)",
@@ -760,8 +760,8 @@ ACTIVITY_EXTENSIONS: dict[str, list[dict]] = {
 				"parent": "11",
 				"main": "Assets",
 				"sub": "Contract Assets",
-				"working_capital_bucket": "Other Working Capital",
-			},
+				"working_capital_bucket": "Other Working Capital"
+	},
 			{
 				"code": "2106",
 				"name_en": "Retention Payable – Subcontractors",
@@ -771,8 +771,8 @@ ACTIVITY_EXTENSIONS: dict[str, list[dict]] = {
 				"parent": "21",
 				"main": "Liabilities",
 				"sub": "Payables",
-				"working_capital_bucket": "Trade Payables",
-			},
+				"working_capital_bucket": "Trade Payables"
+	},
 			{
 				"code": "5110",
 				"name_en": "Construction Cost – Materials & Subcontractors",
@@ -782,8 +782,8 @@ ACTIVITY_EXTENSIONS: dict[str, list[dict]] = {
 				"parent": "5",
 				"main": "Expense",
 				"sub": "Direct Cost",
-				"pl_bucket": "COGS",
-			},
+				"pl_bucket": "COGS"
+	},
 			{
 				"code": "5112",
 				"name_en": "Site Overheads & Equipment Hire",
@@ -793,8 +793,8 @@ ACTIVITY_EXTENSIONS: dict[str, list[dict]] = {
 				"parent": "5",
 				"main": "Expense",
 				"sub": "Site Overhead",
-				"pl_bucket": "Operating Expense",
-			},
+				"pl_bucket": "Operating Expense"
+	},
 		]
 	),
 	"Engineering Consulting": _ext(
@@ -808,8 +808,8 @@ ACTIVITY_EXTENSIONS: dict[str, list[dict]] = {
 				"parent": "4",
 				"main": "Income",
 				"sub": "Professional Revenue",
-				"pl_bucket": "Revenue",
-			},
+				"pl_bucket": "Revenue"
+	},
 			{
 				"code": "4122",
 				"name_en": "Consulting Fees – Fixed Fee Engagements",
@@ -819,8 +819,8 @@ ACTIVITY_EXTENSIONS: dict[str, list[dict]] = {
 				"parent": "4",
 				"main": "Income",
 				"sub": "Professional Revenue",
-				"pl_bucket": "Revenue",
-			},
+				"pl_bucket": "Revenue"
+	},
 			{
 				"code": "5121",
 				"name_en": "Subconsultant & Outsourced Technical Services",
@@ -830,8 +830,8 @@ ACTIVITY_EXTENSIONS: dict[str, list[dict]] = {
 				"parent": "5",
 				"main": "Expense",
 				"sub": "COS Services",
-				"pl_bucket": "COGS",
-			},
+				"pl_bucket": "COGS"
+	},
 			{
 				"code": "5122",
 				"name_en": "Bid & Proposal Costs",
@@ -841,8 +841,8 @@ ACTIVITY_EXTENSIONS: dict[str, list[dict]] = {
 				"parent": "5",
 				"main": "Expense",
 				"sub": "OPEX",
-				"pl_bucket": "Operating Expense",
-			},
+				"pl_bucket": "Operating Expense"
+	},
 		]
 	),
 	"Healthcare": _ext(
@@ -856,8 +856,8 @@ ACTIVITY_EXTENSIONS: dict[str, list[dict]] = {
 				"parent": "4",
 				"main": "Income",
 				"sub": "Clinical Revenue",
-				"pl_bucket": "Revenue",
-			},
+				"pl_bucket": "Revenue"
+	},
 			{
 				"code": "4123",
 				"name_en": "Pharmacy & Retail Sales",
@@ -867,8 +867,8 @@ ACTIVITY_EXTENSIONS: dict[str, list[dict]] = {
 				"parent": "4",
 				"main": "Income",
 				"sub": "Pharmacy",
-				"pl_bucket": "Revenue",
-			},
+				"pl_bucket": "Revenue"
+	},
 			{
 				"code": "4124",
 				"name_en": "Laboratory & Diagnostics Revenue",
@@ -878,8 +878,8 @@ ACTIVITY_EXTENSIONS: dict[str, list[dict]] = {
 				"parent": "4",
 				"main": "Income",
 				"sub": "Lab",
-				"pl_bucket": "Revenue",
-			},
+				"pl_bucket": "Revenue"
+	},
 			{
 				"code": "5120",
 				"name_en": "Medical Supplies & Consumables",
@@ -889,8 +889,8 @@ ACTIVITY_EXTENSIONS: dict[str, list[dict]] = {
 				"parent": "5",
 				"main": "Expense",
 				"sub": "Medical Supplies",
-				"pl_bucket": "COGS",
-			},
+				"pl_bucket": "COGS"
+	},
 			{
 				"code": "5123",
 				"name_en": "Sterilization & Laundry Services",
@@ -900,8 +900,8 @@ ACTIVITY_EXTENSIONS: dict[str, list[dict]] = {
 				"parent": "5",
 				"main": "Expense",
 				"sub": "Clinical OPEX",
-				"pl_bucket": "Operating Expense",
-			},
+				"pl_bucket": "Operating Expense"
+	},
 		]
 	),
 	"Education": _ext(
@@ -915,8 +915,8 @@ ACTIVITY_EXTENSIONS: dict[str, list[dict]] = {
 				"parent": "4",
 				"main": "Income",
 				"sub": "Tuition",
-				"pl_bucket": "Revenue",
-			},
+				"pl_bucket": "Revenue"
+	},
 			{
 				"code": "4131",
 				"name_en": "Registration & Admission Fees",
@@ -926,8 +926,8 @@ ACTIVITY_EXTENSIONS: dict[str, list[dict]] = {
 				"parent": "4",
 				"main": "Income",
 				"sub": "Fees",
-				"pl_bucket": "Revenue",
-			},
+				"pl_bucket": "Revenue"
+	},
 			{
 				"code": "4132",
 				"name_en": "Grants & Sponsorship Income",
@@ -937,8 +937,8 @@ ACTIVITY_EXTENSIONS: dict[str, list[dict]] = {
 				"parent": "4",
 				"main": "Income",
 				"sub": "Grants",
-				"pl_bucket": "Other Income",
-			},
+				"pl_bucket": "Other Income"
+	},
 			{
 				"code": "5130",
 				"name_en": "Faculty & Academic Staff Payroll",
@@ -948,8 +948,8 @@ ACTIVITY_EXTENSIONS: dict[str, list[dict]] = {
 				"parent": "5",
 				"main": "Expense",
 				"sub": "Academic OPEX",
-				"pl_bucket": "Operating Expense",
-			},
+				"pl_bucket": "Operating Expense"
+	},
 			{
 				"code": "5131",
 				"name_en": "Learning Materials & Library",
@@ -959,8 +959,8 @@ ACTIVITY_EXTENSIONS: dict[str, list[dict]] = {
 				"parent": "5",
 				"main": "Expense",
 				"sub": "Academic OPEX",
-				"pl_bucket": "Operating Expense",
-			},
+				"pl_bucket": "Operating Expense"
+	},
 		]
 	),
 	"Manufacturing": _ext(
@@ -974,8 +974,8 @@ ACTIVITY_EXTENSIONS: dict[str, list[dict]] = {
 				"parent": "4",
 				"main": "Income",
 				"sub": "Manufacturing Revenue",
-				"pl_bucket": "Revenue",
-			},
+				"pl_bucket": "Revenue"
+	},
 			{
 				"code": "4141",
 				"name_en": "Scrap & By-Product Sales",
@@ -985,8 +985,8 @@ ACTIVITY_EXTENSIONS: dict[str, list[dict]] = {
 				"parent": "4",
 				"main": "Income",
 				"sub": "Other Income",
-				"pl_bucket": "Other Income",
-			},
+				"pl_bucket": "Other Income"
+	},
 			{
 				"code": "1108",
 				"name_en": "Raw Materials Inventory",
@@ -997,8 +997,8 @@ ACTIVITY_EXTENSIONS: dict[str, list[dict]] = {
 				"main": "Assets",
 				"sub": "Inventory",
 				"is_stock_valuation": 1,
-				"working_capital_bucket": "Inventory",
-			},
+				"working_capital_bucket": "Inventory"
+	},
 			{
 				"code": "1109",
 				"name_en": "Work in Progress (WIP)",
@@ -1008,8 +1008,8 @@ ACTIVITY_EXTENSIONS: dict[str, list[dict]] = {
 				"parent": "11",
 				"main": "Assets",
 				"sub": "WIP",
-				"working_capital_bucket": "Inventory",
-			},
+				"working_capital_bucket": "Inventory"
+	},
 			{
 				"code": "5140",
 				"name_en": "Direct Labor – Production",
@@ -1019,8 +1019,8 @@ ACTIVITY_EXTENSIONS: dict[str, list[dict]] = {
 				"parent": "5",
 				"main": "Expense",
 				"sub": "Manufacturing",
-				"pl_bucket": "COGS",
-			},
+				"pl_bucket": "COGS"
+	},
 			{
 				"code": "5141",
 				"name_en": "Manufacturing Overhead (Allocated)",
@@ -1030,8 +1030,8 @@ ACTIVITY_EXTENSIONS: dict[str, list[dict]] = {
 				"parent": "5",
 				"main": "Expense",
 				"sub": "Overhead",
-				"pl_bucket": "COGS",
-			},
+				"pl_bucket": "COGS"
+	},
 		]
 	),
 	"Tourism": _ext(
@@ -1045,8 +1045,8 @@ ACTIVITY_EXTENSIONS: dict[str, list[dict]] = {
 				"parent": "4",
 				"main": "Income",
 				"sub": "Hospitality Revenue",
-				"pl_bucket": "Revenue",
-			},
+				"pl_bucket": "Revenue"
+	},
 			{
 				"code": "4151",
 				"name_en": "Food & Beverage Revenue",
@@ -1056,8 +1056,8 @@ ACTIVITY_EXTENSIONS: dict[str, list[dict]] = {
 				"parent": "4",
 				"main": "Income",
 				"sub": "F&B",
-				"pl_bucket": "Revenue",
-			},
+				"pl_bucket": "Revenue"
+	},
 			{
 				"code": "4152",
 				"name_en": "Tour Packages & Excursions",
@@ -1067,8 +1067,8 @@ ACTIVITY_EXTENSIONS: dict[str, list[dict]] = {
 				"parent": "4",
 				"main": "Income",
 				"sub": "Tours",
-				"pl_bucket": "Revenue",
-			},
+				"pl_bucket": "Revenue"
+	},
 			{
 				"code": "5150",
 				"name_en": "Housekeeping & Guest Supplies",
@@ -1078,8 +1078,8 @@ ACTIVITY_EXTENSIONS: dict[str, list[dict]] = {
 				"parent": "5",
 				"main": "Expense",
 				"sub": "Hospitality OPEX",
-				"pl_bucket": "Operating Expense",
-			},
+				"pl_bucket": "Operating Expense"
+	},
 			{
 				"code": "5151",
 				"name_en": "F&B Cost of Sales",
@@ -1089,8 +1089,8 @@ ACTIVITY_EXTENSIONS: dict[str, list[dict]] = {
 				"parent": "5",
 				"main": "Expense",
 				"sub": "COGS F&B",
-				"pl_bucket": "COGS",
-			},
+				"pl_bucket": "COGS"
+	},
 		]
 	),
 	"Trading": _ext(
@@ -1104,8 +1104,8 @@ ACTIVITY_EXTENSIONS: dict[str, list[dict]] = {
 				"parent": "4",
 				"main": "Income",
 				"sub": "Trading",
-				"pl_bucket": "Revenue",
-			},
+				"pl_bucket": "Revenue"
+	},
 			{
 				"code": "4161",
 				"name_en": "Import Duties & Clearing Recoveries",
@@ -1115,8 +1115,8 @@ ACTIVITY_EXTENSIONS: dict[str, list[dict]] = {
 				"parent": "4",
 				"main": "Income",
 				"sub": "Other Income",
-				"pl_bucket": "Other Income",
-			},
+				"pl_bucket": "Other Income"
+	},
 			{
 				"code": "5160",
 				"name_en": "Freight, Logistics & Customs Charges",
@@ -1126,8 +1126,8 @@ ACTIVITY_EXTENSIONS: dict[str, list[dict]] = {
 				"parent": "5",
 				"main": "Expense",
 				"sub": "Distribution",
-				"pl_bucket": "Operating Expense",
-			},
+				"pl_bucket": "Operating Expense"
+	},
 			{
 				"code": "5161",
 				"name_en": "Inventory Shrinkage & Obsolescence",
@@ -1137,8 +1137,8 @@ ACTIVITY_EXTENSIONS: dict[str, list[dict]] = {
 				"parent": "5",
 				"main": "Expense",
 				"sub": "Inventory",
-				"pl_bucket": "Operating Expense",
-			},
+				"pl_bucket": "Operating Expense"
+	},
 		]
 	),
 	"Services": _ext(
@@ -1152,8 +1152,8 @@ ACTIVITY_EXTENSIONS: dict[str, list[dict]] = {
 				"parent": "4",
 				"main": "Income",
 				"sub": "Services",
-				"pl_bucket": "Revenue",
-			},
+				"pl_bucket": "Revenue"
+	},
 			{
 				"code": "4171",
 				"name_en": "Subscription & Retainer Revenue",
@@ -1163,8 +1163,8 @@ ACTIVITY_EXTENSIONS: dict[str, list[dict]] = {
 				"parent": "4",
 				"main": "Income",
 				"sub": "Recurring",
-				"pl_bucket": "Revenue",
-			},
+				"pl_bucket": "Revenue"
+	},
 			{
 				"code": "5170",
 				"name_en": "Delivery & Field Operations",
@@ -1174,8 +1174,8 @@ ACTIVITY_EXTENSIONS: dict[str, list[dict]] = {
 				"parent": "5",
 				"main": "Expense",
 				"sub": "COS Services",
-				"pl_bucket": "COGS",
-			},
+				"pl_bucket": "COGS"
+	},
 			{
 				"code": "5171",
 				"name_en": "Cloud & Software Licenses (COGS)",
@@ -1185,8 +1185,8 @@ ACTIVITY_EXTENSIONS: dict[str, list[dict]] = {
 				"parent": "5",
 				"main": "Expense",
 				"sub": "COS Services",
-				"pl_bucket": "COGS",
-			},
+				"pl_bucket": "COGS"
+	},
 		]
 	),
 	"Financial Services": _ext(
@@ -1200,8 +1200,8 @@ ACTIVITY_EXTENSIONS: dict[str, list[dict]] = {
 				"parent": "4",
 				"main": "Income",
 				"sub": "NII",
-				"pl_bucket": "Revenue",
-			},
+				"pl_bucket": "Revenue"
+	},
 			{
 				"code": "4181",
 				"name_en": "Fee & Commission Income",
@@ -1211,8 +1211,8 @@ ACTIVITY_EXTENSIONS: dict[str, list[dict]] = {
 				"parent": "4",
 				"main": "Income",
 				"sub": "Fees",
-				"pl_bucket": "Revenue",
-			},
+				"pl_bucket": "Revenue"
+	},
 			{
 				"code": "4182",
 				"name_en": "FX & Trading Gain (Operating)",
@@ -1222,8 +1222,8 @@ ACTIVITY_EXTENSIONS: dict[str, list[dict]] = {
 				"parent": "4",
 				"main": "Income",
 				"sub": "Trading",
-				"pl_bucket": "Other Income",
-			},
+				"pl_bucket": "Other Income"
+	},
 			{
 				"code": "5180",
 				"name_en": "Interest Expense – Customer Deposits & Funding",
@@ -1233,8 +1233,8 @@ ACTIVITY_EXTENSIONS: dict[str, list[dict]] = {
 				"parent": "5",
 				"main": "Expense",
 				"sub": "Finance",
-				"pl_bucket": "Other Expense",
-			},
+				"pl_bucket": "Other Expense"
+	},
 			{
 				"code": "5181",
 				"name_en": "Loan Loss Provision / Expected Credit Loss",
@@ -1244,8 +1244,8 @@ ACTIVITY_EXTENSIONS: dict[str, list[dict]] = {
 				"parent": "5",
 				"main": "Expense",
 				"sub": "Risk",
-				"pl_bucket": "Operating Expense",
-			},
+				"pl_bucket": "Operating Expense"
+	},
 		]
 	),
 	"Statutory Audit": _ext(
@@ -1259,8 +1259,8 @@ ACTIVITY_EXTENSIONS: dict[str, list[dict]] = {
 				"parent": "4",
 				"main": "Income",
 				"sub": "Audit Revenue",
-				"pl_bucket": "Revenue",
-			},
+				"pl_bucket": "Revenue"
+	},
 			{
 				"code": "4191",
 				"name_en": "Non-Audit Advisory Fees Revenue",
@@ -1270,8 +1270,8 @@ ACTIVITY_EXTENSIONS: dict[str, list[dict]] = {
 				"parent": "4",
 				"main": "Income",
 				"sub": "Advisory",
-				"pl_bucket": "Revenue",
-			},
+				"pl_bucket": "Revenue"
+	},
 			{
 				"code": "5190",
 				"name_en": "Engagement Staff Costs (Chargeable)",
@@ -1281,8 +1281,8 @@ ACTIVITY_EXTENSIONS: dict[str, list[dict]] = {
 				"parent": "5",
 				"main": "Expense",
 				"sub": "COS Audit",
-				"pl_bucket": "COGS",
-			},
+				"pl_bucket": "COGS"
+	},
 			{
 				"code": "5191",
 				"name_en": "Quality Review & Independence Compliance",
@@ -1292,8 +1292,8 @@ ACTIVITY_EXTENSIONS: dict[str, list[dict]] = {
 				"parent": "5",
 				"main": "Expense",
 				"sub": "Compliance",
-				"pl_bucket": "Operating Expense",
-			},
+				"pl_bucket": "Operating Expense"
+	},
 		]
 	),
 	"Agriculture": _ext(
@@ -1307,8 +1307,8 @@ ACTIVITY_EXTENSIONS: dict[str, list[dict]] = {
 				"parent": "4",
 				"main": "Income",
 				"sub": "Agri Revenue",
-				"pl_bucket": "Revenue",
-			},
+				"pl_bucket": "Revenue"
+	},
 			{
 				"code": "4196",
 				"name_en": "Livestock & Dairy Revenue",
@@ -1318,8 +1318,8 @@ ACTIVITY_EXTENSIONS: dict[str, list[dict]] = {
 				"parent": "4",
 				"main": "Income",
 				"sub": "Agri Revenue",
-				"pl_bucket": "Revenue",
-			},
+				"pl_bucket": "Revenue"
+	},
 			{
 				"code": "5195",
 				"name_en": "Fertilizers, Seeds & Crop Inputs",
@@ -1329,8 +1329,8 @@ ACTIVITY_EXTENSIONS: dict[str, list[dict]] = {
 				"parent": "5",
 				"main": "Expense",
 				"sub": "Agri COGS",
-				"pl_bucket": "COGS",
-			},
+				"pl_bucket": "COGS"
+	},
 			{
 				"code": "5196",
 				"name_en": "Irrigation, Fuel & Field Operations",
@@ -1340,11 +1340,10 @@ ACTIVITY_EXTENSIONS: dict[str, list[dict]] = {
 				"parent": "5",
 				"main": "Expense",
 				"sub": "Agri OPEX",
-				"pl_bucket": "Operating Expense",
-			},
+				"pl_bucket": "Operating Expense"
+	},
 		]
-	),
-}
+	)}
 
 # Hotel / fixed-asset operations vertical: reuse hospitality CoA slice until a dedicated template exists.
 ACTIVITY_EXTENSIONS["Hotel Assets (إدارة أصول الفنادق)"] = ACTIVITY_EXTENSIONS["Tourism"]

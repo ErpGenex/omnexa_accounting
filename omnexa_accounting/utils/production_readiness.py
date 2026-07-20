@@ -108,8 +108,8 @@ def _log_seed_operation(
 			"executed_on": frappe.utils.now_datetime(),
 			"dry_run": int(dry_run or 0),
 			"status": status,
-			"summary_json": frappe.as_json(summary),
-		}
+			"summary_json": frappe.as_json(summary)
+	}
 	)
 	doc.insert(ignore_permissions=True)
 	return doc.name
@@ -125,7 +125,8 @@ def _ensure_account(entry: dict, company: str, branch: str | None, parent_map: d
 		if parent_doc.meta.has_field("posting_type"):
 			parent_doc.posting_type = "Header"
 		parent_doc.save(ignore_permissions=True)
-	filters = {"company": company, "account_number": entry["code"]}
+	filters = {"company": company, "account_number": entry["code"]
+	}
 	if branch:
 		filters["branch"] = branch
 	name = frappe.db.get_value("GL Account", filters, "name")
@@ -138,7 +139,7 @@ def _ensure_account(entry: dict, company: str, branch: str | None, parent_map: d
 		"account_type": entry["type"],
 		"main_account_type": _clean_main_account_type(entry.get("main")),
 		"sub_account_type": _clean_sub_account_type(entry.get("sub")),
-		"parent_account": parent_name,
+		"parent_account": parent_name
 	}
 	account_name_value = (values.get("account_name") or "").strip()
 	account_number_value = (values.get("account_number") or "").strip()
@@ -193,7 +194,7 @@ def _run_professional_coa_sync(company: str, branch: str | None, activity: str |
 		"branch": branch,
 		"industry": industry,
 		"accounts_created_or_updated": len(created_or_updated),
-		"account_ids": created_or_updated,
+		"account_ids": created_or_updated
 	}
 
 
@@ -207,7 +208,8 @@ def generate_professional_chart_of_accounts(company: str, branch: str | None = N
 		result["company_default_gl_fill"] = apply_company_default_gl_from_coa(company, branch=branch, overwrite=0)
 	except Exception:
 		frappe.log_error(frappe.get_traceback(), "Omnexa: apply_company_default_gl_from_coa after COA")
-		result["company_default_gl_fill"] = {"ok": False}
+		result["company_default_gl_fill"] = {"ok": False
+	}
 	log_id = _log_seed_operation(
 		"Generate COA",
 		company,
@@ -235,7 +237,8 @@ def resync_chart_of_accounts_labels(company: str, branch: str | None = None, act
 		result["company_default_gl_fill"] = apply_company_default_gl_from_coa(company, branch=branch, overwrite=0)
 	except Exception:
 		frappe.log_error(frappe.get_traceback(), "Omnexa: apply_company_default_gl_from_coa after COA resync")
-		result["company_default_gl_fill"] = {"ok": False}
+		result["company_default_gl_fill"] = {"ok": False
+	}
 	log_id = _log_seed_operation(
 		"Resync COA Labels",
 		company,
@@ -271,9 +274,11 @@ def seed_activity_demo_data(
 		frappe.throw(_("Branch does not belong to this company"))
 
 	tag = branch
-	created = {"customer": None, "patient": None, "supplier": None, "warehouse": None, "item": None}
+	created = {"customer": None, "patient": None, "supplier": None, "warehouse": None, "item": None
+	}
 	if not frappe.db.exists("UOM", "Nos"):
-		uom = frappe.get_doc({"doctype": "UOM", "uom_name": "Nos"})
+		uom = frappe.get_doc({"doctype": "UOM", "uom_name": "Nos"
+	})
 		uom.insert(ignore_permissions=True)
 
 	_use_patients = False
@@ -288,26 +293,31 @@ def seed_activity_demo_data(
 		created["customer"] = party.get("billing_customer")
 	else:
 		cust_name = f"DEMO-CUST-{tag}"
-		existing_cust = frappe.db.get_value("Customer", {"customer_name": cust_name, "company": company}, "name")
+		existing_cust = frappe.db.get_value("Customer", {"customer_name": cust_name, "company": company
+	}, "name")
 		if existing_cust:
 			created["customer"] = existing_cust
 		else:
-			cust = frappe.get_doc({"doctype": "Customer", "customer_name": cust_name, "company": company})
+			cust = frappe.get_doc({"doctype": "Customer", "customer_name": cust_name, "company": company
+	})
 			cust.insert(ignore_permissions=True)
 			created["customer"] = cust.name
 
 	supp_name = f"DEMO-SUPP-{tag}"
-	existing_supp = frappe.db.get_value("Supplier", {"supplier_name": supp_name, "company": company}, "name")
+	existing_supp = frappe.db.get_value("Supplier", {"supplier_name": supp_name, "company": company
+	}, "name")
 	if existing_supp:
 		created["supplier"] = existing_supp
 	else:
-		supp = frappe.get_doc({"doctype": "Supplier", "supplier_name": supp_name, "company": company})
+		supp = frappe.get_doc({"doctype": "Supplier", "supplier_name": supp_name, "company": company
+	})
 		supp.insert(ignore_permissions=True)
 		created["supplier"] = supp.name
 
 	wh_name = f"DEMO-WH-{tag}"
 	wh_code = ("DM" + "".join(ch for ch in tag if ch.isalnum()).upper())[:12]
-	existing_wh = frappe.db.get_value("Warehouse", {"warehouse_name": wh_name, "company": company}, "name")
+	existing_wh = frappe.db.get_value("Warehouse", {"warehouse_name": wh_name, "company": company
+	}, "name")
 	if existing_wh:
 		created["warehouse"] = existing_wh
 	else:
@@ -315,14 +325,15 @@ def seed_activity_demo_data(
 			"doctype": "Warehouse",
 			"warehouse_name": wh_name,
 			"warehouse_code": wh_code,
-			"company": company,
-		}
+			"company": company
+	}
 		wh = frappe.get_doc(wh_doc)
 		wh.insert(ignore_permissions=True)
 		created["warehouse"] = wh.name
 
 	item_code = f"DEMO-ITEM-{tag}"
-	existing_item = frappe.db.get_value("Item", {"item_code": item_code, "company": company}, "name")
+	existing_item = frappe.db.get_value("Item", {"item_code": item_code, "company": company
+	}, "name")
 	if existing_item:
 		created["item"] = existing_item
 	else:
@@ -330,11 +341,12 @@ def seed_activity_demo_data(
 			{
 				"doctype": "Item",
 				"item_code": item_code,
-				"item_name": f"Demo Item {activity or 'General'} ({tag})",
+				"item_name": f"Demo Item {activity or 'General'} ({tag
+	})",
 				"company": company,
 				"stock_uom": "Nos",
-				"is_stock_item": 1,
-			}
+				"is_stock_item": 1
+	}
 		)
 		item.insert(ignore_permissions=True)
 		created["item"] = item.name
@@ -357,7 +369,7 @@ def seed_activity_demo_data(
 		"branch": branch,
 		"activity": activity or "General",
 		"created": created,
-		"include_transactions": with_tx,
+		"include_transactions": with_tx
 	}
 	if tx_summary is not None:
 		result["transactions"] = tx_summary
@@ -380,7 +392,8 @@ def _get_or_create_sim_tax_rule(company: str) -> str | None:
 		_SIM_TAX_RULE_CACHE[company] = None
 		return None
 
-	existing = frappe.db.get_value("Tax Rule", {"company": company}, "name")
+	existing = frappe.db.get_value("Tax Rule", {"company": company
+	}, "name")
 	if existing:
 		# Keep simulation invoices numerically aligned with PO/PR totals.
 		# Compliance requires Tax Rule presence, but 3-way match can fail if tax inflates invoice total.
@@ -394,14 +407,15 @@ def _get_or_create_sim_tax_rule(company: str) -> str | None:
 		doc = frappe.get_doc(
 			{
 				"doctype": "Tax Rule",
-				"title": f"SIM Tax Rule 0% - {company}",
+				"title": f"SIM Tax Rule 0% - {company
+	}",
 				"company": company,
 				"valid_from": today(),
 				"valid_to": add_years(today(), 10),
 				"tax_type": "standard",
 				"rate": 0,
-				"account_head": account_head,
-			}
+				"account_head": account_head
+	}
 		)
 		doc.insert(ignore_permissions=True)
 		_SIM_TAX_RULE_CACHE[company] = doc.name
@@ -432,7 +446,8 @@ def _apply_tax_rule_for_compliance(doc, company: str, item_doctype: str) -> None
 
 
 def _leaf_gl_by_number(company: str, branch: str | None, account_number: str) -> str | None:
-	filters = {"company": company, "account_number": account_number, "is_group": 0}
+	filters = {"company": company, "account_number": account_number, "is_group": 0
+	}
 	if branch:
 		filters["branch"] = branch
 	return frappe.db.get_value("GL Account", filters, "name")
@@ -456,12 +471,14 @@ def _seed_demo_transactions(
 ) -> dict:
 	"""Create a small submitted document chain for training dashboards (best-effort)."""
 	if not (customer and supplier and warehouse and item):
-		return {"ok": False, "skipped": True, "reason": "missing_masters"}
+		return {"ok": False, "skipped": True, "reason": "missing_masters"
+	}
 
 	item_code = frappe.db.get_value("Item", item, "item_code")
 	currency = _company_currency(company)
 	if not currency:
-		return {"ok": False, "skipped": True, "reason": "missing_currency"}
+		return {"ok": False, "skipped": True, "reason": "missing_currency"
+	}
 
 	tx_tag = f"DEMO-TX-{company}"
 	so_name = frappe.db.sql(
@@ -506,8 +523,8 @@ def _seed_demo_transactions(
 				"company": company,
 				"supplier": supplier,
 				"posting_date": today(),
-				"items": [{"item": item, "item_code": item_code, "qty": 10, "rate": 25}],
-			}
+				"items": [{"item": item, "item_code": item_code, "qty": 10, "rate": 25}]
+	}
 		)
 		po.insert(ignore_permissions=True)
 		_submit(po)
@@ -518,7 +535,8 @@ def _seed_demo_transactions(
 	if po_name:
 		pr_name = frappe.db.get_value(
 			"Purchase Receipt",
-			{"company": company, "supplier": supplier, "purchase_order": po_name, "docstatus": 1},
+			{"company": company, "supplier": supplier, "purchase_order": po_name, "docstatus": 1
+	},
 			"name",
 		)
 	if not pr_name and po_name:
@@ -529,8 +547,8 @@ def _seed_demo_transactions(
 				"supplier": supplier,
 				"posting_date": today(),
 				"purchase_order": po_name,
-				"items": [{"item_code": item_code, "qty": 10, "rate": 25}],
-			}
+				"items": [{"item_code": item_code, "qty": 10, "rate": 25}]
+	}
 		)
 		pr.insert(ignore_permissions=True)
 		_submit(pr)
@@ -566,8 +584,8 @@ def _seed_demo_transactions(
 				"conversion_rate": 1,
 				"po_reference": po_name,
 				"goods_receipt_reference": pr_name,
-				"items": [{"item": item, "item_code": item_code, "qty": 10, "rate": 25}],
-			}
+				"items": [{"item": item, "item_code": item_code, "qty": 10, "rate": 25}]
+	}
 		)
 		_apply_tax_rule_for_compliance(pi, company, "Purchase Invoice Item")
 		pi.insert(ignore_permissions=True)
@@ -589,8 +607,8 @@ def _seed_demo_transactions(
 				"transaction_date": today(),
 				"currency": currency,
 				"conversion_rate": 1,
-				"items": [{"item": item, "item_code": item_code, "qty": 5, "rate": 40}],
-			}
+				"items": [{"item": item, "item_code": item_code, "qty": 5, "rate": 40}]
+	}
 		)
 		so.insert(ignore_permissions=True)
 		_submit(so)
@@ -601,7 +619,8 @@ def _seed_demo_transactions(
 	if so_name:
 		dn_name = frappe.db.get_value(
 			"Delivery Note",
-			{"company": company, "customer": customer, "sales_order": so_name, "docstatus": 1},
+			{"company": company, "customer": customer, "sales_order": so_name, "docstatus": 1
+	},
 			"name",
 		)
 	if not dn_name and so_name:
@@ -614,8 +633,8 @@ def _seed_demo_transactions(
 				"sales_order": so_name,
 				"warehouse": warehouse,
 				"transaction_date": today(),
-				"items": [{"item": item, "item_code": item_code, "qty": 5, "rate": 40}],
-			}
+				"items": [{"item": item, "item_code": item_code, "qty": 5, "rate": 40}]
+	}
 		)
 		dn.insert(ignore_permissions=True)
 		_submit(dn)
@@ -651,8 +670,8 @@ def _seed_demo_transactions(
 				"conversion_rate": 1,
 				"sales_order": so_name,
 				"delivery_note": dn_name,
-				"items": [{"item": item, "item_code": item_code, "qty": 5, "rate": 40}],
-			}
+				"items": [{"item": item, "item_code": item_code, "qty": 5, "rate": 40}]
+	}
 		)
 		_apply_tax_rule_for_compliance(si, company, "Sales Invoice Item")
 		si.insert(ignore_permissions=True)
@@ -664,7 +683,8 @@ def _seed_demo_transactions(
 			created["sales_invoice_error"] = str(e)
 
 	# --- Simple balanced journal entry (optional GL leaf accounts) ---
-	je_name = frappe.db.get_value("Journal Entry", {"company": company, "reference": tx_tag}, "name")
+	je_name = frappe.db.get_value("Journal Entry", {"company": company, "reference": tx_tag
+	}, "name")
 	if not je_name:
 		cash = _leaf_gl_by_number(company, branch, "1101")
 		bank = _leaf_gl_by_number(company, branch, "1102")
@@ -678,10 +698,11 @@ def _seed_demo_transactions(
 					"reference": tx_tag,
 					"remarks": "Omnexa demo journal (cash to bank)",
 					"accounts": [
-						{"account": bank, "debit": 100, "credit": 0},
-						{"account": cash, "debit": 0, "credit": 100},
-					],
-				}
+						{"account": bank, "debit": 100, "credit": 0
+	},
+						{"account": cash, "debit": 0, "credit": 100
+	},
+					]}
 			)
 			je.insert(ignore_permissions=True)
 			try:
@@ -691,7 +712,8 @@ def _seed_demo_transactions(
 			except Exception as e:
 				created["journal_entry_error"] = str(e)
 
-	return {"ok": True, "tag": tx_tag, "created": created}
+	return {"ok": True, "tag": tx_tag, "created": created
+	}
 
 
 def _doc_filters(doctype: str, company: str, branch: str | None):
@@ -730,7 +752,8 @@ def reset_transactions(
 			continue
 		names = frappe.get_all(dt, filters=filters, pluck="name", limit=limit)
 		if is_dry:
-			report.append({"doctype": dt, "matched": len(names), "cancelled": 0, "deleted": 0})
+			report.append({"doctype": dt, "matched": len(names), "cancelled": 0, "deleted": 0
+	})
 			continue
 
 		cancelled = 0
@@ -748,9 +771,11 @@ def reset_transactions(
 				deleted += 1
 			except Exception:
 				pass
-		report.append({"doctype": dt, "matched": len(names), "cancelled": cancelled, "deleted": deleted})
+		report.append({"doctype": dt, "matched": len(names), "cancelled": cancelled, "deleted": deleted
+	})
 
-	result = {"ok": True, "company": company, "branch": branch, "dry_run": is_dry, "details": report}
+	result = {"ok": True, "company": company, "branch": branch, "dry_run": is_dry, "details": report
+	}
 	log_id = _log_seed_operation(
 		"Reset Transactions",
 		company,
@@ -783,7 +808,8 @@ def enqueue_reset_transactions(
 		batch_size=cint(batch_size or 200),
 		user=frappe.session.user,
 	)
-	return {"ok": True, "queued": True, "job_id": job.id if job else None}
+	return {"ok": True, "queued": True, "job_id": job.id if job else None
+	}
 
 
 def _purge_gl_entries(company: str) -> int:
@@ -792,9 +818,11 @@ def _purge_gl_entries(company: str) -> int:
 		return 0
 	if not frappe.db.has_column("GL Entry", "company"):
 		return 0
-	before = frappe.db.count("GL Entry", {"company": company})
+	before = frappe.db.count("GL Entry", {"company": company
+	})
 	if before:
-		frappe.db.delete("GL Entry", {"company": company})
+		frappe.db.delete("GL Entry", {"company": company
+	})
 		frappe.db.commit()
 	return before
 
@@ -819,12 +847,14 @@ _COMPANY_TRASH_PURGE_DOCTYPES = (
 def _delete_company_docs_by_company_field(doctype: str, company: str) -> int:
 	if not frappe.db.exists("DocType", doctype) or not frappe.db.has_column(doctype, "company"):
 		return 0
-	names = frappe.get_all(doctype, filters={"company": company}, pluck="name")
+	names = frappe.get_all(doctype, filters={"company": company
+	}, pluck="name")
 	for name in names:
 		try:
 			frappe.delete_doc(doctype, name, ignore_permissions=True, force=1)
 		except Exception:
-			frappe.db.delete(doctype, {"name": name})
+			frappe.db.delete(doctype, {"name": name
+	})
 	return len(names)
 
 
@@ -842,7 +872,8 @@ def _delete_company_gl_accounts(company: str) -> int:
 	while True:
 		names = frappe.get_all(
 			"GL Account",
-			filters={"company": company},
+			filters={"company": company
+	},
 			pluck="name",
 			limit=500,
 			order_by="lft desc",
@@ -855,7 +886,8 @@ def _delete_company_gl_accounts(company: str) -> int:
 				deleted += 1
 			except Exception:
 				try:
-					frappe.db.delete("GL Account", {"name": name})
+					frappe.db.delete("GL Account", {"name": name
+	})
 					deleted += 1
 				except Exception:
 					frappe.log_error(frappe.get_traceback(), f"Company delete: GL Account {name}")
@@ -892,7 +924,8 @@ def _purge_remaining_company_links(company: str, max_rounds: int = 12) -> dict[s
 				progress = True
 			except Exception:
 				try:
-					frappe.db.delete(dt, {"name": name})
+					frappe.db.delete(dt, {"name": name
+	})
 					summary[dt] = summary.get(dt, 0) + 1
 					progress = True
 				except Exception:
@@ -906,9 +939,11 @@ def _purge_remaining_company_links(company: str, max_rounds: int = 12) -> dict[s
 def purge_company_for_deletion(company: str) -> dict:
 	"""Remove Omnexa rows that block Company trash (call from Company.on_trash for privileged users)."""
 	if not company:
-		return {"ok": False}
+		return {"ok": False
+	}
 
-	summary: dict = {"company": company}
+	summary: dict = {"company": company
+	}
 	for dt in _COMPANY_TRASH_PURGE_DOCTYPES:
 		summary[dt] = _delete_company_docs_by_company_field(dt, company)
 
@@ -916,9 +951,11 @@ def purge_company_for_deletion(company: str) -> dict:
 	summary["gl_accounts"] = _delete_company_gl_accounts(company)
 
 	if frappe.db.exists("DocType", "User Branch Access") and frappe.db.has_column("User Branch Access", "company"):
-		summary["user_branch_access"] = frappe.db.count("User Branch Access", {"company": company})
+		summary["user_branch_access"] = frappe.db.count("User Branch Access", {"company": company
+	})
 		if summary["user_branch_access"]:
-			frappe.db.delete("User Branch Access", {"company": company})
+			frappe.db.delete("User Branch Access", {"company": company
+	})
 
 	summary["branches_deleted"] = _delete_all_branches_for_company(company)
 	summary["remaining_links"] = _purge_remaining_company_links(company)
@@ -928,7 +965,8 @@ def purge_company_for_deletion(company: str) -> dict:
 
 
 def _delete_all_branches_for_company(company: str) -> list[str]:
-	branch_names = frappe.get_all("Branch", filters={"company": company}, pluck="name", order_by="creation desc")
+	branch_names = frappe.get_all("Branch", filters={"company": company
+	}, pluck="name", order_by="creation desc")
 	if not branch_names:
 		return []
 
@@ -983,21 +1021,23 @@ _WIPE_CHILD_TABLES = {
 	"Purchase Receipt": "Purchase Receipt Item",
 	"Stock Entry": "Stock Entry Detail",
 	"Stock Reconciliation": "Stock Reconciliation Item",
-	"Landed Cost Voucher": "Landed Cost Item",
-}
+	"Landed Cost Voucher": "Landed Cost Item"
+	}
 
 
 def _resolve_company_branch_for_wipe(company: str) -> str | None:
 	"""Ensure a head-office branch exists for compliance during wipe (CoA reset logs)."""
 	if not frappe.db.get_value("Company", company, "enable_branches"):
 		return None
-	ho = frappe.db.get_value("Branch", {"company": company, "is_head_office": 1}, "name")
+	ho = frappe.db.get_value("Branch", {"company": company, "is_head_office": 1
+	}, "name")
 	if ho:
 		return ho
 	company_doc = frappe.get_doc("Company", company)
 	company_doc._ensure_head_office_branch()
 	frappe.db.commit()
-	return frappe.db.get_value("Branch", {"company": company, "is_head_office": 1}, "name")
+	return frappe.db.get_value("Branch", {"company": company, "is_head_office": 1
+	}, "name")
 
 
 def _bulk_delete_company_transactions(company: str) -> dict:
@@ -1019,7 +1059,8 @@ def _bulk_delete_company_transactions(company: str) -> dict:
 		def _delete_batch(dt=dt, child_dt=child_dt):
 			nonlocal deleted
 			while True:
-				names = frappe.get_all(dt, filters={"company": company}, pluck="name", limit=200)
+				names = frappe.get_all(dt, filters={"company": company
+	}, pluck="name", limit=200)
 				if not names:
 					break
 				if child_dt and frappe.db.exists("DocType", child_dt):
@@ -1054,7 +1095,8 @@ def enqueue_wipe_company_all_data(
 		confirm_text=confirm_text,
 		user=frappe.session.user,
 	)
-	return {"ok": True, "queued": True, "job_id": job.id if job else None}
+	return {"ok": True, "queued": True, "job_id": job.id if job else None
+	}
 
 
 def run_reset_transactions_batched(
@@ -1068,7 +1110,8 @@ def run_reset_transactions_batched(
 	"""Cancel + delete transactions in batches until empty (or until limit reached)."""
 	frappe.set_user(user or "Administrator")
 	_assert_admin()
-	overall = {"ok": True, "company": company, "branch": branch, "limit": limit, "batch_size": batch_size, "details": []}
+	overall = {"ok": True, "company": company, "branch": branch, "limit": limit, "batch_size": batch_size, "details": []
+	}
 
 	for dt in _RESET_DOCTYPES:
 		filters = _doc_filters(dt, company, branch)
@@ -1110,7 +1153,8 @@ def run_reset_transactions_batched(
 			if batch_progress == 0:
 				stalled = len(names)
 				break
-		row = {"doctype": dt, "cancelled": cancelled_total, "deleted": deleted_total}
+		row = {"doctype": dt, "cancelled": cancelled_total, "deleted": deleted_total
+	}
 		if stalled:
 			row["stalled"] = stalled
 		overall["details"].append(row)
@@ -1152,7 +1196,8 @@ def wipe_company_all_data(company: str, branch: str | None = None, confirm_text:
 		bulk = _bulk_delete_company_transactions(company)
 	except Exception:
 		frappe.log_error(frappe.get_traceback(), f"Wipe: bulk purge for {company}")
-		bulk = {"error": "bulk_purge_failed"}
+		bulk = {"error": "bulk_purge_failed"
+	}
 	tx = run_reset_transactions_batched(
 		company=company,
 		branch=branch,
@@ -1189,13 +1234,15 @@ def wipe_company_all_data(company: str, branch: str | None = None, confirm_text:
 			has_company_column = False
 		if not has_company_column:
 			continue
-		filters = {"company": company}
+		filters = {"company": company
+	}
 		before = frappe.db.count(dt, filters)
 		if before:
 			frappe.db.delete(dt, filters)
 			frappe.db.commit()
 		after = frappe.db.count(dt, filters)
-		master_deleted.append({"doctype": dt, "before": before, "deleted": max(before - after, 0), "after": after})
+		master_deleted.append({"doctype": dt, "before": before, "deleted": max(before - after, 0), "after": after
+	})
 
 	branches_deleted: list[str] = []
 	construction_wipes: list[dict] = []
@@ -1208,7 +1255,8 @@ def wipe_company_all_data(company: str, branch: str | None = None, confirm_text:
 				company_doc._ensure_head_office_branch()
 				frappe.db.commit()
 				log_branch = frappe.db.get_value(
-					"Branch", {"company": company, "is_head_office": 1}, "name"
+					"Branch", {"company": company, "is_head_office": 1
+	}, "name"
 				)
 			except Exception:
 				frappe.log_error(frappe.get_traceback(), f"Wipe: recreate head office for {company}")
@@ -1222,7 +1270,7 @@ def wipe_company_all_data(company: str, branch: str | None = None, confirm_text:
 		"coa_reset": coa,
 		"masters": master_deleted,
 		"branches_deleted": branches_deleted,
-		"construction_wipes": construction_wipes,
+		"construction_wipes": construction_wipes
 	}
 	try:
 		log_id = _log_seed_operation("Reset Transactions", company, log_branch, None, 0, "Success", result)
@@ -1254,9 +1302,11 @@ def _ensure_master_data(
 		return bool(frappe.get_meta(doctype).has_field(fieldname))
 
 	if not frappe.db.exists("UOM", "Nos"):
-		frappe.get_doc({"doctype": "UOM", "uom_name": "Nos"}).insert(ignore_permissions=True)
+		frappe.get_doc({"doctype": "UOM", "uom_name": "Nos"
+	}).insert(ignore_permissions=True)
 
-	warehouse_filters = {"company": company}
+	warehouse_filters = {"company": company
+	}
 	if _has_field("Warehouse", "branch"):
 		warehouse_filters["branch"] = branch
 	warehouse = frappe.db.get_value("Warehouse", warehouse_filters, "name")
@@ -1264,10 +1314,11 @@ def _ensure_master_data(
 		wh_code = ("SIM" + "".join(ch for ch in branch if ch.isalnum()).upper())[:10]
 		wh_data = {
 			"doctype": "Warehouse",
-			"warehouse_name": f"SIM-WH-{branch}",
+			"warehouse_name": f"SIM-WH-{branch
+	}",
 			"warehouse_code": wh_code,
-			"company": company,
-		}
+			"company": company
+	}
 		if _has_field("Warehouse", "branch"):
 			wh_data["branch"] = branch
 		wh = frappe.get_doc(wh_data)
@@ -1279,7 +1330,8 @@ def _ensure_master_data(
 	stock_items = []
 	for idx in range(1, item_count + 1):
 		item_code = f"SIM-{branch}-ITEM-{idx:02d}"
-		existing = frappe.db.get_value("Item", {"item_code": item_code}, "name")
+		existing = frappe.db.get_value("Item", {"item_code": item_code
+	}, "name")
 		if existing:
 			items.append(existing)
 		else:
@@ -1287,13 +1339,14 @@ def _ensure_master_data(
 				{
 					"doctype": "Item",
 					"item_code": item_code,
-					"item_name": f"Simulation Item {idx}",
+					"item_name": f"Simulation Item {idx
+	}",
 					"company": company,
 					"stock_uom": "Nos",
 					"is_stock_item": 1 if idx <= max(2, item_count // 2) else 0,
 					"is_sales_item": 1,
-					"is_purchase_item": 1,
-				}
+					"is_purchase_item": 1
+	}
 			)
 			doc.insert(ignore_permissions=True)
 			items.append(doc.name)
@@ -1316,29 +1369,34 @@ def _ensure_master_data(
 	else:
 		for idx in range(1, customer_count + 1):
 			customer_name = f"SIM-CUST-{branch}-{idx:02d}"
-			existing = frappe.db.get_value("Customer", {"customer_name": customer_name, "company": company}, "name")
+			existing = frappe.db.get_value("Customer", {"customer_name": customer_name, "company": company
+	}, "name")
 			if existing:
 				customers.append(existing)
 				continue
-			doc = frappe.get_doc({"doctype": "Customer", "customer_name": customer_name, "company": company})
+			doc = frappe.get_doc({"doctype": "Customer", "customer_name": customer_name, "company": company
+	})
 			doc.insert(ignore_permissions=True)
 			customers.append(doc.name)
 
 	suppliers = []
 	for idx in range(1, supplier_count + 1):
 		supplier_name = f"SIM-SUPP-{branch}-{idx:02d}"
-		existing = frappe.db.get_value("Supplier", {"supplier_name": supplier_name, "company": company}, "name")
+		existing = frappe.db.get_value("Supplier", {"supplier_name": supplier_name, "company": company
+	}, "name")
 		if existing:
 			suppliers.append(existing)
 			continue
-		doc = frappe.get_doc({"doctype": "Supplier", "supplier_name": supplier_name, "company": company})
+		doc = frappe.get_doc({"doctype": "Supplier", "supplier_name": supplier_name, "company": company
+	})
 		doc.insert(ignore_permissions=True)
 		suppliers.append(doc.name)
 
 	employees = []
 	for idx in range(1, employee_count + 1):
 		employee_name = f"SIM-EMP-{branch}-{idx:02d}"
-		existing = frappe.db.get_value("Employee", {"employee_name": employee_name, "company": company}, "name")
+		existing = frappe.db.get_value("Employee", {"employee_name": employee_name, "company": company
+	}, "name")
 		if existing:
 			employees.append(existing)
 			continue
@@ -1346,13 +1404,15 @@ def _ensure_master_data(
 			{
 				"doctype": "Employee",
 				"employee_name": employee_name,
-				"employee_code": f"SIM-{idx:03d}",
-				"first_name": f"SIM{idx}",
+				"employee_code": f"SIM-{idx:03d
+	}",
+				"first_name": f"SIM{idx
+	}",
 				"company": company,
 				"branch": branch,
 				"status": "Active",
-				"date_of_joining": nowdate(),
-			}
+				"date_of_joining": nowdate()
+	}
 		)
 		doc.insert(ignore_permissions=True)
 		employees.append(doc.name)
@@ -1365,7 +1425,7 @@ def _ensure_master_data(
 		"customers": customers,
 		"patients": patients,
 		"suppliers": suppliers,
-		"employees": employees,
+		"employees": employees
 	}
 
 
@@ -1403,11 +1463,11 @@ def _insert_payment_entry_for_invoice(
 				{
 					"reference_doctype": reference_doctype,
 					"reference_name": reference_name,
-					"allocated_amount": paid_amount,
-				}
+					"allocated_amount": paid_amount
+	}
 			],
-			"reference": f"SIM-{reference_doctype}-{reference_name}",
-		}
+			"reference": f"SIM-{reference_doctype}-{reference_name}"
+	}
 	)
 	pe.insert(ignore_permissions=True)
 	_submit_if_draft(pe)
@@ -1428,11 +1488,12 @@ def _insert_sales_invoice(company: str, branch: str, posting_date: str, customer
 			"due_date": add_days(posting_date, 30),
 			"currency": currency,
 			"conversion_rate": 1,
-			"remarks": f"SIM-AUTO {branch} {posting_date}",
+			"remarks": f"SIM-AUTO {branch} {posting_date
+	}",
 			"update_stock": update_stock,
 			"set_warehouse": _leaf_warehouse(company, branch),
-			"items": [{"item": item, "item_code": item_code, "qty": 1, "rate": rate}],
-		}
+			"items": [{"item": item, "item_code": item_code, "qty": 1, "rate": rate}]
+	}
 	)
 	_apply_tax_rule_for_compliance(si, company, "Sales Invoice Item")
 	si.insert(ignore_permissions=True)
@@ -1456,11 +1517,12 @@ def _insert_purchase_invoice(
 			"due_date": add_days(posting_date, 30),
 			"currency": currency,
 			"conversion_rate": 1,
-			"remarks": f"SIM-AUTO {branch} {posting_date}",
+			"remarks": f"SIM-AUTO {branch} {posting_date
+	}",
 			"update_stock": update_stock,
 			"set_warehouse": _leaf_warehouse(company, branch),
-			"items": [{"item": item, "item_code": item_code, "qty": 1, "rate": rate}],
-		}
+			"items": [{"item": item, "item_code": item_code, "qty": 1, "rate": rate}]
+	}
 	)
 	_apply_tax_rule_for_compliance(pi, company, "Purchase Invoice Item")
 	pi.insert(ignore_permissions=True)
@@ -1470,13 +1532,15 @@ def _insert_purchase_invoice(
 
 def _leaf_warehouse(company: str, branch: str) -> str | None:
 	# Prefer branch warehouse for stock posting on invoices.
-	filters = {"company": company}
+	filters = {"company": company
+	}
 	if _doctype_has_field("Warehouse", "branch"):
 		filters["branch"] = branch
 	wh = frappe.db.get_value("Warehouse", filters, "name")
 	if wh:
 		return wh
-	return frappe.db.get_value("Warehouse", {"company": company}, "name")
+	return frappe.db.get_value("Warehouse", {"company": company
+	}, "name")
 
 
 def _insert_stock_entries(
@@ -1493,7 +1557,8 @@ def _insert_stock_entries(
 			"branch": branch,
 			"posting_date": posting_date,
 			"to_warehouse": warehouse,
-			"remarks": f"SIM-STOCK-RECEIPT {branch} {posting_date}",
+			"remarks": f"SIM-STOCK-RECEIPT {branch} {posting_date
+	}",
 			"items": [
 				{
 					"item": item,
@@ -1501,10 +1566,9 @@ def _insert_stock_entries(
 					"t_warehouse": warehouse,
 					"qty": receipt_qty,
 					"rate": 80,
-					"uom": stock_uom,
-				}
-			],
-		}
+					"uom": stock_uom
+	}
+			]}
 	)
 	receipt.insert(ignore_permissions=True)
 	_submit_if_draft(receipt)
@@ -1516,7 +1580,8 @@ def _insert_stock_entries(
 			"branch": branch,
 			"posting_date": posting_date,
 			"from_warehouse": warehouse,
-			"remarks": f"SIM-STOCK-ISSUE {branch} {posting_date}",
+			"remarks": f"SIM-STOCK-ISSUE {branch} {posting_date
+	}",
 			"items": [
 				{
 					"item": item,
@@ -1524,10 +1589,9 @@ def _insert_stock_entries(
 					"s_warehouse": warehouse,
 					"qty": issue_qty,
 					"rate": 80,
-					"uom": stock_uom,
-				}
-			],
-		}
+					"uom": stock_uom
+	}
+			]}
 	)
 	issue.insert(ignore_permissions=True)
 	_submit_if_draft(issue)
@@ -1545,10 +1609,11 @@ def _insert_journal_entry(
 			"posting_date": posting_date,
 			"remarks": remarks,
 			"accounts": [
-				{"account": debit_account, "debit": amount, "credit": 0},
-				{"account": credit_account, "debit": 0, "credit": amount},
-			],
-		}
+				{"account": debit_account, "debit": amount, "credit": 0
+	},
+				{"account": credit_account, "debit": 0, "credit": amount
+	},
+			]}
 	)
 	je.insert(ignore_permissions=True)
 	_submit_if_draft(je)
@@ -1559,7 +1624,8 @@ def _ensure_hr_payroll_company_settings_for_sim(company: str, branch: str) -> st
 	"""Create HR Payroll Company Settings for simulation GL mapping when missing."""
 	if not frappe.db.exists("DocType", "HR Payroll Company Settings"):
 		return None
-	row = frappe.db.get_value("HR Payroll Company Settings", {"company": company}, "name")
+	row = frappe.db.get_value("HR Payroll Company Settings", {"company": company
+	}, "name")
 	if row:
 		return row
 	salary_exp = _pick_leaf_account(company, branch, "5101")
@@ -1572,8 +1638,8 @@ def _ensure_hr_payroll_company_settings_for_sim(company: str, branch: str) -> st
 			"company": company,
 			"default_branch": branch,
 			"salary_expense_account": salary_exp,
-			"payroll_liability_account": liability,
-		}
+			"payroll_liability_account": liability
+	}
 	)
 	doc.insert(ignore_permissions=True)
 	return doc.name
@@ -1603,7 +1669,8 @@ def _simulate_hr_payroll_advanced_month(
 
 	if frappe.db.exists(
 		"HR Payroll Run",
-		{"company": company, "period_start": m_start, "period_end": m_end},
+		{"company": company, "period_start": m_start, "period_end": m_end
+	},
 	):
 		return True
 
@@ -1633,30 +1700,30 @@ def _simulate_hr_payroll_advanced_month(
 					"currency": currency,
 					"conversion_rate": 1,
 					"skip_attendance_check": 1,
-					"remarks": f"SIM demo payroll {m_start}",
+					"remarks": f"SIM demo payroll {m_start
+	}",
 					"lines": [
 						{
 							"component_label": "Basic Salary",
 							"component_type": "Earning",
-							"amount": 2500,
-						},
+							"amount": 2500
+	},
 						{
 							"component_label": "Allowances",
 							"component_type": "Earning",
-							"amount": 300,
-						},
+							"amount": 300
+	},
 						{
 							"component_label": "Deductions",
 							"component_type": "Deduction",
-							"amount": 150,
-						},
+							"amount": 150
+	},
 						{
 							"component_label": "Employer contribution (demo)",
 							"component_type": "Employer Contribution",
-							"amount": 200,
-						},
-					],
-				}
+							"amount": 200
+	},
+					]}
 			)
 			slip.insert(ignore_permissions=True)
 			slip.submit()
@@ -1677,7 +1744,8 @@ def _simulate_hr_payroll_advanced_month(
 		run.posting_date = posting_date
 		run.remarks = f"SIM demo payroll run {m_start}"
 		for sn in slip_names:
-			run.append("lines", {"salary_slip": sn})
+			run.append("lines", {"salary_slip": sn
+	})
 		run.insert(ignore_permissions=True)
 		run.submit()
 		summary["transactions"]["hr_payroll_run_submitted"] += 1
@@ -1731,7 +1799,7 @@ def start_branch_enterprise_simulation_seed(
 		"customers": max(1, cint(customers or 5)),
 		"suppliers": max(1, cint(suppliers or 5)),
 		"items": max(2, cint(items or 10)),
-		"user": frappe.session.user,
+		"user": frappe.session.user
 	}
 	job = frappe.enqueue(
 		"omnexa_accounting.utils.production_readiness.run_branch_enterprise_simulation_seed",
@@ -1740,7 +1808,8 @@ def start_branch_enterprise_simulation_seed(
 		job_name=f"Enterprise SIM {branch} ({q_months}m)",
 		**payload,
 	)
-	return {"ok": True, "queued": True, "job_id": job.id if job else None, "config": payload}
+	return {"ok": True, "queued": True, "job_id": job.id if job else None, "config": payload
+	}
 
 
 @frappe.whitelist(methods=["POST"])
@@ -1783,7 +1852,7 @@ def enqueue_integrated_demo_simulation(
 		"customers": _intval(customers, 5),
 		"suppliers": _intval(suppliers, 5),
 		"items": max(2, _intval(items, 10)),
-		"user": frappe.session.user,
+		"user": frappe.session.user
 	}
 	job_timeout = 21600 if q_months >= 12 else 9000 if q_months >= 6 else 7200
 	job = frappe.enqueue(
@@ -1794,7 +1863,8 @@ def enqueue_integrated_demo_simulation(
 		**payload,
 	)
 	out = payload.copy()
-	return {"ok": True, "queued": True, "job_id": job.id if job else None, "timeout_s": job_timeout, "config": out}
+	return {"ok": True, "queued": True, "job_id": job.id if job else None, "timeout_s": job_timeout, "config": out
+	}
 
 
 def run_integrated_demo_simulation(**kwargs):
@@ -1885,8 +1955,8 @@ def run_branch_enterprise_simulation_seed(**kwargs):
 				"patients": len(masters.get("patients") or []),
 				"suppliers": len(suppliers),
 				"employees": len(employees),
-				"warehouse": warehouse,
-			},
+				"warehouse": warehouse
+	},
 			"transactions": {
 				"sales_invoice_submitted": 0,
 				"purchase_invoice_submitted": 0,
@@ -1899,16 +1969,15 @@ def run_branch_enterprise_simulation_seed(**kwargs):
 				"opex_journal_submitted": 0,
 				"finance_cost_journal_submitted": 0,
 				"bank_deposit_journal_submitted": 0,
-				"errors": [],
-			},
+				"errors": []
+	},
 			"kpis": {
 				"simulated_sales_total": 0.0,
 				"simulated_purchase_total": 0.0,
 				"simulated_gross_profit": 0.0,
 				"simulated_customer_receivables": 0.0,
-				"simulated_supplier_payables": 0.0,
-			},
-		}
+				"simulated_supplier_payables": 0.0}
+	}
 
 		def _push_error(message: str):
 			errs = summary["transactions"]["errors"]
@@ -2044,7 +2113,8 @@ def run_branch_enterprise_simulation_seed(**kwargs):
 			if frappe.db.exists("DocType", "HR Payroll Entry"):
 				for emp in employees:
 					try:
-						if frappe.db.exists("HR Payroll Entry", {"employee": emp, "company": company, "payroll_month": posting_date}):
+						if frappe.db.exists("HR Payroll Entry", {"employee": emp, "company": company, "payroll_month": posting_date
+	}):
 							continue
 						pe = frappe.get_doc(
 							{
@@ -2057,8 +2127,8 @@ def run_branch_enterprise_simulation_seed(**kwargs):
 								"deductions": 150,
 								"bonus": 0,
 								"net_pay": 2650,
-								"status": "Paid",
-							}
+								"status": "Paid"
+	}
 						)
 						pe.insert(ignore_permissions=True)
 					except Exception:
@@ -2196,8 +2266,8 @@ def run_branch_enterprise_simulation_seed(**kwargs):
 			"ok": False,
 			"company": company,
 			"branch": branch,
-			"error": frappe.get_traceback(),
-		}
+			"error": frappe.get_traceback()
+	}
 		_log_seed_operation(
 			"Branch Enterprise Simulation Seed",
 			company,
@@ -2224,7 +2294,8 @@ def auto_bootstrap_defaults_after_install() -> dict:
 		"name",
 	)
 	if existing:
-		return {"ok": True, "skipped": True, "reason": "already_bootstrapped", "log_id": existing}
+		return {"ok": True, "skipped": True, "reason": "already_bootstrapped", "log_id": existing
+	}
 
 	companies = frappe.get_all("Company", pluck="name")
 	summary = {
@@ -2234,7 +2305,7 @@ def auto_bootstrap_defaults_after_install() -> dict:
 		"company_gl_defaults_applied": 0,
 		"branch_gl_defaults_applied": 0,
 		"demo_masters_seeded": 0,
-		"errors": [],
+		"errors": []
 	}
 
 	for company in companies:
@@ -2251,7 +2322,8 @@ def auto_bootstrap_defaults_after_install() -> dict:
 		except Exception:
 			summary["errors"].append(f"Company defaults {company}: {frappe.get_traceback()}")
 
-		branches = frappe.get_all("Branch", filters={"company": company}, pluck="name")
+		branches = frappe.get_all("Branch", filters={"company": company
+	}, pluck="name")
 		for branch in branches:
 			try:
 				apply_branch_default_gl_from_company(company=company, branch=branch, overwrite=0)

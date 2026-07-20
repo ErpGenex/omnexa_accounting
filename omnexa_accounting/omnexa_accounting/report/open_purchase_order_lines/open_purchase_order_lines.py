@@ -17,7 +17,8 @@ def execute(filters=None):
 	if not filters.get("as_of_date"):
 		frappe.throw(_("As Of Date is required."), title=_("Filters"))
 
-	params = {"company": filters.company, "as_of": filters.as_of_date}
+	params = {"company": filters.company, "as_of": filters.as_of_date
+	}
 
 	data = frappe.db.sql(
 		"""
@@ -61,14 +62,22 @@ def execute(filters=None):
 		row["line_amount"] = flt(row.get("line_amount"), 2)
 
 	columns = [
-		{"label": _("Purchase Order"), "fieldname": "purchase_order", "fieldtype": "Link", "options": "Purchase Order", "width": 160},
-		{"label": _("Supplier"), "fieldname": "supplier", "fieldtype": "Link", "options": "Supplier", "width": 160},
-		{"label": _("PO Date"), "fieldname": "po_date", "fieldtype": "Date", "width": 110},
-		{"label": _("Item Code"), "fieldname": "item_code", "fieldtype": "Data", "width": 140},
-		{"label": _("Ordered Qty"), "fieldname": "ordered_qty", "fieldtype": "Float", "width": 110},
-		{"label": _("Received Qty"), "fieldname": "received_qty", "fieldtype": "Float", "width": 110},
-		{"label": _("Pending Qty"), "fieldname": "pending_qty", "fieldtype": "Float", "width": 110},
-		{"label": _("Line Amount"), "fieldname": "line_amount", "fieldtype": "Currency", "width": 120},
+		{"label": _("Purchase Order"), "fieldname": "purchase_order", "fieldtype": "Link", "options": "Purchase Order", "width": 160
+	},
+		{"label": _("Supplier"), "fieldname": "supplier", "fieldtype": "Link", "options": "Supplier", "width": 160
+	},
+		{"label": _("PO Date"), "fieldname": "po_date", "fieldtype": "Date", "width": 110
+	},
+		{"label": _("Item Code"), "fieldname": "item_code", "fieldtype": "Data", "width": 140
+	},
+		{"label": _("Ordered Qty"), "fieldname": "ordered_qty", "fieldtype": "Float", "width": 110
+	},
+		{"label": _("Received Qty"), "fieldname": "received_qty", "fieldtype": "Float", "width": 110
+	},
+		{"label": _("Pending Qty"), "fieldname": "pending_qty", "fieldtype": "Float", "width": 110
+	},
+		{"label": _("Line Amount"), "fieldname": "line_amount", "fieldtype": "Currency", "width": 120
+	},
 	]
 
 	msg = _(

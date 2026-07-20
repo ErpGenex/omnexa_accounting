@@ -17,7 +17,8 @@ class Item(Document):
 		self._validate_inventory_control_gl()
 		existing = frappe.db.get_value(
 			"Item",
-			{"company": self.company, "item_code": self.item_code},
+			{"company": self.company, "item_code": self.item_code
+	},
 			"name",
 		)
 		if existing and (not self.name or existing != self.name):

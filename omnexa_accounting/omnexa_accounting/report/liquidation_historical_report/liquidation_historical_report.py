@@ -38,36 +38,48 @@ def execute(filters=None):
 	primary_after_debt = primary_share + partner_debt
 
 	rows = [
-		{"line": _("Assets"), "amount": float(assets)},
-		{"line": _("Liabilities"), "amount": -float(liabs)},
-		{"line": _("Liquidation Costs"), "amount": -float(liq_cost)},
-		{"line": _("Net Liquidation Value"), "amount": float(net_liq_value), "bold": 1},
-		{"line": _("{0} Share Before Debt").format(labels["primary_partner_name"]), "amount": float(primary_share)},
-		{"line": _("{0} Share Before Debt").format(labels["secondary_partner_name"]), "amount": float(secondary_share)},
-		{"line": _("{0} Debt").format(labels["secondary_partner_name"]), "amount": -float(partner_debt)},
-		{"line": _("{0} Share After Debt").format(labels["primary_partner_name"]), "amount": float(primary_after_debt), "bold": 1},
-		{"line": _("{0} Share After Debt").format(labels["secondary_partner_name"]), "amount": float(secondary_after_debt), "bold": 1},
-		{"line": _("Equity Snapshot (book)"), "amount": float(equity)},
+		{"line": _("Assets"), "amount": float(assets)
+	},
+		{"line": _("Liabilities"), "amount": -float(liabs)
+	},
+		{"line": _("Liquidation Costs"), "amount": -float(liq_cost)
+	},
+		{"line": _("Net Liquidation Value"), "amount": float(net_liq_value), "bold": 1
+	},
+		{"line": _("{0} Share Before Debt").format(labels["primary_partner_name"]), "amount": float(primary_share)
+	},
+		{"line": _("{0} Share Before Debt").format(labels["secondary_partner_name"]), "amount": float(secondary_share)
+	},
+		{"line": _("{0} Debt").format(labels["secondary_partner_name"]), "amount": -float(partner_debt)
+	},
+		{"line": _("{0} Share After Debt").format(labels["primary_partner_name"]), "amount": float(primary_after_debt), "bold": 1
+	},
+		{"line": _("{0} Share After Debt").format(labels["secondary_partner_name"]), "amount": float(secondary_after_debt), "bold": 1
+	},
+		{"line": _("Equity Snapshot (book)"), "amount": float(equity)
+	},
 	]
 
 	columns = [
-		{"label": _("Line Item"), "fieldname": "line", "fieldtype": "Data", "width": 260},
-		{"label": _("Amount"), "fieldname": "amount", "fieldtype": "Currency", "width": 170},
+		{"label": _("Line Item"), "fieldname": "line", "fieldtype": "Data", "width": 260
+	},
+		{"label": _("Amount"), "fieldname": "amount", "fieldtype": "Currency", "width": 170
+	},
 	]
 	chart = {
 		"data": {
 			"labels": [_("Assets"), _("Liabilities"), _("Net")],
-			"datasets": [{"name": _("Liquidation"), "values": [flt(assets), flt(liabs), flt(net_liq_value)]}],
-		},
+			"datasets": [{"name": _("Liquidation"), "values": [flt(assets), flt(liabs), flt(net_liq_value)]}]},
 		"type": "bar",
 		"title": _("Historical Liquidation Snapshot"),
-		"height": 250,
+		"height": 250
 	}
 	return columns, rows, None, chart
 
 
 def _sum_account_type(company: str, branch: str | None, as_of_date: str, account_type: str) -> float:
-	params = {"company": company, "as_of": as_of_date, "atype": account_type}
+	params = {"company": company, "as_of": as_of_date, "atype": account_type
+	}
 	conds = ["je.company=%(company)s", "je.docstatus=1", "je.posting_date <= %(as_of)s", "ga.account_type=%(atype)s"]
 	if branch and frappe.get_meta("Journal Entry").has_field("branch"):
 		conds.append("je.branch=%(branch)s")
@@ -93,7 +105,8 @@ def _sum_account_type(company: str, branch: str | None, as_of_date: str, account
 def _account_balance(company: str, branch: str | None, as_of_date: str, account: str | None) -> float:
 	if not account:
 		return 0.0
-	params = {"company": company, "as_of": as_of_date, "acc": account}
+	params = {"company": company, "as_of": as_of_date, "acc": account
+	}
 	conds = ["je.company=%(company)s", "je.docstatus=1", "je.posting_date <= %(as_of)s", "jea.account=%(acc)s"]
 	if branch and frappe.get_meta("Journal Entry").has_field("branch"):
 		conds.append("je.branch=%(branch)s")

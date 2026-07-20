@@ -25,8 +25,10 @@ class TestWave0DoDAccounting(FrappeTestCase):
 			self.skipTest("No company")
 
 	def _gl(self, number: str, name: str):
-		if frappe.db.exists("GL Account", {"company": self.company, "account_number": number}):
-			return frappe.db.get_value("GL Account", {"company": self.company, "account_number": number}, "name")
+		if frappe.db.exists("GL Account", {"company": self.company, "account_number": number
+	}):
+			return frappe.db.get_value("GL Account", {"company": self.company, "account_number": number
+	}, "name")
 		d = frappe.new_doc("GL Account")
 		d.company = self.company
 		d.account_number = number
@@ -42,8 +44,10 @@ class TestWave0DoDAccounting(FrappeTestCase):
 		je = frappe.new_doc("Journal Entry")
 		je.company = self.company
 		je.posting_date = today()
-		je.append("accounts", {"account": leaf, "debit": 50, "credit": 0})
-		je.append("accounts", {"account": leaf, "debit": 0, "credit": 50})
+		je.append("accounts", {"account": leaf, "debit": 50, "credit": 0
+	})
+		je.append("accounts", {"account": leaf, "debit": 0, "credit": 50
+	})
 		je.insert(ignore_permissions=True)
 		je.submit()
 		self.assertEqual(je.docstatus, 1)
@@ -62,12 +66,14 @@ class TestWave0DoDAccounting(FrappeTestCase):
 		si.company = self.company
 		si.customer = cust.name
 		si.posting_date = today()
-		si.append("items", {"item_code": "line", "qty": 1, "rate": 100, "income_account": rev})
+		si.append("items", {"item_code": "line", "qty": 1, "rate": 100, "income_account": rev
+	})
 		si.insert(ignore_permissions=True)
 		si.submit()
 
 		start = time.perf_counter()
-		out = trial_balance_exec({"company": self.company, "from_date": today(), "to_date": today()})
+		out = trial_balance_exec({"company": self.company, "from_date": today(), "to_date": today()
+	})
 		elapsed = time.perf_counter() - start
 		self.assertTrue(out[0])
 		self.assertLess(elapsed, 5.0, f"Trial Balance p95 gate: {elapsed:.2f}s")

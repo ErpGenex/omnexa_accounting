@@ -12,7 +12,8 @@ def execute(filters=None):
 	if not filters.get("from_date") or not filters.get("to_date"):
 		frappe.throw(_("From Date and To Date are required."), title=_("Filters"))
 
-	params = {"from_date": filters.from_date, "to_date": filters.to_date}
+	params = {"from_date": filters.from_date, "to_date": filters.to_date
+	}
 	user_filter = ""
 	if filters.get("user"):
 		user_filter = " AND al.user = %(user)s"
@@ -31,8 +32,10 @@ def execute(filters=None):
 		as_dict=True,
 	)
 	columns = [
-		{"label": _("User"), "fieldname": "user", "fieldtype": "Link", "options": "User", "width": 200},
-		{"label": _("Activity count"), "fieldname": "activity_count", "fieldtype": "Int", "width": 140},
+		{"label": _("User"), "fieldname": "user", "fieldtype": "Link", "options": "User", "width": 200
+	},
+		{"label": _("Activity count"), "fieldname": "activity_count", "fieldtype": "Int", "width": 140
+	},
 	]
 	chart = auto_chart_for_columns(rows, columns)
 	return columns, rows, None, chart

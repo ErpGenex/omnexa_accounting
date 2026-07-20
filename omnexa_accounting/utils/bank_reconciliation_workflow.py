@@ -58,23 +58,26 @@ def _build_bank_reconciliation_workflow(locked_role: str):
 			{
 				"state": state,
 				"doc_status": doc_status,
-				"allow_edit": allow_edit,
-			},
+				"allow_edit": allow_edit
+	},
 		)
 
 	for role in roles:
 		for trans in (
-			{"state": STATE_DRAFT, "action": ACTION_SUBMIT, "next_state": STATE_REVIEW},
-			{"state": STATE_REVIEW, "action": ACTION_SUBMIT, "next_state": STATE_CLOSED},
-			{"state": STATE_REVIEW, "action": ACTION_CANCEL, "next_state": STATE_DRAFT},
+			{"state": STATE_DRAFT, "action": ACTION_SUBMIT, "next_state": STATE_REVIEW
+	},
+			{"state": STATE_REVIEW, "action": ACTION_SUBMIT, "next_state": STATE_CLOSED
+	},
+			{"state": STATE_REVIEW, "action": ACTION_CANCEL, "next_state": STATE_DRAFT
+	},
 		):
 			wf.append(
 				"transitions",
 				{
 					**trans,
 					"allowed": role,
-					"allow_self_approval": 1,
-				},
+					"allow_self_approval": 1
+	},
 			)
 
 	return wf
@@ -93,7 +96,8 @@ def ensure_bank_reconciliation_workflow() -> None:
 
 	locked_role = "System Manager" if frappe.db.exists("Role", "System Manager") else "All"
 
-	if frappe.db.exists("Workflow", {"workflow_name": WORKFLOW_NAME}):
+	if frappe.db.exists("Workflow", {"workflow_name": WORKFLOW_NAME
+	}):
 		return
 
 	wf = _build_bank_reconciliation_workflow(locked_role)

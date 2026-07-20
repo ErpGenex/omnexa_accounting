@@ -51,7 +51,8 @@ def assign_fallback_gl_account_number(doc) -> None:
 	n = _max_assigned_suffix(company) + 1
 	for _ in range(200):
 		candidate = f"{CODE_PREFIX}{n:06d}"
-		filters = {"company": company, "account_number": candidate}
+		filters = {"company": company, "account_number": candidate
+	}
 		existing = frappe.db.get_value("GL Account", filters, "name")
 		if not existing or existing == doc.get("name"):
 			doc.account_number = candidate
@@ -74,7 +75,8 @@ def _sync_label_fields(account_name: str | None, account_number: str) -> tuple[s
 def backfill_missing_gl_account_fallback_numbers(limit: int = 10000) -> dict:
 	"""Fill empty ``account_number`` for GL rows that have a company (uses ``ACCT-`` series)."""
 	if not frappe.db.exists("DocType", "GL Account"):
-		return {"ok": False, "skipped": True}
+		return {"ok": False, "skipped": True
+	}
 	updated = 0
 	while updated < limit:
 		rows = frappe.db.sql(
@@ -99,7 +101,8 @@ def backfill_missing_gl_account_fallback_numbers(limit: int = 10000) -> dict:
 				candidate = f"{CODE_PREFIX}{n:06d}"
 				existing = frappe.db.get_value(
 					"GL Account",
-					{"company": company, "account_number": candidate},
+					{"company": company, "account_number": candidate
+	},
 					"name",
 				)
 				if not existing or existing == name:
@@ -112,8 +115,8 @@ def backfill_missing_gl_account_fallback_numbers(limit: int = 10000) -> dict:
 				{
 					"account_number": candidate,
 					"account_label": account_label,
-					"tree_label": tree_label,
-				},
+					"tree_label": tree_label
+	},
 				update_modified=False,
 			)
 			updated += 1
@@ -128,4 +131,5 @@ def backfill_missing_gl_account_fallback_numbers(limit: int = 10000) -> dict:
 		  AND (account_number IS NULL OR account_number = '')
 		"""
 	)[0][0]
-	return {"ok": True, "updated": updated, "remaining_without_number": int(remaining or 0)}
+	return {"ok": True, "updated": updated, "remaining_without_number": int(remaining or 0)
+	}

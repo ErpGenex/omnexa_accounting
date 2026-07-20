@@ -22,7 +22,7 @@ def execute(filters=None):
 	params = {
 		"company": filters.company,
 		"from_date": filters.from_date,
-		"to_date": filters.to_date,
+		"to_date": filters.to_date
 	}
 
 	conditions = [
@@ -61,20 +61,28 @@ def execute(filters=None):
 	net = flt(receipts - payments)
 
 	columns = [
-		{"label": _("Metric"), "fieldname": "metric", "fieldtype": "Data", "width": 280},
-		{"label": _("Amount"), "fieldname": "amount", "fieldtype": "Currency", "width": 160},
+		{"label": _("Metric"), "fieldname": "metric", "fieldtype": "Data", "width": 280
+	},
+		{"label": _("Amount"), "fieldname": "amount", "fieldtype": "Currency", "width": 160
+	},
 	]
 
 	data = [
-		{"metric": _("Receipts from customers (Payment Entry)"), "amount": receipts},
-		{"metric": _("Payments to suppliers (Payment Entry)"), "amount": payments},
-		{"metric": _("Net liquidity movement (receipts − payments)"), "amount": net},
+		{"metric": _("Receipts from customers (Payment Entry)"), "amount": receipts
+	},
+		{"metric": _("Payments to suppliers (Payment Entry)"), "amount": payments
+	},
+		{"metric": _("Net liquidity movement (receipts − payments)"), "amount": net
+	},
 	]
 
 	report_summary = [
-		{"value": receipts, "label": _("Receipts"), "datatype": "Currency"},
-		{"value": payments, "label": _("Payments"), "datatype": "Currency"},
-		{"value": net, "label": _("Net"), "datatype": "Currency"},
+		{"value": receipts, "label": _("Receipts"), "datatype": "Currency"
+	},
+		{"value": payments, "label": _("Payments"), "datatype": "Currency"
+	},
+		{"value": net, "label": _("Net"), "datatype": "Currency"
+	},
 	]
 
 	msg = _(
@@ -86,7 +94,9 @@ def execute(filters=None):
 
 def _empty():
 	columns = [
-		{"label": _("Metric"), "fieldname": "metric", "fieldtype": "Data", "width": 280},
-		{"label": _("Amount"), "fieldname": "amount", "fieldtype": "Currency", "width": 160},
+		{"label": _("Metric"), "fieldname": "metric", "fieldtype": "Data", "width": 280
+	},
+		{"label": _("Amount"), "fieldname": "amount", "fieldtype": "Currency", "width": 160
+	},
 	]
 	return columns, [], None, None, [], True

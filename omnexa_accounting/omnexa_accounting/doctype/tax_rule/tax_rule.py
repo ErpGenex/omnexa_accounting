@@ -14,7 +14,8 @@ class TaxRule(Document):
 		self._validate_overlap()
 
 	def _validate_overlap(self):
-		filters = {"company": self.company, "tax_type": self.tax_type}
+		filters = {"company": self.company, "tax_type": self.tax_type
+	}
 		if self.name:
 			filters["name"] = ["!=", self.name]
 		others = frappe.get_all("Tax Rule", filters=filters, fields=["name", "valid_from", "valid_to"])

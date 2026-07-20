@@ -17,7 +17,8 @@ def _sum_in_out_for_warehouse(warehouse: str) -> tuple[float, float]:
 		WHERE se.docstatus = 1
 		  AND (sei.t_warehouse = %(warehouse)s OR sei.s_warehouse = %(warehouse)s)
 		""",
-		{"warehouse": warehouse},
+		{"warehouse": warehouse
+	},
 		as_dict=True,
 	)
 	r = row[0] if row else {}
@@ -64,10 +65,12 @@ def recompute_warehouse_snapshot_for_stock_entry(doc):
 def get_warehouse_item_balances(warehouse: str, company: str | None = None) -> dict:
 	"""Return item-wise balance for a warehouse (qty/value)."""
 	if not warehouse:
-		return {"ok": True, "rows": []}
+		return {"ok": True, "rows": []
+	}
 	wh_company = frappe.db.get_value("Warehouse", warehouse, "company")
 	if company and wh_company and company != wh_company:
-		return {"ok": True, "rows": []}
+		return {"ok": True, "rows": []
+	}
 
 	rows = frappe.db.sql(
 		"""
@@ -86,8 +89,10 @@ def get_warehouse_item_balances(warehouse: str, company: str | None = None) -> d
 		HAVING ABS(qty_balance) > 0.000001 OR ABS(value_balance) > 0.000001
 		ORDER BY value_balance DESC, qty_balance DESC
 		""",
-		{"warehouse": warehouse},
+		{"warehouse": warehouse
+	},
 		as_dict=True,
 	)
-	return {"ok": True, "rows": rows}
+	return {"ok": True, "rows": rows
+	}
 

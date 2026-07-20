@@ -28,7 +28,8 @@ def _make_party_gl_account_number(kind: str, party_code: str, party_name: str) -
 def _find_existing_party_gl(company: str, account_number: str) -> str | None:
 	return frappe.db.get_value(
 		"GL Account",
-		{"company": company, "account_number": account_number},
+		{"company": company, "account_number": account_number
+	},
 		"name",
 	)
 

@@ -39,22 +39,26 @@ def execute(filters=None):
 				"net_result": float(net),
 				"primary_share": float(primary_share),
 				"secondary_share": float(secondary_share),
-				"cumulative_secondary_loss": float(cum_loss),
-			}
+				"cumulative_secondary_loss": float(cum_loss)
+	}
 		)
 
 	compare_year = filters.get("compare_year")
 	columns = [
-		{"label": _("Year"), "fieldname": "year", "fieldtype": "Int", "width": 90},
-		{"label": _("Net Profit / Loss"), "fieldname": "net_result", "fieldtype": "Currency", "width": 150},
-		{"label": _("{0} Share").format(labels["primary_partner_name"]), "fieldname": "primary_share", "fieldtype": "Currency", "width": 160},
-		{"label": _("{0} Share").format(labels["secondary_partner_name"]), "fieldname": "secondary_share", "fieldtype": "Currency", "width": 160},
+		{"label": _("Year"), "fieldname": "year", "fieldtype": "Int", "width": 90
+	},
+		{"label": _("Net Profit / Loss"), "fieldname": "net_result", "fieldtype": "Currency", "width": 150
+	},
+		{"label": _("{0} Share").format(labels["primary_partner_name"]), "fieldname": "primary_share", "fieldtype": "Currency", "width": 160
+	},
+		{"label": _("{0} Share").format(labels["secondary_partner_name"]), "fieldname": "secondary_share", "fieldtype": "Currency", "width": 160
+	},
 		{
 			"label": _("Cumulative {0} Loss").format(labels["secondary_partner_name"]),
 			"fieldname": "cumulative_secondary_loss",
 			"fieldtype": "Currency",
-			"width": 170,
-		},
+			"width": 170
+	},
 	]
 	if compare_year:
 		comp = next((r for r in rows if r["year"] == int(compare_year)), None)
@@ -67,10 +71,14 @@ def execute(filters=None):
 				r["pct_change"] = (flt(r["diff"]) / base * 100.0) if base else None
 			columns.extend(
 				[
-					{"label": _("Compare Year"), "fieldname": "compare_year", "fieldtype": "Int", "width": 110},
-					{"label": _("Compare Value"), "fieldname": "compare_value", "fieldtype": "Currency", "width": 140},
-					{"label": _("Difference"), "fieldname": "diff", "fieldtype": "Currency", "width": 130},
-					{"label": _("Change %"), "fieldname": "pct_change", "fieldtype": "Percent", "width": 110},
+					{"label": _("Compare Year"), "fieldname": "compare_year", "fieldtype": "Int", "width": 110
+	},
+					{"label": _("Compare Value"), "fieldname": "compare_value", "fieldtype": "Currency", "width": 140
+	},
+					{"label": _("Difference"), "fieldname": "diff", "fieldtype": "Currency", "width": 130
+	},
+					{"label": _("Change %"), "fieldname": "pct_change", "fieldtype": "Percent", "width": 110
+	},
 				]
 			)
 
@@ -78,13 +86,14 @@ def execute(filters=None):
 		"data": {
 			"labels": [str(r["year"]) for r in rows],
 			"datasets": [
-				{"name": _("Net Result"), "values": [r["net_result"] for r in rows]},
-				{"name": _("Secondary Share"), "values": [r["secondary_share"] for r in rows]},
-			],
-		},
+				{"name": _("Net Result"), "values": [r["net_result"] for r in rows]
+	},
+				{"name": _("Secondary Share"), "values": [r["secondary_share"] for r in rows]
+	},
+			]},
 		"type": "bar",
 		"title": _("Partner Profit/Loss Allocation"),
-		"height": 260,
+		"height": 260
 	}
 	return columns, rows, None, chart
 

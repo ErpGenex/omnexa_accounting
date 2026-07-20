@@ -18,7 +18,8 @@ def execute(filters=None):
 
 
 def _from_event_audit_log(filters):
-	params = {"from_date": filters.from_date, "to_date": filters.to_date}
+	params = {"from_date": filters.from_date, "to_date": filters.to_date
+	}
 	conditions = ["DATE(creation) BETWEEN %(from_date)s AND %(to_date)s"]
 	if filters.get("company"):
 		params["company"] = filters.company
@@ -39,20 +40,28 @@ def _from_event_audit_log(filters):
 		as_dict=True,
 	)
 	columns = [
-		{"label": _("Date"), "fieldname": "creation", "fieldtype": "Datetime", "width": 160},
-		{"label": _("Event"), "fieldname": "event_name", "fieldtype": "Data", "width": 180},
-		{"label": _("DocType"), "fieldname": "source_doctype", "fieldtype": "Data", "width": 160},
-		{"label": _("Document"), "fieldname": "source_docname", "fieldtype": "Data", "width": 160},
-		{"label": _("Action"), "fieldname": "action", "fieldtype": "Data", "width": 120},
-		{"label": _("Company"), "fieldname": "company", "fieldtype": "Link", "options": "Company", "width": 120},
-		{"label": _("User"), "fieldname": "user", "fieldtype": "Link", "options": "User", "width": 120},
+		{"label": _("Date"), "fieldname": "creation", "fieldtype": "Datetime", "width": 160
+	},
+		{"label": _("Event"), "fieldname": "event_name", "fieldtype": "Data", "width": 180
+	},
+		{"label": _("DocType"), "fieldname": "source_doctype", "fieldtype": "Data", "width": 160
+	},
+		{"label": _("Document"), "fieldname": "source_docname", "fieldtype": "Data", "width": 160
+	},
+		{"label": _("Action"), "fieldname": "action", "fieldtype": "Data", "width": 120
+	},
+		{"label": _("Company"), "fieldname": "company", "fieldtype": "Link", "options": "Company", "width": 120
+	},
+		{"label": _("User"), "fieldname": "user", "fieldtype": "Link", "options": "User", "width": 120
+	},
 	]
 	chart = auto_chart_for_columns(rows, columns)
 	return columns, rows, None, chart
 
 
 def _from_version_table(filters):
-	params = {"from_date": filters.from_date, "to_date": filters.to_date}
+	params = {"from_date": filters.from_date, "to_date": filters.to_date
+	}
 	rows = frappe.db.sql(
 		"""
 		SELECT creation, ref_doctype AS source_doctype, docname AS source_docname,
@@ -66,11 +75,16 @@ def _from_version_table(filters):
 		as_dict=True,
 	)
 	columns = [
-		{"label": _("Date"), "fieldname": "creation", "fieldtype": "Datetime", "width": 160},
-		{"label": _("Event"), "fieldname": "event_name", "fieldtype": "Data", "width": 140},
-		{"label": _("DocType"), "fieldname": "source_doctype", "fieldtype": "Data", "width": 160},
-		{"label": _("Document"), "fieldname": "source_docname", "fieldtype": "Data", "width": 160},
-		{"label": _("User"), "fieldname": "user", "fieldtype": "Link", "options": "User", "width": 120},
+		{"label": _("Date"), "fieldname": "creation", "fieldtype": "Datetime", "width": 160
+	},
+		{"label": _("Event"), "fieldname": "event_name", "fieldtype": "Data", "width": 140
+	},
+		{"label": _("DocType"), "fieldname": "source_doctype", "fieldtype": "Data", "width": 160
+	},
+		{"label": _("Document"), "fieldname": "source_docname", "fieldtype": "Data", "width": 160
+	},
+		{"label": _("User"), "fieldname": "user", "fieldtype": "Link", "options": "User", "width": 120
+	},
 	]
 	chart = auto_chart_for_columns(rows, columns)
 	return columns, rows, _("Fallback: Frappe Version table (Event Audit Log not available)."), chart

@@ -34,4 +34,5 @@ def execute():
 		updated += 1
 	if updated:
 		frappe.db.commit()
-	return {"updated": updated}
+	return {"updated": updated
+	}

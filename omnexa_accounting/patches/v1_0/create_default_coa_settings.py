@@ -9,7 +9,8 @@ def execute():
 		return
 	companies = frappe.get_all("Company", pluck="name")
 	for company in companies:
-		if frappe.db.exists("CoA Settings", {"company": company}):
+		if frappe.db.exists("CoA Settings", {"company": company
+	}):
 			continue
 		frappe.get_doc(
 			{
@@ -25,6 +26,6 @@ def execute():
 				"expense_mask": "5xxx",
 				"require_group_reporting_tag_for_intercompany": 1,
 				"enforce_account_currency_match": 1,
-				"allow_direct_posting_default": 1,
-			}
+				"allow_direct_posting_default": 1
+	}
 		).insert(ignore_permissions=True)

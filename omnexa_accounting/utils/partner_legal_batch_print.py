@@ -34,31 +34,39 @@ from omnexa_accounting.utils.partner_legal_reporting import generate_court_evide
 
 # ── مستندات سنوية (ملف PDF منفصل لكل سنة) ───────────────────────────────────
 YEARLY_REPORT_SPECS: list[dict[str, Any]] = [
-	{"report": "Balance Sheet", "slug": "01-الميزانية-العمومية", "title_ar": "الميزانية العمومية"},
-	{"report": "Income Statement", "slug": "02-قائمة-الدخل", "title_ar": "قائمة الدخل"},
-	{"report": "General Journal", "slug": "03-قيود-اليومية", "title_ar": "قيود اليومية"},
+	{"report": "Balance Sheet", "slug": "01-الميزانية-العمومية", "title_ar": "الميزانية العمومية"
+	},
+	{"report": "Income Statement", "slug": "02-قائمة-الدخل", "title_ar": "قائمة الدخل"
+	},
+	{"report": "General Journal", "slug": "03-قيود-اليومية", "title_ar": "قيود اليومية"
+	},
 ]
 
 # ── مستندات قانونية للفترة كاملة (ملف منفصل لكل نوع) ───────────────────────
 PARTNER_PERIOD_SECTIONS: list[dict[str, Any]] = [
-	{"kind": "final_summary", "slug": "01-التقرير-النهائي", "title_ar": "التقرير النهائي عن المدة — ملخص مديونيات الشركاء"},
+	{"kind": "final_summary", "slug": "01-التقرير-النهائي", "title_ar": "التقرير النهائي عن المدة — ملخص مديونيات الشركاء"
+	},
 	{
 		"kind": "report",
 		"slug": "02-كشف-مديونية-الشريك",
 		"report": "Partner Debt Statement",
 		"title_ar": "كشف مديونية الشريك — تفصيل سنوي",
-		"debt_pct_fraction": True,
+		"debt_pct_fraction": True
 	},
-	{"kind": "report", "slug": "03-مساهمة-الشركاء", "report": "Partner Contribution Report", "title_ar": "تقرير مساهمة الشركاء في التمويل"},
-	{"kind": "report", "slug": "04-توزيع-الخسائر", "report": "Partner Loss Allocation Report", "title_ar": "تقرير توزيع الخسائر على الشركاء"},
-	{"kind": "report", "slug": "05-استرداد-المساهمات", "report": "Partner Recovery Report", "title_ar": "تقرير استرداد مساهمات الشريك"},
-	{"kind": "report", "slug": "06-بيان-المطالبة-القانونية", "report": "Legal Claim Statement", "title_ar": "بيان المطالبة القانونية — إثبات المديونية"},
+	{"kind": "report", "slug": "03-مساهمة-الشركاء", "report": "Partner Contribution Report", "title_ar": "تقرير مساهمة الشركاء في التمويل"
+	},
+	{"kind": "report", "slug": "04-توزيع-الخسائر", "report": "Partner Loss Allocation Report", "title_ar": "تقرير توزيع الخسائر على الشركاء"
+	},
+	{"kind": "report", "slug": "05-استرداد-المساهمات", "report": "Partner Recovery Report", "title_ar": "تقرير استرداد مساهمات الشريك"
+	},
+	{"kind": "report", "slug": "06-بيان-المطالبة-القانونية", "report": "Legal Claim Statement", "title_ar": "بيان المطالبة القانونية — إثبات المديونية"
+	},
 	{
 		"kind": "report",
 		"slug": "07-تقرير-التصفية",
 		"report": "Liquidation Historical Report",
 		"title_ar": "تقرير التصفية التاريخي",
-		"as_of_only": True,
+		"as_of_only": True
 	},
 ]
 
@@ -74,8 +82,8 @@ AR_META = {
 	"generated_by": "أُعد بواسطة",
 	"printed_at": "تاريخ الطباعة",
 	"no_data": "لا توجد بيانات",
-	"serial": "م",
-}
+	"serial": "م"
+	}
 
 
 def _format_datetime_ar() -> str:
@@ -101,7 +109,8 @@ def _iter_years(from_date: str, to_date: str) -> Iterator[tuple[int, str, str]]:
 def _build_document_plan(from_date: str, to_date: str) -> list[dict[str, Any]]:
 	"""Each entry = one separate PDF inside the ZIP (no year mixing)."""
 	plan: list[dict[str, Any]] = [
-		{"kind": "cover", "file": "00-غلاف-الحزمة.pdf", "title_ar": "غلاف حزمة المستندات القانونية", "year": None},
+		{"kind": "cover", "file": "00-غلاف-الحزمة.pdf", "title_ar": "غلاف حزمة المستندات القانونية", "year": None
+	},
 	]
 	for year, year_from, year_to in _iter_years(from_date, to_date):
 		folder = str(year)
@@ -110,28 +119,32 @@ def _build_document_plan(from_date: str, to_date: str) -> list[dict[str, Any]]:
 				{
 					"kind": "yearly_report",
 					"year": year,
-					"file": f"{folder}/{spec['slug']}-{year}.pdf",
-					"title_ar": f"{spec['title_ar']} — {year}",
+					"file": f"{folder}/{spec['slug']}-{year
+	}.pdf",
+					"title_ar": f"{spec['title_ar']} — {year
+	}",
 					"report": spec["report"],
 					"from_date": year_from,
 					"to_date": year_to,
-					"landscape": True,
-				}
+					"landscape": True
+	}
 			)
 	for spec in PARTNER_PERIOD_SECTIONS:
 		plan.append(
 			{
 				**spec,
-				"file": f"تقارير-الفترة/{spec['slug']}.pdf",
+				"file": f"تقارير-الفترة/{spec['slug']
+	}.pdf",
 				"year": None,
-				"landscape": spec.get("kind") != "final_summary",
-			}
+				"landscape": spec.get("kind") != "final_summary"
+	}
 		)
 	return plan
 
 
 def _pdf_options(*, landscape: bool) -> dict[str, str]:
-	return {"orientation": "Landscape" if landscape else "Portrait", "page-size": "A4"}
+	return {"orientation": "Landscape" if landscape else "Portrait", "page-size": "A4"
+	}
 
 
 def _html_to_pdf(html: str, *, landscape: bool) -> bytes:
@@ -171,7 +184,7 @@ def build_report_filters_from_setup(setup, from_date: str, to_date: str) -> dict
 		"primary_current_account": funder.partner_current_account,
 		"secondary_current_account": liable.partner_current_account,
 		"secondary_due_account": liable.due_from_partner_account,
-		"legal_case_reference": setup.legal_case_reference,
+		"legal_case_reference": setup.legal_case_reference
 	}
 
 
@@ -780,9 +793,11 @@ def build_partner_legal_zip(company: str, from_date: str, to_date: str, branch: 
 def _preview_document_item(item: dict, base_filters: dict) -> dict:
 	try:
 		if item.get("kind") == "cover":
-			return {"file": item["file"], "title_ar": item["title_ar"], "year": None, "ok": True}
+			return {"file": item["file"], "title_ar": item["title_ar"], "year": None, "ok": True
+	}
 		if item.get("kind") == "final_summary":
-			return {"file": item["file"], "title_ar": item["title_ar"], "year": None, "kind": "final_summary", "ok": True}
+			return {"file": item["file"], "title_ar": item["title_ar"], "year": None, "kind": "final_summary", "ok": True
+	}
 		if item.get("kind") == "yearly_report":
 			report_filters = _year_scoped_filters(base_filters, item)
 			columns, rows = _run_report(item["report"], report_filters)
@@ -793,8 +808,8 @@ def _preview_document_item(item: dict, base_filters: dict) -> dict:
 				"title_ar": item["title_ar"],
 				"year": item["year"],
 				"row_count": len(rows or []),
-				"ok": True,
-			}
+				"ok": True
+	}
 		if item.get("kind") == "report":
 			report_filters = _report_filters(base_filters, item)
 			_, rows = _run_report(item["report"], report_filters)
@@ -803,23 +818,25 @@ def _preview_document_item(item: dict, base_filters: dict) -> dict:
 				"title_ar": item["title_ar"],
 				"year": None,
 				"row_count": len(rows or []),
-				"ok": True,
-			}
-		return {"file": item.get("file"), "title_ar": item.get("title_ar"), "ok": False, "error": "نوع مستند غير معروف"}
+				"ok": True
+	}
+		return {"file": item.get("file"), "title_ar": item.get("title_ar"), "ok": False, "error": "نوع مستند غير معروف"
+	}
 	except Exception as exc:
 		return {
 			"file": item.get("file"),
 			"title_ar": item.get("title_ar"),
 			"year": item.get("year"),
 			"ok": False,
-			"error": arabize_text(str(exc)),
-		}
+			"error": arabize_text(str(exc))
+	}
 
 
 @frappe.whitelist()
 def get_partner_legal_print_preview(company: str, from_date: str, to_date: str, branch: str | None = None) -> dict:
 	if not frappe.db.exists("Company Partner Legal Setup", company):
-		return {"ok": False, "error": "لم يتم العثور على إعداد قانوني للشركاء لهذه الشركة."}
+		return {"ok": False, "error": "لم يتم العثور على إعداد قانوني للشركاء لهذه الشركة."
+	}
 
 	setup = frappe.get_doc("Company Partner Legal Setup", company)
 	if branch:
@@ -849,8 +866,8 @@ def get_partner_legal_print_preview(company: str, from_date: str, to_date: str, 
 				"partner_name": row.partner_name,
 				"partner_name_ar": row.partner_name_ar,
 				"ownership_percent": float(row.ownership_percent or 0),
-				"is_funding_partner": row.is_funding_partner,
-			}
+				"is_funding_partner": row.is_funding_partner
+	}
 			for row in setup.partners or []
 		],
 		"certificate": package.get("certificate"),
@@ -862,7 +879,7 @@ def get_partner_legal_print_preview(company: str, from_date: str, to_date: str, 
 		"yearly_files_per_year": len(YEARLY_REPORT_SPECS),
 		"years": [y for y, _, _ in _iter_years(from_date, to_date)],
 		"delivery": "zip",
-		"setup_url": f"/app/company-partner-legal-setup/{company}",
+		"setup_url": f"/app/company-partner-legal-setup/{company}"
 	}
 
 
@@ -917,5 +934,4 @@ def smoke_test_partner_legal_zip(company: str, from_date: str, to_date: str) -> 
 		"pdf_files": pdf_count,
 		"xlsx_files": xlsx_count,
 		"plan_documents": len(plan),
-		"years": len(list(_iter_years(from_date, to_date))),
-	}
+		"years": len(list(_iter_years(from_date, to_date)))}

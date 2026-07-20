@@ -49,7 +49,8 @@ def _backdate_creation(doctype: str, name: str, days_ago: int) -> None:
 
 def _ensure_uom() -> None:
 	if not frappe.db.exists("UOM", "Nos"):
-		frappe.get_doc({"doctype": "UOM", "uom_name": "Nos"}).insert(ignore_permissions=True)
+		frappe.get_doc({"doctype": "UOM", "uom_name": "Nos"
+	}).insert(ignore_permissions=True)
 
 
 def _get_company() -> str | None:
@@ -70,12 +71,14 @@ def _get_branch(company: str) -> str | None:
 	if b and frappe.db.exists("Branch", b):
 		if frappe.db.get_value("Branch", b, "company") == company:
 			return b
-	return frappe.db.get_value("Branch", {"company": company}, "name", order_by="creation asc")
+	return frappe.db.get_value("Branch", {"company": company
+	}, "name", order_by="creation asc")
 
 
 def _get_or_create_demo_revenue_gl(company: str) -> str:
 	row = frappe.db.get_value(
-		"GL Account", {"company": company, "account_number": DEMO_GL_ACCOUNT_NO}, "name"
+		"GL Account", {"company": company, "account_number": DEMO_GL_ACCOUNT_NO
+	}, "name"
 	)
 	if row:
 		return row
@@ -91,7 +94,8 @@ def _get_or_create_demo_revenue_gl(company: str) -> str:
 
 
 def _get_or_create_demo_bank_gl(company: str) -> str | None:
-	row = frappe.db.get_value("GL Account", {"company": company, "account_number": DEMO_BANK_GL_NO}, "name")
+	row = frappe.db.get_value("GL Account", {"company": company, "account_number": DEMO_BANK_GL_NO
+	}, "name")
 	if row:
 		return row
 	try:
@@ -111,7 +115,8 @@ def _get_or_create_demo_bank_gl(company: str) -> str | None:
 
 
 def _get_or_create_demo_warehouse(company: str) -> str:
-	row = frappe.db.get_value("Warehouse", {"warehouse_code": DEMO_WH_CODE, "company": company}, "name")
+	row = frappe.db.get_value("Warehouse", {"warehouse_code": DEMO_WH_CODE, "company": company
+	}, "name")
 	if row:
 		return row
 	w = frappe.new_doc("Warehouse")
@@ -123,7 +128,8 @@ def _get_or_create_demo_warehouse(company: str) -> str:
 
 
 def _get_or_create_demo_item(company: str) -> str:
-	row = frappe.db.get_value("Item", {"item_code": DEMO_ITEM_CODE, "company": company}, "name")
+	row = frappe.db.get_value("Item", {"item_code": DEMO_ITEM_CODE, "company": company
+	}, "name")
 	if row:
 		return row
 	_ensure_uom()
@@ -137,7 +143,8 @@ def _get_or_create_demo_item(company: str) -> str:
 
 
 def _get_or_create_demo_supplier(company: str) -> str:
-	row = frappe.db.get_value("Supplier", {"supplier_name": DEMO_SUPPLIER_NAME, "company": company}, "name")
+	row = frappe.db.get_value("Supplier", {"supplier_name": DEMO_SUPPLIER_NAME, "company": company
+	}, "name")
 	if row:
 		return row
 	sup = frappe.new_doc("Supplier")
@@ -151,7 +158,8 @@ def _get_or_create_demo_employees(company: str) -> list[str]:
 	"""Seed a few employees so HR screens are not empty (best-effort)."""
 	if not frappe.db.exists("DocType", "Employee"):
 		return []
-	existing = frappe.get_all("Employee", filters={"company": company}, pluck="name", limit_page_length=10)
+	existing = frappe.get_all("Employee", filters={"company": company
+	}, pluck="name", limit_page_length=10)
 	if existing:
 		return existing
 	out = []
@@ -193,14 +201,16 @@ def _create_payment_entry(
 	pe.party = party
 	pe.payment_purpose = purpose
 	pe.paid_amount = amount
-	pe.append("references", {"reference_doctype": reference_doctype, "reference_name": reference_name, "allocated_amount": amount})
+	pe.append("references", {"reference_doctype": reference_doctype, "reference_name": reference_name, "allocated_amount": amount
+	})
 	pe.insert(ignore_permissions=True)
 	pe.submit()
 	return pe.name
 
 
 def _find_leaf_gl(company: str, account_type: str | None = None) -> str | None:
-	filters = {"company": company, "is_group": 0}
+	filters = {"company": company, "is_group": 0
+	}
 	if account_type:
 		filters["account_type"] = account_type
 	return frappe.db.get_value("GL Account", filters, "name")
@@ -247,7 +257,8 @@ def _get_or_create_demo_tax_gl(company: str) -> str | None:
 def _get_or_create_demo_tax_rule(company: str, tax_gl: str | None) -> str | None:
 	if not tax_gl:
 		return None
-	existing = frappe.db.get_value("Tax Rule", {"title": DEMO_TAX_RULE_TITLE, "company": company}, "name")
+	existing = frappe.db.get_value("Tax Rule", {"title": DEMO_TAX_RULE_TITLE, "company": company
+	}, "name")
 	if existing:
 		return existing
 	doc = frappe.new_doc("Tax Rule")
@@ -299,10 +310,14 @@ def _is_full_demo_present(company: str, required_months: int) -> bool:
 	m = max(1, min(24, cint(required_months)))
 	try:
 		return (
-			(frappe.db.count("Sales Invoice", {"company": company, "docstatus": 1}) or 0) >= m
-			and (frappe.db.count("Purchase Invoice", {"company": company, "docstatus": 1}) or 0) >= m
-			and (frappe.db.count("Stock Entry", {"company": company, "docstatus": 1}) or 0) >= m * 2
-			and (frappe.db.count("Journal Entry", {"company": company, "docstatus": 1}) or 0) >= m
+			(frappe.db.count("Sales Invoice", {"company": company, "docstatus": 1
+	}) or 0) >= m
+			and (frappe.db.count("Purchase Invoice", {"company": company, "docstatus": 1
+	}) or 0) >= m
+			and (frappe.db.count("Stock Entry", {"company": company, "docstatus": 1
+	}) or 0) >= m * 2
+			and (frappe.db.count("Journal Entry", {"company": company, "docstatus": 1
+	}) or 0) >= m
 		)
 	except Exception:
 		return False
@@ -365,7 +380,8 @@ def ensure_demo_workspace_seed(
 	_get_or_create_demo_employees(company)
 
 	try:
-		cust = frappe.db.get_value("Customer", {"customer_name": DEMO_CUSTOMER_NAME, "company": company}, "name")
+		cust = frappe.db.get_value("Customer", {"customer_name": DEMO_CUSTOMER_NAME, "company": company
+	}, "name")
 		if cust:
 			cust = frappe.get_doc("Customer", cust)
 		else:
@@ -393,8 +409,8 @@ def ensure_demo_workspace_seed(
 					"qty": receipt_qty,
 					"t_warehouse": wh,
 					"uom": "Nos",
-					"rate": 35 + month_idx,
-				},
+					"rate": 35 + month_idx
+	},
 			)
 			se_in.insert(ignore_permissions=True)
 			se_in.submit()
@@ -413,8 +429,8 @@ def ensure_demo_workspace_seed(
 					"qty": issue_qty,
 					"s_warehouse": wh,
 					"uom": "Nos",
-					"rate": 35 + month_idx,
-				},
+					"rate": 35 + month_idx
+	},
 			)
 			se_out.insert(ignore_permissions=True)
 			se_out.submit()
@@ -436,8 +452,10 @@ def ensure_demo_workspace_seed(
 					je.entry_type = "Standard"
 				je.remarks = f"Omnexa Demo Journal Month {month_idx + 1}"
 				amount = 300 + (month_idx * 20)
-				je.append("accounts", {"account": exp_gl_use, "debit": amount, "credit": 0})
-				je.append("accounts", {"account": cash_gl_use, "debit": 0, "credit": amount})
+				je.append("accounts", {"account": exp_gl_use, "debit": amount, "credit": 0
+	})
+				je.append("accounts", {"account": cash_gl_use, "debit": 0, "credit": amount
+	})
 				je.insert(ignore_permissions=True)
 				je.submit()
 				_backdate_creation("Journal Entry", je.name, days_ago - 2)
@@ -462,7 +480,8 @@ def ensure_demo_workspace_seed(
 				so.currency = currency
 				if tax_rule:
 					so.default_tax_rule = tax_rule
-				so.append("items", {"item": item, "qty": qty, "rate": rate, "income_account": rev, "tax_rule": tax_rule})
+				so.append("items", {"item": item, "qty": qty, "rate": rate, "income_account": rev, "tax_rule": tax_rule
+	})
 				so.insert(ignore_permissions=True)
 				so.submit()
 				_backdate_creation("Sales Order", so.name, days_ago)
@@ -477,7 +496,8 @@ def ensure_demo_workspace_seed(
 				dn.sales_order = so_name
 				dn.warehouse = wh
 				dn.transaction_date = posting_date
-				dn.append("items", {"item": item, "qty": qty, "rate": rate})
+				dn.append("items", {"item": item, "qty": qty, "rate": rate
+	})
 				dn.insert(ignore_permissions=True)
 				dn.submit()
 				_backdate_creation("Delivery Note", dn.name, days_ago)
@@ -495,13 +515,16 @@ def ensure_demo_workspace_seed(
 				si.delivery_note = dn_name
 			if tax_rule:
 				si.default_tax_rule = tax_rule
-			si.append("items", {"item": item, "qty": qty, "rate": rate, "income_account": rev, "warehouse": wh, "tax_rule": tax_rule})
+			si.append("items", {"item": item, "qty": qty, "rate": rate, "income_account": rev, "warehouse": wh, "tax_rule": tax_rule
+	})
 			# Credit invoice with installment schedule (2 payments) to demonstrate aging/outstanding.
 			if si.meta.has_field("payment_mode"):
 				si.payment_mode = "Installment"
 			grand_est = float(qty * rate) * (1.15 if tax_rule else 1.0)
-			si.append("payment_schedule", {"due_date": add_to_date(si.posting_date, days=30), "payment_amount": grand_est / 2})
-			si.append("payment_schedule", {"due_date": add_to_date(si.posting_date, days=60), "payment_amount": grand_est / 2})
+			si.append("payment_schedule", {"due_date": add_to_date(si.posting_date, days=30), "payment_amount": grand_est / 2
+	})
+			si.append("payment_schedule", {"due_date": add_to_date(si.posting_date, days=60), "payment_amount": grand_est / 2
+	})
 			si.insert(ignore_permissions=True)
 			si.submit()
 			_backdate_creation("Sales Invoice", si.name, days_ago)
@@ -527,7 +550,8 @@ def ensure_demo_workspace_seed(
 				po.branch = branch
 				po.supplier = supplier_name
 				po.posting_date = add_to_date(posting_date, days=-5)
-				po.append("items", {"item": item, "item_code": DEMO_ITEM_CODE, "qty": qty * 3, "rate": purchase_rate})
+				po.append("items", {"item": item, "item_code": DEMO_ITEM_CODE, "qty": qty * 3, "rate": purchase_rate
+	})
 				po.insert(ignore_permissions=True)
 				po.submit()
 				_backdate_creation("Purchase Order", po.name, days_ago + 5)
@@ -542,7 +566,8 @@ def ensure_demo_workspace_seed(
 				pr.posting_date = add_to_date(posting_date, days=-3)
 				if po_name and pr.meta.has_field("purchase_order"):
 					pr.purchase_order = po_name
-				pr.append("items", {"item_code": DEMO_ITEM_CODE, "qty": qty * 3, "rate": purchase_rate})
+				pr.append("items", {"item_code": DEMO_ITEM_CODE, "qty": qty * 3, "rate": purchase_rate
+	})
 				pr.insert(ignore_permissions=True)
 				pr.submit()
 				_backdate_creation("Purchase Receipt", pr.name, days_ago + 3)
@@ -560,17 +585,20 @@ def ensure_demo_workspace_seed(
 				pi.po_reference = po_name
 			if pr_name and pi.meta.has_field("goods_receipt_reference"):
 				pi.goods_receipt_reference = pr_name
-			pi.append("items", {"item": item, "qty": qty * 3, "rate": purchase_rate, "warehouse": wh})
+			pi.append("items", {"item": item, "qty": qty * 3, "rate": purchase_rate, "warehouse": wh
+	})
 			if pi.meta.has_field("payment_mode"):
 				pi.payment_mode = "Installment"
 			grand_est_pi = float(qty * 3 * purchase_rate) * (1.15 if tax_rule else 1.0)
 			pi.append(
 				"payment_schedule",
-				{"due_date": add_to_date(pi.posting_date, days=30), "payment_amount": grand_est_pi / 2},
+				{"due_date": add_to_date(pi.posting_date, days=30), "payment_amount": grand_est_pi / 2
+	},
 			)
 			pi.append(
 				"payment_schedule",
-				{"due_date": add_to_date(pi.posting_date, days=60), "payment_amount": grand_est_pi / 2},
+				{"due_date": add_to_date(pi.posting_date, days=60), "payment_amount": grand_est_pi / 2
+	},
 			)
 			pi.insert(ignore_permissions=True)
 			pi.submit()

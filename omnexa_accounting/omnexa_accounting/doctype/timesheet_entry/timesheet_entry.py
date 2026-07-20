@@ -55,11 +55,12 @@ class TimesheetEntry(Document):
 		si.append(
 			"items",
 			{
-				"item_code": f"Timesheet {self.project_template}",
+				"item_code": f"Timesheet {self.project_template
+	}",
 				"qty": 1,
 				"rate": flt(self.billable_amount),
-				"income_account": project.default_income_account,
-			},
+				"income_account": project.default_income_account
+	},
 		)
 		si.insert(ignore_permissions=True)
 		self.db_set("sales_invoice", si.name)

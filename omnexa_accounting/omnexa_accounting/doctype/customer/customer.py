@@ -20,7 +20,8 @@ class Customer(Document):
 			frappe.throw(_("Credit Days cannot be negative."), title=_("Payment Terms"))
 		existing = frappe.db.get_value(
 			"Customer",
-			{"company": self.company, "customer_name": self.customer_name},
+			{"company": self.company, "customer_name": self.customer_name
+	},
 			"name",
 		)
 		if existing and (not self.name or existing != self.name):
@@ -31,7 +32,8 @@ class Customer(Document):
 		if self.customer_code:
 			existing_code = frappe.db.get_value(
 				"Customer",
-				{"company": self.company, "customer_code": self.customer_code},
+				{"company": self.company, "customer_code": self.customer_code
+	},
 				"name",
 			)
 			if existing_code and existing_code != self.name:

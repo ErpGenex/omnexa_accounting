@@ -51,8 +51,8 @@ def get_children(doctype, parent="", **filters):
 				"value": r.get("name"),
 				"label": title,
 				"title": title,
-				"expandable": int(r.get("is_group") or 0),
-			}
+				"expandable": int(r.get("is_group") or 0)
+	}
 		)
 	return out
 

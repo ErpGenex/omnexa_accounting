@@ -14,7 +14,8 @@ class TestTaxRuleResolver(FrappeTestCase):
 		if not co or not frappe.db.exists("DocType", "Tax Rule"):
 			return
 		tax_gl = frappe.db.get_value(
-			"GL Account", {"company": co, "is_group": 0}, "name", order_by="creation asc"
+			"GL Account", {"company": co, "is_group": 0
+	}, "name", order_by="creation asc"
 		)
 		if not tax_gl:
 			return
@@ -26,14 +27,15 @@ class TestTaxRuleResolver(FrappeTestCase):
 			rule = frappe.get_doc(
 				{
 					"doctype": "Tax Rule",
-					"title": f"Test VAT Resolver {frappe.generate_hash(length=6)}",
+					"title": f"Test VAT Resolver {frappe.generate_hash(length=6)
+	}",
 					"company": co,
 					"valid_from": add_to_date(today(), days=-30),
 					"valid_to": add_to_date(today(), days=365),
 					"tax_type": "standard",
 					"rate": 14,
-					"account_head": tax_gl,
-				}
+					"account_head": tax_gl
+	}
 			).insert(ignore_permissions=True)
 			rule_name = rule.name
 			cleanup = True

@@ -36,8 +36,10 @@ def execute(filters=None):
 		as_dict=True,
 	)
 	columns = [
-		{"label": _("DocType"), "fieldname": "ref_doctype", "fieldtype": "Data", "width": 220},
-		{"label": _("Version events"), "fieldname": "version_events", "fieldtype": "Int", "width": 140},
+		{"label": _("DocType"), "fieldname": "ref_doctype", "fieldtype": "Data", "width": 220
+	},
+		{"label": _("Version events"), "fieldname": "version_events", "fieldtype": "Int", "width": 140
+	},
 	]
 	chart = auto_chart_for_columns(rows, columns)
 	return columns, rows, None, chart

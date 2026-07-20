@@ -19,8 +19,8 @@ class CurrencyExchangeRate(Document):
 				"company": self.company,
 				"exchange_date": self.exchange_date,
 				"from_currency": self.from_currency,
-				"to_currency": self.to_currency,
-			},
+				"to_currency": self.to_currency
+	},
 			"name",
 		)
 		if existing and existing != self.name:

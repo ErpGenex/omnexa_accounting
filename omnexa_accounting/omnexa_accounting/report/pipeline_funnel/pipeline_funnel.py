@@ -8,10 +8,14 @@ def execute(filters=None):
 	filters = frappe._dict(filters or {})
 
 	columns = [
-		{"label": _("Stage"), "fieldname": "stage", "fieldtype": "Data", "width": 160},
-		{"label": _("Opportunities"), "fieldname": "opportunity_count", "fieldtype": "Int", "width": 120},
-		{"label": _("Total Amount"), "fieldname": "total_amount", "fieldtype": "Currency", "width": 140},
-		{"label": _("Weighted Amount"), "fieldname": "weighted_amount", "fieldtype": "Currency", "width": 150},
+		{"label": _("Stage"), "fieldname": "stage", "fieldtype": "Data", "width": 160
+	},
+		{"label": _("Opportunities"), "fieldname": "opportunity_count", "fieldtype": "Int", "width": 120
+	},
+		{"label": _("Total Amount"), "fieldname": "total_amount", "fieldtype": "Currency", "width": 140
+	},
+		{"label": _("Weighted Amount"), "fieldname": "weighted_amount", "fieldtype": "Currency", "width": 150
+	},
 	]
 
 	conditions = ["po.docstatus < 2"]

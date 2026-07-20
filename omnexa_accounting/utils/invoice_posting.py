@@ -29,7 +29,8 @@ def _reference_for_invoice(doctype: str, name: str) -> str:
 
 
 def _find_existing_posting_je(company: str, branch: str | None, reference: str) -> str | None:
-	filters = {"company": company, "reference": reference}
+	filters = {"company": company, "reference": reference
+	}
 	if branch and frappe.get_meta("Journal Entry").has_field("branch"):
 		filters["branch"] = branch
 	return frappe.db.get_value("Journal Entry", filters, "name")
@@ -78,11 +79,14 @@ def post_sales_invoice_gl(sales_invoice) -> str | None:
 	grand = flt(getattr(sales_invoice, "grand_total", 0)) or flt(net + tax)
 
 	lines: list[dict] = [
-		{"account": ar, "debit": grand, "credit": 0},
-		{"account": income, "debit": 0, "credit": net},
+		{"account": ar, "debit": grand, "credit": 0
+	},
+		{"account": income, "debit": 0, "credit": net
+	},
 	]
 	if tax and vat:
-		lines.append({"account": vat, "debit": 0, "credit": tax})
+		lines.append({"account": vat, "debit": 0, "credit": tax
+	})
 
 	je_name = _make_je(
 		company=company,
@@ -123,11 +127,14 @@ def post_purchase_invoice_gl(purchase_invoice) -> str | None:
 	grand = flt(getattr(purchase_invoice, "grand_total", 0)) or flt(net + tax)
 
 	lines: list[dict] = [
-		{"account": expense, "debit": net, "credit": 0},
+		{"account": expense, "debit": net, "credit": 0
+	},
 	]
 	if tax and vat:
-		lines.append({"account": vat, "debit": tax, "credit": 0})
-	lines.append({"account": ap, "debit": 0, "credit": grand})
+		lines.append({"account": vat, "debit": tax, "credit": 0
+	})
+	lines.append({"account": ap, "debit": 0, "credit": grand
+	})
 
 	je_name = _make_je(
 		company=company,

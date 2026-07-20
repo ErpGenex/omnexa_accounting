@@ -63,13 +63,13 @@ def export_financial_report_xlsx(report_name: str, filters: str | dict | None = 
 			"doctype": "File",
 			"file_name": f"{report_name.replace(' ', '_')}_{company}.xlsx",
 			"is_private": 1,
-			"content": xlsx_bytes,
-		}
+			"content": xlsx_bytes
+	}
 	)
 	file_doc.save(ignore_permissions=True)
 	return {
 		"ok": True,
 		"report": report_name,
 		"file_url": file_doc.file_url,
-		"file_name": file_doc.file_name,
+		"file_name": file_doc.file_name
 	}
