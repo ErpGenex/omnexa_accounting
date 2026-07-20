@@ -1,0 +1,130 @@
+{
+	"actions": [],
+	"allow_rename": 0,
+	"autoname": "hash",
+	"creation": "2026-04-19 00:00:00.000000",
+	"doctype": "DocType",
+	"engine": "InnoDB",
+	"field_order": [
+		"tab_break_overview",
+		"operation",
+		"company",
+		"branch",
+		"activity",
+		"executed_by",
+		"tab_break_details",
+		"executed_on",
+		"dry_run",
+		"status",
+		"summary_json",
+		"owner_user"
+	],
+	"fields": [
+		{
+			"fieldname": "tab_break_overview",
+			"fieldtype": "Tab Break",
+			"label": "Overview"
+		},
+		{
+			"fieldname": "tab_break_details",
+			"fieldtype": "Tab Break",
+			"label": "Details"
+		},
+		{
+			"fieldname": "operation",
+			"fieldtype": "Select",
+			"label": "Operation",
+			"options": "Generate COA\nResync COA Labels\nSeed Demo Data\nReset Transactions",
+			"reqd": 1
+		},
+		{
+			"fieldname": "company",
+			"fieldtype": "Link",
+			"label": "Company",
+			"options": "Company",
+			"reqd": 1
+		},
+		{
+			"fieldname": "branch",
+			"fieldtype": "Link",
+			"label": "Branch",
+			"options": "Branch"
+		},
+		{
+			"fieldname": "activity",
+			"fieldtype": "Data",
+			"label": "Activity"
+		},
+		{
+			"fieldname": "executed_by",
+			"fieldtype": "Link",
+			"label": "Executed By",
+			"options": "User"
+		},
+		{
+			"fieldname": "executed_on",
+			"fieldtype": "Datetime",
+			"label": "Executed On"
+		},
+		{
+			"fieldname": "dry_run",
+			"fieldtype": "Check",
+			"label": "Dry Run",
+			"default": "0"
+		},
+		{
+			"fieldname": "status",
+			"fieldtype": "Select",
+			"label": "Status",
+			"options": "Success\nFailed",
+			"default": "Success"
+		},
+		{
+			"fieldname": "summary_json",
+			"fieldtype": "Long Text",
+			"label": "Summary JSON"
+		},
+		{
+			"fieldname": "owner_user",
+			"fieldtype": "Link",
+			"label": "Owner",
+			"options": "User"
+		}
+	],
+	"index_web_pages_for_search": 0,
+	"links": [],
+	"modified": "2026-05-07 12:00:00",
+	"modified_by": "Administrator",
+	"module": "Omnexa Accounting",
+	"name": "Production Seed Log",
+	"owner": "Administrator",
+	"permissions": [
+		{
+			"create": 1,
+			"delete": 1,
+			"email": 1,
+			"export": 1,
+			"print": 1,
+			"read": 1,
+			"report": 1,
+			"role": "System Manager",
+			"share": 1,
+			"write": 1
+		},
+		{
+			"create": 0,
+			"delete": 0,
+			"email": 0,
+			"export": 1,
+			"print": 1,
+			"read": 1,
+			"report": 1,
+			"role": "Accounts Manager",
+			"share": 0,
+			"write": 0
+		}
+	],
+	"sort_field": "creation",
+	"sort_order": "DESC",
+	"track_changes": 1
+}

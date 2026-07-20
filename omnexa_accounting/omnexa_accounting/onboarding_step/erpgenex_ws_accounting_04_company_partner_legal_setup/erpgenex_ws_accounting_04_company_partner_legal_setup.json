@@ -1,0 +1,21 @@
+{
+ "action": "Create Entry",
+ "action_label": "Create",
+ "creation": "2026-06-25 00:44:10.368889",
+ "description": "Create or review your first **Company Partner Legal Setup** record from this workspace.",
+ "docstatus": 0,
+ "doctype": "Onboarding Step",
+ "idx": 0,
+ "is_complete": 0,
+ "is_single": 0,
+ "is_skipped": 0,
+ "modified": "2026-07-11 14:37:19.264026",
+ "modified_by": "Administrator",
+ "name": "ERPGENEX-WS-accounting-04-company_partner_legal_setup",
+ "owner": "Administrator",
+ "reference_document": "Company Partner Legal Setup",
+ "show_form_tour": 0,
+ "show_full_form": 0,
+ "title": "Get started with Company Partner Legal Setup",
+ "validate_action": 1
+}

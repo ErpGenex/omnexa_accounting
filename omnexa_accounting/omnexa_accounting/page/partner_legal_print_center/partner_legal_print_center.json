@@ -1,0 +1,19 @@
+{
+	"doctype": "Page",
+	"module": "Omnexa Accounting",
+	"name": "partner-legal-print-center",
+	"page_name": "partner-legal-print-center",
+	"standard": "Yes",
+	"title": "مركز طباعة المستندات القانونية",
+	"roles": [
+		{
+			"role": "System Manager"
+		},
+		{
+			"role": "Accounts Manager"
+		},
+		{
+			"role": "Accounts User"
+		}
+	]
+}

@@ -1,0 +1,1 @@
+from omnexa_accounting.omnexa_accounting.report.item_stock_balance.item_stock_balance import execute

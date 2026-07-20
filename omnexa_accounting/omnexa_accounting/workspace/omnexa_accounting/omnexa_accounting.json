@@ -1,0 +1,479 @@
+{
+ "charts": [],
+ "content": "[{\"id\": \"erpgenex-onboarding\", \"type\": \"onboarding\", \"data\": {\"onboarding_name\": \"ERPGENEX — Accounting\", \"col\": 12}}, {\"id\": \"acc-settings-h\", \"type\": \"header\", \"data\": {\"text\": \"<b>⚙ Settings</b>\", \"col\": 12}}, {\"id\": \"acc-settings-s1\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Omnexa Accounting Settings\", \"col\": 3}}, {\"id\": \"acc-settings-s2\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"CoA Settings\", \"col\": 3}}, {\"id\": \"omx-acc-h1\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>Accounting & Finance</b></span><br><span class=\\\"text-muted\\\">المحرك المالي — شركة/فرع، دليل الحسابات، الأبعاد، الربط المخزني↔GL، التقارير العالمية</span>\", \"col\": 12}}, {\"id\": \"omx-acc-csettings\", \"type\": \"card\", \"data\": {\"card_name\": \"Accounting Settings\", \"col\": 4}}, {\"id\": \"omx-acc-c1\", \"type\": \"card\", \"data\": {\"card_name\": \"Chart of accounts, company & dimensions\", \"col\": 4}}, {\"id\": \"omx-acc-c1b\", \"type\": \"card\", \"data\": {\"card_name\": \"Item master (stock ↔ GL)\", \"col\": 4}}, {\"id\": \"omx-acc-c2\", \"type\": \"card\", \"data\": {\"card_name\": \"Core financial operations\", \"col\": 4}}, {\"id\": \"omx-acc-c3\", \"type\": \"card\", \"data\": {\"card_name\": \"Global registers & ledgers\", \"col\": 4}}, {\"id\": \"omx-acc-c4\", \"type\": \"card\", \"data\": {\"card_name\": \"Trial balance & primary statements\", \"col\": 4}}, {\"id\": \"omx-acc-c5\", \"type\": \"card\", \"data\": {\"card_name\": \"Cash flow & liquidity (global)\", \"col\": 4}}, {\"id\": \"omx-acc-c6\", \"type\": \"card\", \"data\": {\"card_name\": \"AR, AP & working capital (global)\", \"col\": 4}}, {\"id\": \"omx-acc-c7\", \"type\": \"card\", \"data\": {\"card_name\": \"Budget & inventory (financial view)\", \"col\": 4}}, {\"id\": \"omx-acc-c8\", \"type\": \"card\", \"data\": {\"card_name\": \"Executive KPIs (global)\", \"col\": 4}}]",
+ "custom_blocks": [],
+ "docstatus": 0,
+ "doctype": "Workspace",
+ "for_user": "",
+ "hide_custom": 0,
+ "icon": "accounting",
+ "idx": 0,
+ "is_hidden": 0,
+ "label": "Accounting",
+ "links": [
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Accounting Settings",
+   "link_count": 0,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Omnexa Accounting Settings",
+   "link_count": 0,
+   "link_to": "Omnexa Accounting Settings",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "CoA Settings",
+   "link_count": 0,
+   "link_to": "CoA Settings",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Chart of accounts, company & dimensions",
+   "link_count": 0,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Chart of Accounts (GL Account)",
+   "link_count": 0,
+   "link_to": "GL Account",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Cost Center",
+   "link_count": 0,
+   "link_to": "Cost Center",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Fiscal Year",
+   "link_count": 0,
+   "link_to": "Fiscal Year",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Tax Rule",
+   "link_count": 0,
+   "link_to": "Tax Rule",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Currency Exchange Rate",
+   "link_count": 0,
+   "link_to": "Currency Exchange Rate",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Bank Account",
+   "link_count": 0,
+   "link_to": "Bank Account",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Mode of Payment",
+   "link_count": 0,
+   "link_to": "Mode of Payment",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Item master (stock ↔ GL account mapping)",
+   "link_count": 0,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Item",
+   "link_count": 0,
+   "link_to": "Item",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Core financial operations",
+   "link_count": 0,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Journal Entry",
+   "link_count": 0,
+   "link_to": "Journal Entry",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Payment Entry",
+   "link_count": 0,
+   "link_to": "Payment Entry",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Bank Reconciliation",
+   "link_count": 0,
+   "link_to": "Bank Reconciliation",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Budget",
+   "link_count": 0,
+   "link_to": "Budget",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Import Chart Template",
+   "link_count": 0,
+   "link_to": "Data Import",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Global registers & ledgers",
+   "link_count": 0,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "General Journal",
+   "link_count": 0,
+   "link_to": "General Journal",
+   "link_type": "Report",
+   "onboard": 0,
+   "report_ref_doctype": "Journal Entry",
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "General Ledger",
+   "link_count": 0,
+   "link_to": "General Ledger",
+   "link_type": "Report",
+   "onboard": 0,
+   "report_ref_doctype": "Journal Entry",
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Customer Ledger",
+   "link_count": 0,
+   "link_to": "Customer Ledger",
+   "link_type": "Report",
+   "onboard": 0,
+   "report_ref_doctype": "Journal Entry",
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Supplier Ledger",
+   "link_count": 0,
+   "link_to": "Supplier Ledger",
+   "link_type": "Report",
+   "onboard": 0,
+   "report_ref_doctype": "Journal Entry",
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Employee Ledger",
+   "link_count": 0,
+   "link_to": "Employee Ledger",
+   "link_type": "Report",
+   "onboard": 0,
+   "report_ref_doctype": "Journal Entry",
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Trial balance & primary statements",
+   "link_count": 0,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Trial Balance",
+   "link_count": 0,
+   "link_to": "Trial Balance",
+   "link_type": "Report",
+   "onboard": 0,
+   "report_ref_doctype": "GL Account",
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Income Statement",
+   "link_count": 0,
+   "link_to": "Income Statement",
+   "link_type": "Report",
+   "onboard": 0,
+   "report_ref_doctype": "GL Account",
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Balance Sheet",
+   "link_count": 0,
+   "link_to": "Balance Sheet",
+   "link_type": "Report",
+   "onboard": 0,
+   "report_ref_doctype": "GL Account",
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Financial Consolidation (Consolidated Trial Balance)",
+   "link_count": 0,
+   "link_to": "Consolidated Trial Balance",
+   "link_type": "Report",
+   "onboard": 0,
+   "report_ref_doctype": "GL Account",
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Cash flow & liquidity (global)",
+   "link_count": 0,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Cash Activity Summary",
+   "link_count": 0,
+   "link_to": "Cash Activity Summary",
+   "link_type": "Report",
+   "onboard": 0,
+   "report_ref_doctype": "Payment Entry",
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Cash Flow (Simplified)",
+   "link_count": 0,
+   "link_to": "Cash Flow (Simplified)",
+   "link_type": "Report",
+   "onboard": 0,
+   "report_ref_doctype": "Payment Entry",
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Cash Flow Statement (Structured)",
+   "link_count": 0,
+   "link_to": "Cash Flow Statement (Structured)",
+   "link_type": "Report",
+   "onboard": 0,
+   "report_ref_doctype": "Journal Entry",
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Cash Flow Statement (Indirect)",
+   "link_count": 0,
+   "link_to": "Cash Flow Statement (Indirect)",
+   "link_type": "Report",
+   "onboard": 0,
+   "report_ref_doctype": "Journal Entry",
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "AR, AP & working capital (global)",
+   "link_count": 0,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Receivables Aging",
+   "link_count": 0,
+   "link_to": "Receivables Aging",
+   "link_type": "Report",
+   "onboard": 0,
+   "report_ref_doctype": "Sales Invoice",
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Payables Aging",
+   "link_count": 0,
+   "link_to": "Payables Aging",
+   "link_type": "Report",
+   "onboard": 0,
+   "report_ref_doctype": "Purchase Invoice",
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Receivables and DSO",
+   "link_count": 0,
+   "link_to": "Receivables and DSO",
+   "link_type": "Report",
+   "onboard": 0,
+   "report_ref_doctype": "Sales Invoice",
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Budget & inventory (financial view)",
+   "link_count": 0,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Budget vs Actual",
+   "link_count": 0,
+   "link_to": "Budget vs Actual",
+   "link_type": "Report",
+   "onboard": 0,
+   "report_ref_doctype": "Budget",
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Inventory Valuation Summary",
+   "link_count": 0,
+   "link_to": "Inventory Valuation Summary",
+   "link_type": "Report",
+   "onboard": 0,
+   "report_ref_doctype": "Item",
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Inventory Valuation (GL)",
+   "link_count": 0,
+   "link_to": "Inventory Valuation (GL)",
+   "link_type": "Report",
+   "onboard": 0,
+   "report_ref_doctype": "Item",
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Executive KPIs (global)",
+   "link_count": 0,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Financial KPI Summary",
+   "link_count": 0,
+   "link_to": "Financial KPI Summary",
+   "link_type": "Report",
+   "onboard": 0,
+   "report_ref_doctype": "GL Account",
+   "type": "Link"
+  }
+ ],
+ "modified": "2026-04-17 22:00:00",
+ "modified_by": "Administrator",
+ "module": "Omnexa Accounting",
+ "name": "Accounting",
+ "number_cards": [],
+ "owner": "Administrator",
+ "parent_page": "",
+ "public": 1,
+ "quick_lists": [],
+ "restrict_to_domain": "",
+ "roles": [],
+ "sequence_id": 6.0,
+ "shortcuts": [],
+ "title": "Accounting"
+}

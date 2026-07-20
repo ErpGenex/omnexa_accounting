@@ -1,0 +1,22 @@
+{
+ "add_total_row": 0,
+ "columns": [],
+ "creation": "2026-04-17 12:00:00",
+ "disabled": 0,
+ "docstatus": 0,
+ "doctype": "Report",
+ "filters": [
+  {"fieldname": "from_date", "fieldtype": "Date", "label": "From Date", "reqd": 1, "width": "120px"},
+  {"fieldname": "to_date", "fieldtype": "Date", "label": "To Date", "reqd": 1, "width": "120px"}
+ ],
+ "is_standard": "Yes",
+ "module": "Omnexa Accounting",
+ "name": "Configuration Change Summary",
+ "ref_doctype": "Version",
+ "report_name": "Configuration Change Summary",
+ "report_type": "Script Report",
+ "roles": [
+  {"role": "System Manager"},
+  {"role": "Accounts User"}
+ ]
+}

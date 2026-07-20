@@ -1,0 +1,16 @@
+{
+ "doctype": "Page",
+ "name": "production-readiness-console",
+ "module": "Omnexa Accounting",
+ "title": "Production Readiness Console",
+ "icon": "settings",
+ "restrict_to_domain": null,
+ "roles": [
+  {
+   "role": "System Manager"
+  },
+  {
+   "role": "Accounts Manager"
+  }
+ ]
+}

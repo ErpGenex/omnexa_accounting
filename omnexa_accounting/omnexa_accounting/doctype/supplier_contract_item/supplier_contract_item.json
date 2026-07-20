@@ -1,0 +1,76 @@
+{
+  "actions": [],
+  "creation": "2026-04-30 00:10:00.000000",
+  "doctype": "DocType",
+  "editable_grid": 1,
+  "engine": "InnoDB",
+  "field_order": [
+    "item",
+    "item_code",
+    "min_qty",
+    "column_break_1",
+    "rate",
+    "discount_percentage",
+    "remarks"
+  ],
+  "fields": [
+    {
+      "fieldname": "item",
+      "fieldtype": "Link",
+      "in_list_view": 1,
+      "label": "Item",
+      "options": "Item"
+    },
+    {
+      "fieldname": "item_code",
+      "fieldtype": "Data",
+      "in_list_view": 1,
+      "label": "Item Code",
+      "description": "Used if Item link is not set"
+    },
+    {
+      "default": "0",
+      "fieldname": "min_qty",
+      "fieldtype": "Float",
+      "in_list_view": 1,
+      "label": "Min Qty"
+    },
+    {
+      "fieldname": "column_break_1",
+      "fieldtype": "Column Break"
+    },
+    {
+      "fieldname": "rate",
+      "fieldtype": "Currency",
+      "in_list_view": 1,
+      "label": "Rate",
+      "reqd": 1
+    },
+    {
+      "default": "0",
+      "fieldname": "discount_percentage",
+      "fieldtype": "Float",
+      "in_list_view": 1,
+      "label": "Discount %",
+      "precision": "2"
+    },
+    {
+      "fieldname": "remarks",
+      "fieldtype": "Small Text",
+      "label": "Remarks"
+    }
+  ],
+  "istable": 1,
+  "links": [],
+  "modified": "2026-04-30 00:10:00.000000",
+  "modified_by": "Administrator",
+  "module": "Omnexa Accounting",
+  "name": "Supplier Contract Item",
+  "owner": "Administrator",
+  "permissions": [],
+  "sort_field": "name",
+  "sort_order": "DESC",
+  "states": [],
+  "track_changes": 0
+}
+

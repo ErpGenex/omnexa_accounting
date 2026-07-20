@@ -1,0 +1,1226 @@
+(Consolidated),(Consolidated)
+(Elimination Matrix),(Elimination مصفوفة)
+(Elimination),(Elimination)
+(Unspecified),(Unspecified)
+A. Cash flows from operating activities,A. نقدية flows from operating activities
+ABC Class,ABC Class
+Account,حساب
+Account Class,حساب Class
+"Account Class must be Asset, Liability, Equity, Revenue, or Expense.","حساب Class must be Asset, Liability, Equity, إيرادات, or مصروف."
+Account Currency,حساب Currency
+Account Currency is invalid.,حساب Currency is invalid.
+Account Head,حساب Head
+Account Hierarchy,حساب Hierarchy
+Account Label,حساب Label
+Account Name,حساب اسم
+Account Name (AR),حساب اسم (عربي)
+Account Name (Arabic),حساب اسم (Arabic)
+Account Name (EN),حساب اسم (EN)
+Account name language,حساب اسم language
+Account Number,حساب رقم
+Account number mask is required: {0},حساب رقم mask is required: { 0 }
+Account Number Masks,حساب رقم Masks
+Account number will be auto-generated from class mask on save.,حساب رقم will be auto - generated from class mask on save.
+Account Number {0} already exists for company {1},حساب رقم { 0 } already exists لـ شركة { 1 }
+Account Title,حساب عنوان
+Account Type,حساب نوع
+"Account Type must be Asset, Liability, Equity, Revenue, or Expense.","حساب نوع must be Asset, Liability, Equity, إيرادات, or مصروف."
+Accounting,المحاسبة
+Accounting settings,إعدادات المحاسبة
+Accounting Settings,محاسبة إعدادات
+Accounts,حسابات
+Accounts Grid,حسابات Grid
+Accounts resolved via Company defaults → CoA account_number → name patterns. Sources shown per row.,حسابات resolved via شركة defaults → Co A حساب رقم → اسم patterns. Sources shown per row.
+Action,إجراء
+Actions,إجراءات
+Active,نشط
+Activity,نشاط
+Activity count,نشاط عدد
+Activity Type,نشاط نوع
+Actual,Actual
+Actual Funding,Actual Funding
+"Add a Currency Exchange Rate for {0} → {1} on or before {2}, or set Conversion Rate manually.","إضافة a Currency Exchange معدل لـ { 0 } → { 1 } on or before { 2 }, or set Conversion معدل manually."
+Add at least one budget line.,إضافة at least one budget line.
+Add at least one landed cost charge line.,إضافة at least one landed تكلفة charge line.
+Add at least one line item.,إضافة at least one line صنف.
+Add at least one stock reconciliation item.,إضافة at least one stock reconciliation صنف.
+Address,العنوان
+Adjusted Closing Cr,Adjusted Closing Cr
+Adjusted Closing Dr,Adjusted Closing Dr
+Adjustment Cr,Adjustment Cr
+Adjustment Dr,Adjustment Dr
+Adjustments — working capital,Adjustments — working capital
+Aging bucket,Aging bucket
+Aging Bucket,Aging Bucket
+Aging Days,Aging Days
+"Aging days from due date, or posting date if due date is empty. Open invoices only.","Aging days from استحقاق تاريخ, or posting تاريخ if استحقاق تاريخ is empty. مفتوح invoices only."
+"Aging from due date, or posting date if due date is empty. Unpaid supplier invoices only.","Aging from استحقاق تاريخ, or posting تاريخ if استحقاق تاريخ is empty. Unpaid مورد invoices only."
+All Branches,All Branches
+Allocated Amount,Allocated مبلغ
+Allocated Amount in row {0} exceeds outstanding reference amount.,Allocated مبلغ in row { 0 } exceeds outstanding reference مبلغ.
+Allocated Amount must be greater than zero in row {0}.,Allocated مبلغ must be greater than zero in row { 0 }.
+Allocated GL value,Allocated GL value
+Allocation,Allocation
+Allow direct manual journal posting to this account.,Allow direct manual يومية posting إلى this حساب.
+Allow Direct Posting,Allow Direct Posting
+Allow Direct Posting Default,Allow Direct Posting افتراضي
+Allow manual account numbering override (restricted by role).,Allow manual حساب numbering override (restricted حسب دور).
+Amended From,Amended From
+Amount,مبلغ
+Amount cannot be negative.,مبلغ cannot be negative.
+An account cannot be both Bank and Cash at the same time.,An حساب cannot be both بنك و نقدية at the same time.
+"An exchange rate for this company, date, and currency pair already exists.","An exchange معدل لـ this شركة, تاريخ, و currency pair already exists."
+Annual Leave Days,Annual Leave Days
+Annual Leave Days cannot be negative.,Annual Leave Days cannot be negative.
+API Base URL,API Base URL
+API Key,API مفتاح
+API Secret,API Secret
+Apply,Apply
+Apply COA to Company,Apply COA إلى شركة
+Apply to Company,Apply إلى شركة
+Approval,موافقة
+Approval Rule,موافقة Rule
+Approver Role,Approver دور
+"AR, AP & working capital (global)",المدينون والدائنون ورأس المال العامل (عام)
+As at {0},As at { 0 }
+As Of Date is required.,As Of تاريخ is required.
+Asset Mask,Asset Mask
+Assets,أصول
+Assets vs Liabilities vs Equity,أصول vs Liabilities vs Equity
+Assigned To,Assigned إلى
+At least one bank statement line is required.,At least one بنك statement line is required.
+At least one stock line is required.,At least one stock line is required.
+At least one transfer row is required.,At least one transfer row is required.
+Audit Engagement (Optional Ref.),تدقيق Engagement (Optional Ref.)
+Auto coding,Auto coding
+Auto from company,Auto from شركة
+Auto Match Lines,Auto Match Lines
+Auto PO creation is disabled (feature flag).,Auto PO creation is disabled (feature flag).
+Auto Reorder PR,Auto Reorder PR
+Auto-matching statement lines...,Auto - matching statement lines...
+Avg invoice (base),متوسط فاتورة (base)
+B. Cash flows from investing activities,B. نقدية flows from investing activities
+Backup File,نسخ احتياطي File
+Balance,الرصيد
+Balance Sheet,رصيد Sheet
+Bank / cash GL — Journal Entry (net debit − credit),بنك نقدية GL — يومية قيد (net debit − ائتمان)
+Bank Account,بنك حساب
+Bank Account belongs to a different company.,بنك حساب belongs إلى a different شركة.
+Bank Account currency must match the company default currency (MVP).,بنك حساب currency must match the شركة افتراضي currency (MVP).
+Bank Account does not exist.,بنك حساب does not exist.
+Bank Account is required for bank remittance modes.,بنك حساب is required لـ بنك remittance modes.
+Bank Name,بنك اسم
+Bank Reconciliation,بنك Reconciliation
+Bank Ref,بنك Ref
+Bank Statement,بنك Statement
+Bank Statement Import,بنك Statement Import
+Bank Statement Line,بنك Statement Line
+Base Grand Total,Base Grand إجمالي
+Base Net Total,Base Net إجمالي
+Base Tax Total,Base Tax إجمالي
+Basis of preparation,Basis of preparation
+Batch No.,Batch No.
+Best Offers,Best Offers
+Billable Amount,Billable مبلغ
+Billing Rate,فوترة معدل
+Billing Rate cannot be negative.,فوترة معدل cannot be negative.
+Billing Type,فوترة نوع
+Blocked Reason,Blocked Reason
+Book Closing Balance,Book Closing رصيد
+Book Period Cr,Book Period Cr
+Book Period Dr,Book Period Dr
+Branch,الفرع
+Branch (optional),فرع (optional)
+Branch belongs to a different company.,فرع belongs إلى a different شركة.
+Branch Code,فرع كود
+Branch does not belong to this company,فرع does not belong إلى this شركة
+Branch filter is ignored when multiple companies are selected.,فرع filter is ignored when multiple companies are selected.
+Branch is required,فرع is required
+Branch is required — demo data is branch-scoped only,فرع is required — demo بيانات is فرع - scoped only
+Branch must match the Sales Order.,فرع must match the مبيعات Order.
+Branch {0} does not belong to Company {1}.,فرع { 0 } does not belong إلى شركة { 1 }.
+Branch {0} does not exist.,فرع { 0 } does not exist.
+Branch {0} has no company,فرع { 0 } has no شركة
+Branch {0} must belong to company {1},فرع { 0 } must belong إلى شركة { 1 }
+Branch {0} not found,فرع { 0 } not found
+Budget,ميزانية
+Budget & inventory (financial view),الميزانية والمخزون (المنظور المالي)
+Budget Amount,Budget مبلغ
+Budget is required.,Budget is required.
+Budget Line,Budget Line
+Budget Lines,Budget Lines
+Budget vs Actual,Budget vs Actual
+Business Context Links,روابط سياق الأعمال
+By,حسب
+C. Cash flows from financing activities,C. نقدية flows from financing activities
+Cadence,Cadence
+Campaign Name,Campaign اسم
+Can Be Manufactured,Can Be Manufactured
+Cannot distribute landed cost because invoice base total is zero.,Cannot distribute landed تكلفة because فاتورة base إجمالي is zero.
+Cannot move stage after opportunity is closed (Won/Lost).,Cannot move stage after opportunity is مغلق (Won Lost).
+Cannot return against another credit note (MVP).,Cannot return against another ائتمان note (MVP).
+Cannot return against another debit note (MVP).,Cannot return against another debit note (MVP).
+Cannot submit a quotation marked as Lost.,Cannot اعتماد a quotation marked as Lost.
+Cannot use a Lost Sales Quotation.,Cannot use a Lost مبيعات Quotation.
+Capital Contribution Deficiency,Capital Contribution Deficiency
+Carrier,Carrier
+Carrier Code,Carrier كود
+Carrier Name,Carrier اسم
+Cash,نقدي
+Cash Activity Summary,نقدية نشاط ملخص
+Cash flow & liquidity (global),التدفقات النقدية والسيولة (عام)
+Cash Flow (Simplified),نقدية تدفق (Simplified)
+Cash Flow Section,نقدية تدفق Section
+"Cash Flow Section must be empty, Exclude, Operating Activities, Investing Activities, or Financing Activities.","نقدية تدفق Section must be empty, Exclude, Operating Activities, Investing Activities, or Financing Activities."
+Cash Flow Statement (Indirect),نقدية تدفق Statement (Indirect)
+Cash Flow Statement (Structured),نقدية تدفق Statement (Structured)
+Cash invoice cannot contain a payment schedule.,فاتورة النقدي لا يمكن أن تحتوي على جدول سداد.
+Cash mode: Due Date = Posting Date,وضع النقدي: تاريخ الاستحقاق = تاريخ القيد
+Category code,فئة كود
+Category Name,فئة اسم
+Category Name (Arabic),فئة اسم (Arabic)
+Category Name is required.,فئة اسم is required.
+Category Type,فئة نوع
+Change %,Change%
+Channel,Channel
+Charge row {0}: Amount must be greater than zero.,Charge row { 0 }: مبلغ must be greater than zero.
+Charged to Customer,Charged إلى عميل
+Charges,Charges
+Chart of Accounts (GL Account),مخطط of حسابات (GL حساب)
+"Chart of accounts, company & dimensions",دليل الحسابات والشركة والأبعاد
+Classification Code,Classification كود
+Close,Close
+Closing Balance,Closing رصيد
+Closing Cr,Closing Cr
+Closing Date,Closing تاريخ
+Closing Date is required for Won/Lost stage.,Closing تاريخ is required لـ Won Lost stage.
+Closing Dr,Closing Dr
+COA Reset Audit Log,COA Reset تدقيق سجل
+CoA Settings,Co A إعدادات
+COA Template,COA Template
+COA Template CSV,COA Template CSV
+COA Template Line,COA Template Line
+COA Template Line: Account Number is required.,COA Template Line: حساب رقم is required.
+Code / name,كود اسم
+COGS,COGS
+COGS (tagged accounts),COGS (tagged حسابات)
+Company,الشركة
+Company and Account are required.,شركة و حساب are required.
+Company and Bank Account filters are required.,شركة و بنك حساب filters are required.
+Company Code,شركة كود
+Company does not exist.,شركة does not exist.
+Company filter is required.,شركة filter is required.
+Company is required,شركة is required
+Company is required on Customer.,شركة is required on عميل.
+Company is required.,شركة is required.
+Company must match the Sales Order.,شركة must match the مبيعات Order.
+Company Partner Legal Partner,شركة Partner Legal Partner
+Company Partner Legal Setup,شركة Partner Legal إعداد
+Company {0} not found,شركة { 0 } not found
+Compare Amount,Compare مبلغ
+Compare Cumulative,Compare Cumulative
+Compare Quotations,Compare Quotations
+Compare Value,Compare Value
+Compare Year,Compare Year
+Competency Level,Competency Level
+Complete Egypt ETA settings on Branch {0} (tab: Egypt ETA).,Complete Egypt ETA إعدادات on فرع { 0 } (tab: Egypt ETA).
+Component,Component
+Confirm Text,Confirm Text
+Consolidated and elimination rows use intercompany GL accounts and consolidation codes.,Consolidated و elimination rows use intercompany GL حسابات و consolidation codes.
+Consolidated Group,Consolidated Group
+Consolidation Account Code,Consolidation حساب كود
+Consolidation elimination — intercompany movement,Consolidation elimination — intercompany movement
+Contact Email,اتصال بريد إلكتروني
+Contract Items,عقد Items
+Contract Terms,عقد Terms
+Contract Type,عقد نوع
+Control,تحكم
+Control Account must be marked as Reconcilable.,تحكم حساب must be marked as Reconcilable.
+Control GL,تحكم GL
+Conversion Rate,Conversion معدل
+Conversion rate must be positive.,Conversion معدل must be positive.
+Core financial operations,العمليات المالية الأساسية
+Cost Center,مركز التكلفة
+Cost Center belongs to a different company.,تكلفة Center belongs إلى a different شركة.
+Cost Center Name,تكلفة Center اسم
+Cost Center Name must be unique per company.,تكلفة Center اسم must be unique per شركة.
+Counted Qty,Counted Qty
+Country,Country
+Create a Company Partner Legal Setup for {0} first.,Create a شركة Partner Legal إعداد لـ { 0 } first.
+Create PO from Best Quotations,Create PO from Best Quotations
+Create Shipment,Create Shipment
+"Created Purchase Orders: {0}"", [created.join("",","Created شراء Orders: { 0 } "", [ created. join ("","
+Creating Purchase Orders...,Creating شراء Orders...
+Creating Purchase Request from reorder suggestions...,Creating شراء طلب from reorder suggestions...
+Credit,آجل
+Credit Days,ائتمان Days
+Credit Days cannot be negative.,ائتمان Days cannot be negative.
+Credit Limit,ائتمان Limit
+Credit limit cannot be negative.,ائتمان limit cannot be negative.
+Credit Limit Override Approved,ائتمان Limit Override معتمد
+Credit limit override can only be approved by Accounts Manager or System Manager.,ائتمان limit override can only be معتمد حسب حسابات مدير or النظام مدير.
+Credit Limit Override Reason,ائتمان Limit Override Reason
+Credit limit override reason is required.,ائتمان limit override reason is required.
+Credit note customer must match the original invoice customer.,ائتمان note عميل must match the original فاتورة عميل.
+Credit sales ({0} d),ائتمان مبيعات ({ 0 } d)
+Credits posted as settlement (Due From Partner account) for {0}.,Credits مرحل as settlement (استحقاق From Partner حساب) لـ { 0 }.
+CRM Activity,CRM نشاط
+CRM Campaign,CRM Campaign
+CSV,CSV
+CSV contains duplicate account_number: {0},CSV contains duplicate حساب رقم: { 0 }
+CSV contains invalid account_type for account_number {0}.,CSV contains invalid حساب نوع لـ حساب رقم { 0 }.
+CSV contains invalid is_group for account_number {0}.,CSV contains invalid is group لـ حساب رقم { 0 }.
+CSV contains invalid is_stock_valuation for account_number {0}.,CSV contains invalid is stock valuation لـ حساب رقم { 0 }.
+CSV is empty or invalid.,CSV is empty or invalid.
+CSV row missing account_number.,CSV row missing حساب رقم.
+Cumulative %,Cumulative%
+Cumulative Debt,Cumulative Debt
+Cumulative Recovery for {0},Cumulative Recovery لـ { 0 }
+Cumulative {0} Loss,Cumulative { 0 } Loss
+Currency,Currency
+Currency Exchange Rate,Currency Exchange معدل
+Currency Mismatch,Currency Mismatch
+Current Qty,Current Qty
+Current Stock Qty,Current Stock Qty
+Customer,العميل
+Customer and Company must match the Sales Order.,عميل و شركة must match the مبيعات Order.
+Customer belongs to a different company.,عميل belongs إلى a different شركة.
+Customer Code,عميل كود
+Customer Code must be unique per company.,عميل كود must be unique per شركة.
+Customer Ledger,دفتر أستاذ العملاء
+Customer must match the Sales Order.,عميل must match the مبيعات Order.
+Customer must match the selected Sales Quotation.,عميل must match the selected مبيعات Quotation.
+Customer Name,عميل اسم
+Customer Name must be unique per company.,عميل اسم must be unique per شركة.
+Customer Statement,عميل Statement
+Customer {0} does not exist.,عميل { 0 } does not exist.
+Cutover / opening balance entry; allowed to post when fiscal period is frozen (controlled),Cutover opening رصيد قيد; allowed إلى post when fiscal period is frozen (controlled)
+Date,التاريخ
+Date of Joining,تاريخ of Joining
+Dates,Dates
+Debit,Debit
+Debit note supplier must match the original invoice supplier.,Debit note مورد must match the original فاتورة مورد.
+decimal,decimal
+Default Billing Rate,افتراضي فوترة معدل
+Default Billing Rate cannot be negative.,افتراضي فوترة معدل cannot be negative.
+Default COGS/OPEX GL is required on Company for stock accounting.,افتراضي COGS OPEX GL is required on شركة لـ stock محاسبة.
+Default Consolidation View,افتراضي Consolidation View
+Default From Date,افتراضي From تاريخ
+Default Income Account,افتراضي دخل حساب
+Default Income Account belongs to a different company.,افتراضي دخل حساب belongs إلى a different شركة.
+Default Mode of Payment,افتراضي Mode of دفعة
+Default Tax Rule,قاعدة الضريبة الافتراضية
+Default Tax Rule must belong to the same company.,قاعدة الضريبة الافتراضية يجب أن تتبع نفس الشركة.
+Default Tax Rule Tax Category must match invoice Tax Category.,فئة الضريبة في القاعدة الافتراضية يجب أن تطابق فئة الضريبة في الفاتورة.
+Default tax treatment,افتراضي tax treatment
+Default To Date,افتراضي إلى تاريخ
+Default Warehouse,افتراضي Warehouse
+Delay (days vs expected),Delay (days vs expected)
+Delivered quantity exceeds remaining quantity on Sales Order for {0}.,Delivered quantity exceeds remaining quantity on مبيعات Order لـ { 0 }.
+Delivery Note,Delivery Note
+Delivery Note customer/company must match this invoice.,Delivery Note عميل شركة must match this فاتورة.
+Delivery Note does not exist.,Delivery Note does not exist.
+Delivery Note Item,Delivery Note صنف
+Delivery Note must be submitted.,Delivery Note must be submitted.
+Delivery Note must belong to the same Sales Order linked on this invoice.,Delivery Note must belong إلى the same مبيعات Order linked on this فاتورة.
+Delivery Note requires at least one item.,Delivery Note requires at least one صنف.
+Delivery Term,Delivery Term
+Delivery Terms,Delivery Terms
+Demo mode must be 6m or 12m (got {0}),Demo mode must be 6m or 12m (got { 0 })
+Department,Department
+Description,الوصف
+Designation,Designation
+Details,التفاصيل
+Difference,Difference
+Difference Amount,Difference مبلغ
+Disabled,Disabled
+Disclosure,Disclosure
+Discount %,Discount%
+Display Code,Display كود
+Display Mode,Display Mode
+DocStatus,Doc حالة
+DocType,نوع المستند
+Document,المستند
+Document not found in package: {0},مستند not found in package: { 0 }
+Dry Run,Dry Run
+DSO (days; 0 if no sales in period),DSO (days; 0 if no مبيعات in period)
+Due Date,تاريخ الاستحقاق
+Due Date cannot be before Posting Date.,استحقاق تاريخ cannot be before Posting تاريخ.
+Due From Partner Account,استحقاق From Partner حساب
+Duplicate,Duplicate
+Duplicate Account Number in template: {0},Duplicate حساب رقم in template: { 0 }
+Duplicate budget line for the same GL / Cost Center / Month.,Duplicate budget line لـ the same GL تكلفة Center Month.
+Duplicate reference row for {0} {1}.,Duplicate reference row لـ { 0 } { 1 }.
+Education Student (Optional Ref.),تعليم Student (Optional Ref.)
+Effective Rate,Effective معدل
+Egypt ETA,Egypt ETA
+Email,البريد الإلكتروني
+Employee,الموظف
+Employee belongs to a different company.,موظف belongs إلى a different شركة.
+Employee cannot be their own manager.,موظف cannot be their own مدير.
+Employee Code,موظف كود
+Employee Code must be unique per company.,موظف كود must be unique per شركة.
+Employee Ledger,موظف دفتر أستاذ
+Employee Name,موظف اسم
+Employee Photo,موظف Photo
+Enable Numbering Engine,Enable Numbering محرك
+End Date,تاريخ الانتهاء
+Enforce Account Currency Match,Enforce حساب Currency Match
+Enter at least one company code.,Enter at least one شركة كود.
+Entry Type,قيد نوع
+Entry Type (optional),قيد نوع (optional)
+Equity,Equity
+Equity Account,Equity حساب
+Equity Mask,Equity Mask
+Equity Snapshot (book),Equity لقطة (book)
+Estimated Hours,Estimated Hours
+ETA,ETA
+Event,Event
+Exactly one partner must be marked as Funding Partner.,Exactly one partner must be marked as Funding Partner.
+"Example: Opening, Closing, Adjustment, Customer Receipt","Example: Opening, Closing, Adjustment, عميل Receipt"
+Exchange Rate,Exchange معدل
+Exchange rate must be positive.,Exchange معدل must be positive.
+Execute Transfer,Execute Transfer
+Executed By,Executed حسب
+Executed On,Executed On
+Executed Stock Entry,Executed Stock قيد
+Executing stock transfer...,Executing stock transfer...
+Execution failed.,Execution فشل.
+Executive KPIs (global),مؤشرات الأداء التنفيذية (عام)
+Expected Delivery,Expected Delivery
+Expected Delivery Date,Expected Delivery تاريخ
+Expected Delivery Date cannot be before Order Date.,Expected Delivery تاريخ cannot be before Order تاريخ.
+Expense Account,مصروف حساب
+Expense Contribution Deficiency,مصروف Contribution Deficiency
+Expense Mask,مصروف Mask
+Expense Type,مصروف نوع
+Expiry Date,Expiry تاريخ
+Export CSV,Export CSV
+External Reference,مرجع خارجي
+Fallback: Frappe Version table (Event Audit Log not available).,Fallback: Frappe إصدار table (Event تدقيق سجل not متاح).
+Filters,Filters
+Final Amount Due,Final مبلغ استحقاق
+Finance Posting Rule,مالية Posting Rule
+Financial Consolidation (Consolidated Trial Balance),مالي Consolidation (Consolidated Trial رصيد)
+Financial KPI Summary,مالي KPI ملخص
+Financial statements for {0} — fiscal year {1}.,مالي statements لـ { 0 } — fiscal year { 1 }.
+Financing,Financing
+Financing — bank JE (classified),Financing — بنك JE (classified)
+Financing — Journal Entry via bank GL (classified),Financing — يومية قيد via بنك GL (classified)
+First Receipt Date,First Receipt تاريخ
+Fiscal Year,Fiscal Year
+Fiscal Year is required,Fiscal Year is required
+Fiscal Year overlaps with {0},Fiscal Year overlaps with { 0 }
+Fiscal Year Period,Fiscal Year Period
+Fiscal Year {0},Fiscal Year { 0 }
+For Cash Flow Statement (Indirect): map balance-sheet accounts to working-capital lines (trade receivables / payables / inventory).,لـ نقدية تدفق Statement (Indirect): map رصيد - sheet حسابات إلى working - capital lines (trade receivables payables inventory).
+For Month,لـ Month
+From,From
+From and To currency must be different.,From و إلى currency must be different.
+From Currency,From Currency
+From Date,From تاريخ
+From Date and To Date are required,From تاريخ و إلى تاريخ are required
+From Date and To Date are required.,From تاريخ و إلى تاريخ are required.
+From Date cannot be after To Date.,From تاريخ cannot be after إلى تاريخ.
+From Warehouse,From Warehouse
+From Warehouse and To Warehouse cannot be the same.,From Warehouse و إلى Warehouse cannot be the same.
+Frozen,Frozen
+Frozen account cannot change core structure fields.,Frozen حساب cannot change أساسي structure fields.
+Frozen Period,Frozen Period
+FS GL Posting,FS GL Posting
+Funding Partner,Funding Partner
+Further,Further
+General Journal,عام يومية
+General Ledger,عام دفتر أستاذ
+Generate Professional COA,Generate Professional COA
+GL,GL
+GL Account,GL حساب
+GL Account doctype is not installed.,GL حساب doctype is not installed.
+GL Account must be a leaf account (not a group).,GL حساب must be a leaf حساب (not a group).
+GL Account must belong to the same company.,GL حساب must belong إلى the same شركة.
+GL Account {0} belongs to a different company.,GL حساب { 0 } belongs إلى a different شركة.
+GL Account {0} does not exist.,GL حساب { 0 } does not exist.
+GL Account {0} must be company-wide or belong to branch {1}.,GL حساب { 0 } must be شركة - wide or belong إلى فرع { 1 }.
+GL Account {0} must belong to company {1}.,GL حساب { 0 } must belong إلى شركة { 1 }.
+GL Account {0} not found for company {1},GL حساب { 0 } not found لـ شركة { 1 }
+GL Accounts Before,GL حسابات Before
+GL Accounts Deleted,GL حسابات Deleted
+Global ERP strict mode: Delivery Note is required when invoicing stock items.,Global ERP strict mode: Delivery Note is required when invoicing stock items.
+Global ERP strict mode: Goods Receipt Reference is required when purchase invoicing stock items.,Global ERP strict mode: Goods Receipt Reference is required when شراء invoicing stock items.
+Global ERP strict mode: link a Pipeline Opportunity before saving the quotation.,Global ERP strict mode: link a Pipeline Opportunity before saving the quotation.
+Global ERP strict mode: Sales Order is required on this invoice.,Global ERP strict mode: مبيعات Order is required on this فاتورة.
+Global registers & ledgers,السجلات ودفاتر الأستاذ العالمية
+Goods Receipt company/supplier mismatch with invoice.,Goods Receipt شركة مورد mismatch with فاتورة.
+Goods Receipt does not reference the selected Purchase Order.,Goods Receipt does not reference the selected شراء Order.
+Goods Receipt Reference,Goods Receipt Reference
+Grand Total,الإجمالي النهائي
+Gross margin %,Gross margin%
+Gross margin % (÷ Revenue bucket),Gross margin% (÷ إيرادات bucket)
+Gross profit,Gross profit
+Gross profit (Revenue − COGS),Gross profit (إيرادات − COGS)
+Group Reporting Tag,Group Reporting Tag
+Header maps to group accounts; Posting/Control are leaf posting accounts.,Header maps إلى group حسابات; Posting تحكم are leaf posting حسابات.
+Healthcare Patient (Optional Ref.),رعاية صحية Patient (Optional Ref.)
+Historical Liquidation Snapshot,Historical Liquidation لقطة
+Hours,Hours
+Hours must be greater than zero.,Hours must be greater than zero.
+IBAN,IBAN
+IC net / elimination,IC net elimination
+"If enabled, each posting row must include a Cost Center.","If enabled, each posting row must include a تكلفة Center."
+"If enabled, each posting row must include a Project.","If enabled, each posting row must include a مشروع."
+"If enabled, financial reports open in consolidation grouping by default.","If enabled, مالي تقارير مفتوح in consolidation grouping حسب افتراضي."
+Import,Import
+Import Chart Template,Import مخطط Template
+Import COA Template CSV,Import COA Template CSV
+Import CSV,Import CSV
+Import Source,Import Source
+In company currency,بعملة الشركة
+In Qty,In Qty
+Include submitted transactions,Include submitted transactions
+Income Account,دخل حساب
+Income Statement,دخل Statement
+Income Statement by Year,دخل Statement حسب Year
+Indicative total,Indicative إجمالي
+Indicative total (PE net + bank JE net),Indicative إجمالي (PE net + بنك JE net)
+Industry Tag,Industry Tag
+Input / Output VAT Position,Input Output VAT Position
+Input VAT,Input VAT
+Input VAT Recoverable,Input VAT Recoverable
+Installment,تقسيط
+Installment mode requires at least 2 schedule rows.,وضع التقسيط يتطلب سطرين على الأقل في جدول السداد.
+Installment mode: add at least 2 rows in Payment Schedule,وضع التقسيط: أضف سطرين على الأقل في جدول السداد
+Intercompany Account,Intercompany حساب
+Intercompany accounts require Group Reporting Tag by policy.,Intercompany حسابات require Group Reporting Tag حسب سياسة.
+Intercompany Elimination,Intercompany Elimination
+Intercompany offset,Intercompany offset
+Intercompany {0} → {1},Intercompany { 0 } → { 1 }
+Invalid Account,Invalid حساب
+Invalid Category Type.,Invalid فئة نوع.
+Invalid hierarchy: child Account Class {0} must match parent Account Class {1}.,Invalid hierarchy: child حساب Class { 0 } must match parent حساب Class { 1 }.
+Invalid Purchase Request.,Invalid شراء طلب.
+Invalid Working Capital Bucket.,Invalid Working Capital Bucket.
+Inventory & Warehouses,Inventory & Warehouses
+Inventory Control GL,Inventory تحكم GL
+Inventory Control GL must be a leaf account.,Inventory تحكم GL must be a leaf حساب.
+Inventory Control GL must belong to the same company.,Inventory تحكم GL must belong إلى the same شركة.
+Inventory GL,Inventory GL
+Inventory Valuation (GL),Inventory Valuation (GL)
+Inventory Valuation Summary,Inventory Valuation ملخص
+Inventory value,Inventory value
+Investing,Investing
+Investing — bank JE (classified),Investing — بنك JE (classified)
+Investing — Journal Entry via bank GL (classified),Investing — يومية قيد via بنك GL (classified)
+Invoice,فاتورة
+Invoice Doctype,فاتورة Doctype
+Invoice item {0} is not present in Purchase Order.,فاتورة صنف { 0 } is not present in شراء Order.
+Invoice link is missing.,فاتورة link is missing.
+Invoice not found.,فاتورة not found.
+Invoice Qty exceeds ordered Qty for item {0}.,فاتورة Qty exceeds ordered Qty لـ صنف { 0 }.
+Invoice Qty exceeds received Qty for item {0}.,فاتورة Qty exceeds received Qty لـ صنف { 0 }.
+Invoice Rate exceeds PO Rate for item {0}.,فاتورة معدل exceeds PO معدل لـ صنف { 0 }.
+Invoices,Invoices
+Is Active,Is نشط
+Is Bank Account,Is بنك حساب
+Is Best,Is Best
+Is Billable,Is Billable
+Is Cash Account,Is نقدية حساب
+Is Frozen,Is Frozen
+Is Group,Is Group
+Is Inventory Account,Is Inventory حساب
+Is Opening Entry,Is Opening قيد
+Is Purchase Item,Is شراء صنف
+Is Reconcilable,Is Reconcilable
+Is Return (Credit Note),مرتجع (إشعار دائن)
+Is Return (Debit Note),مرتجع (إشعار مدين)
+Is Sales Item,Is مبيعات صنف
+Is Stock Item,Is Stock صنف
+Is Tax Account,Is Tax حساب
+Item,صنف
+Item Code,صنف كود
+Item Code must be unique per company.,صنف كود must be unique per شركة.
+Item master (stock ↔ GL account mapping),إدارة الأصناف (ربط المخزون ↔ الأستاذ العام)
+Item Movements,حركات الصنف
+Item Name,صنف اسم
+Item on this delivery note does not match any line on the Sales Order ({0}).,صنف on this delivery note does not match any line on the مبيعات Order ({ 0 }).
+Items,Items
+Items and Totals,Items و Totals
+Items Grid,Items Grid
+Items Subtotal,إجمالي البنود قبل الضريبة
+Journal Entries for Fiscal Year {0},يومية Entries لـ Fiscal Year { 0 }
+Journal Entry,قيد يومية
+Journal Entry Account,يومية قيد حساب
+Journal header,يومية header
+KPI,KPI
+Landed Cost,Landed تكلفة
+Landed Cost Amount,Landed تكلفة مبلغ
+Landed Cost Charge,Landed تكلفة Charge
+Landed Cost Voucher,Landed تكلفة Voucher
+Landed Cost Voucher requires a submitted Purchase Invoice.,Landed تكلفة Voucher requires a submitted شراء فاتورة.
+Landed Rate,Landed معدل
+Last Movement Date,Last Movement تاريخ
+Last Rate,Last معدل
+Last Reconciliation,Last Reconciliation
+Last Stock Reconciliation Date,Last Stock Reconciliation تاريخ
+Latest Production Seed Logs,Latest Production Seed Logs
+Lead,عميل محتمل
+Lead belongs to a different company.,عميل محتمل belongs إلى a different شركة.
+Lead Name,عميل محتمل اسم
+Leave Policy,Leave سياسة
+Leave Policy belongs to a different company.,Leave سياسة belongs إلى a different شركة.
+Left,Left
+Legal Case Reference,Legal حالة Reference
+Legal Claim Statement,Legal Claim Statement
+Legal Notes,Legal Notes
+Liabilities,Liabilities
+Liability Mask,Liability Mask
+License Expiry Date,License Expiry تاريخ
+License Expiry Date cannot be before License Issue Date.,License Expiry تاريخ cannot be before License Issue تاريخ.
+License Issue Date,License Issue تاريخ
+License Number,License رقم
+License Status,License حالة
+Limit,Limit
+Line,Line
+Line Amount,Line مبلغ
+Line Cost Center,Line تكلفة Center
+Line Item,Line صنف
+Lines,Lines
+Linked Purchase Order must be submitted.,Linked شراء Order must be submitted.
+Liquidation,Liquidation
+Liquidation Costs,Liquidation Costs
+Loading...,Loading...
+Log ID,سجل معرف
+Loss Allocation,Loss Allocation
+Main Account Type,Main حساب نوع
+Management to document events after year-end before issuance.,إدارة إلى مستند events after year - نهاية before issuance.
+Manager,مدير
+Manager belongs to a different company.,مدير belongs إلى a different شركة.
+Manual Number Override,Manual رقم Override
+Manual number override requires Accounts Manager or System Manager role.,Manual رقم override requires حسابات مدير or النظام مدير دور.
+Manual Number Override Roles,Manual رقم Override Roles
+Manufacturing,التصنيع
+Manufacturing Role,تصنيع دور
+Mapping used in indirect cash flow and working-capital analytics.,Mapping used in indirect نقدية تدفق و working - capital تحليلات.
+Mark leaf inventory GL used for aggregate stock valuation / allocation in Inventory Valuation (GL) report.,Mark leaf inventory GL used لـ aggregate stock valuation allocation in Inventory Valuation (GL) تقرير.
+Mask {0} must contain at least one x placeholder.,Mask { 0 } must contain at least one x placeholder.
+Match Score,Match درجة
+Match Status,Match حالة
+Matched Payment Entry,Matched دفعة قيد
+Matrix lines are unbalanced,مصفوفة lines are unbalanced
+Max Amount,أقصى مبلغ
+Max Amount cannot be less than Min Amount.,أقصى مبلغ cannot be less than Min مبلغ.
+Max Amount must be greater than zero.,أقصى مبلغ must be greater than zero.
+Metric,Metric
+"Microlab company seeded (minimal chart, litigation reports ready).","Microlab شركة seeded (minimal مخطط, litigation تقارير ready)."
+Microlab seed started in background (job {0}).,Microlab seed started in background (job { 0 }).
+Min Amount,Min مبلغ
+Min Amount cannot be negative.,Min مبلغ cannot be negative.
+Min Qty,Min Qty
+Missing GL mapping for roles: {0}. Set Company defaults or omnexa_fs_gl_role_accounts in site_config.,Missing GL mapping لـ roles: { 0 }. Set شركة defaults or omnexa fs gl دور حسابات in موقع config.
+Mode Name,Mode اسم
+Mode Name must be unique per company.,Mode اسم must be unique per شركة.
+Mode of Payment,طريقة الدفع
+Mode of Payment belongs to a different company.,Mode of دفعة belongs إلى a different شركة.
+Mode of Payment is required when remittance metadata is set.,Mode of دفعة is required when remittance metadata is set.
+More,More
+Movements in Period,Movements in Period
+Net,Net
+Net (Income − Expense),Net (دخل − مصروف)
+Net before tax (base),Net before tax (base)
+Net cash from financing activities,Net نقدية from financing activities
+Net cash from investing activities,Net نقدية from investing activities
+Net cash from operating activities,Net نقدية from operating activities
+Net change,Net change
+Net change in cash (indicative),Net change in نقدية (indicative)
+Net from Payment Entry (receipts − payments),Net from دفعة قيد (receipts − payments)
+Net income (Income − Expense),Net دخل (دخل − مصروف)
+Net increase (decrease) in cash and cash equivalents,Net increase (decrease) in نقدية و نقدية equivalents
+Net Liquidation Value,Net Liquidation Value
+Net liquidity movement (receipts − payments),Net liquidity movement (receipts − payments)
+Net margin %,Net margin%
+Net margin % (÷ total income),Net margin% (÷ إجمالي دخل)
+Net Profit / Loss,Net Profit Loss
+Net Qty,Net Qty
+Net Result,Net Result
+Net sales (base),Net مبيعات (base)
+Net Total,الإجمالي قبل الضريبة
+Net VAT,Net VAT
+Net VAT (Payable + / Recoverable -),Net VAT (Payable + Recoverable -)
+Next Follow Up Date,Next Follow Up تاريخ
+Next Follow Up Date is required for open pipeline stages.,Next Follow Up تاريخ is required لـ مفتوح pipeline stages.
+Next Reconciliation Date,Next Reconciliation تاريخ
+No,No
+No item rows found.,لا توجد بنود أصناف.
+No items with Inventory Control GL set.,No items with Inventory تحكم GL set.
+No lines on this budget.,No lines on this budget.
+No logs yet.,No logs yet.
+No Movement Days,No Movement Days
+No operation executed yet.,No operation executed yet.
+No posting Journal Entry found for this invoice.,لم يتم العثور على قيد يومية محاسبي لهذه الفاتورة.
+No posting lines,No posting lines
+No receipt,No receipt
+No stock balances found for this warehouse.,No stock balances found لـ this warehouse.
+No tax applied,لا توجد ضريبة مطبقة
+Not Found,Not Found
+Not permitted,Not permitted
+Note,Note
+Notes,Notes
+Official journal from {0} to {1},Official يومية from { 0 } إلى { 1 }
+Old Parent,Old Parent
+Omnexa Accounting,Omnexa محاسبة
+Omnexa Accounting Settings,Omnexa محاسبة إعدادات
+omnexa_accounting,omnexa محاسبة
+On time,On time
+One role per line allowed to use manual number override.,One دور per line allowed إلى use manual رقم override.
+Only Accounts Manager or System Manager can freeze fiscal periods.,Only حسابات مدير or النظام مدير can freeze fiscal periods.
+Only Administrator can run COA reset.,Only Administrator can run COA reset.
+Only Purchase Orders with Expected Delivery Date set are included.,Only شراء Orders with Expected Delivery تاريخ set are included.
+Only Sales/Purchase invoices can create shipments.,Only مبيعات شراء invoices can create shipments.
+Only System Manager can run full company wipe.,Only النظام مدير can run full شركة wipe.
+Open,مفتوح
+Open AR,مفتوح عربي
+Open AR (as of date),مفتوح عربي (as of تاريخ)
+Open General Ledger,مفتوح عام دفتر أستاذ
+Open Invoice,مفتوح فاتورة
+Opening Balance,Opening رصيد
+Opening balance for selected period.,Opening رصيد لـ selected period.
+Opening Cr,Opening Cr
+Opening Dr,Opening Dr
+Opening Equity,Opening Equity
+Operating,Operating
+Operating expense (bucket),Operating مصروف (bucket)
+Operating total,Operating إجمالي
+Operating — bank JE (classified),Operating — بنك JE (classified)
+Operating — Journal Entry via bank GL (classified),Operating — يومية قيد via بنك GL (classified)
+Operating — net Payment Entry (receipts − payments),Operating — net دفعة قيد (receipts − payments)
+"Operating — payments to suppliers (Payment Entry, shown positive)","Operating — payments إلى suppliers (دفعة قيد, shown positive)"
+Operating — receipts from customers (Payment Entry),Operating — receipts from customers (دفعة قيد)
+Operation,Operation
+Opportunities,Opportunities
+Opportunity,Opportunity
+Opportunity Name,Opportunity اسم
+Optional leaf Asset GL used to allocate consolidated inventory value across items in Inventory Valuation (GL).,Optional leaf Asset GL used إلى allocate consolidated inventory value across items in Inventory Valuation (GL).
+Order Date,Order تاريخ
+Order Status,Order حالة
+Ordered Qty,Ordered Qty
+Original invoice must belong to the same company.,Original فاتورة must belong إلى the same شركة.
+Other expense (bucket),Other مصروف (bucket)
+Other income,Other دخل
+Out Qty,Out Qty
+Output VAT,Output VAT
+Output VAT Payable,Output VAT Payable
+Outstanding,Outstanding
+Outstanding Amount,الرصيد المستحق
+Outstanding by Aging Bucket,Outstanding حسب Aging Bucket
+Overlap,Overlap
+Overview,نظرة عامة
+Overwrite existing account names,Overwrite existing حساب names
+Owner,Owner
+Ownership %,Ownership%
+P&L Bucket,P & L Bucket
+"P&L Bucket for Expense must be empty, COGS, Operating Expense, or Other Expense.","P & L Bucket لـ مصروف must be empty, COGS, Operating مصروف, or Other مصروف."
+"P&L Bucket for Income must be empty, Revenue, or Other Income.","P & L Bucket لـ دخل must be empty, إيرادات, or Other دخل."
+Paid Amount,مدفوع مبلغ
+Paid by {0},مدفوع حسب { 0 }
+Parent Account,Parent حساب
+Parent Account must be a Header/Group account.,Parent حساب must be a Header Group حساب.
+Parent Account Number,Parent حساب رقم
+Parent Warehouse,Parent Warehouse
+Parent Warehouse belongs to a different company.,Parent Warehouse belongs إلى a different شركة.
+Partner,Partner
+Partner Contribution Gap,Partner Contribution Gap
+Partner Current Account,Partner Current حساب
+Partner Debt Certificate amount.,Partner Debt Certificate مبلغ.
+Partner Debt — Cumulative,Partner Debt — Cumulative
+Partner legal setup must include one funding partner and one liable partner.,Partner legal إعداد must include one funding partner و one liable partner.
+Partner Name,Partner اسم
+Partner Name (Arabic),Partner اسم (Arabic)
+Partner Profit/Loss Allocation,Partner Profit Loss Allocation
+Partner Recovery Trend,Partner Recovery اتجاه
+Partner who funded company expenses (credited on partner current account).,Partner who funded شركة expenses (credited on partner current حساب).
+Partners,Partners
+Party,Party
+Party Type,Party نوع
+Passed through to Journal Entry lines when stock movements auto-post GL.,Passed through إلى يومية قيد lines when stock movements auto - post GL.
+Payable bucket requires Liability account type.,Payable bucket requires Liability حساب نوع.
+Payables Aging,Payables Aging
+payload must be a JSON object,payload must be a JSON object
+Payment,المدفوعات
+Payment Amount,دفعة مبلغ
+Payment Entry,دفعة قيد
+Payment Entry Reference,دفعة قيد Reference
+Payment Mode,طريقة السداد
+Payment Purpose,دفعة Purpose
+Payment Schedule,جدول السداد
+Payment Schedule Line,دفعة Schedule Line
+Payment Schedule row {0}: Due Date cannot be before Posting Date.,سطر جدول السداد {0}: تاريخ الاستحقاق لا يمكن أن يكون قبل تاريخ القيد.
+Payment Schedule row {0}: Payment Amount must be greater than zero.,سطر جدول السداد {0}: مبلغ الدفعة يجب أن يكون أكبر من صفر.
+Payment Schedule total must equal Grand Total.,إجمالي جدول السداد يجب أن يساوي الإجمالي النهائي.
+Payment Terms,دفعة Terms
+Payments,Payments
+Payments to suppliers (Payment Entry),Payments إلى suppliers (دفعة قيد)
+Pending Qty,معلق Qty
+Per-company detail only — enable Apply Eliminations for group totals.,Per - شركة detail only — enable Apply Eliminations لـ group totals.
+Performed By,Performed حسب
+Performed On,Performed On
+Period,Period
+Period Cr,Period Cr
+Period Dr,Period Dr
+Period Movement,Period Movement
+Period Name,Period اسم
+Period start must be on or before end.,Period بداية must be on or before نهاية.
+Period {0} must fall within fiscal year dates.,Period { 0 } must fall within fiscal year dates.
+Periods,Periods
+Permission,Permission
+Permission rows,Permission rows
+Phone,Phone
+Pipeline Lead,Pipeline عميل محتمل
+Pipeline Opportunity,Pipeline Opportunity
+PM WBS Task (Optional Ref.),PM WBS مهمة (Optional Ref.)
+PO Date,PO تاريخ
+PO Reference,PO Reference
+PO Reference and Goods Receipt Reference are required by the approval rule.,PO Reference و Goods Receipt Reference are required حسب the موافقة rule.
+Policy Controls,سياسة Controls
+Policy Name,سياسة اسم
+Policy Reference,سياسة Reference
+POS Profile,POS ملف
+Posted Movements,مرحل Movements
+Posting,Posting
+Posting Control,Posting تحكم
+Posting Date,تاريخ القيد
+Posting is blocked: fiscal period is frozen.,Posting is blocked: fiscal period is frozen.
+Posting Journal Entry,قيد اليومية المحاسبي
+Posting Stock Entry,قيد حركة المخزون
+Posting Type,Posting نوع
+Primary current account was not resolved.,Primary current حساب was not resolved.
+Primary License Type,Primary License نوع
+Primary License Type and License Number are required when license tracking is used.,Primary License نوع و License رقم are required when license tracking is used.
+Primary Partner,Primary Partner
+Probability,Probability
+Probability must be between 0 and 100.,Probability must be between 0 و 100.
+Product Type,منتج نوع
+Production Readiness Console,Production Readiness Console
+Production Seed Log,Production Seed سجل
+Products and Services,المنتجات والخدمات
+Profile Name,ملف اسم
+Project,المشروع
+Project Contract (Optional Ref.),مشروع عقد (Optional Ref.)
+Project Reference,مرجع المشروع
+Project Reference belongs to a different company.,مرجع المشروع يتبع شركة مختلفة.
+Project Reference does not exist.,مرجع المشروع غير موجود.
+Project Task Reference,مرجع مهمة المشروع
+Project Task Reference belongs to a different company.,مرجع مهمة المشروع يتبع شركة مختلفة.
+Project Task Reference does not exist.,مرجع مهمة المشروع غير موجود.
+Project Task Reference must belong to selected Project Reference.,مرجع مهمة المشروع يجب أن يتبع مرجع المشروع المحدد.
+Project Task Template,مشروع مهمة Template
+Project Template,مشروع Template
+Project Template belongs to a different company.,مشروع Template belongs إلى a different شركة.
+Project Template requires Customer for billable timesheet bridging.,مشروع Template requires عميل لـ billable timesheet bridging.
+Project Template requires Default Income Account for billable timesheet bridging.,مشروع Template requires افتراضي دخل حساب لـ billable timesheet bridging.
+Projected outstanding exceeds the customer's credit limit.,Projected outstanding exceeds the عميل ' s ائتمان limit.
+"Property, plant and equipment","Property, plant و equipment"
+Purchase,شراء
+Purchase Approval Rule,شراء موافقة Rule
+Purchase Budget,شراء Budget
+Purchase Budget Line,شراء Budget Line
+Purchase Budget requires at least one line.,شراء Budget requires at least one line.
+Purchase Invoice,فاتورة شراء
+Purchase Invoice belongs to a different company.,شراء فاتورة belongs إلى a different شركة.
+Purchase Invoice has no items to distribute landed cost on.,شراء فاتورة has no items إلى distribute landed تكلفة on.
+Purchase Invoice Item,شراء فاتورة صنف
+Purchase Invoice reference requires Party Type Supplier.,شراء فاتورة reference requires Party نوع مورد.
+Purchase Invoice {0} not found.,شراء فاتورة { 0 } not found.
+Purchase Order,شراء Order
+Purchase Order company/supplier mismatch with invoice.,شراء Order شركة مورد mismatch with فاتورة.
+Purchase Order Item,شراء Order صنف
+Purchase Order requires at least one item.,شراء Order requires at least one صنف.
+Purchase Order submitted,شراء Order submitted
+Purchase Quotation,شراء Quotation
+Purchase Quotation Item,شراء Quotation صنف
+Purchase Quotation requires at least one item row.,شراء Quotation requires at least one صنف row.
+Purchase Receipt,شراء Receipt
+Purchase Receipt branch must match Purchase Order branch.,شراء Receipt فرع must match شراء Order فرع.
+Purchase Receipt Item,شراء Receipt صنف
+Purchase Receipt must match Purchase Order company and supplier.,شراء Receipt must match شراء Order شركة و مورد.
+Purchase Receipt requires at least one item.,شراء Receipt requires at least one صنف.
+Purchase Request,شراء طلب
+Purchase Request Item,شراء طلب صنف
+Purchase Request must be submitted.,شراء طلب must be submitted.
+Purchase Request must belong to the same company.,شراء طلب must belong إلى the same شركة.
+Purpose,Purpose
+Purpose / Notes,Purpose Notes
+Qty,Qty
+Qty Balance,Qty رصيد
+Quotation Date,Quotation تاريخ
+Quotations,Quotations
+Rate,معدل
+Rate %,معدل%
+Reason Name,Reason اسم
+Reason Name (Arabic),Reason اسم (Arabic)
+Reason Name is required.,Reason اسم is required.
+Receipts,Receipts
+Receipts from customers (Payment Entry),Receipts from customers (دفعة قيد)
+Receivables Aging,Receivables Aging
+Receivables and DSO,Receivables و DSO
+Received Qty,Received Qty
+Reconciliation,Reconciliation
+Reconciliation Date,Reconciliation تاريخ
+"Refer to Fixed Assets register, depreciation schedule, and NBV by category reports.","Refer إلى ثابتة أصول register, depreciation schedule, و NBV حسب فئة تقارير."
+Refer to Payables Aging report.,Refer إلى Payables Aging تقرير.
+Refer to Receivables Aging and Receivables and DSO reports.,Refer إلى Receivables Aging و Receivables و DSO تقارير.
+Refer to Sales Register and Revenue Analysis reports.,Refer إلى مبيعات Register و إيرادات Analysis تقارير.
+Reference,المرجع
+Reference DocType,Reference Doc نوع
+Reference DocType must be Sales Invoice or Purchase Invoice.,Reference Doc نوع must be مبيعات فاتورة or شراء فاتورة.
+Reference Name,Reference اسم
+Reference Type,Reference نوع
+Referenced Goods Receipt must be submitted.,Referenced Goods Receipt must be submitted.
+Referenced invoice company mismatch.,Referenced فاتورة شركة mismatch.
+Referenced invoice does not exist.,Referenced فاتورة does not exist.
+Referenced Purchase Invoice must be submitted.,Referenced شراء فاتورة must be submitted.
+Referenced Purchase Invoice supplier does not match Party.,Referenced شراء فاتورة مورد does not match Party.
+Referenced Purchase Order must be submitted.,Referenced شراء Order must be submitted.
+Referenced Sales Invoice customer does not match Party.,Referenced مبيعات فاتورة عميل does not match Party.
+Referenced Sales Invoice must be submitted.,Referenced مبيعات فاتورة must be submitted.
+References,References
+Refresh Logs,Refresh Logs
+Regular: no ETA submission. Electronic Invoice: B2B ETA invoice. Electronic Receipt: POS-style ETA receipt.,Regular: no ETA submission. Electronic فاتورة: B2B ETA فاتورة. Electronic Receipt: POS - style ETA receipt.
+Remarks,Remarks
+Remittance,Remittance
+Remittance Bank Reference,Remittance بنك Reference
+Remittance Date,Remittance تاريخ
+Remittance Date cannot be after Posting Date.,Remittance تاريخ cannot be after Posting تاريخ.
+Remittance Date is required when remittance metadata is set.,Remittance تاريخ is required when remittance metadata is set.
+Remittance Metadata,Remittance Metadata
+Remittance Ref,Remittance Ref
+Remittance Reference,Remittance Reference
+Remittance Reference is required when remittance metadata is set.,Remittance Reference is required when remittance metadata is set.
+Replace existing lines,Replace existing lines
+Report {0} is not enabled for unified Excel export.,تقرير { 0 } is not enabled لـ unified Excel export.
+Reporting entity,Reporting entity
+Request Date,طلب تاريخ
+Requester,Requester
+Require Cost Center,Require تكلفة Center
+Require Group Reporting Tag for Intercompany,Require Group Reporting Tag لـ Intercompany
+Require Project,Require مشروع
+Require Reference,Require Reference
+Require Three-Way Match,Require Three - Way Match
+Required By,Required حسب
+Required Funding,Required Funding
+Required if Item is not set,Required if صنف is not set
+Requires Cost Center,Requires تكلفة Center
+Requires Dynamic Composition,Requires Dynamic Composition
+Requires Manager Approval,Requires مدير موافقة
+Requires Project,Requires مشروع
+Reset,Reset
+Reset blocked: GL Entries exist.,Reset blocked: GL Entries exist.
+Reset blocked: Journal Entries exist.,Reset blocked: يومية Entries exist.
+Reset COA,Reset COA
+Reset COA (Danger),Reset COA (Danger)
+Reset Transactions (Dry Run),Reset Transactions (Dry Run)
+Reset Transactions (Execute),Reset Transactions (Execute)
+Resolution,Resolution
+Resync COA Labels,Resync COA Labels
+Return,Return
+Return Against,المرتجع على
+Return Against is required for a credit note.,Return Against is required لـ a ائتمان note.
+Return Against is required for a debit note.,Return Against is required لـ a debit note.
+Return Against must be a submitted Purchase Invoice.,Return Against must be a submitted شراء فاتورة.
+Return Against must be a submitted Sales Invoice.,Return Against must be a submitted مبيعات فاتورة.
+Revenue,الإيرادات
+Revenue (base),إيرادات (base)
+Revenue (bucket),إيرادات (bucket)
+Revenue (P&L bucket),إيرادات (P & L bucket)
+Revenue Mask,إيرادات Mask
+Reverse charge,Reverse charge
+Reverse charge (B2B services / intra-EU etc.),Reverse charge (B2B خدمات intra - EU etc.)
+Right,Right
+Roles allowed to manually override account numbering (one role per line).,Roles allowed إلى manually override حساب numbering (one دور per line).
+Row {0}: Account belongs to a different company.,Row { 0 }: حساب belongs إلى a different شركة.
+Row {0}: Account {1} currency {2} mismatches company currency {3}.,Row { 0 }: حساب { 1 } currency { 2 } mismatches شركة currency { 3 }.
+Row {0}: Account {1} is frozen and cannot accept new postings.,Row { 0 }: حساب { 1 } is frozen و cannot accept جديد postings.
+Row {0}: account {1} must belong to company {2}.,Row { 0 }: حساب { 1 } must belong إلى شركة { 2 }.
+Row {0}: Budget amount cannot be negative.,Row { 0 }: Budget مبلغ cannot be negative.
+Row {0}: Budget lines may only reference Income or Expense accounts.,Row { 0 }: Budget lines may only reference دخل or مصروف حسابات.
+Row {0}: Cost Center belongs to a different company.,Row { 0 }: تكلفة Center belongs إلى a different شركة.
+Row {0}: Cost Center is required for account {1}.,Row { 0 }: تكلفة Center is required لـ حساب { 1 }.
+Row {0}: Cost Center must belong to the same company.,Row { 0 }: تكلفة Center must belong إلى the same شركة.
+Row {0}: Direct posting is not allowed for account {1}.,Row { 0 }: Direct posting is not allowed لـ حساب { 1 }.
+Row {0}: For Month must fall between Budget From Date and To Date.,Row { 0 }: لـ Month must fall between Budget From تاريخ و إلى تاريخ.
+Row {0}: GL Account company mismatch.,Row { 0 }: GL حساب شركة mismatch.
+Row {0}: GL Account must be a leaf account.,Row { 0 }: GL حساب must be a leaf حساب.
+Row {0}: GL Account must belong to the same company.,Row { 0 }: GL حساب must belong إلى the same شركة.
+Row {0}: Invalid GL Account.,Row { 0 }: Invalid GL حساب.
+Row {0}: Item belongs to a different company.,Row { 0 }: صنف belongs إلى a different شركة.
+Row {0}: Item cannot be purchased (Is Purchase Item is off).,Row { 0 }: صنف cannot be purchased (Is شراء صنف is off).
+Row {0}: Item cannot be sold (Is Sales Item is off).,Row { 0 }: صنف cannot be sold (Is مبيعات صنف is off).
+Row {0}: Item Code must match the selected Item.,Row { 0 }: صنف كود must match the selected صنف.
+Row {0}: Item is disabled.,Row { 0 }: صنف is disabled.
+Row {0}: Item is not a stock item.,Row { 0 }: صنف is not a stock صنف.
+Row {0}: Item is required.,Row { 0 }: صنف is required.
+Row {0}: missing inventory GL mapping for source warehouse/item.,Row { 0 }: missing inventory GL mapping لـ source warehouse صنف.
+Row {0}: missing inventory GL mapping for target warehouse/item.,Row { 0 }: missing inventory GL mapping لـ target warehouse صنف.
+Row {0}: missing stock adjustment GL mapping for receipt warehouse/company.,Row { 0 }: missing stock adjustment GL mapping لـ receipt warehouse شركة.
+Row {0}: Project is required for account {1}.,Row { 0 }: مشروع is required لـ حساب { 1 }.
+Row {0}: Qty must be greater than zero.,Row { 0 }: Qty must be greater than zero.
+Row {0}: Rate cannot be negative.,Row { 0 }: معدل cannot be negative.
+Row {0}: Receipt Qty cannot exceed Purchase Order Qty for item {1}.,Row { 0 }: Receipt Qty cannot exceed شراء Order Qty لـ صنف { 1 }.
+Row {0}: Set Item or Item Code.,Row { 0 }: Set صنف or صنف كود.
+Row {0}: Source and Target Warehouse are required for Material Transfer.,Row { 0 }: Source و Target Warehouse are required لـ Material Transfer.
+Row {0}: Source Warehouse is required for Material Issue.,Row { 0 }: Source Warehouse is required لـ Material Issue.
+Row {0}: Target Warehouse is required for Material Receipt.,Row { 0 }: Target Warehouse is required لـ Material Receipt.
+Row {0}: Tax Rule {1} is not valid on posting date.,Row { 0 }: Tax Rule { 1 } is not valid on posting تاريخ.
+Row {0}: Tax Rule {1} is not valid on transaction date.,Row { 0 }: Tax Rule { 1 } is not valid on معاملة تاريخ.
+Rule Name,Rule اسم
+Rule Name is required.,Rule اسم is required.
+Sales,المبيعات
+Sales chain,مبيعات chain
+Sales Invoice,فاتورة بيع
+Sales Invoice Item,مبيعات فاتورة صنف
+Sales Invoice reference requires Party Type Customer.,مبيعات فاتورة reference requires Party نوع عميل.
+Sales Invoice {0} not found.,مبيعات فاتورة { 0 } not found.
+Sales Order,مبيعات Order
+Sales Order customer/company must match this invoice.,مبيعات Order عميل شركة must match this فاتورة.
+Sales Order does not exist.,مبيعات Order does not exist.
+Sales Order is required.,مبيعات Order is required.
+Sales Order Item,مبيعات Order صنف
+Sales Order must be submitted.,مبيعات Order must be submitted.
+Sales Order must exist and be submitted.,مبيعات Order must exist و be submitted.
+Sales Order requires at least one item.,مبيعات Order requires at least one صنف.
+Sales Quotation,مبيعات Quotation
+Sales Quotation belongs to a different company.,مبيعات Quotation belongs إلى a different شركة.
+Sales Quotation customer/company must match this invoice.,مبيعات Quotation عميل شركة must match this فاتورة.
+Sales Quotation does not exist.,مبيعات Quotation does not exist.
+Sales Quotation Item,مبيعات Quotation صنف
+Sales Quotation must be submitted before Sales Order submit.,مبيعات Quotation must be submitted before مبيعات Order اعتماد.
+Sales Quotation must be submitted.,مبيعات Quotation must be submitted.
+Sales Quotation requires at least one item.,مبيعات Quotation requires at least one صنف.
+Same chart per company is not validated — rows are listed per company.,Same مخطط per شركة is not validated — rows are listed per شركة.
+Save,Save
+Scenario,Scenario
+Scheduled,Scheduled
+Secondary Partner,Secondary Partner
+Secondary Share,Secondary Share
+Section,Section
+Section / Line,Section Line
+See IFRS policy pack / company accounting policies for recognition and measurement.,See IFRS سياسة pack شركة محاسبة policies لـ recognition و measurement.
+Seed,Seed
+Seed COA Template,Seed COA Template
+Seed Demo Data,Seed Demo بيانات
+Seed from curated dataset,Seed from curated dataset
+Select a submitted Budget.,Select a submitted Budget.
+Serial No.,Serial No.
+Service Contract (Optional Ref.),خدمة عقد (Optional Ref.)
+Service Level,خدمة Level
+Set Company on the Item first.,Set شركة on the صنف first.
+Set Company on the Item to filter movements.,Set شركة on the صنف إلى filter movements.
+Set P&L Bucket only for Income or Expense accounts.,Set P & L Bucket only لـ دخل or مصروف حسابات.
+Set Shipment Carrier on invoice first.,Set Shipment Carrier on فاتورة first.
+Set Warehouse,تحديد المخزن
+Settlements / Payments,Settlements Payments
+Setup Required,إعداد Required
+Shipment,Shipment
+Shipment can only be linked to Sales or Purchase Invoice.,Shipment can only be linked إلى مبيعات or شراء فاتورة.
+Shipment Carrier,Shipment Carrier
+Shipment Carrier belongs to a different company.,Shipment Carrier belongs إلى a different شركة.
+Shipment Carrier does not exist.,Shipment Carrier does not exist.
+Shipment Carrier not found.,Shipment Carrier not found.
+Shipment Date,Shipment تاريخ
+Shipment not found.,Shipment not found.
+Shipment Reference,مرجع الشحنة
+Shipping Cost,تكلفة الشحن
+Show Balance,Show رصيد
+Significant accounting policies,Significant محاسبة policies
+Simplified cash activity from Payment Entry only — not a full Cash Flow Statement (operating/investing/financing).,Simplified نقدية نشاط from دفعة قيد only — not a full نقدية تدفق Statement (operating investing financing).
+Single company — consolidated elimination not required.,Single شركة — consolidated elimination not required.
+Source,Source
+Source Warehouse,Source Warehouse
+Spend (base),Spend (base)
+Stage,Stage
+Stage regression is not allowed for pipeline hygiene.,Stage regression is not allowed لـ pipeline hygiene.
+Start Date,بداية تاريخ
+Statement,Statement
+Statement Closing Balance,Statement Closing رصيد
+Statement Credits,Statement Credits
+Statement Date,Statement تاريخ
+Statement Debits,Statement Debits
+Statement Lines,Statement Lines
+Statement of Changes in Equity,Statement of Changes in Equity
+Statement Reference,Statement Reference
+Status,الحالة
+Status cannot be Reconciled while difference amount is not zero.,حالة cannot be Reconciled while difference مبلغ is not zero.
+Stock Adjustment Reason,Stock Adjustment Reason
+Stock Entry,Stock قيد
+Stock Entry Item,Stock قيد صنف
+Stock Reconciliation,Stock Reconciliation
+Stock Reconciliation Item,Stock Reconciliation صنف
+Stock Transfer Request,Stock Transfer طلب
+Stock Transfer Request Item,Stock Transfer طلب صنف
+Stock UOM,Stock UOM
+Stock Valuation GL,Stock Valuation GL
+Stock Valuation GL cannot be set on group accounts.,Stock Valuation GL cannot be set on group حسابات.
+Stock Valuation GL must be an Asset account.,Stock Valuation GL must be an Asset حساب.
+Stock Value,Stock Value
+Sub Account Type,Sub حساب نوع
+Subcontract Work Order (Optional Ref.),Subcontract Work Order (Optional Ref.)
+Subject,Subject
+Submit requires role {0} based on purchase approval matrix.,اعتماد requires دور { 0 } based on شراء موافقة مصفوفة.
+Submitted Landed Cost Voucher already exists for this Purchase Invoice: {0},Submitted Landed تكلفة Voucher already exists لـ this شراء فاتورة: { 0 }
+Subsequent events,Subsequent events
+Summary JSON,ملخص JSON
+Supplier,المورد
+Supplier belongs to a different company.,مورد belongs إلى a different شركة.
+Supplier Category,مورد فئة
+Supplier Code,مورد كود
+Supplier Code must be unique per company.,مورد كود must be unique per شركة.
+Supplier Contract,مورد عقد
+Supplier Contract Item,مورد عقد صنف
+Supplier Contract requires at least one item row.,مورد عقد requires at least one صنف row.
+Supplier Ledger,مورد دفتر أستاذ
+Supplier Name,مورد اسم
+Supplier Name must be unique per company.,مورد اسم must be unique per شركة.
+Supplier {0} does not exist.,مورد { 0 } does not exist.
+System Qty,النظام Qty
+Tag used for group and consolidation reporting packs.,Tag used لـ group و consolidation reporting packs.
+Target Warehouse,Target Warehouse
+Target Warehouse is required.,Target Warehouse is required.
+Task Templates,مهمة Templates
+Task Title,مهمة عنوان
+Tax,الضرائب
+Tax Amount,قيمة الضريبة
+Tax and Shipping,الضرائب والشحن
+Tax Breakdown,تفصيل الضرائب
+Tax Category,فئة الضريبة
+Tax category,Tax فئة
+Tax Category does not exist.,فئة الضريبة غير موجودة.
+Tax ID,Tax معرف
+Tax Rate (%),نسبة الضريبة (%)
+Tax Rate cannot be negative.,نسبة الضريبة لا يمكن أن تكون سالبة.
+Tax rule,Tax rule
+Tax Rule,Tax Rule
+Tax Rule date range overlaps with {0},Tax Rule تاريخ range overlaps with { 0 }
+Tax Total,إجمالي الضريبة
+Tax Type,Tax نوع
+Template and Company are required.,Template و شركة are required.
+Template is required,Template is required
+Template Name,Template اسم
+Template Name is required,Template اسم is required
+Terms,Terms
+This will delete transactions for selected scope. Continue?,This will حذف transactions لـ selected scope. Continue ?
+Three-Way Match,Three - Way Match
+Timesheet,Timesheet
+Timesheet Entry,Timesheet قيد
+Title,العنوان
+To,إلى
+To Currency,إلى Currency
+To Date,إلى تاريخ
+To Warehouse,إلى Warehouse
+Tolerance Days,Tolerance Days
+Top Accounts by Closing Balance,Top حسابات حسب Closing رصيد
+Total allocated amount cannot exceed Paid Amount.,إجمالي allocated مبلغ cannot exceed مدفوع مبلغ.
+Total Amount,إجمالي مبلغ
+Total Assets,إجمالي أصول
+Total Charges,إجمالي Charges
+Total Closing Equity,إجمالي Closing Equity
+Total Debit must equal Total Credit.,إجمالي Debit must equal إجمالي ائتمان.
+Total Equity,إجمالي Equity
+Total expense (all GL Expense),إجمالي مصروف (all GL مصروف)
+Total Expenses,إجمالي Expenses
+Total income (all GL Income),إجمالي دخل (all GL دخل)
+Total Items,عدد البنود
+Total Liabilities,إجمالي Liabilities
+Total Movements in Period,إجمالي Movements in Period
+Total Opening Equity,إجمالي Opening Equity
+Total Qty,إجمالي الكمية
+Totals,الإجماليات
+Tourism Booking (Optional Ref.),سياحة Booking (Optional Ref.)
+Track Batch / Serial,Track Batch Serial
+Tracking Number,Tracking رقم
+Tracking URL,Tracking URL
+Tracking URL Template,Tracking URL Template
+Trade payables,Trade payables
+Trade Payables bucket requires Liability account type.,Trade Payables bucket requires Liability حساب نوع.
+Trade receivables and credit risk,Trade receivables و ائتمان مخاطر
+Transfer,Transfer
+Transfer Request,Transfer طلب
+Transit Warehouse,Transit Warehouse
+Treatment,Treatment
+Tree Label,Tree Label
+Trial Balance,Trial رصيد
+Trial balance & primary statements,ميزان المراجعة والقوائم الأساسية
+Type,النوع
+Type DELETE ALL to confirm full wipe.,نوع حذف ALL إلى confirm full wipe.
+Type RESET COA to confirm,نوع RESET COA إلى confirm
+Type RESET COA to confirm.,نوع RESET COA إلى confirm.
+Unbalanced,Unbalanced
+Unit cost (last PI rate),Unit تكلفة (last PI معدل)
+Unknown,Unknown
+Unknown company: {0},Unknown شركة: { 0 }
+Unnamed Account,Unnamed حساب
+Unsupported document kind: {0},Unsupported مستند kind: { 0 }
+UOM,UOM
+UOM Name,UOM اسم
+UOM Name must be unique.,UOM اسم must be unique.
+Update Stock,تحديث المخزون
+Update Tracking,تحديث Tracking
+Used by Cash Flow Statement (Structured): classify Journal Entry cash movements that hit Bank GL accounts. Payment Entry flows default to Operating.,Used حسب نقدية تدفق Statement (Structured): classify يومية قيد نقدية movements that hit بنك GL حسابات. دفعة قيد flows افتراضي إلى Operating.
+Used by Financial KPI Summary: Revenue vs COGS vs operating split. Empty defaults to Revenue (Income) or Operating Expense (Expense).,Used حسب مالي KPI ملخص: إيرادات vs COGS vs operating split. Empty defaults إلى إيرادات (دخل) or Operating مصروف (مصروف).
+Used if Item link is not set,Used if صنف link is not set
+User,المستخدم
+UTM Campaign,UTM Campaign
+UTM Content,UTM Content
+UTM Medium,UTM Medium
+UTM Source,UTM Source
+Valid from,Valid from
+Valid From,Valid From
+Valid From must be on or before Valid To.,Valid From must be on or before Valid إلى.
+Valid Till,Valid Till
+Valid Till cannot be before Quotation Date.,Valid Till cannot be before Quotation تاريخ.
+Valid To,Valid إلى
+Valid to,Valid إلى
+Valid To cannot be before Valid From.,Valid إلى cannot be before Valid From.
+Validation,التحقق
+Valuation uses latest submitted Purchase Invoice line rate for the item in this company — not a full cost-layer / GL stock valuation.,Valuation uses latest submitted شراء فاتورة line معدل لـ the صنف in this شركة — not a full تكلفة - layer GL stock valuation.
+Value,Value
+Value Balance,Value رصيد
+Variance,Variance
+Variance Qty,Variance Qty
+VAT Position,VAT Position
+VAT Side,VAT Side
+Version events,إصدار events
+View Posting Journal Entry,عرض قيد اليومية المحاسبي
+Voucher,Voucher
+Warehouse,Warehouse
+Warehouse belongs to a different company.,Warehouse belongs إلى a different شركة.
+Warehouse Code,Warehouse كود
+Warehouse Name,Warehouse اسم
+Warehouse Product Balances,Warehouse منتج Balances
+WC — {0},WC — { 0 }
+Weighted Amount,Weighted مبلغ
+Weighted avg days (open invoices),Weighted متوسط days (مفتوح invoices)
+Weighted days (posting → as of),Weighted days (posting → as of)
+When,When
+"When enabled, stock voucher lines should carry batch / serial identifiers (see Stock Entry, Receipt, Delivery).","When enabled, stock voucher lines should carry batch serial identifiers (see Stock قيد, Receipt, Delivery)."
+Wipe Company Data,Wipe شركة بيانات
+Work Order (Optional Ref.),Work Order (Optional Ref.)
+Workflow cannot move to Closed while bank difference is not zero.,سير العمل cannot move إلى مغلق while بنك difference is not zero.
+Workflow State,سير العمل State
+Working Capital,Working Capital
+Working Capital Bucket,Working Capital Bucket
+Year,Year
+Year End Date,Year نهاية تاريخ
+Year Start Date,Year بداية تاريخ
+Year start must be on or before year end.,Year بداية must be on or before year نهاية.
+Year Total,Year إجمالي
+Yes,Yes
+{0} bucket requires Asset account type.,{ 0 } bucket requires Asset حساب نوع.
+{0} Debt,{ 0 } Debt
+{0} Debt (year),{ 0 } Debt (year)
+{0} must be unique. Existing record: {1},{ 0 } must be unique. Existing سجل: { 1 }
+{0} must match format {1}{2} (example: {1}{3}).,{ 0 } must match format { 1 } { 2 } (example: { 1 } { 3 }).
+{0} Paid,{ 0 } مدفوع
+{0} Share,{ 0 } Share
+{0} Share After Debt,{ 0 } Share After Debt
+{0} Share Before Debt,{ 0 } Share Before Debt
+{0} share of cumulative losses.,{ 0 } share of cumulative losses.
+{0} unpaid expense share across funded expenses.,{ 0 } unpaid مصروف share across funded expenses.
+{0} unpaid ownership share of funding.,{ 0 } unpaid ownership share of funding.

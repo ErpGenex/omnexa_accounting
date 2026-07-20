@@ -1,0 +1,44 @@
+{
+  "actions": [],
+  "creation": "2026-04-30 01:45:00.000000",
+  "doctype": "DocType",
+  "editable_grid": 1,
+  "engine": "InnoDB",
+  "field_order": [
+    "company",
+    "posting_date",
+    "reference",
+    "description",
+    "debit",
+    "credit",
+    "currency",
+    "matched_payment_entry",
+    "match_score",
+    "match_status"
+  ],
+  "fields": [
+    {"fieldname": "company", "fieldtype": "Link", "label": "Company", "options": "Company", "read_only": 1, "hidden": 1},
+    {"fieldname": "posting_date", "fieldtype": "Date", "in_list_view": 1, "label": "Posting Date", "reqd": 1},
+    {"fieldname": "reference", "fieldtype": "Data", "in_list_view": 1, "label": "Reference"},
+    {"fieldname": "description", "fieldtype": "Data", "label": "Description"},
+    {"fieldname": "debit", "fieldtype": "Currency", "in_list_view": 1, "label": "Debit"},
+    {"fieldname": "credit", "fieldtype": "Currency", "in_list_view": 1, "label": "Credit"},
+    {"fieldname": "currency", "fieldtype": "Link", "label": "Currency", "options": "Currency"},
+    {"fieldname": "matched_payment_entry", "fieldtype": "Link", "label": "Matched Payment Entry", "options": "Payment Entry", "read_only": 1},
+    {"fieldname": "match_score", "fieldtype": "Float", "label": "Match Score", "read_only": 1, "precision": "2"},
+    {"fieldname": "match_status", "fieldtype": "Select", "label": "Match Status", "options": "Unmatched\nMatched\nIgnored", "default": "Unmatched", "in_list_view": 1}
+  ],
+  "istable": 1,
+  "links": [],
+  "modified": "2026-04-30 01:45:00.000000",
+  "modified_by": "Administrator",
+  "module": "Omnexa Accounting",
+  "name": "Bank Statement Line",
+  "owner": "Administrator",
+  "permissions": [],
+  "sort_field": "idx",
+  "sort_order": "ASC",
+  "states": [],
+  "track_changes": 0
+}
+

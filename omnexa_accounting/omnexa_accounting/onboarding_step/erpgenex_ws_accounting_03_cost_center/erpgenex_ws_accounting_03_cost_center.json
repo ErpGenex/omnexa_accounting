@@ -1,0 +1,21 @@
+{
+ "action": "Create Entry",
+ "action_label": "Create",
+ "creation": "2026-04-20 00:31:38.630644",
+ "description": "Create or review your first **Cost Center** record from this workspace.",
+ "docstatus": 0,
+ "doctype": "Onboarding Step",
+ "idx": 0,
+ "is_complete": 0,
+ "is_single": 0,
+ "is_skipped": 0,
+ "modified": "2026-04-22 16:43:21.802092",
+ "modified_by": "Administrator",
+ "name": "ERPGENEX-WS-accounting-03-cost_center",
+ "owner": "Administrator",
+ "reference_document": "Cost Center",
+ "show_form_tour": 0,
+ "show_full_form": 0,
+ "title": "Get started with Cost Center",
+ "validate_action": 1
+}

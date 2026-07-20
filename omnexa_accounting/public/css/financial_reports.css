@@ -1,0 +1,97 @@
+/* Omnexa Accounting — financial & inventory report print (desk + PDF preview) */
+.erpg-fin-print, .erpg-inv-print {
+	direction: rtl;
+	font-family: "Cairo", "Inter", "Noto Sans Arabic", Arial, sans-serif;
+}
+.erpg-fin-print__banner, .erpg-inv-print__banner {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	background: linear-gradient(135deg, #0f3d75 0%, #1a5a9e 100%);
+	color: #fff;
+	padding: 14px 18px;
+	border-radius: 8px;
+	margin-bottom: 14px;
+}
+.erpg-inv-print__banner {
+	background: linear-gradient(135deg, #0d4d3f 0%, #1a7a62 100%);
+}
+.erpg-fin-print__banner-title, .erpg-inv-print__banner-title {
+	font-size: 1.15rem;
+	font-weight: 700;
+}
+.erpg-fin-print__banner-sub, .erpg-inv-print__banner-sub {
+	font-size: 0.8rem;
+	opacity: 0.9;
+}
+.erpg-fin-print__meta-grid {
+	display: grid;
+	grid-template-columns: repeat(4, minmax(0, 1fr));
+	gap: 8px;
+	margin-bottom: 12px;
+}
+.erpg-fin-print__meta-box {
+	border: 1px solid var(--border-color, #d1d8dd);
+	border-radius: 6px;
+	padding: 8px 10px;
+	background: #f8fafc;
+}
+.erpg-fin-print__meta-label {
+	font-size: 0.7rem;
+	color: var(--text-muted, #6c7680);
+	font-weight: 600;
+}
+.erpg-fin-print__meta-value {
+	font-size: 0.85rem;
+	font-weight: 600;
+	color: #0f3d75;
+}
+.erpg-fin-print__table thead th, .erpg-inv-print__table thead th {
+	background: #0f3d75 !important;
+	color: #fff !important;
+}
+.erpg-inv-print__table thead th {
+	background: #0d4d3f !important;
+}
+.erpg-fin-print__row-year td {
+	background: #dbeafe !important;
+	font-weight: 700;
+	color: #0f3d75;
+}
+.erpg-fin-print__row-total td {
+	font-weight: 700;
+	background: #eff6ff !important;
+}
+.erpg-fin-print__notes-grid {
+	display: grid;
+	grid-template-columns: repeat(4, minmax(0, 1fr));
+	gap: 6px;
+	margin-top: 8px;
+}
+.erpg-fin-print__note-card {
+	border: 1px solid var(--border-color, #d1d8dd);
+	border-radius: 4px;
+	padding: 8px;
+	font-size: 0.75rem;
+	text-align: center;
+	background: #fff;
+}
+
+/* legacy hero (backward compatible) */
+.omn-fin-report-hero {
+	padding: 14px 18px;
+	margin-bottom: 14px;
+	border-radius: 10px;
+	background: linear-gradient(135deg, #f4f8ff 0%, #eef6f0 55%, #fff8ee 100%);
+	border: 1px solid var(--border-color, #d1d8dd);
+	border-inline-start: 4px solid #0f3d75;
+}
+.omn-fin-report-hero__title {
+	font-size: 1.15rem;
+	font-weight: 700;
+}
+.omn-fin-report-table thead th {
+	background: #0f3d75;
+	color: #fff;
+	font-weight: 600;
+}

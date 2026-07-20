@@ -1,0 +1,18 @@
+[pre_model_sync]
+# Patches added in this section will be executed before doctypes are migrated
+# Read docs to understand patches: https://frappeframework.com/docs/v14/user/en/database-migrations
+
+[post_model_sync]
+# Patches added in this section will be executed after doctypes are migrated
+omnexa_accounting.patches.v1_0.backfill_gl_account_label
+omnexa_accounting.patches.v1_0.backfill_gl_tree_label_v2
+omnexa_accounting.patches.v1_0.enhance_gl_account_ifrs_schema
+omnexa_accounting.patches.v1_0.create_default_coa_settings
+omnexa_accounting.patches.v1_0.backfill_gl_account_label_name_only
+omnexa_accounting.patches.v1_0.normalize_legacy_coa_type_values
+omnexa_accounting.patches.v1_0.add_gl_account_name_ar
+omnexa_accounting.patches.v1_0.sync_accounting_report_filters
+omnexa_accounting.patches.v1_0.apply_financial_print_templates
+omnexa_accounting.patches.v1_0.sync_partner_legal_workspace
+omnexa_accounting.patches.v1_0.sync_partner_legal_print_center
+omnexa_accounting.patches.v1_0.seed_microlab_partner_legal_setup

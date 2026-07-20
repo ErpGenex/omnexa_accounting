@@ -1,0 +1,16 @@
+{
+	"doctype": "Page",
+	"module": "Omnexa Accounting",
+	"name": "accounting-close-dashboard",
+	"page_name": "accounting-close-dashboard",
+	"standard": "Yes",
+	"title": "Digital Channel",
+	"roles": [
+		{
+			"role": "System Manager"
+		},
+		{
+			"role": "All"
+		}
+	]
+}

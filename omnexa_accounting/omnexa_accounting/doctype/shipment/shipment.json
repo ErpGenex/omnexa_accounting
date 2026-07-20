@@ -1,0 +1,181 @@
+{
+	"actions": [],
+	"allow_rename": 1,
+	"autoname": "format:SHP-{YYYY}-{#####}",
+	"creation": "2026-04-27 03:00:00",
+	"doctype": "DocType",
+	"engine": "InnoDB",
+	"field_order": [
+		"tab_break_overview",
+		"status",
+		"company",
+		"branch",
+		"shipment_date",
+		"carrier",
+		"service_level",
+		"tab_break_details",
+		"tracking_number",
+		"tracking_url",
+		"invoice_doctype",
+		"invoice_name",
+		"shipping_cost",
+		"charged_to_customer",
+		"notes"
+	],
+	"fields": [
+		{
+			"fieldname": "tab_break_overview",
+			"fieldtype": "Tab Break",
+			"label": "Overview"
+		},
+		{
+			"fieldname": "tab_break_details",
+			"fieldtype": "Tab Break",
+			"label": "Details"
+		},
+		{
+			"default": "Draft",
+			"fieldname": "status",
+			"fieldtype": "Select",
+			"in_list_view": 1,
+			"label": "Status",
+			"options": "Draft\nBooked\nPicked Up\nIn Transit\nDelivered\nException\nReturned\nCancelled",
+			"reqd": 1
+		},
+		{
+			"fieldname": "company",
+			"fieldtype": "Link",
+			"in_list_view": 1,
+			"label": "Company",
+			"options": "Company",
+			"reqd": 1
+		},
+		{
+			"fieldname": "branch",
+			"fieldtype": "Link",
+			"in_list_view": 1,
+			"label": "Branch",
+			"options": "Branch"
+		},
+		{
+			"default": "Today",
+			"fieldname": "shipment_date",
+			"fieldtype": "Date",
+			"in_list_view": 1,
+			"label": "Shipment Date",
+			"reqd": 1
+		},
+		{
+			"fieldname": "carrier",
+			"fieldtype": "Link",
+			"in_list_view": 1,
+			"label": "Carrier",
+			"options": "Shipment Carrier",
+			"reqd": 1
+		},
+		{
+			"fieldname": "service_level",
+			"fieldtype": "Select",
+			"label": "Service Level",
+			"options": "\nEconomy\nStandard\nExpress\nSame Day"
+		},
+		{
+			"fieldname": "tracking_number",
+			"fieldtype": "Data",
+			"in_list_view": 1,
+			"label": "Tracking Number"
+		},
+		{
+			"fieldname": "tracking_url",
+			"fieldtype": "Data",
+			"label": "Tracking URL",
+			"read_only": 1
+		},
+		{
+			"default": "Sales Invoice",
+			"fieldname": "invoice_doctype",
+			"fieldtype": "Select",
+			"in_list_view": 1,
+			"label": "Invoice Doctype",
+			"options": "Sales Invoice\nPurchase Invoice",
+			"reqd": 1
+		},
+		{
+			"fieldname": "invoice_name",
+			"fieldtype": "Dynamic Link",
+			"in_list_view": 1,
+			"label": "Invoice",
+			"options": "invoice_doctype",
+			"reqd": 1
+		},
+		{
+			"default": "0",
+			"fieldname": "shipping_cost",
+			"fieldtype": "Currency",
+			"label": "Shipping Cost"
+		},
+		{
+			"default": "0",
+			"fieldname": "charged_to_customer",
+			"fieldtype": "Check",
+			"label": "Charged to Customer"
+		},
+		{
+			"fieldname": "notes",
+			"fieldtype": "Small Text",
+			"label": "Notes"
+		}
+	],
+	"grid_page_length": 50,
+	"index_web_pages_for_search": 1,
+	"links": [],
+	"modified": "2026-05-07 12:00:00",
+	"modified_by": "Administrator",
+	"module": "Omnexa Accounting",
+	"name": "Shipment",
+	"naming_rule": "Expression",
+	"owner": "Administrator",
+	"permissions": [
+		{
+			"create": 1,
+			"delete": 1,
+			"email": 1,
+			"export": 1,
+			"print": 1,
+			"read": 1,
+			"report": 1,
+			"role": "System Manager",
+			"share": 1,
+			"write": 1
+		},
+		{
+			"create": 1,
+			"delete": 0,
+			"email": 1,
+			"export": 1,
+			"print": 1,
+			"read": 1,
+			"report": 1,
+			"role": "Accounts Manager",
+			"share": 0,
+			"write": 1
+		},
+		{
+			"create": 1,
+			"delete": 0,
+			"email": 0,
+			"export": 0,
+			"print": 1,
+			"read": 1,
+			"report": 1,
+			"role": "Accounts User",
+			"share": 0,
+			"write": 1
+		}
+	],
+	"row_format": "Dynamic",
+	"sort_field": "modified",
+	"sort_order": "DESC",
+	"states": [],
+	"track_changes": 1
+}
