@@ -23,8 +23,6 @@
 		"project_contract",
 		"pm_wbs_task",
 		"column_break_context_1",
-		"education_student",
-		"healthcare_patient",
 		"tourism_booking",
 		"column_break_context_2",
 		"work_order",
@@ -177,16 +175,6 @@
 		{
 			"fieldname": "column_break_context_1",
 			"fieldtype": "Column Break"
-		},
-		{
-			"fieldname": "education_student",
-			"fieldtype": "Data",
-			"label": "Education Student (Optional Ref.)"
-		},
-		{
-			"fieldname": "healthcare_patient",
-			"fieldtype": "Data",
-			"label": "Healthcare Patient (Optional Ref.)"
 		},
 		{
 			"fieldname": "tourism_booking",
