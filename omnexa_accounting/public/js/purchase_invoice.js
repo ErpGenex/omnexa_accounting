@@ -131,6 +131,28 @@ frappe.ui.form.on("Purchase Invoice", {
 			});
 		}
 	},
+	
+	healthcare_patient(frm) {
+		if (frm.doc.healthcare_patient) {
+			frappe.db.get_value("Healthcare Patient", frm.doc.healthcare_patient, "billing_customer")
+				.then(r => {
+					if (r.message && r.message.billing_customer) {
+						frm.set_value("customer", r.message.billing_customer);
+					}
+				});
+		}
+	},
+	
+	education_student(frm) {
+		if (frm.doc.education_student) {
+			frappe.db.get_value("Education Student", frm.doc.education_student, "customer")
+				.then(r => {
+					if (r.message && r.message.customer) {
+						frm.set_value("customer", r.message.customer);
+					}
+				});
+		}
+	},
 });
 
 frappe.ui.form.on("Purchase Invoice Item", {

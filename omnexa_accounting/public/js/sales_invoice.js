@@ -158,6 +158,28 @@ frappe.ui.form.on("Sales Invoice", {
 		}
 		apply_sales_invoice_due_date_default(frm);
 	},
+	
+	healthcare_patient(frm) {
+		if (frm.doc.healthcare_patient) {
+			frappe.db.get_value("Healthcare Patient", frm.doc.healthcare_patient, "billing_customer")
+				.then(r => {
+					if (r.message && r.message.billing_customer) {
+						frm.set_value("customer", r.message.billing_customer);
+					}
+				});
+		}
+	},
+	
+	education_student(frm) {
+		if (frm.doc.education_student) {
+			frappe.db.get_value("Education Student", frm.doc.education_student, "customer")
+				.then(r => {
+					if (r.message && r.message.customer) {
+						frm.set_value("customer", r.message.customer);
+					}
+				});
+		}
+	},
 });
 
 frappe.ui.form.on("Sales Invoice Item", {

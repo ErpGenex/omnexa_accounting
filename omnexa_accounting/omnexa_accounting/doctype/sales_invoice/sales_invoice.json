@@ -26,6 +26,8 @@
 		"project_contract",
 		"pm_wbs_task",
 		"column_break_context_1",
+		"healthcare_patient",
+		"education_student",
 		"tourism_booking",
 		"column_break_context_2",
 		"work_order",
@@ -174,6 +176,20 @@
 			"fieldname": "tourism_booking",
 			"fieldtype": "Data",
 			"label": "Tourism Booking (Optional Ref.)"
+		},
+		{
+			"depends_on": "eval:frappe.db.exists('DocType', 'Healthcare Patient')",
+			"fieldname": "healthcare_patient",
+			"fieldtype": "Link",
+			"label": "Patient (مريض)",
+			"options": "Healthcare Patient"
+		},
+		{
+			"depends_on": "eval:frappe.db.exists('DocType', 'Education Student')",
+			"fieldname": "education_student",
+			"fieldtype": "Link",
+			"label": "Student (طالب)",
+			"options": "Education Student"
 		},
 		{
 			"fieldname": "column_break_context_2",
