@@ -8,6 +8,7 @@ from frappe.utils import add_days, add_months, add_years, cint, flt, get_last_da
 
 from omnexa_accounting.utils.coa_seed_templates import ACTIVITY_EXTENSIONS, BASE_COA_TEMPLATE
 from omnexa_accounting.utils.coa_template_service import _clean_main_account_type, _clean_sub_account_type
+from omnexa_core.omnexa_core.company_activity_utils import first_company_activity_value
 
 _SIM_TAX_RULE_CACHE: dict[str, str | None] = {}
 
@@ -67,17 +68,9 @@ def _resolve_demo_activity(company: str, branch: str | None = None) -> str:
 		if branch_activity and branch_activity.lower() != "general":
 			return branch_activity
 	if company and frappe.db.exists("Company", company):
-		row = frappe.db.get_value(
-			"Company",
-			company,
-			["business_activity", "industry_sector", "production_demo_activity"],
-			as_dict=True,
-		)
-		if row:
-			for key in ("business_activity", "industry_sector", "production_demo_activity"):
-				val = (row.get(key) or "").strip()
-				if val and val.lower() != "general":
-					return val.split("(")[0].strip()
+		val = first_company_activity_value(company)
+		if val and val.lower() != "general":
+			return val.split("(")[0].strip()
 	return "General"
 
 
@@ -2359,4 +2352,3 @@ def auto_bootstrap_defaults_after_install() -> dict:
 		)
 		summary["log_id"] = log_id
 	return summary
-
